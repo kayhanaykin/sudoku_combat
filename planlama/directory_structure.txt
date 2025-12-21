@@ -1,0 +1,22 @@
+transcendence/
+├── README.md              # Mandatory: Roles, Modules list, and Justifications [cite: 780, 788]
+├── .env                   # Local environment variables (ignored by Git) 
+├── env.example            # Mandatory: Template for environment variables 
+├── Makefile               # Single command to run the containerized solution [cite: 561]
+├── docker-compose.yml     # Orchestration for Frontend, Backend, and Database [cite: 556, 561]
+├── docs/                  # Recommended: Privacy Policy and Terms of Service 
+│   ├── privacy_policy.html
+│   └── terms_of_service.html
+└── srcs/
+    ├── requirements/
+    │   ├── mariadb_or_postgres/ # Database with clear schema/relations [cite: 556, 585]
+    │   ├── backend/             # Django, NestJS, etc. [cite: 617, 620]
+    │   │   ├── apps/            # Modular backend logic
+    │   │   └── Dockerfile
+    │   └── frontend/            # React, Vue, Svelte, etc. [cite: 616, 619]
+    │       ├── src/             # Responsive and accessible UI [cite: 582]
+    │       └── Dockerfile
+    └── modules/                 # Recommended: Separate folders for chosen modules
+        ├── ai_opponent/         # If Major Module IV.4 is chosen [cite: 657]
+        ├── blockchain/          # If Major Module IV.9 is chosen [cite: 718]
+        └── cybersecurity/       # If WAF/Vault Module IV.5 is chosen [cite: 671]
