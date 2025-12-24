@@ -1,0 +1,20 @@
+name: transendence
+services:
+  nginx:
+    build: ./requirements/nginx
+    container_name: nginx
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    ports:
+      #"leftside:rightside" left side - VM, right side - container
+      # the outside 80 port is 80 port in container
+      - "80:80"
+      - "443:443"
+    volumes:
+    - ./web_content:/var/www/html:ro
+    networks:
+      - transcendence_network
+
+networks:
+  transcendence_network:
+    driver: bridge
