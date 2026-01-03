@@ -140,4 +140,10 @@ Reach site from any browser, using, [https://ekay.42.fr](https://ekay.42.fr).
 </ul>
 
 ## AI Usage
-for these parts and tasks was used. 
+### Game Engine
+<ul>
+<li>Suggested the best programming language as C++.
+<li>Informed about the independence of three diagonal boxes.
+<li>Symantics of backtracking algorithm.  
+</ul>
+
