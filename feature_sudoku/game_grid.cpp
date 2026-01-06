@@ -1,6 +1,7 @@
 #include "includes.hpp"
 
-void game_generator(std::array<std::array<int, 9>, 9>& grid, int hardness_requested, SolverStats& stats)
+void	game_generator(std::array<std::array<int, 9>, 9>& grid, std::array<std::array<int, 9>, 9>& grid_solved,
+	int hardness_requested, SolverStats& stats)
 {
 	std::array<int, 81> mixed_sequence;
 	int temp;
@@ -14,6 +15,7 @@ void game_generator(std::array<std::array<int, 9>, 9>& grid, int hardness_reques
 		if (counter > 100)
 		{
 			fullgrid_generator(grid);
+			grid_solved = grid;
 			prepare_mixed_sequence(mixed_sequence);
 			counter = 0;
 		}

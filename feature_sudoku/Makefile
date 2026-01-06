@@ -1,5 +1,5 @@
 NAME = myprogram
-SRCS = main.cpp full_grid.cpp game_grid.cpp utils.cpp tester.cpp human_logic.cpp
+SRCS = main.cpp full_grid.cpp game_grid.cpp utils.cpp tester.cpp human_logic.cpp play.cpp
 OBJS = $(SRCS:.cpp=.o)
 GXX	 = c++
 

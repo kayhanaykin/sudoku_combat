@@ -33,7 +33,8 @@ void	fill_diagonal_boxes(std::array<std::array<int, 9>, 9>&);
 bool 	fill_other_boxes(std::array<std::array<int, 9>, 9>&, int, int);
 
 //game_grid_gen.cpp
-void	game_generator(std::array<std::array<int, 9>, 9>& game_grid, int hardness, SolverStats& stats);
+void	game_generator(std::array<std::array<int, 9>, 9>& grid,
+	std::array<std::array<int, 9>, 9>& grid_solved, int hardness_requested, SolverStats& stats);
 void 	check_uniqueness(std::array<std::array<int, 9>, 9> grid, SolverStats& stats);
 void	delete_initial_cells(std::array<int, 81>& mixed_sequence, std::array<std::array<int, 9>, 9>& grid, 
 	int hardness_requested, int& i);
@@ -58,3 +59,6 @@ void	analyse_grid(SolverStats& stats, std::array<std::array<int, 9>, 9> grid);
 bool	find_naked_single(std::array<std::array<int, 9>, 9>& grid, SolverStats& stats);
 bool	find_hidden_single(std::array<std::array<int, 9>, 9>& grid, SolverStats& stats);
 bool	solve_with_logic(std::array<std::array<int, 9>, 9> grid, SolverStats& stats);
+
+//play.cpp
+void	play(std::array<std::array<int, 9>, 9>& grid, std::array<std::array<int, 9>, 9>& grid_solved);
