@@ -1,0 +1,2070 @@
+0, iterator: 0
+0  iterator: 0 cell: 7, 6 empty count: 1 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+1  iterator: 1 cell: 3, 7 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+2  iterator: 2 cell: 5, 1 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+3  iterator: 3 cell: 3, 4 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+4  iterator: 4 cell: 4, 4 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+5  iterator: 5 cell: 8, 3 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+6  iterator: 6 cell: 0, 8 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+7  iterator: 7 cell: 1, 4 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+8  iterator: 8 cell: 8, 4 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+9  iterator: 9 cell: 4, 2 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+10  iterator: 10 cell: 2, 6 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+11  iterator: 11 cell: 5, 5 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+12  iterator: 12 cell: 7, 3 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+13  iterator: 13 cell: 1, 2 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+14  iterator: 14 cell: 8, 1 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+15  iterator: 15 cell: 0, 3 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+16  iterator: 16 cell: 4, 1 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+17  iterator: 17 cell: 0, 7 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+18  iterator: 18 cell: 2, 5 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+19  iterator: 19 cell: 8, 0 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+20  iterator: 20 cell: 1, 1 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+21  iterator: 21 cell: 6, 6 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+22  iterator: 22 cell: 1, 5 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+23  iterator: 23 cell: 3, 6 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+24  iterator: 24 cell: 1, 7 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+25  iterator: 25 cell: 7, 8 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+26  iterator: 26 cell: 0, 5 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+27  iterator: 27 cell: 6, 3 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+28  iterator: 28 cell: 4, 6 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+29  iterator: 29 cell: 4, 0 empty count: 30 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 30
+30  iterator: 30 cell: 8, 2 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+31  iterator: 31 cell: 1, 3 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+32  iterator: 32 cell: 2, 8 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+33  iterator: 33 cell: 7, 7 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+34  iterator: 34 cell: 7, 4 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+35  iterator: 35 cell: 6, 0 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+36  iterator: 36 cell: 6, 1 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+37  iterator: 37 cell: 6, 7 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+38  iterator: 38 cell: 5, 0 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+39  iterator: 39 cell: 0, 1 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+40  iterator: 40 cell: 7, 0 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+41  iterator: 41 cell: 2, 3 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+42  iterator: 42 cell: 6, 5 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+43  iterator: 43 cell: 0, 6 empty count: 43 solve_with_logic: 1 hidden_total: 0
+main grid print
+4 . 1 | . 3 . | . . . 
+9 . . | . . . | 4 . 6 
+7 2 5 | . 4 . | . 3 . 
+------+-------+------
+6 4 3 | 2 . 5 | . . 1 
+1 . . | 7 . 3 | . 8 4 
+. . 7 | 4 1 . | 5 2 3 
+------+-------+------
+. . 6 | . 5 . | . . 9 
+. 7 4 | . . 9 | . . . 
+. . . | . . 7 | 8 4 2 
+
+main stats print
+========== HEURISTIC SOLVER STATS ==========
+Empty Cells      : 43
+Naked Singles    : 43
+Hidden Singles   : 0
+ Hidden Boxes  : 0
+ Hidden Rows   : 0
+ Hidden Columns: 0
+Solved with Logic: 1
+Total Guesses    : 43
+Branching Points : 0
+Human Hardness   : EASY
+============================================
+
+0, iterator: 0
+0  iterator: 0 cell: 8, 6 empty count: 1 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+1  iterator: 1 cell: 8, 7 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+2  iterator: 2 cell: 6, 8 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+3  iterator: 3 cell: 7, 8 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+4  iterator: 4 cell: 6, 5 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+5  iterator: 5 cell: 6, 2 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+6  iterator: 6 cell: 6, 1 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+7  iterator: 7 cell: 3, 3 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+8  iterator: 8 cell: 2, 1 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+9  iterator: 9 cell: 1, 2 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+10  iterator: 10 cell: 7, 0 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+11  iterator: 11 cell: 5, 0 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+12  iterator: 12 cell: 3, 4 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+13  iterator: 13 cell: 6, 0 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+14  iterator: 14 cell: 3, 5 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+15  iterator: 15 cell: 1, 8 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+16  iterator: 16 cell: 5, 1 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+17  iterator: 17 cell: 4, 7 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+18  iterator: 18 cell: 1, 3 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+19  iterator: 19 cell: 4, 0 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+20  iterator: 20 cell: 3, 7 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+21  iterator: 21 cell: 1, 0 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+22  iterator: 22 cell: 1, 5 empty count: 23 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 23
+23  iterator: 23 cell: 2, 6 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+24  iterator: 24 cell: 4, 8 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+25  iterator: 25 cell: 6, 6 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+26  iterator: 26 cell: 5, 5 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+27  iterator: 27 cell: 0, 1 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+28  iterator: 28 cell: 7, 1 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+29  iterator: 29 cell: 5, 6 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+30  iterator: 30 cell: 4, 2 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+31  iterator: 31 cell: 5, 8 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+32  iterator: 32 cell: 3, 6 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+33  iterator: 33 cell: 4, 5 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+34  iterator: 34 cell: 2, 8 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+35  iterator: 35 cell: 4, 1 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+36  iterator: 36 cell: 8, 4 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+37  iterator: 37 cell: 8, 5 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+38  iterator: 38 cell: 3, 0 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+39  iterator: 39 cell: 8, 1 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+40  iterator: 40 cell: 5, 3 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+41  iterator: 41 cell: 6, 7 empty count: 41 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 42
+42  iterator: 42 cell: 6, 4 empty count: 41 solve_with_logic: 1 hidden_total: 2
+-1, iterator: 43
+43  iterator: 43 cell: 3, 8 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 44
+44  iterator: 44 cell: 1, 1 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 45
+45  iterator: 45 cell: 0, 3 empty count: 44 solve_with_logic: 1 hidden_total: 0
+main grid print
+4 . 1 | . 3 8 | 2 5 7 
+. . . | . 7 2 | 4 1 . 
+7 . 5 | 6 4 1 | . 3 . 
+------+-------+------
+. 4 3 | . . . | . . . 
+. . . | 7 9 . | 6 . . 
+. . 7 | . 1 . | . 2 . 
+------+-------+------
+. . . | 1 . . | . 7 . 
+. . 4 | 8 2 9 | 1 6 . 
+5 . 9 | 3 . . | . . 2 
+
+main stats print
+========== HEURISTIC SOLVER STATS ==========
+Empty Cells      : 44
+Naked Singles    : 44
+Hidden Singles   : 0
+ Hidden Boxes  : 0
+ Hidden Rows   : 0
+ Hidden Columns: 0
+Solved with Logic: 1
+Total Guesses    : 44
+Branching Points : 0
+Human Hardness   : MEDIUM
+============================================
+
+0, iterator: 0
+0  iterator: 0 cell: 4, 0 empty count: 1 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+1  iterator: 1 cell: 3, 6 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+2  iterator: 2 cell: 1, 7 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+3  iterator: 3 cell: 6, 7 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+4  iterator: 4 cell: 5, 1 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+5  iterator: 5 cell: 3, 8 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+6  iterator: 6 cell: 1, 6 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+7  iterator: 7 cell: 8, 6 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+8  iterator: 8 cell: 1, 8 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+9  iterator: 9 cell: 7, 5 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+10  iterator: 10 cell: 0, 0 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+11  iterator: 11 cell: 5, 5 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+12  iterator: 12 cell: 2, 3 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+13  iterator: 13 cell: 2, 4 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+14  iterator: 14 cell: 6, 5 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+15  iterator: 15 cell: 2, 8 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+16  iterator: 16 cell: 7, 7 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+17  iterator: 17 cell: 0, 6 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+18  iterator: 18 cell: 5, 4 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+19  iterator: 19 cell: 2, 5 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+20  iterator: 20 cell: 5, 7 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+21  iterator: 21 cell: 8, 2 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+22  iterator: 22 cell: 2, 0 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+23  iterator: 23 cell: 6, 1 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+24  iterator: 24 cell: 7, 4 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+25  iterator: 25 cell: 4, 3 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+26  iterator: 26 cell: 2, 7 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+27  iterator: 27 cell: 2, 1 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+28  iterator: 28 cell: 6, 2 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+29  iterator: 29 cell: 7, 3 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+30  iterator: 30 cell: 7, 2 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+31  iterator: 31 cell: 0, 1 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+32  iterator: 32 cell: 0, 3 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+33  iterator: 33 cell: 4, 6 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+34  iterator: 34 cell: 3, 0 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+35  iterator: 35 cell: 7, 6 empty count: 36 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 36
+36  iterator: 36 cell: 8, 8 empty count: 36 solve_with_logic: 1 hidden_total: 4
+-1, iterator: 37
+37  iterator: 37 cell: 6, 4 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+38  iterator: 38 cell: 4, 5 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+39  iterator: 39 cell: 4, 1 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+40  iterator: 40 cell: 8, 5 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+41  iterator: 41 cell: 1, 1 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+42  iterator: 42 cell: 6, 3 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+43  iterator: 43 cell: 3, 3 empty count: 43 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 44
+44  iterator: 44 cell: 8, 4 empty count: 44 solve_with_logic: 1 hidden_total: 10
+2, iterator: 45
+45  iterator: 45 cell: 1, 3 empty count: 45 solve_with_logic: 1 hidden_total: 36
+2, iterator: 46
+46  iterator: 46 cell: 6, 6 empty count: 46 solve_with_logic: 1 hidden_total: 38
+2, iterator: 47
+47  iterator: 47 cell: 8, 1 empty count: 47 solve_with_logic: 1 hidden_total: 36
+2, iterator: 48
+48  iterator: 48 cell: 1, 5 empty count: 48 solve_with_logic: 0 hidden_total: 26
+enter: upto 58 it has to be human solvable!
+0, iterator: 49
+49  iterator: 49 cell: 5, 2 empty count: 48 solve_with_logic: 1 hidden_total: 38
+2, iterator: 50
+50  iterator: 50 cell: 4, 8 empty count: 49 solve_with_logic: 0 hidden_total: 28
+enter: upto 58 it has to be human solvable!
+0, iterator: 51
+51  iterator: 51 cell: 7, 0 empty count: 49 solve_with_logic: 1 hidden_total: 32
+2, iterator: 52
+52  iterator: 52 cell: 3, 7 empty count: 50 solve_with_logic: 1 hidden_total: 30
+2, iterator: 53
+53  iterator: 53 cell: 6, 0 empty count: 51 solve_with_logic: 1 hidden_total: 32
+main grid print
+. . 1 | . 3 8 | . 5 7 
+9 . 8 | . 7 2 | . . . 
+. . 5 | . . . | 9 . . 
+------+-------+------
+. 4 3 | . 8 5 | . . . 
+. . 2 | . 9 . | . 8 4 
+8 . . | 4 . . | 5 . 3 
+------+-------+------
+. . . | . . . | . . 9 
+. 7 . | . . . | 1 . 5 
+5 . . | 3 . . | . 4 . 
+
+main stats print
+========== HEURISTIC SOLVER STATS ==========
+Empty Cells      : 51
+Naked Singles    : 26
+Hidden Singles   : 25
+ Hidden Boxes  : 21
+ Hidden Rows   : 1
+ Hidden Columns: 3
+Solved with Logic: 1
+Total Guesses    : 120
+Branching Points : 4
+Human Hardness   : HARD
+============================================
+
+0, iterator: 0
+0  iterator: 0 cell: 0, 8 empty count: 1 solve_with_logic: 1 hidden_total: 25
+-1, iterator: 1
+1  iterator: 1 cell: 6, 2 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+2  iterator: 2 cell: 1, 8 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+3  iterator: 3 cell: 6, 7 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+4  iterator: 4 cell: 3, 5 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+5  iterator: 5 cell: 3, 8 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+6  iterator: 6 cell: 2, 2 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+7  iterator: 7 cell: 5, 6 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+8  iterator: 8 cell: 2, 4 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+9  iterator: 9 cell: 2, 7 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+10  iterator: 10 cell: 7, 0 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+11  iterator: 11 cell: 1, 1 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+12  iterator: 12 cell: 6, 5 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+13  iterator: 13 cell: 0, 1 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+14  iterator: 14 cell: 5, 4 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+15  iterator: 15 cell: 5, 0 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+16  iterator: 16 cell: 4, 3 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+17  iterator: 17 cell: 2, 1 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+18  iterator: 18 cell: 4, 1 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+19  iterator: 19 cell: 1, 7 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+20  iterator: 20 cell: 2, 3 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+21  iterator: 21 cell: 5, 5 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+22  iterator: 22 cell: 4, 8 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+23  iterator: 23 cell: 1, 4 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+24  iterator: 24 cell: 3, 3 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+25  iterator: 25 cell: 1, 2 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+26  iterator: 26 cell: 5, 2 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+27  iterator: 27 cell: 1, 0 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+28  iterator: 28 cell: 6, 3 empty count: 29 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 29
+29  iterator: 29 cell: 4, 6 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+30  iterator: 30 cell: 0, 4 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+31  iterator: 31 cell: 3, 0 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+32  iterator: 32 cell: 0, 7 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+33  iterator: 33 cell: 4, 5 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+34  iterator: 34 cell: 7, 7 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+35  iterator: 35 cell: 4, 0 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+36  iterator: 36 cell: 8, 0 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+37  iterator: 37 cell: 1, 5 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+38  iterator: 38 cell: 8, 3 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+39  iterator: 39 cell: 0, 6 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+40  iterator: 40 cell: 5, 3 empty count: 40 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 41
+41  iterator: 41 cell: 3, 6 empty count: 40 solve_with_logic: 1 hidden_total: 12
+-1, iterator: 42
+42  iterator: 42 cell: 2, 6 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+43  iterator: 43 cell: 7, 3 empty count: 42 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 44
+44  iterator: 44 cell: 7, 2 empty count: 42 solve_with_logic: 1 hidden_total: 8
+-1, iterator: 45
+45  iterator: 45 cell: 0, 5 empty count: 43 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 46
+46  iterator: 46 cell: 8, 5 empty count: 43 solve_with_logic: 1 hidden_total: 2
+1, iterator: 47
+47  iterator: 47 cell: 3, 4 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 48
+48  iterator: 48 cell: 1, 3 empty count: 45 solve_with_logic: 1 hidden_total: 0
+2, iterator: 49
+49  iterator: 49 cell: 7, 6 empty count: 46 solve_with_logic: 1 hidden_total: 0
+2, iterator: 50
+50  iterator: 50 cell: 7, 5 empty count: 47 solve_with_logic: 1 hidden_total: 0
+2, iterator: 51
+51  iterator: 51 cell: 0, 3 empty count: 48 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 52
+52  iterator: 52 cell: 5, 7 empty count: 48 solve_with_logic: 0 hidden_total: 8
+enter: upto 58 it has to be human solvable!
+0, iterator: 53
+53  iterator: 53 cell: 0, 2 empty count: 48 solve_with_logic: 1 hidden_total: 24
+2, iterator: 54
+54  iterator: 54 cell: 3, 1 empty count: 49 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 55
+55  iterator: 55 cell: 6, 6 empty count: 49 solve_with_logic: 1 hidden_total: 10
+2, iterator: 56
+56  iterator: 56 cell: 7, 4 empty count: 50 solve_with_logic: 1 hidden_total: 0
+2, iterator: 57
+57  iterator: 57 cell: 2, 8 empty count: 51 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 58
+58  iterator: 58 cell: 8, 6 empty count: 51 solve_with_logic: 1 hidden_total: 14
+3, iterator: 59
+59  iterator: 59 cell: 5, 8 empty count: 52 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 60
+60  iterator: 60 cell: 6, 1 empty count: 52 solve_with_logic: 1 hidden_total: 22
+3, iterator: 61
+61  iterator: 61 cell: 4, 7 empty count: 53 solve_with_logic: 0 hidden_total: 0
+enter: upto 58 it has to be human solvable!
+0, iterator: 62
+62  iterator: 62 cell: 4, 2 empty count: 53 solve_with_logic: 0 hidden_total: 4
+enter: upto 58 it has to be human solvable!
+0, iterator: 63
+63  iterator: 63 cell: 8, 1 empty count: 53 solve_with_logic: 0 hidden_total: 18
+enter: upto 58 it has to be human solvable!
+0, iterator: 64
+64  iterator: 64 cell: 8, 2 empty count: 53 solve_with_logic: 0 hidden_total: 6
+enter: upto 58 it has to be human solvable!
+0, iterator: 65
+65  iterator: 65 cell: 7, 8 empty count: 53 solve_with_logic: 1 hidden_total: 14
+3, iterator: 66
+66  iterator: 66 cell: 6, 0 empty count: 54 solve_with_logic: 1 hidden_total: 0
+3, iterator: 67
+67  iterator: 67 cell: 6, 8 empty count: 55 solve_with_logic: 0 hidden_total: 6
+enter: upto 58 it has to be human solvable!
+0, iterator: 68
+68  iterator: 68 cell: 8, 8 empty count: 55 solve_with_logic: 1 hidden_total: 18
+3, iterator: 69
+69  iterator: 69 cell: 2, 5 empty count: 56 solve_with_logic: 0 hidden_total: 6
+enter: upto 58 it has to be human solvable!
+0, iterator: 70
+70  iterator: 70 cell: 3, 2 empty count: 56 solve_with_logic: 0 hidden_total: 4
+enter: upto 58 it has to be human solvable!
+0, iterator: 71
+71  iterator: 71 cell: 0, 0 empty count: 56 solve_with_logic: 0 hidden_total: 12
+enter: upto 58 it has to be human solvable!
+0, iterator: 72
+72  iterator: 72 cell: 7, 1 empty count: 56 solve_with_logic: 0 hidden_total: 10
+enter: upto 58 it has to be human solvable!
+0, iterator: 73
+73  iterator: 73 cell: 4, 4 empty count: 56 solve_with_logic: 0 hidden_total: 4
+enter: upto 58 it has to be human solvable!
+0, iterator: 74
+74  iterator: 74 cell: 5, 1 empty count: 56 solve_with_logic: 0 hidden_total: 16
+enter: upto 58 it has to be human solvable!
+0, iterator: 75
+75  iterator: 75 cell: 6, 4 empty count: 56 solve_with_logic: 0 hidden_total: 14
+enter: upto 58 it has to be human solvable!
+0, iterator: 76
+76  iterator: 76 cell: 8, 4 empty count: 56 solve_with_logic: 0 hidden_total: 14
+enter: upto 58 it has to be human solvable!
+0, iterator: 77
+77  iterator: 77 cell: 1, 6 empty count: 56 solve_with_logic: 1 hidden_total: 8
+main grid print
+4 . . | 3 . 8 | . . . 
+. . . | . . . | . . . 
+7 . . | . . 9 | . . 2 
+------+-------+------
+. 8 2 | . . . | . 7 . 
+. . 7 | . 4 . | . 3 . 
+. 4 . | 8 . . | . 5 9 
+------+-------+------
+. . . | 5 9 . | . . 6 
+. 7 . | 6 . . | . . . 
+. 5 1 | . 7 . | . 4 . 
+
+main stats print
+========== HEURISTIC SOLVER STATS ==========
+Empty Cells      : 56
+Naked Singles    : 52
+Hidden Singles   : 4
+ Hidden Boxes  : 4
+ Hidden Rows   : 0
+ Hidden Columns: 0
+Solved with Logic: 1
+Total Guesses    : 112
+Branching Points : 3
+Human Hardness   : MASTER
+============================================
+
+0, iterator: 0
+0  iterator: 0 cell: 0, 3 empty count: 1 solve_with_logic: 1 hidden_total: 4
+-1, iterator: 1
+1  iterator: 1 cell: 6, 5 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+2  iterator: 2 cell: 2, 1 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+3  iterator: 3 cell: 0, 2 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+4  iterator: 4 cell: 2, 2 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+5  iterator: 5 cell: 1, 8 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+6  iterator: 6 cell: 3, 3 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+7  iterator: 7 cell: 7, 5 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+8  iterator: 8 cell: 6, 7 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+9  iterator: 9 cell: 8, 5 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+10  iterator: 10 cell: 2, 4 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+11  iterator: 11 cell: 5, 6 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+12  iterator: 12 cell: 4, 8 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+13  iterator: 13 cell: 4, 3 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+14  iterator: 14 cell: 5, 8 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+15  iterator: 15 cell: 3, 4 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+16  iterator: 16 cell: 1, 1 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+17  iterator: 17 cell: 4, 7 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+18  iterator: 18 cell: 8, 4 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+19  iterator: 19 cell: 2, 8 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+20  iterator: 20 cell: 1, 3 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+21  iterator: 21 cell: 0, 1 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+22  iterator: 22 cell: 7, 0 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+23  iterator: 23 cell: 2, 0 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+24  iterator: 24 cell: 6, 8 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+25  iterator: 25 cell: 0, 8 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+26  iterator: 26 cell: 8, 6 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+27  iterator: 27 cell: 0, 6 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+28  iterator: 28 cell: 7, 8 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+29  iterator: 29 cell: 1, 5 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+30  iterator: 30 cell: 1, 0 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+31  iterator: 31 cell: 5, 5 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+32  iterator: 32 cell: 8, 8 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+33  iterator: 33 cell: 5, 3 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+34  iterator: 34 cell: 4, 0 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+35  iterator: 35 cell: 5, 2 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+36  iterator: 36 cell: 4, 5 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+37  iterator: 37 cell: 8, 2 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+38  iterator: 38 cell: 3, 5 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+39  iterator: 39 cell: 7, 4 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+40  iterator: 40 cell: 6, 4 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+41  iterator: 41 cell: 4, 1 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+42  iterator: 42 cell: 7, 6 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 43
+43  iterator: 43 cell: 4, 4 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 44
+44  iterator: 44 cell: 5, 4 empty count: 45 solve_with_logic: 1 hidden_total: 0
+2, iterator: 45
+45  iterator: 45 cell: 0, 4 empty count: 46 solve_with_logic: 1 hidden_total: 0
+2, iterator: 46
+46  iterator: 46 cell: 8, 3 empty count: 47 solve_with_logic: 1 hidden_total: 0
+2, iterator: 47
+47  iterator: 47 cell: 0, 7 empty count: 48 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 48
+48  iterator: 48 cell: 1, 4 empty count: 48 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 49
+49  iterator: 49 cell: 3, 6 empty count: 48 solve_with_logic: 1 hidden_total: 4
+2, iterator: 50
+50  iterator: 50 cell: 2, 6 empty count: 49 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 51
+51  iterator: 51 cell: 0, 5 empty count: 49 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 52
+52  iterator: 52 cell: 8, 0 empty count: 49 solve_with_logic: 1 hidden_total: 4
+2, iterator: 53
+53  iterator: 53 cell: 7, 2 empty count: 50 solve_with_logic: 1 hidden_total: 0
+2, iterator: 54
+54  iterator: 54 cell: 4, 6 empty count: 51 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 55
+55  iterator: 55 cell: 7, 3 empty count: 51 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 56
+56  iterator: 56 cell: 5, 1 empty count: 51 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 57
+57  iterator: 57 cell: 6, 6 empty count: 51 solve_with_logic: 0 hidden_total: 2
+enter: 1 den fazla solution var!
+0, iterator: 58
+58  iterator: 58 cell: 3, 2 empty count: 51 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 59
+59  iterator: 59 cell: 6, 3 empty count: 51 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 60
+60  iterator: 60 cell: 0, 0 empty count: 51 solve_with_logic: 1 hidden_total: 2
+3, iterator: 61
+61  iterator: 61 cell: 8, 7 empty count: 52 solve_with_logic: 1 hidden_total: 0
+3, iterator: 62
+62  iterator: 62 cell: 7, 7 empty count: 53 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 63
+63  iterator: 63 cell: 4, 2 empty count: 53 solve_with_logic: 0 hidden_total: 2
+enter: 1 den fazla solution var!
+0, iterator: 64
+64  iterator: 64 cell: 6, 2 empty count: 53 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 65
+65  iterator: 65 cell: 6, 0 empty count: 53 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 66
+66  iterator: 66 cell: 3, 7 empty count: 53 solve_with_logic: 1 hidden_total: 0
+3, iterator: 67
+67  iterator: 67 cell: 3, 1 empty count: 54 solve_with_logic: 1 hidden_total: 0
+3, iterator: 68
+68  iterator: 68 cell: 6, 1 empty count: 55 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 69
+69  iterator: 69 cell: 1, 2 empty count: 55 solve_with_logic: 1 hidden_total: 10
+3, iterator: 70
+70  iterator: 70 cell: 1, 7 empty count: 56 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 71
+71  iterator: 71 cell: 3, 0 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 72
+72  iterator: 72 cell: 5, 0 empty count: 57 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 73
+73  iterator: 73 cell: 2, 5 empty count: 57 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 74
+74  iterator: 74 cell: 8, 1 empty count: 57 solve_with_logic: 0 hidden_total: 2
+enter: 1 den fazla solution var!
+0, iterator: 75
+75  iterator: 75 cell: 2, 3 empty count: 57 solve_with_logic: 0 hidden_total: 2
+enter: 1 den fazla solution var!
+0, iterator: 76
+76  iterator: 76 cell: 1, 6 empty count: 57 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 77
+77  iterator: 77 cell: 2, 7 empty count: 57 solve_with_logic: 1 hidden_total: 0
+4, iterator: 78
+78  iterator: 78 cell: 3, 8 empty count: 58 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 79
+79  iterator: 79 cell: 5, 7 empty count: 58 solve_with_logic: 0 hidden_total: 6
+enter: 1 den fazla solution var!
+0, iterator: 80
+80  iterator: 80 cell: 7, 1 empty count: 58 solve_with_logic: 0 hidden_total: 7
+enter: 1 den fazla solution var!
+0, iterator: 0
+81  iterator: 0 cell: 0, 3 empty count: 57 solve_with_logic: 1 hidden_total: 10
+4, iterator: 1
+82  iterator: 1 cell: 6, 5 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 2
+83  iterator: 2 cell: 2, 1 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 3
+84  iterator: 3 cell: 0, 2 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 4
+85  iterator: 4 cell: 2, 2 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 5
+86  iterator: 5 cell: 1, 8 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 6
+87  iterator: 6 cell: 3, 3 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 7
+88  iterator: 7 cell: 7, 5 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 8
+89  iterator: 8 cell: 6, 7 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 9
+90  iterator: 9 cell: 8, 5 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 10
+91  iterator: 10 cell: 2, 4 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 11
+92  iterator: 11 cell: 5, 6 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 12
+93  iterator: 12 cell: 4, 8 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 13
+94  iterator: 13 cell: 4, 3 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 14
+95  iterator: 14 cell: 5, 8 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 15
+96  iterator: 15 cell: 3, 4 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 16
+97  iterator: 16 cell: 1, 1 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 17
+98  iterator: 17 cell: 4, 7 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 18
+99  iterator: 18 cell: 8, 4 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 19
+100  iterator: 19 cell: 2, 8 empty count: 57 solve_with_logic: 1 hidden_total: 4
+4, iterator: 20
+0  iterator: 20 cell: 0, 3 empty count: 1 solve_with_logic: 1 hidden_total: 4
+-1, iterator: 21
+1  iterator: 21 cell: 1, 0 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+2  iterator: 22 cell: 3, 5 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+3  iterator: 23 cell: 2, 8 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+4  iterator: 24 cell: 0, 4 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+5  iterator: 25 cell: 2, 0 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+6  iterator: 26 cell: 4, 5 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+7  iterator: 27 cell: 2, 3 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+8  iterator: 28 cell: 5, 3 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+9  iterator: 29 cell: 7, 0 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+10  iterator: 30 cell: 3, 7 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+11  iterator: 31 cell: 6, 5 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+12  iterator: 32 cell: 5, 4 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+13  iterator: 33 cell: 1, 2 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+14  iterator: 34 cell: 4, 8 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+15  iterator: 35 cell: 0, 6 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+16  iterator: 36 cell: 8, 4 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+17  iterator: 37 cell: 0, 8 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+18  iterator: 38 cell: 0, 5 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+19  iterator: 39 cell: 3, 4 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+20  iterator: 40 cell: 3, 3 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+21  iterator: 41 cell: 8, 1 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+22  iterator: 42 cell: 1, 5 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+23  iterator: 43 cell: 2, 5 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 44
+24  iterator: 44 cell: 4, 6 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 45
+25  iterator: 45 cell: 0, 0 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 46
+26  iterator: 46 cell: 7, 6 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 47
+27  iterator: 47 cell: 6, 4 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 48
+28  iterator: 48 cell: 1, 1 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 49
+29  iterator: 49 cell: 2, 6 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 50
+30  iterator: 50 cell: 6, 8 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 51
+31  iterator: 51 cell: 2, 4 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 52
+32  iterator: 52 cell: 7, 7 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 53
+33  iterator: 53 cell: 1, 4 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 54
+34  iterator: 54 cell: 7, 4 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 55
+35  iterator: 55 cell: 7, 8 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 56
+36  iterator: 56 cell: 7, 3 empty count: 37 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 57
+37  iterator: 57 cell: 4, 2 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 58
+38  iterator: 58 cell: 6, 6 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 59
+39  iterator: 59 cell: 5, 8 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 60
+40  iterator: 60 cell: 1, 7 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 61
+41  iterator: 61 cell: 2, 1 empty count: 41 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 62
+42  iterator: 62 cell: 0, 2 empty count: 41 solve_with_logic: 1 hidden_total: 4
+-1, iterator: 63
+43  iterator: 63 cell: 6, 1 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 64
+44  iterator: 64 cell: 3, 8 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 65
+45  iterator: 65 cell: 8, 3 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 66
+46  iterator: 66 cell: 4, 7 empty count: 45 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 67
+47  iterator: 67 cell: 4, 3 empty count: 45 solve_with_logic: 1 hidden_total: 4
+2, iterator: 68
+48  iterator: 68 cell: 4, 0 empty count: 46 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 69
+49  iterator: 69 cell: 7, 5 empty count: 46 solve_with_logic: 1 hidden_total: 2
+2, iterator: 70
+50  iterator: 70 cell: 0, 1 empty count: 47 solve_with_logic: 1 hidden_total: 0
+2, iterator: 71
+51  iterator: 71 cell: 4, 4 empty count: 48 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 72
+52  iterator: 72 cell: 3, 0 empty count: 48 solve_with_logic: 1 hidden_total: 0
+2, iterator: 73
+53  iterator: 73 cell: 6, 2 empty count: 49 solve_with_logic: 1 hidden_total: 0
+2, iterator: 74
+54  iterator: 74 cell: 2, 7 empty count: 50 solve_with_logic: 1 hidden_total: 0
+2, iterator: 75
+55  iterator: 75 cell: 6, 7 empty count: 51 solve_with_logic: 1 hidden_total: 0
+3, iterator: 76
+56  iterator: 76 cell: 0, 7 empty count: 52 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 77
+57  iterator: 77 cell: 8, 6 empty count: 52 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 78
+58  iterator: 78 cell: 7, 1 empty count: 52 solve_with_logic: 0 hidden_total: 26
+enter: 1 den fazla solution var!
+0, iterator: 79
+59  iterator: 79 cell: 2, 2 empty count: 52 solve_with_logic: 0 hidden_total: 18
+enter: 1 den fazla solution var!
+0, iterator: 80
+60  iterator: 80 cell: 1, 8 empty count: 52 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 0
+61  iterator: 0 cell: 5, 7 empty count: 52 solve_with_logic: 1 hidden_total: 16
+3, iterator: 1
+62  iterator: 1 cell: 5, 5 empty count: 53 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 2
+63  iterator: 2 cell: 1, 6 empty count: 53 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 3
+64  iterator: 3 cell: 6, 3 empty count: 53 solve_with_logic: 0 hidden_total: 22
+enter: 1 den fazla solution var!
+0, iterator: 4
+65  iterator: 4 cell: 3, 2 empty count: 53 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 5
+66  iterator: 5 cell: 8, 0 empty count: 53 solve_with_logic: 1 hidden_total: 30
+3, iterator: 6
+67  iterator: 6 cell: 3, 6 empty count: 54 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 7
+68  iterator: 7 cell: 8, 7 empty count: 54 solve_with_logic: 0 hidden_total: 8
+enter: 1 den fazla solution var!
+0, iterator: 8
+69  iterator: 8 cell: 5, 1 empty count: 54 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 9
+70  iterator: 9 cell: 8, 8 empty count: 54 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 10
+71  iterator: 10 cell: 7, 2 empty count: 54 solve_with_logic: 1 hidden_total: 20
+3, iterator: 11
+72  iterator: 11 cell: 5, 6 empty count: 55 solve_with_logic: 0 hidden_total: 22
+enter: 1 den fazla solution var!
+0, iterator: 12
+73  iterator: 12 cell: 1, 3 empty count: 55 solve_with_logic: 0 hidden_total: 26
+enter: 1 den fazla solution var!
+0, iterator: 13
+74  iterator: 13 cell: 8, 2 empty count: 55 solve_with_logic: 0 hidden_total: 36
+enter: 1 den fazla solution var!
+0, iterator: 14
+75  iterator: 14 cell: 5, 0 empty count: 55 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 15
+76  iterator: 15 cell: 6, 0 empty count: 55 solve_with_logic: 0 hidden_total: 32
+enter: 1 den fazla solution var!
+0, iterator: 16
+77  iterator: 16 cell: 8, 5 empty count: 55 solve_with_logic: 0 hidden_total: 26
+enter: 1 den fazla solution var!
+0, iterator: 17
+78  iterator: 17 cell: 5, 2 empty count: 55 solve_with_logic: 1 hidden_total: 44
+3, iterator: 18
+79  iterator: 18 cell: 4, 1 empty count: 56 solve_with_logic: 1 hidden_total: 22
+4, iterator: 19
+80  iterator: 19 cell: 3, 1 empty count: 57 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 20
+81  iterator: 20 cell: 0, 3 empty count: 56 solve_with_logic: 1 hidden_total: 28
+4, iterator: 21
+82  iterator: 21 cell: 1, 0 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 22
+83  iterator: 22 cell: 3, 5 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 23
+84  iterator: 23 cell: 2, 8 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 24
+85  iterator: 24 cell: 0, 4 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 25
+86  iterator: 25 cell: 2, 0 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 26
+87  iterator: 26 cell: 4, 5 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 27
+88  iterator: 27 cell: 2, 3 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 28
+89  iterator: 28 cell: 5, 3 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 29
+90  iterator: 29 cell: 7, 0 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 30
+91  iterator: 30 cell: 3, 7 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 31
+92  iterator: 31 cell: 6, 5 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 32
+93  iterator: 32 cell: 5, 4 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 33
+94  iterator: 33 cell: 1, 2 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 34
+95  iterator: 34 cell: 4, 8 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 35
+96  iterator: 35 cell: 0, 6 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 36
+97  iterator: 36 cell: 8, 4 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 37
+98  iterator: 37 cell: 0, 8 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 38
+99  iterator: 38 cell: 0, 5 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 39
+100  iterator: 39 cell: 3, 4 empty count: 56 solve_with_logic: 1 hidden_total: 24
+4, iterator: 40
+0  iterator: 40 cell: 0, 7 empty count: 1 solve_with_logic: 1 hidden_total: 24
+-1, iterator: 41
+1  iterator: 41 cell: 5, 7 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+2  iterator: 42 cell: 5, 4 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+3  iterator: 43 cell: 1, 4 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 44
+4  iterator: 44 cell: 1, 8 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 45
+5  iterator: 45 cell: 5, 8 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 46
+6  iterator: 46 cell: 2, 4 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 47
+7  iterator: 47 cell: 8, 1 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 48
+8  iterator: 48 cell: 3, 5 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 49
+9  iterator: 49 cell: 4, 4 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 50
+10  iterator: 50 cell: 0, 1 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 51
+11  iterator: 51 cell: 5, 2 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 52
+12  iterator: 52 cell: 8, 2 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 53
+13  iterator: 53 cell: 6, 0 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 54
+14  iterator: 54 cell: 4, 8 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 55
+15  iterator: 55 cell: 0, 2 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 56
+16  iterator: 56 cell: 2, 7 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 57
+17  iterator: 57 cell: 3, 0 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 58
+18  iterator: 58 cell: 8, 0 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 59
+19  iterator: 59 cell: 3, 8 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 60
+20  iterator: 60 cell: 7, 0 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 61
+21  iterator: 61 cell: 4, 5 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 62
+22  iterator: 62 cell: 4, 6 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 63
+23  iterator: 63 cell: 4, 2 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 64
+24  iterator: 64 cell: 4, 0 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 65
+25  iterator: 65 cell: 5, 6 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 66
+26  iterator: 66 cell: 4, 3 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 67
+27  iterator: 67 cell: 2, 0 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 68
+28  iterator: 68 cell: 6, 4 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 69
+29  iterator: 69 cell: 1, 2 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 70
+30  iterator: 70 cell: 5, 5 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 71
+31  iterator: 71 cell: 5, 3 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 72
+32  iterator: 72 cell: 7, 7 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 73
+33  iterator: 73 cell: 8, 5 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 74
+34  iterator: 74 cell: 0, 5 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 75
+35  iterator: 75 cell: 1, 3 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 76
+36  iterator: 76 cell: 0, 6 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 77
+37  iterator: 77 cell: 2, 6 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 78
+38  iterator: 78 cell: 8, 7 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 79
+39  iterator: 79 cell: 0, 0 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 80
+40  iterator: 80 cell: 8, 6 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 0
+41  iterator: 0 cell: 3, 3 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+42  iterator: 1 cell: 1, 6 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 2
+43  iterator: 2 cell: 2, 3 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 3
+44  iterator: 3 cell: 0, 3 empty count: 45 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 4
+45  iterator: 4 cell: 8, 8 empty count: 45 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 5
+46  iterator: 5 cell: 3, 1 empty count: 45 solve_with_logic: 1 hidden_total: 4
+2, iterator: 6
+47  iterator: 6 cell: 2, 8 empty count: 46 solve_with_logic: 1 hidden_total: 14
+2, iterator: 7
+48  iterator: 7 cell: 6, 3 empty count: 47 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 8
+49  iterator: 8 cell: 7, 4 empty count: 47 solve_with_logic: 1 hidden_total: 16
+2, iterator: 9
+50  iterator: 9 cell: 1, 5 empty count: 48 solve_with_logic: 1 hidden_total: 16
+2, iterator: 10
+51  iterator: 10 cell: 7, 3 empty count: 49 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 11
+52  iterator: 11 cell: 3, 4 empty count: 49 solve_with_logic: 1 hidden_total: 16
+2, iterator: 12
+53  iterator: 12 cell: 3, 6 empty count: 50 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 13
+54  iterator: 13 cell: 5, 1 empty count: 50 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 14
+55  iterator: 14 cell: 0, 8 empty count: 50 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 15
+56  iterator: 15 cell: 7, 8 empty count: 50 solve_with_logic: 1 hidden_total: 10
+2, iterator: 16
+57  iterator: 16 cell: 1, 7 empty count: 51 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 17
+58  iterator: 17 cell: 8, 3 empty count: 51 solve_with_logic: 1 hidden_total: 10
+3, iterator: 18
+59  iterator: 18 cell: 7, 2 empty count: 52 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 19
+60  iterator: 19 cell: 6, 6 empty count: 52 solve_with_logic: 1 hidden_total: 16
+3, iterator: 20
+61  iterator: 20 cell: 4, 7 empty count: 53 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 21
+62  iterator: 21 cell: 6, 2 empty count: 53 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 22
+63  iterator: 22 cell: 2, 2 empty count: 53 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 23
+64  iterator: 23 cell: 1, 0 empty count: 53 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 24
+65  iterator: 24 cell: 7, 6 empty count: 53 solve_with_logic: 1 hidden_total: 10
+3, iterator: 25
+66  iterator: 25 cell: 3, 7 empty count: 54 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 26
+67  iterator: 26 cell: 4, 1 empty count: 54 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 27
+68  iterator: 27 cell: 0, 4 empty count: 54 solve_with_logic: 0 hidden_total: 22
+enter: 1 den fazla solution var!
+0, iterator: 28
+69  iterator: 28 cell: 8, 4 empty count: 54 solve_with_logic: 0 hidden_total: 8
+enter: 1 den fazla solution var!
+0, iterator: 29
+70  iterator: 29 cell: 5, 0 empty count: 54 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 30
+71  iterator: 30 cell: 6, 7 empty count: 54 solve_with_logic: 1 hidden_total: 16
+3, iterator: 31
+72  iterator: 31 cell: 6, 8 empty count: 55 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 32
+73  iterator: 32 cell: 7, 5 empty count: 55 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 33
+74  iterator: 33 cell: 1, 1 empty count: 55 solve_with_logic: 1 hidden_total: 10
+3, iterator: 34
+75  iterator: 34 cell: 6, 1 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 35
+76  iterator: 35 cell: 2, 5 empty count: 57 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 36
+77  iterator: 36 cell: 6, 5 empty count: 57 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 37
+78  iterator: 37 cell: 3, 2 empty count: 57 solve_with_logic: 0 hidden_total: 20
+enter: 1 den fazla solution var!
+0, iterator: 38
+79  iterator: 38 cell: 2, 1 empty count: 57 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 39
+80  iterator: 39 cell: 7, 1 empty count: 57 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 40
+81  iterator: 40 cell: 0, 7 empty count: 56 solve_with_logic: 1 hidden_total: 16
+4, iterator: 41
+82  iterator: 41 cell: 5, 7 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 42
+83  iterator: 42 cell: 5, 4 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 43
+84  iterator: 43 cell: 1, 4 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 44
+85  iterator: 44 cell: 1, 8 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 45
+86  iterator: 45 cell: 5, 8 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 46
+87  iterator: 46 cell: 2, 4 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 47
+88  iterator: 47 cell: 8, 1 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 48
+89  iterator: 48 cell: 3, 5 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 49
+90  iterator: 49 cell: 4, 4 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 50
+91  iterator: 50 cell: 0, 1 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 51
+92  iterator: 51 cell: 5, 2 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 52
+93  iterator: 52 cell: 8, 2 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 53
+94  iterator: 53 cell: 6, 0 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 54
+95  iterator: 54 cell: 4, 8 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 55
+96  iterator: 55 cell: 0, 2 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 56
+97  iterator: 56 cell: 2, 7 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 57
+98  iterator: 57 cell: 3, 0 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 58
+99  iterator: 58 cell: 8, 0 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 59
+100  iterator: 59 cell: 3, 8 empty count: 56 solve_with_logic: 1 hidden_total: 14
+4, iterator: 60
+0  iterator: 60 cell: 5, 7 empty count: 1 solve_with_logic: 1 hidden_total: 14
+-1, iterator: 61
+1  iterator: 61 cell: 1, 2 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 62
+2  iterator: 62 cell: 6, 6 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 63
+3  iterator: 63 cell: 0, 0 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 64
+4  iterator: 64 cell: 3, 3 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 65
+5  iterator: 65 cell: 7, 2 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 66
+6  iterator: 66 cell: 1, 8 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 67
+7  iterator: 67 cell: 0, 3 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 68
+8  iterator: 68 cell: 0, 2 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 69
+9  iterator: 69 cell: 7, 3 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 70
+10  iterator: 70 cell: 2, 2 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 71
+11  iterator: 71 cell: 1, 1 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 72
+12  iterator: 72 cell: 6, 4 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 73
+13  iterator: 73 cell: 3, 0 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 74
+14  iterator: 74 cell: 4, 4 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 75
+15  iterator: 75 cell: 7, 1 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 76
+16  iterator: 76 cell: 7, 8 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 77
+17  iterator: 77 cell: 3, 8 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 78
+18  iterator: 78 cell: 5, 3 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 79
+19  iterator: 79 cell: 0, 1 empty count: 20 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 80
+20  iterator: 80 cell: 8, 1 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 0
+21  iterator: 0 cell: 6, 7 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+22  iterator: 1 cell: 5, 1 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+23  iterator: 2 cell: 1, 0 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+24  iterator: 3 cell: 4, 5 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+25  iterator: 4 cell: 0, 7 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+26  iterator: 5 cell: 8, 2 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+27  iterator: 6 cell: 0, 6 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+28  iterator: 7 cell: 5, 0 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+29  iterator: 8 cell: 8, 6 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+30  iterator: 9 cell: 0, 4 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+31  iterator: 10 cell: 4, 6 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+32  iterator: 11 cell: 4, 0 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+33  iterator: 12 cell: 3, 5 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+34  iterator: 13 cell: 6, 3 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+35  iterator: 14 cell: 1, 5 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+36  iterator: 15 cell: 5, 5 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+37  iterator: 16 cell: 6, 0 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+38  iterator: 17 cell: 8, 0 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+39  iterator: 18 cell: 7, 5 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+40  iterator: 19 cell: 8, 5 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+41  iterator: 20 cell: 6, 2 empty count: 41 solve_with_logic: 1 hidden_total: 6
+-1, iterator: 21
+42  iterator: 21 cell: 2, 1 empty count: 42 solve_with_logic: 1 hidden_total: 6
+-1, iterator: 22
+43  iterator: 22 cell: 5, 6 empty count: 43 solve_with_logic: 0 hidden_total: 6
+enter: 1 den fazla solution var!
+0, iterator: 23
+44  iterator: 23 cell: 2, 8 empty count: 43 solve_with_logic: 1 hidden_total: 6
+-1, iterator: 24
+45  iterator: 24 cell: 7, 0 empty count: 44 solve_with_logic: 1 hidden_total: 6
+2, iterator: 25
+46  iterator: 25 cell: 8, 4 empty count: 45 solve_with_logic: 1 hidden_total: 10
+2, iterator: 26
+47  iterator: 26 cell: 3, 7 empty count: 46 solve_with_logic: 1 hidden_total: 12
+2, iterator: 27
+48  iterator: 27 cell: 2, 5 empty count: 47 solve_with_logic: 1 hidden_total: 12
+2, iterator: 28
+49  iterator: 28 cell: 2, 0 empty count: 48 solve_with_logic: 1 hidden_total: 12
+2, iterator: 29
+50  iterator: 29 cell: 2, 3 empty count: 49 solve_with_logic: 1 hidden_total: 14
+2, iterator: 30
+51  iterator: 30 cell: 0, 8 empty count: 50 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 31
+52  iterator: 31 cell: 4, 2 empty count: 50 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 32
+53  iterator: 32 cell: 7, 7 empty count: 50 solve_with_logic: 1 hidden_total: 10
+2, iterator: 33
+54  iterator: 33 cell: 4, 8 empty count: 51 solve_with_logic: 1 hidden_total: 10
+3, iterator: 34
+55  iterator: 34 cell: 7, 6 empty count: 52 solve_with_logic: 0 hidden_total: 12
+enter: 1 den fazla solution var!
+0, iterator: 35
+56  iterator: 35 cell: 3, 1 empty count: 52 solve_with_logic: 1 hidden_total: 32
+3, iterator: 36
+57  iterator: 36 cell: 1, 6 empty count: 53 solve_with_logic: 1 hidden_total: 12
+3, iterator: 37
+58  iterator: 37 cell: 3, 6 empty count: 54 solve_with_logic: 1 hidden_total: 12
+3, iterator: 38
+59  iterator: 38 cell: 6, 8 empty count: 55 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 39
+60  iterator: 39 cell: 8, 3 empty count: 55 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 40
+61  iterator: 40 cell: 2, 7 empty count: 55 solve_with_logic: 0 hidden_total: 18
+enter: 1 den fazla solution var!
+0, iterator: 41
+62  iterator: 41 cell: 8, 8 empty count: 55 solve_with_logic: 1 hidden_total: 22
+3, iterator: 42
+63  iterator: 42 cell: 5, 4 empty count: 56 solve_with_logic: 0 hidden_total: 30
+enter: 1 den fazla solution var!
+0, iterator: 43
+64  iterator: 43 cell: 1, 7 empty count: 56 solve_with_logic: 0 hidden_total: 34
+enter: 1 den fazla solution var!
+0, iterator: 44
+65  iterator: 44 cell: 3, 2 empty count: 56 solve_with_logic: 0 hidden_total: 44
+enter: 1 den fazla solution var!
+0, iterator: 45
+66  iterator: 45 cell: 6, 5 empty count: 56 solve_with_logic: 1 hidden_total: 44
+4, iterator: 46
+67  iterator: 46 cell: 7, 4 empty count: 57 solve_with_logic: 0 hidden_total: 32
+enter: 1 den fazla solution var!
+0, iterator: 47
+68  iterator: 47 cell: 5, 8 empty count: 57 solve_with_logic: 1 hidden_total: 12
+4, iterator: 48
+69  iterator: 48 cell: 2, 4 empty count: 58 solve_with_logic: 0 hidden_total: 34
+enter: 1 den fazla solution var!
+0, iterator: 49
+70  iterator: 49 cell: 2, 6 empty count: 58 solve_with_logic: 0 hidden_total: 8
+enter: 1 den fazla solution var!
+0, iterator: 50
+71  iterator: 50 cell: 0, 5 empty count: 58 solve_with_logic: 0 hidden_total: 6
+enter: 1 den fazla solution var!
+0, iterator: 51
+72  iterator: 51 cell: 3, 4 empty count: 58 solve_with_logic: 0 hidden_total: 9
+enter: 1 den fazla solution var!
+0, iterator: 52
+73  iterator: 52 cell: 1, 3 empty count: 58 solve_with_logic: 0 hidden_total: 6
+enter: 1 den fazla solution var!
+0, iterator: 53
+74  iterator: 53 cell: 6, 1 empty count: 58 solve_with_logic: 0 hidden_total: 17
+enter: 1 den fazla solution var!
+0, iterator: 54
+75  iterator: 54 cell: 1, 4 empty count: 58 solve_with_logic: 1 hidden_total: 13
+4, iterator: 55
+76  iterator: 55 cell: 5, 2 empty count: 59 solve_with_logic: 0 hidden_total: 18
+enter: 1 den fazla solution var!
+0, iterator: 56
+77  iterator: 56 cell: 4, 3 empty count: 59 solve_with_logic: 0 hidden_total: 25
+enter: 1 den fazla solution var!
+0, iterator: 57
+78  iterator: 57 cell: 8, 7 empty count: 59 solve_with_logic: 0 hidden_total: 5
+enter: 1 den fazla solution var!
+0, iterator: 58
+79  iterator: 58 cell: 4, 1 empty count: 59 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 59
+80  iterator: 59 cell: 4, 7 empty count: 59 solve_with_logic: 0 hidden_total: 9
+enter: 1 den fazla solution var!
+0, iterator: 60
+81  iterator: 60 cell: 5, 7 empty count: 58 solve_with_logic: 1 hidden_total: 5
+4, iterator: 61
+82  iterator: 61 cell: 1, 2 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 62
+83  iterator: 62 cell: 6, 6 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 63
+84  iterator: 63 cell: 0, 0 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 64
+85  iterator: 64 cell: 3, 3 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 65
+86  iterator: 65 cell: 7, 2 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 66
+87  iterator: 66 cell: 1, 8 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 67
+88  iterator: 67 cell: 0, 3 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 68
+89  iterator: 68 cell: 0, 2 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 69
+90  iterator: 69 cell: 7, 3 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 70
+91  iterator: 70 cell: 2, 2 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 71
+92  iterator: 71 cell: 1, 1 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 72
+93  iterator: 72 cell: 6, 4 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 73
+94  iterator: 73 cell: 3, 0 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 74
+95  iterator: 74 cell: 4, 4 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 75
+96  iterator: 75 cell: 7, 1 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 76
+97  iterator: 76 cell: 7, 8 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 77
+98  iterator: 77 cell: 3, 8 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 78
+99  iterator: 78 cell: 5, 3 empty count: 58 solve_with_logic: 1 hidden_total: 18
+4, iterator: 79
+100  iterator: 79 cell: 0, 1 empty count: 59 solve_with_logic: 0 hidden_total: 18
+enter: 1 den fazla solution var!
+0, iterator: 80
+0  iterator: 80 cell: 7, 2 empty count: 1 solve_with_logic: 1 hidden_total: 8
+-1, iterator: 0
+1  iterator: 0 cell: 8, 8 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+2  iterator: 1 cell: 4, 2 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 2
+3  iterator: 2 cell: 2, 4 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 3
+4  iterator: 3 cell: 0, 4 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 4
+5  iterator: 4 cell: 6, 8 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 5
+6  iterator: 5 cell: 4, 1 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 6
+7  iterator: 6 cell: 7, 3 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 7
+8  iterator: 7 cell: 1, 8 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 8
+9  iterator: 8 cell: 6, 2 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 9
+10  iterator: 9 cell: 6, 6 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 10
+11  iterator: 10 cell: 1, 6 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 11
+12  iterator: 11 cell: 5, 5 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 12
+13  iterator: 12 cell: 0, 3 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 13
+14  iterator: 13 cell: 7, 5 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 14
+15  iterator: 14 cell: 3, 8 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 15
+16  iterator: 15 cell: 5, 4 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 16
+17  iterator: 16 cell: 5, 1 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 17
+18  iterator: 17 cell: 3, 7 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 18
+19  iterator: 18 cell: 4, 6 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 19
+20  iterator: 19 cell: 8, 6 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 20
+21  iterator: 20 cell: 8, 3 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+22  iterator: 21 cell: 0, 2 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+23  iterator: 22 cell: 4, 8 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+24  iterator: 23 cell: 1, 7 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+25  iterator: 24 cell: 6, 4 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+26  iterator: 25 cell: 6, 0 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+27  iterator: 26 cell: 1, 3 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+28  iterator: 27 cell: 4, 5 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+29  iterator: 28 cell: 6, 1 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+30  iterator: 29 cell: 5, 3 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+31  iterator: 30 cell: 6, 3 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+32  iterator: 31 cell: 5, 8 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+33  iterator: 32 cell: 3, 0 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+34  iterator: 33 cell: 5, 0 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+35  iterator: 34 cell: 4, 4 empty count: 36 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 35
+36  iterator: 35 cell: 0, 7 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+37  iterator: 36 cell: 1, 5 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+38  iterator: 37 cell: 0, 8 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+39  iterator: 38 cell: 2, 3 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+40  iterator: 39 cell: 1, 2 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+41  iterator: 40 cell: 7, 4 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+42  iterator: 41 cell: 8, 7 empty count: 42 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 42
+43  iterator: 42 cell: 2, 7 empty count: 42 solve_with_logic: 1 hidden_total: 2
+-1, iterator: 43
+44  iterator: 43 cell: 3, 3 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 44
+45  iterator: 44 cell: 7, 1 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 45
+46  iterator: 45 cell: 2, 1 empty count: 45 solve_with_logic: 1 hidden_total: 0
+2, iterator: 46
+47  iterator: 46 cell: 7, 0 empty count: 46 solve_with_logic: 1 hidden_total: 0
+2, iterator: 47
+48  iterator: 47 cell: 2, 2 empty count: 47 solve_with_logic: 1 hidden_total: 0
+2, iterator: 48
+49  iterator: 48 cell: 3, 5 empty count: 48 solve_with_logic: 1 hidden_total: 0
+2, iterator: 49
+50  iterator: 49 cell: 0, 0 empty count: 49 solve_with_logic: 1 hidden_total: 0
+2, iterator: 50
+51  iterator: 50 cell: 3, 6 empty count: 50 solve_with_logic: 1 hidden_total: 2
+2, iterator: 51
+52  iterator: 51 cell: 0, 5 empty count: 51 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 52
+53  iterator: 52 cell: 7, 6 empty count: 51 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 53
+54  iterator: 53 cell: 5, 6 empty count: 51 solve_with_logic: 0 hidden_total: 26
+enter: 1 den fazla solution var!
+0, iterator: 54
+55  iterator: 54 cell: 8, 1 empty count: 51 solve_with_logic: 1 hidden_total: 26
+3, iterator: 55
+56  iterator: 55 cell: 2, 6 empty count: 52 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 56
+57  iterator: 56 cell: 1, 1 empty count: 52 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 57
+58  iterator: 57 cell: 8, 5 empty count: 52 solve_with_logic: 0 hidden_total: 30
+enter: 1 den fazla solution var!
+0, iterator: 58
+59  iterator: 58 cell: 4, 3 empty count: 52 solve_with_logic: 0 hidden_total: 30
+enter: 1 den fazla solution var!
+0, iterator: 59
+60  iterator: 59 cell: 3, 1 empty count: 52 solve_with_logic: 0 hidden_total: 22
+enter: 1 den fazla solution var!
+0, iterator: 60
+61  iterator: 60 cell: 5, 2 empty count: 52 solve_with_logic: 0 hidden_total: 34
+enter: 1 den fazla solution var!
+0, iterator: 61
+62  iterator: 61 cell: 1, 4 empty count: 52 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 62
+63  iterator: 62 cell: 5, 7 empty count: 52 solve_with_logic: 1 hidden_total: 24
+3, iterator: 63
+64  iterator: 63 cell: 2, 8 empty count: 53 solve_with_logic: 0 hidden_total: 34
+enter: 1 den fazla solution var!
+0, iterator: 64
+65  iterator: 64 cell: 0, 1 empty count: 53 solve_with_logic: 0 hidden_total: 36
+enter: 1 den fazla solution var!
+0, iterator: 65
+66  iterator: 65 cell: 7, 7 empty count: 53 solve_with_logic: 1 hidden_total: 24
+3, iterator: 66
+67  iterator: 66 cell: 2, 0 empty count: 54 solve_with_logic: 1 hidden_total: 34
+3, iterator: 67
+68  iterator: 67 cell: 2, 5 empty count: 55 solve_with_logic: 1 hidden_total: 38
+3, iterator: 68
+69  iterator: 68 cell: 3, 2 empty count: 56 solve_with_logic: 0 hidden_total: 42
+enter: 1 den fazla solution var!
+0, iterator: 69
+70  iterator: 69 cell: 8, 2 empty count: 56 solve_with_logic: 1 hidden_total: 28
+4, iterator: 70
+71  iterator: 70 cell: 1, 0 empty count: 57 solve_with_logic: 0 hidden_total: 42
+enter: 1 den fazla solution var!
+0, iterator: 71
+72  iterator: 71 cell: 3, 4 empty count: 57 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 72
+73  iterator: 72 cell: 8, 4 empty count: 57 solve_with_logic: 0 hidden_total: 44
+enter: 1 den fazla solution var!
+0, iterator: 73
+74  iterator: 73 cell: 0, 6 empty count: 57 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 74
+75  iterator: 74 cell: 8, 0 empty count: 57 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 75
+76  iterator: 75 cell: 7, 8 empty count: 57 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 76
+77  iterator: 76 cell: 4, 7 empty count: 57 solve_with_logic: 0 hidden_total: 4
+enter: 1 den fazla solution var!
+0, iterator: 77
+78  iterator: 77 cell: 4, 0 empty count: 57 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 78
+79  iterator: 78 cell: 6, 7 empty count: 57 solve_with_logic: 1 hidden_total: 20
+4, iterator: 79
+80  iterator: 79 cell: 6, 5 empty count: 58 solve_with_logic: 0 hidden_total: 46
+enter: 1 den fazla solution var!
+0, iterator: 80
+81  iterator: 80 cell: 7, 2 empty count: 57 solve_with_logic: 1 hidden_total: 11
+4, iterator: 0
+82  iterator: 0 cell: 8, 8 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 1
+83  iterator: 1 cell: 4, 2 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 2
+84  iterator: 2 cell: 2, 4 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 3
+85  iterator: 3 cell: 0, 4 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 4
+86  iterator: 4 cell: 6, 8 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 5
+87  iterator: 5 cell: 4, 1 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 6
+88  iterator: 6 cell: 7, 3 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 7
+89  iterator: 7 cell: 1, 8 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 8
+90  iterator: 8 cell: 6, 2 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 9
+91  iterator: 9 cell: 6, 6 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 10
+92  iterator: 10 cell: 1, 6 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 11
+93  iterator: 11 cell: 5, 5 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 12
+94  iterator: 12 cell: 0, 3 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 13
+95  iterator: 13 cell: 7, 5 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 14
+96  iterator: 14 cell: 3, 8 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 15
+97  iterator: 15 cell: 5, 4 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 16
+98  iterator: 16 cell: 5, 1 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 17
+99  iterator: 17 cell: 3, 7 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 18
+100  iterator: 18 cell: 4, 6 empty count: 57 solve_with_logic: 1 hidden_total: 46
+4, iterator: 19
+0  iterator: 19 cell: 0, 2 empty count: 1 solve_with_logic: 1 hidden_total: 46
+-1, iterator: 20
+1  iterator: 20 cell: 2, 2 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 21
+2  iterator: 21 cell: 0, 7 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 22
+3  iterator: 22 cell: 7, 8 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 23
+4  iterator: 23 cell: 2, 8 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 24
+5  iterator: 24 cell: 0, 0 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 25
+6  iterator: 25 cell: 7, 5 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 26
+7  iterator: 26 cell: 8, 4 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 27
+8  iterator: 27 cell: 4, 7 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 28
+9  iterator: 28 cell: 1, 3 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 29
+10  iterator: 29 cell: 2, 4 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 30
+11  iterator: 30 cell: 3, 5 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 31
+12  iterator: 31 cell: 8, 8 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 32
+13  iterator: 32 cell: 1, 5 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 33
+14  iterator: 33 cell: 5, 5 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 34
+15  iterator: 34 cell: 6, 1 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 35
+16  iterator: 35 cell: 6, 3 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 36
+17  iterator: 36 cell: 4, 1 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 37
+18  iterator: 37 cell: 6, 6 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 38
+19  iterator: 38 cell: 5, 3 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 39
+20  iterator: 39 cell: 8, 5 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 40
+21  iterator: 40 cell: 1, 1 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+22  iterator: 41 cell: 5, 7 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+23  iterator: 42 cell: 6, 0 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+24  iterator: 43 cell: 4, 5 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 44
+25  iterator: 44 cell: 4, 6 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 45
+26  iterator: 45 cell: 3, 2 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 46
+27  iterator: 46 cell: 0, 1 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 47
+28  iterator: 47 cell: 0, 4 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 48
+29  iterator: 48 cell: 4, 8 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 49
+30  iterator: 49 cell: 5, 6 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 50
+31  iterator: 50 cell: 2, 0 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 51
+32  iterator: 51 cell: 8, 2 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 52
+33  iterator: 52 cell: 3, 3 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 53
+34  iterator: 53 cell: 7, 3 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 54
+35  iterator: 54 cell: 6, 8 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 55
+36  iterator: 55 cell: 6, 2 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 56
+37  iterator: 56 cell: 6, 5 empty count: 38 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 57
+38  iterator: 57 cell: 1, 4 empty count: 38 solve_with_logic: 1 hidden_total: 2
+-1, iterator: 58
+39  iterator: 58 cell: 0, 8 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 59
+40  iterator: 59 cell: 1, 8 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 60
+41  iterator: 60 cell: 8, 7 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 61
+42  iterator: 61 cell: 8, 6 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 62
+43  iterator: 62 cell: 2, 1 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 63
+44  iterator: 63 cell: 3, 1 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 64
+45  iterator: 64 cell: 8, 0 empty count: 45 solve_with_logic: 1 hidden_total: 0
+2, iterator: 65
+46  iterator: 65 cell: 5, 4 empty count: 46 solve_with_logic: 1 hidden_total: 0
+2, iterator: 66
+47  iterator: 66 cell: 7, 2 empty count: 47 solve_with_logic: 1 hidden_total: 10
+2, iterator: 67
+48  iterator: 67 cell: 5, 8 empty count: 48 solve_with_logic: 1 hidden_total: 10
+2, iterator: 68
+49  iterator: 68 cell: 7, 7 empty count: 49 solve_with_logic: 1 hidden_total: 10
+2, iterator: 69
+50  iterator: 69 cell: 8, 1 empty count: 50 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 70
+51  iterator: 70 cell: 7, 0 empty count: 50 solve_with_logic: 1 hidden_total: 18
+2, iterator: 71
+52  iterator: 71 cell: 4, 0 empty count: 51 solve_with_logic: 0 hidden_total: 10
+enter: 1 den fazla solution var!
+0, iterator: 72
+53  iterator: 72 cell: 0, 5 empty count: 51 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 73
+54  iterator: 73 cell: 0, 3 empty count: 51 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 74
+55  iterator: 74 cell: 2, 7 empty count: 51 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 75
+56  iterator: 75 cell: 6, 4 empty count: 51 solve_with_logic: 1 hidden_total: 28
+3, iterator: 76
+57  iterator: 76 cell: 2, 6 empty count: 52 solve_with_logic: 1 hidden_total: 16
+3, iterator: 77
+58  iterator: 77 cell: 6, 7 empty count: 53 solve_with_logic: 1 hidden_total: 16
+3, iterator: 78
+59  iterator: 78 cell: 1, 0 empty count: 54 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 79
+60  iterator: 79 cell: 1, 2 empty count: 54 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 80
+61  iterator: 80 cell: 2, 5 empty count: 54 solve_with_logic: 1 hidden_total: 28
+3, iterator: 0
+62  iterator: 0 cell: 7, 1 empty count: 55 solve_with_logic: 0 hidden_total: 18
+enter: 1 den fazla solution var!
+0, iterator: 1
+63  iterator: 1 cell: 4, 2 empty count: 55 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 2
+64  iterator: 2 cell: 4, 4 empty count: 55 solve_with_logic: 0 hidden_total: 24
+enter: 1 den fazla solution var!
+0, iterator: 3
+65  iterator: 3 cell: 5, 2 empty count: 55 solve_with_logic: 1 hidden_total: 16
+3, iterator: 4
+66  iterator: 4 cell: 3, 4 empty count: 56 solve_with_logic: 0 hidden_total: 18
+enter: 1 den fazla solution var!
+0, iterator: 5
+67  iterator: 5 cell: 5, 1 empty count: 56 solve_with_logic: 1 hidden_total: 16
+4, iterator: 6
+68  iterator: 6 cell: 7, 4 empty count: 57 solve_with_logic: 0 hidden_total: 30
+enter: 1 den fazla solution var!
+0, iterator: 7
+69  iterator: 7 cell: 2, 3 empty count: 57 solve_with_logic: 0 hidden_total: 28
+enter: 1 den fazla solution var!
+0, iterator: 8
+70  iterator: 8 cell: 1, 6 empty count: 57 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 9
+71  iterator: 9 cell: 3, 6 empty count: 57 solve_with_logic: 0 hidden_total: 26
+enter: 1 den fazla solution var!
+0, iterator: 10
+72  iterator: 10 cell: 3, 8 empty count: 57 solve_with_logic: 1 hidden_total: 22
+4, iterator: 11
+73  iterator: 11 cell: 8, 3 empty count: 58 solve_with_logic: 0 hidden_total: 30
+enter: 1 den fazla solution var!
+0, iterator: 12
+74  iterator: 12 cell: 3, 7 empty count: 58 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 13
+75  iterator: 13 cell: 1, 7 empty count: 58 solve_with_logic: 0 hidden_total: 14
+enter: 1 den fazla solution var!
+0, iterator: 14
+76  iterator: 14 cell: 3, 0 empty count: 58 solve_with_logic: 0 hidden_total: 9
+enter: 1 den fazla solution var!
+0, iterator: 15
+77  iterator: 15 cell: 5, 0 empty count: 58 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 16
+78  iterator: 16 cell: 4, 3 empty count: 58 solve_with_logic: 1 hidden_total: 9
+4, iterator: 17
+79  iterator: 17 cell: 0, 6 empty count: 59 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 18
+80  iterator: 18 cell: 7, 6 empty count: 59 solve_with_logic: 0 hidden_total: 16
+enter: 1 den fazla solution var!
+0, iterator: 19
+81  iterator: 19 cell: 0, 2 empty count: 58 solve_with_logic: 1 hidden_total: 17
+4, iterator: 20
+82  iterator: 20 cell: 2, 2 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 21
+83  iterator: 21 cell: 0, 7 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 22
+84  iterator: 22 cell: 7, 8 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 23
+85  iterator: 23 cell: 2, 8 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 24
+86  iterator: 24 cell: 0, 0 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 25
+87  iterator: 25 cell: 7, 5 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 26
+88  iterator: 26 cell: 8, 4 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 27
+89  iterator: 27 cell: 4, 7 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 28
+90  iterator: 28 cell: 1, 3 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 29
+91  iterator: 29 cell: 2, 4 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 30
+92  iterator: 30 cell: 3, 5 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 31
+93  iterator: 31 cell: 8, 8 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 32
+94  iterator: 32 cell: 1, 5 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 33
+95  iterator: 33 cell: 5, 5 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 34
+96  iterator: 34 cell: 6, 1 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 35
+97  iterator: 35 cell: 6, 3 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 36
+98  iterator: 36 cell: 4, 1 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 37
+99  iterator: 37 cell: 6, 6 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 38
+100  iterator: 38 cell: 5, 3 empty count: 58 solve_with_logic: 1 hidden_total: 16
+4, iterator: 39
+0  iterator: 39 cell: 6, 7 empty count: 1 solve_with_logic: 1 hidden_total: 16
+-1, iterator: 40
+1  iterator: 40 cell: 5, 5 empty count: 2 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 41
+2  iterator: 41 cell: 0, 4 empty count: 3 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 42
+3  iterator: 42 cell: 7, 4 empty count: 4 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 43
+4  iterator: 43 cell: 6, 0 empty count: 5 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 44
+5  iterator: 44 cell: 3, 0 empty count: 6 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 45
+6  iterator: 45 cell: 6, 8 empty count: 7 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 46
+7  iterator: 46 cell: 5, 8 empty count: 8 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 47
+8  iterator: 47 cell: 7, 3 empty count: 9 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 48
+9  iterator: 48 cell: 1, 8 empty count: 10 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 49
+10  iterator: 49 cell: 4, 2 empty count: 11 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 50
+11  iterator: 50 cell: 2, 0 empty count: 12 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 51
+12  iterator: 51 cell: 1, 6 empty count: 13 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 52
+13  iterator: 52 cell: 8, 2 empty count: 14 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 53
+14  iterator: 53 cell: 3, 4 empty count: 15 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 54
+15  iterator: 54 cell: 1, 1 empty count: 16 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 55
+16  iterator: 55 cell: 4, 7 empty count: 17 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 56
+17  iterator: 56 cell: 6, 5 empty count: 18 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 57
+18  iterator: 57 cell: 1, 4 empty count: 19 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 58
+19  iterator: 58 cell: 7, 8 empty count: 20 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 59
+20  iterator: 59 cell: 8, 3 empty count: 21 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 60
+21  iterator: 60 cell: 8, 0 empty count: 22 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 61
+22  iterator: 61 cell: 0, 8 empty count: 22 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 62
+23  iterator: 62 cell: 2, 2 empty count: 23 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 63
+24  iterator: 63 cell: 4, 3 empty count: 24 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 64
+25  iterator: 64 cell: 7, 2 empty count: 25 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 65
+26  iterator: 65 cell: 7, 6 empty count: 26 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 66
+27  iterator: 66 cell: 3, 2 empty count: 27 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 67
+28  iterator: 67 cell: 3, 7 empty count: 28 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 68
+29  iterator: 68 cell: 2, 7 empty count: 29 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 69
+30  iterator: 69 cell: 8, 7 empty count: 30 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 70
+31  iterator: 70 cell: 3, 6 empty count: 31 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 71
+32  iterator: 71 cell: 7, 5 empty count: 32 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 72
+33  iterator: 72 cell: 1, 7 empty count: 33 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 73
+34  iterator: 73 cell: 7, 0 empty count: 34 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 74
+35  iterator: 74 cell: 6, 2 empty count: 35 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 75
+36  iterator: 75 cell: 2, 6 empty count: 36 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 76
+37  iterator: 76 cell: 3, 5 empty count: 37 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 77
+38  iterator: 77 cell: 5, 4 empty count: 38 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 78
+39  iterator: 78 cell: 0, 1 empty count: 39 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 79
+40  iterator: 79 cell: 7, 1 empty count: 40 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 80
+41  iterator: 80 cell: 8, 4 empty count: 41 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 0
+42  iterator: 0 cell: 2, 8 empty count: 42 solve_with_logic: 1 hidden_total: 0
+-1, iterator: 1
+43  iterator: 1 cell: 0, 2 empty count: 43 solve_with_logic: 1 hidden_total: 0
+1, iterator: 2
+44  iterator: 2 cell: 1, 3 empty count: 44 solve_with_logic: 1 hidden_total: 0
+2, iterator: 3
+45  iterator: 3 cell: 7, 7 empty count: 45 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 4
+46  iterator: 4 cell: 0, 3 empty count: 45 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 5
+47  iterator: 5 cell: 0, 0 empty count: 45 solve_with_logic: 1 hidden_total: 0
+2, iterator: 6
+48  iterator: 6 cell: 2, 5 empty count: 46 solve_with_logic: 1 hidden_total: 0
+2, iterator: 7
+49  iterator: 7 cell: 1, 0 empty count: 47 solve_with_logic: 0 hidden_total: 0
+enter: 1 den fazla solution var!
+0, iterator: 8
+50  iterator: 8 cell: 3, 3 empty count: 47 solve_with_logic: 0 hidden_total: 0
+main grid print
+. . . | 5 . 8 | 7 3 . 
+5 . 7 | . . 4 | . . . 
+. 1 . | 7 6 . | . . . 
+------+-------+------
+. 5 . | . . . | . . 4 
+6 8 . | . 7 5 | 3 . 9 
+7 3 4 | 9 . . | 1 5 . 
+------+-------+------
+. 7 . | 8 9 . | 4 . . 
+. . . | . . . | . 9 . 
+2 9 . | . . 1 | 5 . 7 
+
+main stats print
+========== HEURISTIC SOLVER STATS ==========
+Empty Cells      : 47
+Naked Singles    : 6
+Hidden Singles   : 12
+ Hidden Boxes  : 11
+ Hidden Rows   : 1
+ Hidden Columns: 0
+Solved with Logic: 0
+Total Guesses    : 85
+Branching Points : 2
+Human Hardness   : EXTREME
+============================================
+

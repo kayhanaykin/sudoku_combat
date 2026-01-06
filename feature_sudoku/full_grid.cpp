@@ -1,7 +1,8 @@
 #include "includes.hpp"
 
-void	sudoku_generator(std::array<std::array<int, 9>, 9>& grid)
+void	fullgrid_generator(std::array<std::array<int, 9>, 9>& grid)
 {
+	clear_grid(grid);
 	fill_diagonal_boxes(grid);
 	fill_other_boxes(grid, 0, 3);
 }
@@ -11,7 +12,6 @@ void	fill_diagonal_boxes(std::array<std::array<int, 9>, 9>& grid)
 	std::array<int, 9> onebox;
 
 	onebox = {1,2,3,4,5,6,7,8,9};
-	// SEED the random number generator
     std::srand(std::time(nullptr));
 	std::random_shuffle (onebox.begin(), onebox.end());
 	grid[0] = {onebox[0], onebox[1], onebox[2]};
@@ -25,12 +25,10 @@ void	fill_diagonal_boxes(std::array<std::array<int, 9>, 9>& grid)
 	grid[6] = {0, 0, 0, 0, 0, 0, onebox[0], onebox[1], onebox[2]};
 	grid[7] = {0, 0, 0, 0, 0, 0, onebox[3], onebox[4], onebox[5]};
 	grid[8] = {0, 0, 0, 0, 0, 0, onebox[6], onebox[7], onebox[8]};
-	// print_vector(myvector);
 }
 
 bool	fill_other_boxes(std::array<std::array<int, 9>, 9>& grid, int row, int col) 
 {
-    // If we reached the end of the board
     if (row == 8 && col == 9) 
 		return true;
     if (col == 9) 
@@ -38,11 +36,9 @@ bool	fill_other_boxes(std::array<std::array<int, 9>, 9>& grid, int row, int col)
 		row++; 
 		col = 0; 
 	}
-    // Skip cells already filled by diagonal initialization
     if (grid[row][col] != 0) 
 		return fill_other_boxes(grid, row, col + 1);
 
-    // Create a shuffled list of numbers 1-9 for randomness
     std::array<int, 9> nums;
 	nums = {1,2,3,4,5,6,7,8,9};
     std::srand(std::time(nullptr));

@@ -1,7 +1,8 @@
 NAME = myprogram
-SRCS = main.cpp gen_full_grid.cpp gen_game_grid.cpp utils.cpp
+SRCS = main.cpp full_grid.cpp game_grid.cpp utils.cpp tester.cpp human_logic.cpp
 OBJS = $(SRCS:.cpp=.o)
 GXX	 = c++
+
 CXXFLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
@@ -17,7 +18,10 @@ fclean: clean
 
 re: fclean all
 
-run:
+run: $(NAME)
 	./$(NAME)
+
+file: $(NAME)
+	./$(NAME) > output.txt
 
 .PHONY: all clean fclean re
