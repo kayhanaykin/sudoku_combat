@@ -21,7 +21,7 @@ fclean: clean
 re: clean all
 
 build: 
-	$(COMPOSE) build --no-cache
+	$(COMPOSE) build
 	$(COMPOSE) up -d
 	
 list:
