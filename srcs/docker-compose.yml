@@ -1,4 +1,4 @@
-name: transendence
+name: transcendence
 services:
   nginx:
     build: ./requirements/nginx
@@ -6,14 +6,23 @@ services:
     environment:
       - DOMAIN_NAME=${DOMAIN_NAME}
     ports:
-      #"leftside:rightside" left side - VM, right side - container
-      # the outside 80 port is 80 port in container
       - "80:80"
       - "443:443"
     volumes:
-    - ./web_content:/var/www/html:ro
+      - ./web_content:/var/www/html:ro
     networks:
       - transcendence_network
+    depends_on:
+      - game_service
+
+  game_service:
+    build: ./requirements/game_service
+    container_name: game_service
+    expose:
+      - "8080"
+    networks:
+      - transcendence_network
+    restart: always
 
 networks:
   transcendence_network:
