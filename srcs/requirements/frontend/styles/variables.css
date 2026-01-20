@@ -1,0 +1,22 @@
+:root {
+  /* Renk Paleti */
+  --primary: #2c3e50;
+  --primary-hover: #34495e;
+  --secondary: #ffffff;
+  --accent-green: #37e831;
+  --bg-color: #f0f2f5;
+  --text-dark: #333333;
+  --text-muted: #7f8c8d;
+  --border-color: #eaeaea;
+  
+  /* Rank Renkleri */
+  --gold: #f3d046;
+  --silver: #8e9292;
+  --bronze: #c37425;
+
+  /* Spacing & Radius */
+  --radius-md: 12px;
+  --radius-sm: 6px;
+  --shadow-sm: 0 4px 6px rgba(0,0,0,0.02);
+  --shadow-hover: 0 15px 30px rgba(0,0,0,0.05);
+}
