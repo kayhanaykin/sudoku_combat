@@ -1,4 +1,14 @@
 # format/
 # learning_material/
 # planlama/
-.env
+# .env
+
+# Ignore the downloaded C++ libraries
+srcs/requirements/backend/cpp_backend/tools/asio/
+srcs/requirements/backend/cpp_backend/tools/asio.hpp
+srcs/requirements/backend/cpp_backend/tools/crow_all.h
+
+# Ignore build artifacts
+*.o
+*.exe
+sudoku_server
