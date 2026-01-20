@@ -18,6 +18,9 @@ fclean: clean
 	docker system prune -a --force
 	docker volume prune --force
 
+prune:
+	docker system prune -af
+
 re: clean all
 
 build: 
