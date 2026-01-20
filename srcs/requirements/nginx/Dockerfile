@@ -1,4 +1,4 @@
-FROM nginx:1.28.0-alpine
+FROM nginx:alpine
 
 # Without the -p flag, mkdir can only create 
 # one folder at a time, and the "parent" folder must already exist.

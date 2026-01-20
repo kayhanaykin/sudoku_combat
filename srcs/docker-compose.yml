@@ -24,6 +24,25 @@ services:
       - transcendence_network
     restart: always
 
+  # --- FRONTEND (REACT) ---
+  frontend:
+      build:
+        # Docker, build işlemi için bu klasöre bakacak:
+        context: ./requirements/frontend
+        dockerfile: Dockerfile
+      container_name: react_frontend
+      volumes:
+        # KRİTİK NOKTA: Bilgisayarındaki requirements/frontend klasörünü
+        # konteynerin içine bağlıyoruz.
+        - ./requirements/frontend:/app
+        - /app/node_modules
+      networks:
+        - transcendence_network
+      restart: always
+      ports:
+        - "5173:5173"
+      command: ["npm", "run", "dev", "--", "--host"]
+
 networks:
   transcendence_network:
     driver: bridge
