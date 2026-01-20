@@ -10,3 +10,6 @@ No warnings or errors should appear in the browser console
 
 Sudoku algoritması belirlenecek.
 Program akışı çizilecek.
+compose da unless-stopped gelistirilip healtcheck eklenebilir, şart değil
+V19 Evo page bulunmayaca çalışılacak
+Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak. 
