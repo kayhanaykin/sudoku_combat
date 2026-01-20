@@ -1,10 +1,210 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Transcendence</title>
+    <meta charset="UTF-8">
+    <title>Sudoku Battle - Backend Verified</title>
+    <style>
+        :root { --primary: #007bff; --error: #dc3545; --success: #28a745; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding-top: 20px; }
+        
+        .stats-container { display: flex; gap: 40px; margin-bottom: 20px; font-size: 1.2rem; font-weight: bold; }
+        .lives { color: var(--error); transition: transform 0.2s; }
+        .lives.shake { animation: shake 0.5s; }
+
+        .game-area { display: flex; gap: 30px; align-items: flex-start; }
+
+        /* Sudoku Grid */
+        #sudoku-grid { 
+            display: grid; 
+            grid-template-columns: repeat(9, 45px); 
+            grid-template-rows: repeat(9, 45px); 
+            gap: 0px; 
+            border: 3px solid #333; 
+            background: #333; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .cell { 
+            width: 45px; height: 45px; background: white; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 1.2rem; cursor: pointer;
+            border: 0.5px solid #ccc;
+            box-sizing: border-box; /* Keeps the cell exactly 45px even with thick borders */
+        }
+
+        .cell.fixed { background: #f1f3f5; color: #212529; font-weight: bold; cursor: default; }
+        .cell.user-filled { color: var(--primary); font-weight: bold; }
+        .cell.selected { background: #e7f1ff; outline: 2px solid var(--primary); z-index: 2; }
+        
+        /* 3x3 Block Borders (Vertical) */
+        .cell:nth-child(3n):not(:nth-child(9n)) { 
+            border-right: 3px solid #333; 
+        }
+
+        /* 3x3 Block Borders (Horizontal) */
+        .row-thick { 
+            border-bottom: 3px solid #333 !important; 
+        }
+
+        /* Control Panel */
+        .controls { display: flex; flex-direction: column; gap: 20px; width: 200px; }
+        .numpad { display: grid; grid-template-columns: repeat(3, 60px); gap: 10px; }
+        .num-btn { 
+            width: 60px; height: 60px; border: 1px solid #dee2e6; background: white;
+            font-size: 1.4rem; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.1s;
+        }
+        .num-btn:hover { background: var(--primary); color: white; }
+
+        .difficulty-container { 
+            background: white; padding: 15px; border-radius: 8px; 
+            border: 1px solid #dee2e6; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .difficulty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; font-size: 0.9rem; }
+        .difficulty-grid label { cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+        .new-game-btn {
+            width: 100%; padding: 12px; cursor: pointer; border-radius: 8px; 
+            border: none; background: #333; color: white; font-weight: bold; font-size: 1rem;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Transcendence!</h1>
-    <p>This is working from ekay.42.fr</p>
+
+    <h1>Sudoku Battle</h1>
+    
+    <div class="stats-container">
+        <div class="lives" id="lives-display">Lives: ❤️ ❤️ ❤️</div>
+        <div id="difficulty-label">Level: Easy</div>
+    </div>
+
+    <div class="game-area">
+        <div id="sudoku-grid"></div>
+
+        <div class="controls">
+            <div class="numpad" id="numpad"></div>
+            <div class="difficulty-container">
+                <strong>Difficulty:</strong>
+                <div class="difficulty-grid">
+                    <label><input type="radio" name="level" value="1" checked> Easy</label>
+                    <label><input type="radio" name="level" value="2"> Med</label>
+                    <label><input type="radio" name="level" value="3"> Hard</label>
+                    <label><input type="radio" name="level" value="4"> Exp</label>
+                    <label><input type="radio" name="level" value="5"> Extr</label>
+                </div>
+            </div>
+            <button class="new-game-btn" onclick="fetchNewGame()">New Game</button>
+        </div>
+    </div>
+
+    <script>
+        let lives = 3;
+        let selectedCoords = null;
+
+        // Initialize Numpad
+        const pad = document.getElementById('numpad');
+        for(let i=1; i<=9; i++) {
+            const btn = document.createElement('button');
+            btn.className = 'num-btn';
+            btn.innerText = i;
+            btn.onclick = () => submitMove(i);
+            pad.appendChild(btn);
+        }
+
+        async function fetchNewGame() {
+            lives = 3;
+            updateLivesUI();
+            selectedCoords = null;
+            
+            const level = document.querySelector('input[name="level"]:checked').value;
+            const res = await fetch(`/api/new-game?level=${level}`);
+            const data = await res.json();
+            
+            renderGrid(data.grid);
+            
+            const levels = ["Easy", "Medium", "Hard", "Expert", "Extreme"];
+            document.getElementById('difficulty-label').innerText = "Level: " + levels[level-1];
+        }
+
+        function renderGrid(grid) {
+            const container = document.getElementById('sudoku-grid');
+            container.innerHTML = '';
+            
+            grid.forEach((row, r) => {
+                row.forEach((val, c) => {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    // Logic for thick horizontal lines (Row 3 and Row 6)
+                    if (r === 2 || r === 5) {
+                        cell.classList.add('row-thick');
+                    }
+                    
+                    if (val !== 0) {
+                        cell.innerText = val;
+                        cell.classList.add('fixed');
+                    } else {
+                        cell.onclick = () => {
+                            document.querySelectorAll('.cell').forEach(el => el.classList.remove('selected'));
+                            cell.classList.add('selected');
+                            selectedCoords = { r, c, el: cell };
+                        };
+                    }
+                    container.appendChild(cell);
+                });
+            });
+        }
+
+        async function submitMove(num) {
+            if (!selectedCoords) return;
+
+            const response = await fetch('/api/check-move', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    row: selectedCoords.r,
+                    col: selectedCoords.c,
+                    value: num
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.correct) {
+                selectedCoords.el.innerText = num;
+                selectedCoords.el.classList.add('user-filled');
+                selectedCoords.el.classList.remove('selected');
+                selectedCoords.el.onclick = null;
+                selectedCoords = null;
+            } else {
+                handleWrongMove();
+            }
+        }
+
+        function handleWrongMove() {
+            lives--;
+            updateLivesUI();
+            const display = document.getElementById('lives-display');
+            display.classList.add('shake');
+            setTimeout(() => display.classList.remove('shake'), 500);
+
+            if (lives <= 0) {
+                alert("Game Over! Try again.");
+                fetchNewGame();
+            }
+        }
+
+        function updateLivesUI() {
+            const icons = "❤️ ".repeat(lives) || "💀";
+            document.getElementById('lives-display').innerText = `Lives: ${icons}`;
+        }
+
+        fetchNewGame();
+    </script>
 </body>
 </html>
