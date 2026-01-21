@@ -1,0 +1,10 @@
+- /api/sudoku/off/new-game
+- /api/sudoku/off/check-move
+...
+
+/api/sudoku/on/battle
+...
+
+/api/user/auth
+/api/user/data
+...
