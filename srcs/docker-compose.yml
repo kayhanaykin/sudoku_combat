@@ -1,17 +1,28 @@
-name: transcendence
+name: transendence
 services:
   nginx:
     build: ./requirements/nginx
     container_name: nginx
-    environment:
-      - DOMAIN_NAME=${DOMAIN_NAME}
+    env_file:
+      - .env
     ports:
-      - "80:80"
+      #"leftside:rightside" left side - VM, right side - container
       - "443:443"
     volumes:
-      - ./web_content:/var/www/html:ro
+    - ./frontend:/var/www/html:ro
     networks:
       - transcendence_network
+
+  backend:
+    build: ./requirements/backend
+    container_name: backend
+    env_file:
+      - .env
+    expose:
+      - "3000"
+    networks:
+      - transcendence_network
+    restart: unless-stopped
     depends_on:
       - game_service
 
@@ -22,14 +33,10 @@ services:
       - "8080"
     networks:
       - transcendence_network
-    restart: always
+    restart: unless-stopped
 
-  # --- FRONTEND (REACT) ---
   frontend:
-      build:
-        # Docker, build işlemi için bu klasöre bakacak:
-        context: ./requirements/frontend
-        dockerfile: Dockerfile
+      build: ./requirements/frontend
       container_name: react_frontend
       volumes:
         # KRİTİK NOKTA: Bilgisayarındaki requirements/frontend klasörünü
