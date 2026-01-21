@@ -8,10 +8,10 @@ FROM debian:bookworm AS builder
 # Install build tools and wget to download libraries
 # -y "assume yes"
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    wget \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+	build-essential \
+	wget \
+	ca-certificates \
+	&& rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -21,9 +21,9 @@ RUN mkdir -p tools
 # 2. Download and Extract Asio (Standalone version)
 # We use version 1.30.2 as an example of a stable release
 RUN wget https://github.com/chriskohlhoff/asio/archive/refs/tags/asio-1-30-2.tar.gz -O asio.tar.gz \
-    && tar -xzf asio.tar.gz \
-    && mv asio-asio-1-30-2/asio/include/* ./tools/ \
-    && rm -rf asio.tar.gz asio-asio-1-30-2
+	&& tar -xzf asio.tar.gz \
+	&& mv asio-asio-1-30-2/asio/include/* ./tools/ \
+	&& rm -rf asio.tar.gz asio-asio-1-30-2
 
 # 3. Download Crow (Amalgamated header)
 RUN wget https://github.com/CrowCpp/Crow/releases/download/v1.2.0/crow_all.h -O ./tools/crow_all.h

@@ -12,13 +12,14 @@
 #include "../tools/asio.hpp" 	// crow icin gerekiyor
 #include "../tools/crow_all.h"   // cpp koda webserv ozelligi veriyor 
 
-struct SolverStats {
+struct SolverStats
+{
 	int solution_count = 0;
 	int depth = 0;
-    long long total_guesses = 0;
-    long long dead_ends = 0;
-    int max_depth = 0;
-    long long branching_points = 0;
+	long long total_guesses = 0;
+	long long dead_ends = 0;
+	int max_depth = 0;
+	long long branching_points = 0;
 	int hardness = 0;
 	std::chrono::duration<double, std::milli> duration;
 	int naked_singles = 0;

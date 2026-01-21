@@ -8,7 +8,6 @@ void	game_generator(std::array<std::array<int, 9>, 9>& grid, std::array<std::arr
 	int iterator = 0;
 	int counter = 100;
 
-
 	while (stats.hardness != hardness_requested)
 	{
 		counter++;
@@ -63,46 +62,42 @@ void	game_generator(std::array<std::array<int, 9>, 9>& grid, std::array<std::arr
 
 void check_uniqueness(std::array<std::array<int, 9>, 9> grid, SolverStats& stats) 
 {
-    if (stats.depth > stats.max_depth) 
-        stats.max_depth = stats.depth;
+	int row, col;
+	int choices = 0;
 
-    if (stats.solution_count > 1) 
-        return;
-
-    int row, col;
-    if (!find_best_empty_location(grid, row, col)) 
-    {
-        stats.solution_count++;
-        return;
-    }
-
-    int choices = 0;
-    for (int num = 1; num <= 9; num++) 
-    {
-        if (basic_check(grid, row, col, num)) 
-        {
-            stats.total_guesses++;
-            choices++;
-    
-            grid[row][col] = num;
-            stats.depth++;
-            
-            check_uniqueness(grid, stats);
-            
-            stats.depth--;
-            grid[row][col] = 0; // Backtrack
-        }
-    }
-
-    // --- DEAD END TRACKING ---
-    if (choices == 0) 
-    {
-        stats.dead_ends++;
-    }
-
-    // --- BRANCHING POINT TRACKING ---
-    if (choices > 1) 
-        stats.branching_points++;
+	if (stats.depth > stats.max_depth) 
+		stats.max_depth = stats.depth;
+	if (stats.solution_count > 1) 
+		return ;
+	if (!find_best_empty_location(grid, row, col)) 
+	{
+		stats.solution_count++;
+		return;
+	}
+	for (int num = 1; num <= 9; num++) 
+	{
+		if (basic_check(grid, row, col, num)) 
+		{
+			stats.total_guesses++;
+			choices++;
+	
+			grid[row][col] = num;
+			stats.depth++;
+			
+			check_uniqueness(grid, stats);
+			
+			stats.depth--;
+			grid[row][col] = 0; // Backtrack
+		}
+	}
+	// --- DEAD END TRACKING ---
+	if (choices == 0) 
+	{
+		stats.dead_ends++;
+	}
+	// --- BRANCHING POINT TRACKING ---
+	if (choices > 1) 
+		stats.branching_points++;
 }
 
 void	delete_initial_cells(std::array<int, 81>& mixed_sequence, std::array<std::array<int, 9>, 9>& grid, int hardness_requested, int& i)
@@ -111,23 +106,22 @@ void	delete_initial_cells(std::array<int, 81>& mixed_sequence, std::array<std::a
 
 	switch (hardness_requested)
 	{
-	case 1:
-		num = 43;
-		break;
-	case 2:
-		num = 44;
-		break;
-	case 3:
-		num = 51;
-		break;
-	case 4:
-		num = 56;
-		break;
-	default:
-		num = 58;
-		break;
+		case 1:
+			num = 43;
+			break;
+		case 2:
+			num = 44;
+			break;
+		case 3:
+			num = 51;
+			break;
+		case 4:
+			num = 56;
+			break;
+		default:
+			num = 58;
+			break;
 	}
-
 	for (; i < num ; i++)
 	{
 		grid[mixed_sequence[i] / 9][mixed_sequence[i] % 9] = 0;
@@ -143,5 +137,4 @@ void	prepare_mixed_sequence(std::array<int, 81>& mixed_sequence)
 	long long seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
 	std::srand(static_cast<unsigned int>(seed));
 	std::random_shuffle (mixed_sequence.begin(), mixed_sequence.end());
-
 }

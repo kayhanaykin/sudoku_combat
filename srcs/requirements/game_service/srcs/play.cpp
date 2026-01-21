@@ -1,6 +1,6 @@
 #include "includes.hpp"
 
-void play(std::array<std::array<int, 9>, 9>& grid, std::array<std::array<int, 9>, 9>& grid_solved)
+void	play(std::array<std::array<int, 9>, 9>& grid, std::array<std::array<int, 9>, 9>& grid_solved)
 {
 	int row;
 	int col;

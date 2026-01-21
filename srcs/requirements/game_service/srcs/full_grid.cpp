@@ -29,6 +29,8 @@ void	fill_diagonal_boxes(std::array<std::array<int, 9>, 9>& grid)
 
 bool	fill_other_boxes(std::array<std::array<int, 9>, 9>& grid, int row, int col) 
 {
+    std::array<int, 9> nums;
+
     if (row == 8 && col == 9) 
 		return true;
     if (col == 9) 
@@ -38,12 +40,9 @@ bool	fill_other_boxes(std::array<std::array<int, 9>, 9>& grid, int row, int col)
 	}
     if (grid[row][col] != 0) 
 		return fill_other_boxes(grid, row, col + 1);
-
-    std::array<int, 9> nums;
 	nums = {1,2,3,4,5,6,7,8,9};
     std::srand(std::time(nullptr));
 	std::random_shuffle(nums.begin(), nums.end());
-
     for (int i = 0; i < 9; ++i) 
 	{
         if (basic_check(grid, row, col, nums[i])) 

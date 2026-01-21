@@ -146,4 +146,3 @@ Reach site from any browser, using, [https://ekay.42.fr](https://ekay.42.fr).
 <li>Informed about the independence of three diagonal boxes.
 <li>Symantics of backtracking algorithm.  
 </ul>
-

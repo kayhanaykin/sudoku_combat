@@ -26,43 +26,46 @@
 // This is just the "bucket" that holds the data
 std::array<std::array<int, 9>, 9> global_solution;
 
-int main() {
-    crow::SimpleApp app;
+int main()
+{
+	crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/api/new-game")
-    ([&]() {
-        // 2. Define the PUZZLE grid locally so it's fresh
-        std::array<std::array<int, 9>, 9> local_puzzle;
-        SolverStats stats;
+	CROW_ROUTE(app, "/api/new-game")
+	([&]()
+	{
+		// 2. Define the PUZZLE grid locally so it's fresh
+		std::array<std::array<int, 9>, 9> local_puzzle;
+		SolverStats stats;
 
-        // 3. This call OVERWRITES the global_solution with the new answer
-        // and fills local_puzzle with the new holes.
-        game_generator(local_puzzle, global_solution, 1, stats);
+		// 3. This call OVERWRITES the global_solution with the new answer
+		// and fills local_puzzle with the new holes.
+		game_generator(local_puzzle, global_solution, 1, stats);
 
-        crow::json::wvalue response;
-        for (int i = 0; i < 9; ++i)
-            for (int j = 0; j < 9; ++j)
-                response["grid"][i][j] = local_puzzle[i][j];
+		crow::json::wvalue response;
+		for (int i = 0; i < 9; ++i)
+			for (int j = 0; j < 9; ++j)
+				response["grid"][i][j] = local_puzzle[i][j];
 
-        return response;
-    });
+		return response;
+	});
 
-    CROW_ROUTE(app, "/api/check-move").methods(crow::HTTPMethod::POST)
-    ([&](const crow::request& req) { // Capture by reference to see global_solution
-        auto x = crow::json::load(req.body);
-        if (!x) return crow::response(400);
+	CROW_ROUTE(app, "/api/check-move").methods(crow::HTTPMethod::POST)
+	([&](const crow::request& req)
+	{ // Capture by reference to see global_solution
+		auto x = crow::json::load(req.body);
+		if (!x) return crow::response(400);
 
-        int r = x["row"].i();
-        int c = x["col"].i();
-        int val = x["value"].i();
+		int r = x["row"].i();
+		int c = x["col"].i();
+		int val = x["value"].i();
 
-        // 4. Compares against the most recently generated solution
-        bool is_correct = (global_solution[r][c] == val);
-        
-        crow::json::wvalue res;
-        res["correct"] = is_correct;
-        return crow::response(res);
-    });
+		// 4. Compares against the most recently generated solution
+		bool is_correct = (global_solution[r][c] == val);
 
-    app.port(8080).multithreaded().run();
+		crow::json::wvalue res;
+		res["correct"] = is_correct;
+		return crow::response(res);
+	});
+
+	app.port(8080).multithreaded().run();
 }

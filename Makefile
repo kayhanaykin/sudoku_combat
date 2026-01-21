@@ -26,7 +26,7 @@ re: clean all
 build: 
 	$(COMPOSE) build
 	$(COMPOSE) up -d
-	
+
 list:
 	@sleep 1
 	@echo ""
