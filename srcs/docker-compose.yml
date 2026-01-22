@@ -14,6 +14,7 @@ services:
       - transcendence_network
     depends_on:
       - game_service
+      - user_service
 
   game_service:
     build: ./requirements/game_service
@@ -22,7 +23,34 @@ services:
       - "8080"
     networks:
       - transcendence_network
-    restart: always
+    restart: unless-stopped
+
+# ===== USER SERVICE =====
+  user_service:
+    build: ./requirements/user_service
+    container_name: user_service
+    env_file: .env
+    depends_on:
+      user_db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - transcendence_network
+  user_db:
+    image: postgres:15-alpine
+    container_name: user_db
+    env_file: .env
+    volumes:
+      - user_db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - transcendence_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s     # How often to check
+      timeout: 5s      # How long to wait for a response
+      retries: 5       # How many failures before marking as "unhealthy"
+      start_period: 5s # Grace period for the initial boot
 
   # --- FRONTEND (REACT) ---
   frontend:
@@ -46,3 +74,6 @@ services:
 networks:
   transcendence_network:
     driver: bridge
+
+volumes:
+  user_db_data:
