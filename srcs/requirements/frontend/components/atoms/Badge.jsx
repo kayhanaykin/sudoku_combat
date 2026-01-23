@@ -1,5 +1,5 @@
 const Badge = ({ rank }) => {
-  let color = '#bdc3c7'; // Varsayılan
+  let color = '#bdc3c7';
   if (rank === 1) color = 'var(--gold)';
   if (rank === 2) color = 'var(--silver)';
   if (rank === 3) color = 'var(--bronze)';
