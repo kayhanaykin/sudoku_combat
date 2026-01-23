@@ -1,10 +1,20 @@
-- /api/sudoku/off/new-game
-- /api/sudoku/off/check-move
-...
+## Offline Mode:
+- /api/sudoku/new-game				GET
+- /api/sudoku/check-move			POST
 
-/api/sudoku/on/battle
-...
+## Online Mode:
+/api/battle/room/create				POST
+/api/battle/room/join				POST
+/api/battle/room/leave				POST
+/api/battle/room/rooms				GET
 
-/api/user/auth
-/api/user/data
-...
+## User Management:
+# Authentication:
+/api/user/auth/register				POST
+/api/user/auth/login				POST
+/api/user/auth/logout				POST
+/api/user/auth/refresh-token		POST
+# Profile:
+/api/user/profile/stats				GET - POST
+/api/user/profile/avatar			GET - POST
+/api/user/profile/history			GET - POST
