@@ -21,6 +21,10 @@ down:
 	@echo "$(GREEN)Stopping services...$(RESET)"
 	@$(COMPOSE) down
 
+up:
+	@echo "$(GREEN)Starting services...$(RESET)"
+	@$(COMPOSE) up -d
+
 clean:
 	@echo "$(GREEN)Stopping services...$(RESET)"
 	@$(COMPOSE) down -v --rmi all --remove-orphans
@@ -41,6 +45,6 @@ build:
 list:
 	@sleep 1
 	@echo "$(GREEN)Listing running containers...$(RESET)"
-	@docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+	@docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 .PHONY: all clean fclean re build list down
