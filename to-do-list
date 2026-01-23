@@ -13,3 +13,5 @@ Program akışı çizilecek.
 compose da unless-stopped gelistirilip healtcheck eklenebilir, şart değil
 V19 Evo page bulunmayaca çalışılacak
 Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak. 
+
+comment line temizlik yapılacak

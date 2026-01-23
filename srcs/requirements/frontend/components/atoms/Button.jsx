@@ -1,4 +1,4 @@
-import './Button.css'; // Buton stillerini buraya taşı
+import './Button.css';
 
 const Button = ({ children, variant = 'primary', onClick, href }) => {
   const className = `btn btn-${variant}`;

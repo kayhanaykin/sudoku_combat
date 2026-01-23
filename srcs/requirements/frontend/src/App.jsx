@@ -1,7 +1,6 @@
-// src/App.jsx
 import React from 'react';
 import Home from '../pages/Home';
-import './index.css'; // CSS'i dahil etmeyi unutma
+import './index.css';
 
 function App() {
   return (
