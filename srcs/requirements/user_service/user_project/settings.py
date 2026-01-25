@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'rest_framework',
 	'user_app',
+	'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -146,5 +146,9 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.TemplateHTMLRenderer', # Add this!
     ]
 }
+
+LOGIN_URL = '/'  # Where to send users if they try to access a protected page
+LOGIN_REDIRECT_URL = '/dashboard/' # Default success page

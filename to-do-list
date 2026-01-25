@@ -12,4 +12,5 @@ Sudoku algoritması belirlenecek.
 Program akışı çizilecek.
 compose da unless-stopped gelistirilip healtcheck eklenebilir, şart değil
 V19 Evo page bulunmayaca çalışılacak
-Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak. 
+Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak.
+evo icin db dolduracak bir script yazilacak makefile fill_db isimli bir target olarak eklenecek. 

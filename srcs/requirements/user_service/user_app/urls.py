@@ -1,7 +1,10 @@
 from django.urls import path
-from .views import FortyTwoLoginView, FortyTwoCallbackView
+from user_app import views # Using absolute import for Docker stability
 
 urlpatterns = [
-    path('auth/login/', FortyTwoLoginView.as_view(), name='fortytwo-login'),
-    path('auth/callback/', FortyTwoCallbackView.as_view(), name='fortytwo-callback'),
+    path('', views.landing_page, name='landing'),
+    path('dashboard/', views.dashboard_view, name='dashboard'),
+    path('auth/login/', views.FortyTwoLoginView.as_view(), name='fortytwo-login'),
+    path('auth/callback/', views.FortyTwoCallbackView.as_view(), name='fortytwo-callback'),
+    path('logout/', views.logout_view, name='logout'),
 ]
