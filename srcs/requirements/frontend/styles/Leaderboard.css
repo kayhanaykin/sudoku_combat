@@ -1,0 +1,284 @@
+.leaderboard-page
+{
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.leaderboard-card
+{
+  background-color: white;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+.leaderboard-title
+{
+  text-align: left;
+  padding-left: 20px;
+  color: #2c3e50;
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.btn-back
+{
+  align-self: flex-start;
+  margin-left: max(0px, calc(50% - 400px)); 
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  font-weight: bold;
+  color: #555;
+  transition: transform 0.2s;
+}
+
+.btn-back:hover
+{
+  transform: translateY(-2px);
+  color: #333;
+}
+
+.tab-container
+{
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tab-button
+{
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-size: 1rem;
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+.tab-button:hover
+{
+  background-color: #e0e0e0;
+}
+
+.tab-button.active
+{
+  background-color: #4CAF50;
+  color: white;
+  font-weight: bold;
+  transform: scale(1.05);
+}
+
+.leaderboard-list
+{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.header-row
+{
+  display: flex;
+  padding: 10px 20px;
+  border-bottom: 2px solid #eee;
+}
+
+.header-row span
+{
+  font-weight: 900;
+  color: #000;
+  font-size: 0.95rem;
+}
+
+.player-row
+{
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  border-radius: 12px;
+  transition: transform 0.2s;
+  background-color: white;
+  border: 1px solid transparent;
+}
+
+.player-row:hover 
+{
+  transform: scale(1.01);
+}
+
+.rank-gold
+{
+  background-color: #fcec5a;
+  border: 1px solid #FFD700;
+}
+
+.rank-gold .col-rank
+{
+  color: #FFD700;
+}
+
+.rank-silver
+{
+  background-color: #cdcfcfea;
+  border: 1px solid #C0C0C0;
+}
+
+.rank-silver .col-rank
+{
+  color: #C0C0C0;
+}
+
+.rank-bronze
+{
+  background-color: #d3b99c;
+  border: 1px solid #CD7F32;
+}
+
+.rank-bronze .col-rank
+{
+  color: #CD7F32;
+}
+
+.rank-normal
+{
+  background-color: white;
+  border: 1px solid #eee;
+}
+
+.rank-normal .col-rank
+{
+  color: #666;
+}
+
+.col-rank
+{ 
+  width: 50px; 
+  text-align: center; 
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.col-player
+{ 
+  flex: 1; 
+  text-align: left; 
+  padding-left: 25px; 
+  font-size: 1.1rem;
+}
+
+.player-row .col-player
+{
+  font-weight: 600;
+  color: #444; 
+}
+
+.col-wins
+{ 
+  width: 100px; 
+  text-align: center; 
+  font-size: 1.1rem;
+}
+
+.player-row .col-wins
+{
+  font-weight: normal;
+  color: #434141;
+}
+
+.col-games
+{ 
+  width: 100px; 
+  text-align: center; 
+  font-size: 0.9rem;
+}
+
+.player-row .col-games
+{
+  font-weight: normal;
+  color: #434141;
+}
+
+.state-message
+{
+  text-align: center;
+  padding: 40px;
+  color: #888;
+}
+
+.col-rate
+{
+  width: 100px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.player-row .col-rate
+{
+  font-weight: bold;
+  color: #888;
+}
+
+/* Home'daki leaderboard ekranı */
+.leaderboard-widget
+{
+  background-color: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+  height: fit-content;
+  border: 1px solid #eaeaea;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.leaderboard-widget:hover
+{
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.widget-header
+{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #f0f2f5;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+}
+
+.widget-title
+{
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.view-all-link
+{
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.leaderboard-widget:hover .view-all-link
+{
+  color: #4CAF50;
+}
