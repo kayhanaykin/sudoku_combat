@@ -29,26 +29,37 @@ std::array<std::array<int, 9>, 9> global_solution;
 int main() {
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/api/new-game")
-    ([&]() {
+    CROW_ROUTE(app, "/start").methods(crow::HTTPMethod::POST)
+    ([&](const crow::request& req)
+    {
+        auto x = crow::json::load(req.body);
+        
+        // Eğer JSON hatalıysa 400 Bad Request dön
+        if (!x) return crow::response(400, "Invalid JSON format");
+
+        // 4. Zorluk derecesini al (Varsayılan: 1)
+        int difficulty = 1;
+        if (x.has("difficulty"))
+            difficulty = x["difficulty"].i();
+    
         // 2. Define the PUZZLE grid locally so it's fresh
         std::array<std::array<int, 9>, 9> local_puzzle;
         SolverStats stats;
 
         // 3. This call OVERWRITES the global_solution with the new answer
         // and fills local_puzzle with the new holes.
-        game_generator(local_puzzle, global_solution, 1, stats);
+        game_generator(local_puzzle, global_solution, difficulty, stats);
 
         crow::json::wvalue response;
         for (int i = 0; i < 9; ++i)
             for (int j = 0; j < 9; ++j)
                 response["grid"][i][j] = local_puzzle[i][j];
 
-        return response;
+        return crow::response(response);
     });
 
-    CROW_ROUTE(app, "/api/check-move").methods(crow::HTTPMethod::POST)
-    ([&](const crow::request& req) { // Capture by reference to see global_solution
+    CROW_ROUTE(app, "/move").methods(crow::HTTPMethod::POST)
+    ([&](const crow::request& req) {
         auto x = crow::json::load(req.body);
         if (!x) return crow::response(400);
 
@@ -56,8 +67,7 @@ int main() {
         int c = x["col"].i();
         int val = x["value"].i();
 
-        // 4. Compares against the most recently generated solution
-        bool is_correct = (global_solution[r][c] == val);
+        bool is_correct = (val == 0) ? true : (global_solution[r][c] == val);
         
         crow::json::wvalue res;
         res["correct"] = is_correct;
