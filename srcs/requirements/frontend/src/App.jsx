@@ -1,12 +1,21 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 import Home from '../pages/Home';
-import './index.css';
+import OnlineGame from '../pages/Online-Game';
+import OfflineGame from '../pages/Offline-Game';
 
 function App() {
   return (
-    <div>
-      <Home />
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        
+        <Route path="/online-game" element={<OnlineGame />} />
+        <Route path="/offline-game" element={<OfflineGame />} />
+        
+      </Routes>
+    </Router>
   );
 }
 

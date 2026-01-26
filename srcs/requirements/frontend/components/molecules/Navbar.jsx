@@ -1,8 +1,20 @@
 import React, { useState } from 'react';
 import Login from './Login';
+import SignUp from './Signup';
 
 const Navbar = () => {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+
+  const openLogin = () => {
+    setIsSignUpOpen(false);
+    setIsLoginOpen(true);
+  };
+
+  const openSignUp = () => {
+    setIsLoginOpen(false);
+    setIsSignUpOpen(true);
+  };
 
   return (
     <>
@@ -13,19 +25,31 @@ const Navbar = () => {
         <div className="auth-buttons">
           <button 
             className="btn btn-secondary" 
-            onClick={() => setIsLoginOpen(true)}
+            onClick={openLogin}
             style={{ cursor: 'pointer' }}
           >
             Log In
           </button>
           
-          <a href="/signup" className="btn btn-primary">Sign Up</a>
+          <button 
+            className="btn btn-primary" 
+            onClick={openSignUp}
+            style={{ cursor: 'pointer' }}
+          >
+            Sign Up
+          </button>
         </div>
       </nav>
 
       <Login 
         isOpen={isLoginOpen} 
         onClose={() => setIsLoginOpen(false)} 
+      />
+
+      <SignUp 
+        isOpen={isSignUpOpen} 
+        onClose={() => setIsSignUpOpen(false)}
+        onSwitchToLogin={openLogin}
       />
     </>
   );
