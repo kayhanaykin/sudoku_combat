@@ -2,7 +2,8 @@ import React from 'react';
 import '../../styles/DifficultyModal.css';
 
 const DifficultyModal = ({ isOpen, onClose, onSelect }) => {
-  if (!isOpen) return null;
+  if (!isOpen)
+    return null;
 
   const levels = [
     { level: 1, label: 'Easy', color: '#2ecc71' },

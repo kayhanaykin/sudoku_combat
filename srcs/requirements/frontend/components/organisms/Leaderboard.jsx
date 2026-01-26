@@ -1,116 +1,109 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getLeaderboard } from '../../services/api';
+import '../../styles/Leaderboard.css';
 
-const getRankStyle = (index) => {
-  switch (index) {
-    case 0:
-      return { 
-        color: '#FFD700',
-        icon: '🥇', 
-        bg: '#fff9c4',
-        border: '1px solid #FFD700'
-      };
-    case 1:
-      return { 
-        color: '#C0C0C0',
-        icon: '🥈', 
-        bg: '#f8f9fa',
-        border: '1px solid #C0C0C0'
-      };
-    case 2:
-      return { 
-        color: '#CD7F32',
-        icon: '🥉', 
-        bg: '#f8f9fa',
-        border: '1px solid #CD7F32'
-      };
-    default:
-      return { 
-        color: '#666', 
-        icon: `#${index + 1}`, 
-        bg: '#ffffff',
-        border: '1px solid transparent'
-      };
-  }
-};
+const Leaderboard = () => {
+  const navigate = useNavigate();
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const Leaderboard = ({ players = [] }) => {
-  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      try
+      {
+        if (!getLeaderboard)
+          return;
+        const data = await getLeaderboard('Total');
+        
+        let validData = [];
+        if (Array.isArray(data))
+          validData = data;
+        else if (data && Array.isArray(data.data))
+          validData = data.data;
+
+        const sorted = [...validData].sort((a, b) => (b.wins || 0) - (a.wins || 0));
+        setPlayers(sorted.slice(0, 5));
+      }
+      catch (err)
+      {
+        console.error(err);
+      }
+      finally
+      {
+        setLoading(false);
+      }
+    };
+    fetchLeaderboard();
+  }, []);
+
+  const getRankClass = (index) => {
+    switch (index) {
+      case 0:
+        return 'rank-gold';
+      case 1:
+        return 'rank-silver';
+      case 2:
+        return 'rank-bronze';
+      default:
+        return 'rank-normal';
+    }
+  };
+
+  const getRankIcon = (index) => {
+    switch (index) {
+      case 0:
+        return '🥇';
+      case 1:
+        return '🥈';
+      case 2:
+        return '🥉';
+      default:
+        return `#${index + 1}`;
+    }
+  };
+
+  if (loading)
+    return <div className="leaderboard-widget state-message">Loading...</div>;
 
   return (
-    <div style={{
-      backgroundColor: 'white',
-      borderRadius: '16px',
-      boxShadow: '0 10px 25px rgba(0,0,0,0.05)',
-      padding: '1.5rem',
-      width: '100%',
-      maxWidth: '400px',
-      height: 'fit-content',
-      border: '1px solid #eaeaea'
-    }}>
-      <h3 style={{
-        margin: '0 0 1.5rem 0',
-        color: '#2c3e50',
-        textAlign: 'center',
-        borderBottom: '2px solid #f0f2f5',
-        paddingBottom: '1rem',
-        fontSize: '1.5rem'
-      }}>
-        🏆 Leaderboard
-      </h3>
+    <div 
+      className="leaderboard-widget" 
+      onClick={() => navigate('/leaderboard')}
+      title="Click to view full rankings"
+    >
+      <div className="widget-header">
+        <h3 className="widget-title">🏆 Leaderboard</h3>
+        <span className="view-all-link">View All →</span>
+      </div>
       
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-        {sortedPlayers.length > 0 ? (
-          sortedPlayers.map((player, index) => {
-            const style = getRankStyle(index);
+      <div className="leaderboard-list">
+        {players.length > 0 ? (
+          players.map((player, index) => {
+            const rankClass = getRankClass(index);
+            const icon = getRankIcon(index);
+            const displayName = player.username || player.display_name || `User #${player.user_id}`;
+            const wins = player.wins || 0;
             
             return (
-              <div key={index} style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                padding: '12px 16px',
-                backgroundColor: style.bg,
-                borderRadius: '12px',
-                border: style.border,
-                transition: 'transform 0.2s',
-                boxShadow: index < 3 ? '0 2px 4px rgba(0,0,0,0.05)' : 'none'
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <span style={{ 
-                    fontSize: index < 3 ? '1.5rem' : '1rem', 
-                    fontWeight: 'bold',
-                    color: style.color,
-                    minWidth: '30px',
-                    textAlign: 'center'
-                  }}>
-                    {style.icon}
-                  </span>
-                  
-                  <span style={{ 
-                    fontWeight: index < 3 ? 'bold' : '500', 
-                    color: '#333',
-                    fontSize: '1rem'
-                  }}>
-                    {player.name}
-                  </span>
-                </div>
+              <div key={index} className={`player-row ${rankClass}`}>
+                <span className="col-rank rank-icon" style={{fontSize: '1rem'}}>
+                  {icon}
+                </span>
+                
+                <span className="col-player" style={{fontSize: '1rem'}}>
+                  {displayName}
+                </span>
 
-                <span style={{ 
-                  color: style.color, 
-                  fontWeight: 'bold',
-                  backgroundColor: 'rgba(0,0,0,0.05)',
-                  padding: '4px 8px',
-                  borderRadius: '6px',
-                  fontSize: '0.9rem'
-                }}>
-                  {player.score} pts
+                <span className="col-wins" style={{fontSize: '1rem', width: 'auto'}}>
+                  {wins} pts
                 </span>
               </div>
             );
           })
         ) : (
-          <div style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
-            There is no player data available.
+          <div className="state-message" style={{padding: '10px'}}>
+            No records yet.
           </div>
         )}
       </div>

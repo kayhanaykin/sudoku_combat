@@ -8,6 +8,8 @@
 #include <ctime>        // std::time
 #include <iomanip>		// std::setprecision
 #include <chrono>
+#include <pqxx/pqxx>
+#include <string>
 
 #include "../tools/asio.hpp" 	// crow icin gerekiyor
 #include "../tools/crow_all.h"   // cpp koda webserv ozelligi veriyor 
@@ -65,3 +67,8 @@ bool	solve_with_logic(std::array<std::array<int, 9>, 9> grid, SolverStats& stats
 
 //play.cpp
 void	play(std::array<std::array<int, 9>, 9>& grid, std::array<std::array<int, 9>, 9>& grid_solved);
+
+// create_db.cpp
+pqxx::connection* create_connection();
+void init_game_db();
+void update_stats(int user_id, std::string mode, bool is_win);

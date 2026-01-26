@@ -5,7 +5,8 @@ import { loginUser } from '../../services/api';
 const INTRA_AUTH_URL = "https://localhost:8443/api/user/auth/login/";
 
 const Login = ({ isOpen, onClose }) => {
-  if (!isOpen) return null;
+  if (!isOpen)
+    return null;
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -17,13 +18,18 @@ const Login = ({ isOpen, onClose }) => {
     setError(null);
     setIsLoading(true);
 
-    try {
+    try
+    {
       const response = await loginUser(username, password);
       console.log(response);
       onClose();
-    } catch (err) {
+    }
+    catch (err)
+    {
       setError(err.message);
-    } finally {
+    }
+    finally
+    {
       setIsLoading(false);
     }
   };

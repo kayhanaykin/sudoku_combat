@@ -19,11 +19,34 @@ services:
   game_service:
     build: ./requirements/game_service
     container_name: game_service
-    expose:
-      - "8080"
+    depends_on:
+      statistics_db:
+        condition: service_healthy
     networks:
       - transcendence_network
-    restart: unless-stopped
+    environment:
+      - DB_HOST=statistics_db
+      - DB_PORT=5432
+      - DB_USER=bn_user
+      - DB_PASS=bn_pass
+      - DB_NAME=game_stats_db
+
+  statistics_db:
+    image: postgres:15-alpine
+    container_name: statistics_db
+    environment:
+      POSTGRES_USER: bn_user
+      POSTGRES_PASSWORD: bn_pass
+      POSTGRES_DB: game_stats_db
+    volumes:
+      - statistics_db_data:/var/lib/postgresql/data 
+    networks:
+      - transcendence_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bn_user -d game_stats_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 # ===== USER SERVICE =====
   user_service:
@@ -47,21 +70,18 @@ services:
       - transcendence_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s     # How often to check
-      timeout: 5s      # How long to wait for a response
-      retries: 5       # How many failures before marking as "unhealthy"
-      start_period: 5s # Grace period for the initial boot
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
 
   # --- FRONTEND (REACT) ---
   frontend:
       build:
-        # Docker, build işlemi için bu klasöre bakacak:
         context: ./requirements/frontend
         dockerfile: Dockerfile
       container_name: react_frontend
       volumes:
-        # KRİTİK NOKTA: Bilgisayarındaki requirements/frontend klasörünü
-        # konteynerin içine bağlıyoruz.
         - ./requirements/frontend:/app
         - /app/node_modules
       networks:
@@ -77,3 +97,4 @@ networks:
 
 volumes:
   user_db_data:
+  statistics_db_data:

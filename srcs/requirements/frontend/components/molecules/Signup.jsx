@@ -18,13 +18,18 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) => {
     setError(null);
     setIsLoading(true);
 
-    try {
+    try
+    {
       const response = await registerUser(username, email, password);
       console.log("Register successful:", response);
       onClose();
-    } catch (err) {
+    }
+    catch (err)
+    {
       setError(err.message);
-    } finally {
+    }
+    finally
+    {
       setIsLoading(false);
     }
   };

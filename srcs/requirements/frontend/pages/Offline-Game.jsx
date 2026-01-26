@@ -3,9 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { makeMove } from '../services/api';
 import '../styles/Game.css';
 
-// --- YARDIMCI FONKSİYONLAR ---
 const formatBoardFromData = (rawBoard) => {
-  if (!rawBoard) return [];
+  if (!rawBoard)
+    return [];
   return rawBoard.map(row => 
     row.map(num => ({
       value: num,
@@ -21,88 +21,78 @@ const OfflineGame = () => {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // --- STATE ---
   const [board, setBoard] = useState(EMPTY_BOARD);
   const [gameId, setGameId] = useState(null);
   const [selectedCell, setSelectedCell] = useState(null);
   const [timer, setTimer] = useState("00:00");
-  const [difficulty, setDifficulty] = useState("Medium"); // Varsayılan
-
-  // Hata Mesajı ve Can Sistemi
+  const [difficulty, setDifficulty] = useState("Medium");
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [lives, setLives] = useState(3); 
   const [isGameOver, setIsGameOver] = useState(false);
 
-  // --- BAŞLANGIÇ AYARLARI ---
   useEffect(() => {
     if (location.state) {
         const { gameData, difficulty: diffLevel } = location.state;
-        
-        if (gameData) {
+        if (gameData)
+        {
             const rawBoard = gameData.board || gameData.grid;
             const id = gameData.gameId;
-            if (rawBoard) setBoard(formatBoardFromData(rawBoard));
-            if (id) setGameId(id);
+            if (rawBoard)
+              setBoard(formatBoardFromData(rawBoard));
+            if (id)
+              setGameId(id);
         }
-        
-        // Zorluk seviyesini metne çevir (Home'dan sayı olarak geliyor olabilir)
-        if (diffLevel) {
+        if (diffLevel)
+        {
             const levels = {1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme'};
-            // Eğer string gelirse direkt kullan, sayı gelirse çevir
             setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
         }
     }
   }, [location]);
 
-  // --- ZAMANLAYICI ---
   useEffect(() => {
-    if (isGameOver) return;
-    
-    // Basit bir sayaç (Şimdilik sabit artıyor, Date.now() ile geliştirilebilir)
-    const interval = setInterval(() => {
-        setTimer(prev => prev); 
-    }, 1000);
+    if (isGameOver)
+      return;
+    const interval = setInterval(() => { setTimer(prev => prev); }, 1000);
     return () => clearInterval(interval);
   }, [isGameOver]);
 
   const handleCellClick = (r, c) => {
-    if (isGameOver) return;
+    if (isGameOver)
+      return;
     setSelectedCell({ r, c });
   };
 
-  // --- HAMLE MANTIĞI ---
   const handleInput = async (number) => {
-    if (!selectedCell || isGameOver) return;
+    if (!selectedCell || isGameOver)
+      return;
     const { r, c } = selectedCell;
+    if (board[r][c].isFixed)
+      return;
 
-    if (board[r][c].isFixed) return;
-
-    // 1. Optimistic Update (Hızlı Görünüm)
     const newBoard = [...board];
     newBoard[r] = [...newBoard[r]];
-    newBoard[r][c] = { 
-      ...newBoard[r][c], 
-      value: number, 
-      isError: false 
-    };
+    newBoard[r][c] = { ...newBoard[r][c], value: number, isError: false };
     setBoard(newBoard);
     setShowError(false);
 
-    try {
+    try
+    {
       const result = await makeMove(gameId || '1', r, c, number);
-      
-      // HATA KONTROLÜ (Silme işlemi hariç)
-      if (result.correct === false && number !== 0) {
-        
+      if (result.correct === false && number !== 0)
+      {
         const newLives = lives - 1;
         setLives(newLives);
-
-        if (newLives === 0) {
+        
+        if (newLives === 0)
+        {
             setErrorMessage("GAME OVER 💀");
             setIsGameOver(true);
             setShowError(true);
-        } else {
+        }
+        else
+        {
             setErrorMessage("Wrong Move! 💔");
             setShowError(true);
             setTimeout(() => setShowError(false), 1500);
@@ -115,18 +105,19 @@ const OfflineGame = () => {
           return updated;
         });
       }
-    } catch (error) {
-      console.error("Validation error:", error);
-    }
+    } catch (error) { console.error("Validation error:", error); }
   };
 
-  // --- KLAVYE KONTROLÜ ---
   useEffect(() => {
     const handleKeyDown = (e) => {
-        if (!selectedCell || isGameOver) return;
-        if (e.key >= '1' && e.key <= '9') handleInput(parseInt(e.key));
-        else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') handleInput(0);
-        else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        if (!selectedCell || isGameOver)
+          return;
+        if (e.key >= '1' && e.key <= '9')
+          handleInput(parseInt(e.key));
+        else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0')
+          handleInput(0);
+        else if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key))
+        {
             e.preventDefault();
             moveSelection(e.key);
         }
@@ -137,14 +128,17 @@ const OfflineGame = () => {
 
   const moveSelection = (key) => {
     let { r, c } = selectedCell;
-    if (key === 'ArrowUp') r = Math.max(0, r - 1);
-    if (key === 'ArrowDown') r = Math.min(8, r + 1);
-    if (key === 'ArrowLeft') c = Math.max(0, c - 1);
-    if (key === 'ArrowRight') c = Math.min(8, c + 1);
+    if (key === 'ArrowUp')
+        r = Math.max(0, r - 1);
+    if (key === 'ArrowDown')
+        r = Math.min(8, r + 1);
+    if (key === 'ArrowLeft')
+        c = Math.max(0, c - 1);
+    if (key === 'ArrowRight')
+        c = Math.min(8, c + 1);
     setSelectedCell({ r, c });
   };
 
-  // --- KALP GÖSTERİMİ ---
   const renderHearts = () => {
     const hearts = [];
     for (let i = 1; i <= 3; i++) {
@@ -160,36 +154,26 @@ const OfflineGame = () => {
   return (
     <div className="game-container">
       
-      {/* ÜST PANEL: SÜRE VE ZORLUK (Online ile Aynı) */}
-      <div className="game-header">
-        <button className="home-btn" onClick={() => navigate('/')}>
+      <button className="fixed-home-btn" onClick={() => navigate('/')}>
           <span className="btn-icon">🏠</span>
-          <span className="btn-text">Give Up</span>
-        </button>
-        
-        <div style={{display: 'flex', gap: '10px'}}>
-            <div className="timer-box">{timer}</div>
-            <div className="timer-box" style={{backgroundColor: '#ffeaa7'}}>
-                {difficulty}
-            </div>
-        </div>
-        
-        <div className="header-spacer"></div>
+          <span className="btn-text">Go to Home</span>
+      </button>
+
+      <div className="game-header">
+        <div className="info-badge timer">{timer}</div>
+        <div className="info-badge difficulty">{difficulty}</div>
       </div>
 
       <div className="game-main-area">
         
-        {/* SOL PANEL: OYUNCU PROFİLİ (Online ile Aynı) */}
         <div className="player-card">
-           <div>Player 1 (You)</div>
+           <div className="card-title">Player 1</div>
            <small>Score: 0</small>
            {renderHearts()}
         </div>
 
-        {/* ORTA PANEL: SUDOKU TAHTASI */}
         <div className="sudoku-board">
           
-          {/* HÜCRELER */}
           {board.map((row, rIndex) => (
             <React.Fragment key={rIndex}>
               {row.map((cell, cIndex) => (
@@ -208,26 +192,22 @@ const OfflineGame = () => {
             </React.Fragment>
           ))}
 
-          {/* HATA MESAJI (En sonda kalarak CSS düzenini bozmuyor) */}
           <div 
-            className={`error-toast ${showError ? 'visible' : ''}`} 
-            style={isGameOver ? {backgroundColor: '#2c3e50', opacity: 1, visibility: 'visible'} : {}}
+            className={`center-toast ${showError ? 'visible' : ''}`} 
+            style={isGameOver ? {backgroundColor: 'rgba(44, 62, 80, 0.95)', opacity: 1, visibility: 'visible'} : {}}
           >
             {errorMessage}
+            {isGameOver && <div style={{fontSize: '0.5em', marginTop: '10px', fontWeight:'normal'}}>Press Home to Exit</div>}
           </div>
 
         </div>
 
-        {/* SAĞ PANEL: OFFLINE BİLGİSİ (Simetri İçin) */}
-        <div className="player-card" style={{opacity: 0.8}}>
-           <div>Mode</div>
-           <small style={{fontSize: '1.2rem', marginTop: '5px'}}>
-               Offline
-           </small>
+        <div className="player-card right-card">
+           <div className="card-title">Mode</div>
+           <div className="mode-text">Offline</div>
         </div>
       </div>
 
-      {/* ALT KONTROLLER */}
       <div className="controls-area">
         <button className="action-btn" onClick={() => handleInput(0)} disabled={isGameOver}>Erase</button>
         <button className="action-btn" disabled={isGameOver}>Hint</button>
