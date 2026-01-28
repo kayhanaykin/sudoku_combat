@@ -5,12 +5,16 @@ class CustomUser(AbstractUser):
     # 42 Intra Data
     intra_id = models.IntegerField(unique=True, null=True, blank=True)
     display_name = models.CharField(max_length=50, unique=True, null=True, blank=True)
+    avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
     avatar_url = models.URLField(max_length=500, null=True, blank=True)
     
     # 2FA Data (Security Requirement)
     is_2fa_enabled = models.BooleanField(default=False)
     two_factor_secret = models.CharField(max_length=32, null=True, blank=True)
     
+    # Flag to check if they finished custom form
+    is_profile_complete = models.BooleanField(default=False)
+
     # Social Features (Friends & Status)
     is_online = models.BooleanField(default=False)
     # symmetrical=False means if I follow you, you don't automatically follow me
@@ -18,3 +22,13 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.username} ({self.display_name})"
+
+
+class Relationship(models.Model):
+    from_user = models.ForeignKey(CustomUser, related_name='sent_requests', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(CustomUser, related_name='received_requests', on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=[('pending', 'Pending'), ('friends', 'Friends')], default='pending')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('from_user', 'to_user')

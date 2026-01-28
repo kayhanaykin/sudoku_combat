@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body style="font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; padding: 40px 20px;">
+
+    <div style="width: 100%; max-width: 500px; text-align: center; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <a href="/" style="text-decoration: none; color: #007bff; font-weight: 600;">← Back to Landing Page</a>
+                <span>Dashboard</span>
+        </div>
+        <div style="margin-bottom: 20px;">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff;">
+            {% else %}
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: #eee; margin: 0 auto; display: flex; align-items: center; justify-content: center;">No Photo</div>
+            {% endif %}
+        </div>
+
+        <h1 style="margin: 0; font-size: 1.5em;">{{ user.display_name|default:user.username }}</h1>
+        <p style="color: #6c757d; margin-bottom: 20px;">{{ user.email }}</p>
+
+        <a href="{% url 'edit_profile' %}" style="display: inline-block; padding: 8px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; margin-bottom: 10px;">Edit Profile</a>
+        
+        <form action="/logout/" method="post">
+            {% csrf_token %}
+            <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.9em;">Logout</button>
+        </form>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        <h3 style="text-align: left; font-size: 1.1em;">Add a Friend</h3>
+        <form method="post" style="display: flex; gap: 5px; margin-bottom: 20px;">
+            {% csrf_token %}
+            <input type="text" name="target_username" placeholder="Username" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+            <button type="submit" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Add</button>
+        </form>
+
+        {% if pending_requests %}
+            <div style="background: #fff3cd; padding: 10px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
+                <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 0.9em;">Requests:</p>
+                {% for req in pending_requests %}
+                    <form method="post" style="display: flex; justify-content: space-between; align-items: center;">
+                        {% csrf_token %}
+                        <span style="font-size: 0.85em;">{{ req.from_user.username }}</span>
+                        <input type="hidden" name="approve_id" value="{{ req.id }}">
+                        <button type="submit" style="background: #007bff; color: white; border: none; padding: 3px 8px; border-radius: 4px; font-size: 0.8em;">Approve</button>
+                    </form>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h3 style="text-align: left; font-size: 1.1em;">Friends List</h3>
+        <ul style="list-style: none; padding: 0; text-align: left;">
+            {% for rel in friends %}
+                <li style="padding: 5px 0; border-bottom: 1px solid #f9f9f9; font-size: 0.9em;">
+                    • {% if rel.from_user == user %}{{ rel.to_user.username }}{% else %}{{ rel.from_user.username }}{% endif %}
+                </li>
+            {% empty %}
+                <li style="color: #999; font-size: 0.8em;">No friends yet.</li>
+            {% endfor %}
+        </ul>
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 20px;">
+
+        <div style="margin-top: 40px; border-top: 1px solid #fee2e2; padding-top: 20px;">
+            <a href="{% url 'delete_profile' %}" style="color: #dc3545; font-size: 0.85em; text-decoration: none; font-weight: 500;">
+                Delete Account
+            </a>
+        </div>
+    </div>
+</body>
+</html>

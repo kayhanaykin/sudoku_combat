@@ -12,3 +12,24 @@ srcs/requirements/backend/cpp_backend/tools/crow_all.h
 *.o
 *.exe
 sudoku_server
+
+# Python junk
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Word/Excel temporary files
+~$*
+
+# Django specific
+db.sqlite3
+db.sqlite3-journal
+
+# Docker
+.docker-compose.un~
+
+# Common OS files
+.DS_Store
+Thumbs.db

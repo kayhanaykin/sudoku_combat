@@ -37,8 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'rest_framework',
 	'user_app',
+	'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -60,6 +60,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -146,5 +147,51 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.TemplateHTMLRenderer', # Add this!
     ]
 }
+
+LOGIN_URL = '/'  # Where to send users if they try to access a protected page
+LOGIN_REDIRECT_URL = '/dashboard/' # Default success page
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=365), # Long-lived
+    'ROTATE_REFRESH_TOKENS': True,                 # New token on every refresh
+    'BLACKLIST_AFTER_ROTATION': True,              # Old tokens become invalid
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+
+# The URL used to access media files via browser
+MEDIA_URL = '/media/'
+
+# The absolute filesystem path to the directory that will hold user-uploaded files
+# This must match the internal path in your Docker container
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Required for Django to accept POST requests through your Nginx proxy
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost',
+    'https://127.0.0.1',
+    'https://ekay.42.fr' # Add your school domain here too
+]
+
+# Ensure the media directory exists
+if not os.path.exists(MEDIA_ROOT):
+    os.makedirs(MEDIA_ROOT)
+
+# 1. Trust the port 8443 for CSRF
+CSRF_TRUSTED_ORIGINS = [
+    'https://localhost:8443',
+    'https://127.0.0.1:8443',
+    'https://ekay.42.fr:8443',
+]
+
+# 2. Ensure Django knows it's behind an HTTPS proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# 3. Add these to help Django handle the port correctly
+USE_X_FORWARDED_HOST = True
+USE_X_FORWARDED_PORT = True

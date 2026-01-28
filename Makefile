@@ -47,4 +47,13 @@ list:
 	@echo "$(GREEN)Listing running containers...$(RESET)"
 	@docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-.PHONY: all clean fclean re build list down
+# Run Django Migrations (Crucial for changed models)
+migrate:
+	@echo "$(GREEN)Running migrations...$(RESET)"
+	@$(COMPOSE) exec user_service python manage.py makemigrations
+	@$(COMPOSE) exec user_service python manage.py migrate
+
+logs:
+	@$(COMPOSE) logs -f user_service nginx
+
+.PHONY: all clean fclean re build list down migrate logs up
