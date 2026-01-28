@@ -53,10 +53,10 @@ services:
       - transcendence_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s     # How often to check
-      timeout: 5s      # How long to wait for a response
-      retries: 5       # How many failures before marking as "unhealthy"
-      start_period: 5s # Grace period for the initial boot
+      interval: 1s #5s     # How often to check
+      timeout: 1s #5s      # How long to wait for a response
+      retries: 1 #5       # How many failures before marking as "unhealthy"
+      start_period: 1s #5s # Grace period for the initial boot
     
   statistics_db:
     image: postgres:15-alpine
@@ -74,6 +74,23 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+  combat_db:
+    image: postgres:15-alpine
+    container_name: combat_db
+    env_file:
+      - .env
+    volumes:
+      - combat_db:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - transcendence_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 1s #5s     # How often to check
+      timeout: 1s #5s      # How long to wait for a response
+      retries: 1 #5       # How many failures before marking as "unhealthy"
+      start_period: 1s #5s # Grace period for the initial boot
 
   # --- FRONTEND (REACT) ---
   frontend:
@@ -99,3 +116,4 @@ volumes:
   user_db_data:
   user_media:
   statistics_db_data:
+  combat_db:
