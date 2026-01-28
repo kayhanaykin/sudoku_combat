@@ -10,6 +10,8 @@ services:
       - "8443:443"
     volumes:
       - ./web_content:/var/www/html:ro
+      - user_media:/var/www/media:ro
+    restart: unless-stopped
     networks:
       - transcendence_network
     depends_on:
@@ -30,6 +32,9 @@ services:
     build: ./requirements/user_service
     container_name: user_service
     env_file: .env
+    volumes:
+      - ./requirements/user_service:/app
+      - user_media:/app/media
     depends_on:
       user_db:
         condition: service_healthy
@@ -58,3 +63,4 @@ networks:
 
 volumes:
   user_db_data:
+  user_media:
