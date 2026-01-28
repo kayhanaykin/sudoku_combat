@@ -4,7 +4,8 @@ import { makeMove } from '../services/api';
 import '../styles/Game.css';
 
 const formatBoardFromData = (rawBoard) => {
-  if (!rawBoard) return [];
+  if (!rawBoard)
+    return [];
   return rawBoard.map(row => 
     row.map(num => ({
       value: num,
@@ -25,7 +26,6 @@ const OnlineGame = () => {
   const [selectedCell, setSelectedCell] = useState(null);
   const [timer, setTimer] = useState("00:00");
   const [difficulty, setDifficulty] = useState("Medium");
-
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [lives, setLives] = useState(3);
@@ -162,6 +162,22 @@ const OnlineGame = () => {
     return <div className="hearts-container">{hearts}</div>;
   };
 
+  const isHighlighted = (r, c) => {
+    if (!selectedCell)
+      return false;
+    const { r: selR, c: selC } = selectedCell;
+    
+    if (selR === r && selC === c)
+      return false;
+
+    const sameRow = (r === selR);
+    const sameCol = (c === selC);
+    const sameBox = Math.floor(r / 3) === Math.floor(selR / 3) && 
+                    Math.floor(c / 3) === Math.floor(selC / 3);
+
+    return sameRow || sameCol || sameBox;
+  };
+
   return (
     <div className="game-container">
       
@@ -191,19 +207,24 @@ const OnlineGame = () => {
           
           {board.map((row, rIndex) => (
             <React.Fragment key={rIndex}>
-              {row.map((cell, cIndex) => (
-                <div
-                  key={`${rIndex}-${cIndex}`}
-                  className={`sudoku-cell 
-                    ${selectedCell?.r === rIndex && selectedCell?.c === cIndex ? 'selected' : ''}
-                    ${cell.isFixed ? 'fixed' : ''}
-                    ${cell.isError ? 'error' : ''}
-                  `}
-                  onClick={() => handleCellClick(rIndex, cIndex)}
-                >
-                  {cell.value !== 0 ? cell.value : ''}
-                </div>
-              ))}
+              {row.map((cell, cIndex) => {
+                const highlightClass = isHighlighted(rIndex, cIndex) ? 'highlighted-area' : '';
+
+                return (
+                  <div
+                    key={`${rIndex}-${cIndex}`}
+                    className={`sudoku-cell 
+                      ${selectedCell?.r === rIndex && selectedCell?.c === cIndex ? 'selected' : ''}
+                      ${highlightClass}
+                      ${cell.isFixed ? 'fixed' : ''}
+                      ${cell.isError ? 'error' : ''}
+                    `}
+                    onClick={() => handleCellClick(rIndex, cIndex)}
+                  >
+                    {cell.value !== 0 ? cell.value : ''}
+                  </div>
+                );
+              })}
             </React.Fragment>
           ))}
           
