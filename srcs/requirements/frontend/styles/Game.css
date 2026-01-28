@@ -272,7 +272,28 @@
   border-radius: 0.6vmin;
   cursor: pointer;
 }
-.num-key:active { transform: scale(0.95); }
+.num-key:active
+{
+  transform: scale(0.95);
+}
+
+.sudoku-cell.highlighted-area
+{
+  background-color: #e3f2fd !important;
+  transition: background-color 0.2s ease;
+}
+
+.sudoku-cell.fixed.highlighted-area
+{
+  background-color: #d1e5f5 !important;
+}
+
+.sudoku-cell.selected
+{
+  background-color: #86c1f1 !important;
+  color: white !important;
+  border-color: #1976d2;
+}
 
 @media (max-width: 768px)
 {
@@ -287,4 +308,63 @@
   .sudoku-board, .numpad-grid, .game-header { width: 80vmin; }
   .sudoku-board { height: 80vmin; }
   .numpad-grid { grid-template-columns: repeat(5, 1fr); }
+}
+
+.modal-overlay
+{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(1px);
+}
+
+.modal-content
+{
+  background-color: white;
+  padding: 25px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+
+.modal-title
+{
+  font-size: 1.5rem;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.modal-message
+{
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.modal-btn
+{
+  background-color: #27ae60;
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  font-size: 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modal-btn:hover
+{
+  background-color: #2ecc71;
 }

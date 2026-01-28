@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../src/context/AuthContext';
 import Navbar from '../components/molecules/Navbar';
 import Leaderboard from '../components/organisms/Leaderboard';
 import DifficultyModal from '../components/organisms/DifficultyModal';
@@ -8,10 +9,17 @@ import '../styles/Home.css';
 
 const Home = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
   const [selectedMode, setSelectedMode] = useState(null);
 
   const handlePlayClick = (mode) => {
+    if (mode === 'online' && !user)
+    {
+      alert("Please log in to play Online mode!");
+      return;
+    }
+
     setSelectedMode(mode);
     setIsDifficultyOpen(true);
   };
@@ -25,7 +33,9 @@ const Home = () => {
         navigate('/offline-game', { state: { gameData, difficulty } });
       else
         navigate('/online-game', { state: { gameData, difficulty } });
-    } catch (error) {
+    }
+    catch (error)
+    {
       console.error("Error starting game:", error);
       alert("Could not start the game. Check console.");
     }
@@ -40,11 +50,19 @@ const Home = () => {
           
           <div className="actions-column">
             
-            <div className="mode-card online" onClick={() => handlePlayClick('online')}>
-              <div className="icon-wrapper">⚔️</div>
+            <div 
+              className={`mode-card online ${!user ? 'disabled' : ''}`} 
+              onClick={() => handlePlayClick('online')}
+              style={{ opacity: !user ? 0.6 : 1, cursor: !user ? 'not-allowed' : 'pointer' }}
+              title={!user ? "Login required" : ""}
+            >
+              <div className="icon-wrapper">
+                {!user ? '🔒' : '⚔️'}
+              </div>
               <div className="card-content">
                 <h2>Play Online</h2>
                 <p>Play with friends or random opponents</p>
+                {!user && <small style={{color: '#e74c3c', fontWeight: 'bold'}}>Login required</small>}
               </div>
             </div>
 

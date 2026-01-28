@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import '../../styles/login.css';
+import { useAuth } from '../../src/context/AuthContext';
 import { loginUser } from '../../services/api';
+import '../../styles/login.css';
 
 const INTRA_AUTH_URL = "https://localhost:8443/api/user/auth/login/";
 
 const Login = ({ isOpen, onClose }) => {
-  if (!isOpen)
-    return null;
-
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  if (!isOpen)
+    return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,13 +22,13 @@ const Login = ({ isOpen, onClose }) => {
 
     try
     {
-      const response = await loginUser(username, password);
-      console.log(response);
+      const userData = await loginUser(username, password);
+      login(userData);
       onClose();
     }
     catch (err)
     {
-      setError(err.message);
+      setError(err.message || "Login failed");
     }
     finally
     {
@@ -45,7 +47,7 @@ const Login = ({ isOpen, onClose }) => {
         
         <form onSubmit={handleSubmit} className="login-form">
           {error && (
-            <div style={{ color: '#e74c3c', textAlign: 'center', fontSize: '0.9rem' }}>
+            <div style={{ color: '#e74c3c', textAlign: 'center', fontSize: '0.9rem', marginBottom: '10px' }}>
               {error}
             </div>
           )}
