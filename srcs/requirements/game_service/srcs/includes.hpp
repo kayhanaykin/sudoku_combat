@@ -72,3 +72,6 @@ void	play(std::array<std::array<int, 9>, 9>& grid, std::array<std::array<int, 9>
 pqxx::connection* create_connection();
 void init_game_db();
 void update_stats(int user_id, std::string mode, bool is_win);
+
+// hint.cpp
+crow::json::wvalue generate_hint_wrapper(std::array<std::array<int, 9>, 9> current_grid);
