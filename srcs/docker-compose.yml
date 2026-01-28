@@ -41,6 +41,7 @@ services:
     restart: unless-stopped
     networks:
       - transcendence_network
+  
   user_db:
     image: postgres:15-alpine
     container_name: user_db
@@ -56,6 +57,39 @@ services:
       timeout: 5s      # How long to wait for a response
       retries: 5       # How many failures before marking as "unhealthy"
       start_period: 5s # Grace period for the initial boot
+    
+  statistics_db:
+    image: postgres:15-alpine
+    container_name: statistics_db
+    environment:
+      POSTGRES_USER: bn_user
+      POSTGRES_PASSWORD: bn_pass
+      POSTGRES_DB: game_stats_db
+    volumes:
+      - statistics_db_data:/var/lib/postgresql/data 
+    networks:
+      - transcendence_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bn_user -d game_stats_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --- FRONTEND (REACT) ---
+  frontend:
+      build:
+        context: ./requirements/frontend
+        dockerfile: Dockerfile
+      container_name: react_frontend
+      volumes:
+        - ./requirements/frontend:/app
+        - /app/node_modules
+      networks:
+        - transcendence_network
+      restart: always
+      ports:
+        - "5173:5173"
+      command: ["npm", "run", "dev", "--", "--host"]
 
 networks:
   transcendence_network:
@@ -64,3 +98,4 @@ networks:
 volumes:
   user_db_data:
   user_media:
+  statistics_db_data:
