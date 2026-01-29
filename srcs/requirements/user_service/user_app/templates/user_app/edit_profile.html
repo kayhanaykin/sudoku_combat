@@ -1,0 +1,29 @@
+<div style="padding: 20px; font-family: sans-serif; max-width: 500px; margin: auto;">
+    <h2 style="border-bottom: 2px solid #eee; padding-bottom: 10px;">Edit Profile</h2>
+
+    <form method="post" enctype="multipart/form-data" style="background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+        {% csrf_token %}
+
+        <div style="text-align: center; margin-bottom: 25px;">
+            <p style="color: #666; font-weight: bold;">Current Avatar</p>
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff; padding: 3px;">
+            {% else %}
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: #e0e0e0; display: inline-flex; align-items: center; justify-content: center; color: #888;">
+                    No Photo
+                </div>
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            {{ form.as_p }}
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 30px;">
+            <button type="submit" style="background: #28a745; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; font-size: 1em; font-weight: bold;">
+                Save Changes
+            </button>
+            <a href="{% url 'dashboard' %}" style="color: #dc3545; text-decoration: none; font-weight: 500;">Cancel</a>
+        </div>
+    </form>
+</div>

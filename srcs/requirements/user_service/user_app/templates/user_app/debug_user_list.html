@@ -1,0 +1,58 @@
+<div style="padding: 20px; font-family: sans-serif;">
+    <h2 style="color: #d9534f;">🛠️ Developer User Directory</h2>
+    <p><em>Note: This page is accessible to everyone. Delete before deployment!</em></p>
+
+    <table border="1" style="width:100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #333; color: white;">
+                <th style="padding: 10px;">ID</th>
+                <th style="padding: 10px;">Type</th>
+                <th style="padding: 10px;">Username</th>
+                <th style="padding: 10px;">Display Name</th>
+                <th style="padding: 10px;">Email</th>
+                <th style="padding: 10px;">Profile Status</th>
+                <th style="padding: 10px;">Password (Hash)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td style="padding: 8px; text-align: center;">{{ user.id }}</td>
+                <td style="padding: 8px; text-align: center;">
+                    {% if user.intra_id %}
+                        <b style="color: #007bff;">42 Intra</b>
+                    {% else %}
+                        <b style="color: #28a745;">Local</b>
+                    {% endif %}
+                </td>
+                <td style="padding: 8px;">{{ user.username }}</td>
+                <td style="padding: 8px;">{{ user.display_name }}</td>
+                <td style="padding: 8px;">{{ user.email }}</td>
+                <td style="padding: 8px; text-align: center;">
+                    {% if user.is_profile_complete %}
+                        ✅ Complete
+                    {% else %}
+                        ⚠️ Incomplete
+                    {% endif %}
+                </td>
+                <td style="padding: 8px;">
+                    {% if user.intra_id %}
+                        <span style="color: #999;">N/A (OAuth)</span>
+                    {% else %}
+                        <code>{{ user.password|truncatechars:15 }}</code>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="7" style="padding: 20px; text-align: center;">No users found in database.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div style="margin-top: 30px;">
+        <a href="{% url 'landing' %}" style="text-decoration: none; padding: 10px 20px; background: #666; color: white; border-radius: 4px;">
+            ← Back to Landing
+        </a>
+    </div>
+</div>

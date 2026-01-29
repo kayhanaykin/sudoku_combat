@@ -1,28 +1,23 @@
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Welcome to Sudoku Combat</h1>
+<div class="login-container" style="text-align: center; margin-top: 50px;">
+    <h2>Local Sign In</h2>
     
-    {% if user.is_authenticated %}
-        <p>You are already logged in as <b>{{ user.username }}</b>.</p>
-        <a href="/dashboard/">Go to Dashboard</a>
-    {% else %}
-        <div>
-            <h3>Option 1: Social</h3>
-            <a href="/api/user/auth/login/" style="padding: 10px; background: black; color: white; text-decoration: none;">
-                Login with 42 Intra
-            </a>
+    <form method="post" style="display: inline-block; text-align: left; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <p style="color: red;">Invalid username or password.</p>
+        {% endif %}
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            {{ form.as_p }}
         </div>
-        <hr>
-        <div>
-            <h3>Option 2: Local</h3>
-            <form action="/local-login/" method="post">
-                {% csrf_token %}
-                <input type="text" name="username" placeholder="Username"><br>
-                <input type="password" name="password" placeholder="Password"><br>
-                <button type="submit">Login</button>
-            </form>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Log In
         </div>
-    {% endif %}
-</body>
-</html>
+    </form>
+
+    <p style="margin-top: 20px;">
+        <a href="{% url 'landing' %}">← Back to Options</a>
+    </p>
+</div>
