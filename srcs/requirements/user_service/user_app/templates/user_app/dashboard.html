@@ -1,13 +1,162 @@
 <!DOCTYPE html>
-<html>
-<body>
-    <h1>Dashboard</h1>
-    <p>Hello, {{ user.username }}!</p>
-    <p>Email: {{ user.email }}</p>
-    
-    <form action="/logout/" method="post">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body style="font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; margin: 0; display: flex; justify-content: center; padding: 40px 20px;">
+
+    <div style="width: 100%; max-width: 500px; text-align: center; background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+        
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <a href="/" style="text-decoration: none; color: #007bff; font-weight: 600;">← Back to Landing Page</a>
+            <span>Dashboard</span>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff;">
+            {% else %}
+                <div style="width: 120px; height: 120px; border-radius: 50%; background: #eee; margin: 0 auto; display: flex; align-items: center; justify-content: center;">No Photo</div>
+            {% endif %}
+        </div>
+
+        <h1 style="margin: 0; font-size: 1.5em;">{{ user.display_name|default:user.username }}</h1>
+        <p style="color: #6c757d; margin-bottom: 20px;">{{ user.email }}</p>
+
+        <a href="{% url 'edit_profile' %}" style="display: inline-block; padding: 8px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; margin-bottom: 10px;">Edit Profile</a>
+        
+        <form action="/logout/" method="post">
+            {% csrf_token %}
+            <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.9em;">Logout</button>
+        </form>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+
+        {% if messages %}
+            <div style="margin-bottom: 20px; text-align: left;">
+                {% for message in messages %}
+                    <div style="padding: 10px; border-radius: 8px; margin-bottom: 5px; font-size: 0.85em; 
+                        {% if message.tags == 'error' %} background-color: #fee2e2; color: #991b1b;
+                        {% elif message.tags == 'success' %} background-color: #dcfce7; color: #166534;
+                        {% else %} background-color: #fef9c3; color: #854d0e; {% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h3 style="text-align: left; font-size: 1.1em;">Add a Friend</h3>
+        <form method="post" style="display: flex; gap: 5px; margin-bottom: 20px;">
+            {% csrf_token %}
+            <input type="text" name="target_username" placeholder="Username" required style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 5px;">
+            <button type="submit" style="background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Add</button>
+        </form>
+
+        {% if pending_requests %}
+            <div style="background: #fff3cd; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
+                <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 0.9em; color: #856404;">Pending Requests:</p>
+                {% for req in pending_requests %}
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; background: rgba(255,255,255,0.5); padding: 5px 8px; border-radius: 4px;">
+                        <span style="font-size: 0.85em; font-weight: 500;">{{ req.from_user.username }}</span>
+                        <form method="post" style="margin: 0;">
+                            {% csrf_token %}
+                            <input type="hidden" name="approve_id" value="{{ req.id }}">
+                            <button type="submit" style="background: #007bff; color: white; border: none; padding: 4px 10px; border-radius: 4px; font-size: 0.75em; cursor: pointer;">Approve</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <h3 style="text-align: left; font-size: 1.1em;">Friends List</h3>
+        <ul id="friends-list" style="list-style: none; padding: 0; text-align: left;">
+            {% for rel in friends %}
+                {% if rel.from_user == user %}
+                    {% with f=rel.to_user %}
+                        <li class="friend-item" data-user-id="{{ f.id }}" style="padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span id="status-dot-{{ f.id }}" style="height: 10px; width: 10px; border-radius: 50%; display: inline-block; background-color: #ccc;"></span>
+                                <span style="font-weight: 500;">{{ f.username }}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span id="status-text-{{ f.id }}" style="font-size: 0.7em; color: #999; text-transform: lowercase;">offline</span>
+                                <form method="post" style="margin: 0;" onsubmit="return confirm('Remove friend?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="remove_id" value="{{ rel.id }}">
+                                    <button type="submit" style="background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 1.2em; line-height: 1;">&times;</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endwith %}
+                {% else %}
+                    {% with f=rel.from_user %}
+                        <li class="friend-item" data-user-id="{{ f.id }}" style="padding: 10px 0; border-bottom: 1px solid #f1f1f1; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span id="status-dot-{{ f.id }}" style="height: 10px; width: 10px; border-radius: 50%; display: inline-block; background-color: #ccc;"></span>
+                                <span style="font-weight: 500;">{{ f.username }}</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <span id="status-text-{{ f.id }}" style="font-size: 0.7em; color: #999; text-transform: lowercase;">offline</span>
+                                <form method="post" style="margin: 0;" onsubmit="return confirm('Remove friend?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="remove_id" value="{{ rel.id }}">
+                                    <button type="submit" style="background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 1.2em; line-height: 1;">&times;</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endwith %}
+                {% endif %}
+            {% empty %}
+                <li style="color: #999; font-size: 0.85em; padding: 10px 0;">No friends yet.</li>
+            {% endfor %}
+        </ul>
+
+        <div style="margin-top: 40px; border-top: 1px solid #fee2e2; padding-top: 20px;">
+            <a href="{% url 'delete_profile' %}" style="color: #dc3545; font-size: 0.85em; text-decoration: none; font-weight: 500;">
+                Delete Account
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+        const presenceSocket = new WebSocket(
+            protocol + window.location.host + '/ws/presence/'
+        );
+
+        function updateFriendStatus(userId, status) {
+            const statusDot = document.getElementById(`status-dot-${userId}`);
+            const statusText = document.getElementById(`status-text-${userId}`);
+            
+            if (statusDot && statusText) {
+                statusDot.style.backgroundColor = (status === 'online') ? '#28a745' : '#ccc';
+                statusText.innerText = status;
+            }
+        }
+
+        presenceSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            console.log("WS Data Received:", data);
+
+            if (data.type === 'initial_status') {
+                // Sync the whole list
+                document.querySelectorAll('.friend-item').forEach(item => {
+                    const id = item.getAttribute('data-user-id');
+                    updateFriendStatus(id, 'offline');
+                });
+                data.online_users.forEach(userId => {
+                    updateFriendStatus(userId, 'online');
+                });
+            } else {
+                // Handle individual status update
+                updateFriendStatus(data.user_id, data.status);
+            }
+        };
+
+        presenceSocket.onclose = function(e) {
+            console.error('Presence socket closed unexpectedly');
+        };
+    </script>
 </body>
 </html>

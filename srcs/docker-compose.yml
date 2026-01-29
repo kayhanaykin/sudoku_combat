@@ -10,6 +10,8 @@ services:
       - "8443:443"
     volumes:
       - ./web_content:/var/www/html:ro
+      - user_media:/var/www/media:ro
+    restart: unless-stopped
     networks:
       - transcendence_network
     depends_on:
@@ -32,12 +34,17 @@ services:
     env_file: .env
     volumes:
       - ./requirements/user_service:/app
+      - user_media:/app/media
     depends_on:
       user_db:
         condition: service_healthy
+      user_redis:
+        condition: service_started
     restart: unless-stopped
+    command: daphne -b 0.0.0.0 -p 8000 user_project.asgi:application
     networks:
       - transcendence_network
+
   user_db:
     image: postgres:15-alpine
     container_name: user_db
@@ -53,10 +60,18 @@ services:
       timeout: 5s      # How long to wait for a response
       retries: 5       # How many failures before marking as "unhealthy"
       start_period: 5s # Grace period for the initial boot
-
+      
+  user_redis:
+    image: redis:alpine
+    container_name: user_redis
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+ 
 networks:
   transcendence_network:
     driver: bridge
 
 volumes:
   user_db_data:
+  user_media:

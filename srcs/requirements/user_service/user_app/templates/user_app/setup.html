@@ -1,21 +1,8 @@
-<!DOCTYPE html>
-<html>
-<body>
-    <h1>Complete Your Profile</h1>
-    <p>Welcome! Please choose your site identity.</p>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h2>Complete Your Profile</h2>
     
-    <form action="/profile/setup/" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label>Choose Username:</label><br>
-        <input type="text" name="display_name" required><br><br>
-        
-        <label>Email Address:</label><br>
-        <input type="email" name="email" required><br><br>
-        
-        <label>Upload Avatar:</label><br>
-        <input type="file" name="avatar"><br><br>
-        
-        <button type="submit">Save and Start Playing</button>
-    </form>
-</body>
-</html>
+    {{ form.as_p }}
+    
+    <button type="submit">Save and Start Playing</button>
+</form>
