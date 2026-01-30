@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/molecules/Navbar';
-import Leaderboard from '../components/organisms/Leaderboard';
+import Leaderboard from '../components/organisms/LeaderboardWidget';
 import DifficultyModal from '../components/organisms/DifficultyModal';
 import OnlineGameModal from '../components/molecules/OnlineGamePopup';
 import { startGame, createRoom, joinRoom } from '../services/api';
