@@ -326,3 +326,12 @@ def delete_profile_view(request):
         return redirect('landing') # Redirect to signup or home
         
     return render(request, 'user_app/delete_confirm.html')
+
+
+from rest_framework import generics
+from .models import CustomUser
+from .serializers import CustomUserSerializer
+
+class MyModelListAPI(generics.ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer
