@@ -102,3 +102,30 @@ export const getUserDetails = async (userId) => {
     return { username: `User ${userId}` };
   }
 };
+
+export const createRoom = async (userId) => {
+  const response = await fetch('/api/combat/room/create', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok)
+    throw new Error('Failed to create room');
+  return await response.json();
+};
+
+export const joinRoom = async (roomId, userId) => {
+  const response = await fetch(`/api/combat/room/join/${roomId}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId }),
+  });
+
+  if (!response.ok)
+  {
+    const err = await response.json();
+    throw new Error(err.message || 'Failed to join room');
+  }
+  return await response.json();
+};

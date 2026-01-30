@@ -17,6 +17,7 @@ services:
     depends_on:
       - game_service
       - user_service
+      - combat_service
 
   game_service:
     build: ./requirements/game_service
@@ -75,18 +76,39 @@ services:
       timeout: 5s
       retries: 5
 
+  combat_service:
+    build: ./requirements/combat_service
+    container_name: combat_service
+    env_file: .env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./requirements/combat_service:/app
+      - /app/node_modules
+    depends_on:
+      combat_db:
+        condition: service_healthy
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+    command: ["npm", "run", "start:dev"]
+
   combat_db:
     image: postgres:15-alpine
     container_name: combat_db
-    env_file:
-      - .env
+    # env_file:
+    #   - .env
+    environment:
+      POSTGRES_USER: bn_user
+      POSTGRES_PASSWORD: bn_pass
+      POSTGRES_DB: combat_db
     volumes:
       - combat_db:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - transcendence_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U bn_user -d combat_db"]
       interval: 1s #5s     # How often to check
       timeout: 1s #5s      # How long to wait for a response
       retries: 1 #5       # How many failures before marking as "unhealthy"

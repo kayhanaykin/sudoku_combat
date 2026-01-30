@@ -185,7 +185,7 @@ const OnlineGame = () => {
         
         <button className="fixed-home-btn" onClick={() => navigate('/')}>
           <span className="btn-icon">🏠</span>
-          <span className="btn-text">Give Up</span>
+          <span className="btn-text">Go to Home</span>
         </button>
         
         <div className="game-header">
