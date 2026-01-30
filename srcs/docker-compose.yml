@@ -75,13 +75,13 @@ services:
       timeout: 5s
       retries: 5
 
-  combat_db:
+  room_db:
     image: postgres:15-alpine
-    container_name: combat_db
+    container_name: room_db
     env_file:
       - .env
     volumes:
-      - combat_db:/var/lib/postgresql/data
+      - room_db:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - transcendence_network
@@ -116,4 +116,4 @@ volumes:
   user_db_data:
   user_media:
   statistics_db_data:
-  combat_db:
+  room_db:
