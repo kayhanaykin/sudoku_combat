@@ -1,7 +1,7 @@
 # Compose automatically looks for a file named .env 
 # in the directory where the docker compose command is run.
 
-export COMPOSE_BAKE=true
+# export COMPOSE_BAKE=true
 
 # Colors for pretty logs
 GREEN = \033[0;32m
