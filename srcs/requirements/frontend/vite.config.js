@@ -13,7 +13,7 @@ export default defineConfig({
     },
     hmr: {
       clientPort: 8443,
-      host: "localhost",
+      host: ["localhost", "ekay.42.fr"],
       protocol: "wss",
     }
   }

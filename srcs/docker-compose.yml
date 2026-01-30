@@ -86,12 +86,21 @@ services:
     env_file: .env
     ports:
       - "8003:8003"
-    volumes:
-      - ./requirements/combat_service:/app
-      - /app/node_modules
     depends_on:
-      combat_db:
-        condition: service_healthy
+      - room_service
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+    command: ["npm", "run", "start:dev"]
+
+  room_service:
+    build: ./requirements/room_service
+    container_name: room_service
+    env_file: .env
+    ports:
+    - "8002:8002"
+    depends_on:
+      - room_db
     networks:
       - transcendence_network
     restart: unless-stopped
