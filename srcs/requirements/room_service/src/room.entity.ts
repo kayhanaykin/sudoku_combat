@@ -9,16 +9,16 @@ export class Room
 	@Column()
 	ownerId: string;
 
-	@Column({ nullable: true })
+	@Column({ nullable: true, type: 'varchar' })
 	guestId: string | null;
 
-	@Column()
+	@Column({ type: 'json' })
 	solvedBoard: number[][];
 
-	@Column()
+	@Column({ type: 'json' })
 	currBoard: number[][];
 
-	@Column()
+	@Column({ type: 'json' })
 	health:number[];
 
 	@Column({ default: 'waiting' })

@@ -18,7 +18,7 @@ const OnlineGameModal = ({ isOpen, onClose, onCreate, onJoin, isLoading }) => {
             <p className="online-description">Start a new game and invite a friend.</p>
             <button 
               className="online-action-btn create-btn" 
-              onClick={onCreate}
+              onClick={() => onCreate("easy")}
               disabled={isLoading}
             >
               {isLoading ? 'Creating...' : '⚡ Create Room'}

@@ -7,11 +7,11 @@ import { Room } from './room.entity';
 	imports: [
 		TypeOrmModule.forRoot({
 			type: 'postgres',
-			host: process.env.DB_HOST_ROOM,
-			port: Number(process.env.DB_PORT_ROOM),
-			username: process.env.DB_USERNAME_ROOM,
-			password: process.env.DB_PASSWORD_ROOM,
-			database: process.env.DB_NAME_ROOM,
+			host: process.env.POSTGRES_DB,
+			port: Number(process.env.POSTGRES_PORT),
+			username: process.env.POSTGRES_USER,
+			password: process.env.POSTGRES_PASSWORD,
+			database: process.env.POSTGRES_DB,
 			entities: [Room],
 			synchronize: true
 		}),

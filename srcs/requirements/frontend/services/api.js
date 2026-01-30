@@ -103,11 +103,11 @@ export const getUserDetails = async (userId) => {
   }
 };
 
-export const createRoom = async (userId) => {
-  const response = await fetch('/api/combat/room/create', {
+export const createRoom = async (userId, level) => {
+  const response = await fetch('/api/room/create', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userId }),
+    body: JSON.stringify({ userId, level }),
   });
 
   if (!response.ok)
@@ -116,7 +116,7 @@ export const createRoom = async (userId) => {
 };
 
 export const joinRoom = async (roomId, userId) => {
-  const response = await fetch(`/api/combat/room/join/${roomId}`, {
+  const response = await fetch(`/api/room/join/${roomId}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ userId }),

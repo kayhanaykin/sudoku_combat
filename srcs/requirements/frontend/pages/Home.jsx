@@ -24,10 +24,10 @@ const Home = () => {
   };
 
   // --- ONLINE: ODA OLUŞTURMA ---
-  const handleCreateRoom = async () => {
+  const handleCreateRoom = async (level = "easy") => {
     setLoading(true);
     try {
-      const data = await createRoom(user.id);
+      const data = await createRoom(user.id, level);
       console.log("Room Created:", data);
 
       navigate('/online-game', { state: { roomId: data.roomId, role: 'owner' } });
