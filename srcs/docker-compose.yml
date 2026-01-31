@@ -35,6 +35,7 @@ services:
     volumes:
       - ./requirements/user_service:/app
       - user_media:/app/media
+      - /home/kaykin/Downloads:/mnt/downloads:ro
     depends_on:
       user_db:
         condition: service_healthy

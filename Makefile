@@ -56,4 +56,7 @@ migrate:
 logs:
 	@$(COMPOSE) logs -f user_service nginx
 
-.PHONY: all clean fclean re build list down migrate logs up
+seed:
+	docker exec -it user_service python seed_db.py
+
+.PHONY: all clean fclean re build list down migrate logs up seed
