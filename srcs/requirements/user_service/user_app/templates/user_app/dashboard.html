@@ -26,7 +26,7 @@
 
         <a href="{% url 'edit_profile' %}" style="display: inline-block; padding: 8px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; margin-bottom: 10px;">Edit Profile</a>
         
-        <form action="/logout/" method="post">
+        <form action="/api/user/logout/" method="post">
             {% csrf_token %}
             <button type="submit" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 0.9em;">Logout</button>
         </form>
