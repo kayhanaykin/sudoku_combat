@@ -1,4 +1,4 @@
-#include "crow_all.h" // <-- BU SATIRI EN ÜSTE EKLEMEYİ UNUTMA
+#include "crow_all.h"
 #include "includes.hpp"
 
 crow::json::wvalue generate_hint_wrapper(std::array<std::array<int, 9>, 9> current_grid) 

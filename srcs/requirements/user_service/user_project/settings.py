@@ -36,9 +36,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'daphne',
     'django.contrib.staticfiles',
 	'user_app',
 	'rest_framework',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -195,3 +197,15 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 # 3. Add these to help Django handle the port correctly
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
+
+ASGI_APPLICATION = 'user_project.asgi.application'
+
+# Configure Redis as the channel layer
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('user_redis', 6379)], # 'redis' is the service name in docker-compose
+        },
+    },
+}

@@ -1,0 +1,257 @@
+:root
+{
+  --primary-green: #4ade80;
+  --dark-green: #14532d;
+  --light-green-bg: #f0fdf4;
+  --card-bg: #ffffff;
+  --border-color: #dcfce7;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.profile-page-container
+{
+    min-height: 100vh;
+    background-color: var(--light-green-bg);
+    color: #333;
+    font-family: 'Inter', system-ui, sans-serif;
+    padding-top: 110px;
+    padding-bottom: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.o-profile-grid
+{
+    display: grid;
+    grid-template-columns: 1fr 1.2fr 1.5fr; 
+    gap: 25px;
+    width: 95%;
+    max-width: 25000px;
+    align-items: start;
+}
+
+@media (max-width: 1024px)
+{
+    .o-profile-grid
+    {
+        grid-template-columns: 1fr 1fr;
+    }
+    .m-badge-section
+    {
+        grid-column: span 2; 
+    }
+}
+
+@media (max-width: 768px)
+{
+    .o-profile-grid
+    {
+        grid-template-columns: 1fr;
+    }
+    .m-badge-section
+    {
+        grid-column: span 1;
+    }
+}
+
+.profile-card-base
+{
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    height: 95%;
+}
+
+.m-profile-column
+{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.a-profile-header
+{
+    text-align: center;
+}
+
+.a-profile-avatar
+{
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 4px solid var(--primary-green);
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+.a-profile-name
+{
+    color: var(--dark-green);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.a-profile-email
+{
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.m-friend-section h3
+{
+    color: var(--dark-green);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.m-badge-section h3
+{
+    color: var(--dark-green);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.m-badge-grid
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 15px;
+    min-height: 200px;
+}
+
+.a-badge-item
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+    background: #f9fafb;
+    border-radius: 12px;
+    transition: transform 0.2s;
+}
+
+.a-badge-item:hover
+{
+    transform: scale(1.05);
+    background: #edfdf5;
+}
+
+.a-badge-icon
+{
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.a-badge-name
+{
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+}
+
+.m-pagination-controls
+{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.a-page-btn
+{
+    background: var(--light-green-bg);
+    border: 1px solid var(--primary-green);
+    color: var(--dark-green);
+    padding: 5px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.a-page-btn:disabled
+{
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: #ddd;
+    background: #eee;
+}
+
+.green-btn
+{
+    width: 100%;
+    padding: 10px;
+    background: var(--primary-green);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background 0.2s;
+}
+
+.green-btn:hover
+{
+    background: #22c55e;
+}
+
+.green-btn.outline
+{
+    background: transparent;
+    border: 2px solid var(--primary-green);
+    color: var(--dark-green);
+}
+
+.green-btn.outline:hover
+{
+    background: var(--light-green-bg);
+}
+
+.profile-back-link
+{
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    text-decoration: none;
+    color: var(--dark-green);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.profile-back-link:hover
+{
+    color: var(--primary-green);
+    transform: translateX(-5px);
+}
+
+@media (max-width: 768px)
+{
+    .profile-back-link
+    {
+        position: static;
+        align-self: flex-start;
+        margin-bottom: 20px;
+        margin-left: 20px;
+    }
+    
+    .profile-page-container
+    {
+        padding-top: 20px;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+}

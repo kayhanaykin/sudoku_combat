@@ -33,3 +33,4 @@ db.sqlite3-journal
 # Common OS files
 .DS_Store
 Thumbs.db
+node_modules/

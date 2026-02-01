@@ -2,11 +2,7 @@
     {% csrf_token %}
     <h2>Complete Your Profile</h2>
     
-    <label>Display Name:</label>
-    <input type="text" name="display_name" required>
-    
-    <label>Upload Avatar Photo:</label>
-    <input type="file" name="avatar" accept="image/*">
+    {{ form.as_p }}
     
     <button type="submit">Save and Start Playing</button>
 </form>

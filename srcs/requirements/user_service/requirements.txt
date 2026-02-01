@@ -6,3 +6,7 @@ psycopg2-binary
 requests
 python-dotenv
 Pillow
+daphne
+channels
+channels-redis
+djangorestframework
