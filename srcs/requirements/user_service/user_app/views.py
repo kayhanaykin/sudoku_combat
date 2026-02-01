@@ -1,6 +1,6 @@
 import requests
 from django.conf import settings
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -49,12 +49,15 @@ def set_jwt_cookie_and_redirect(user, target_url=None):
 # --- AUTHENTICATION VIEWS ---
 
 class FortyTwoLoginView(APIView):
-    """Redirects the user to the 42 Authorization page."""
+    """Force logout then redirect to 42 Authorization."""
     permission_classes = [AllowAny]
     
     def get(self, request):
+        # ALWAYS logout first. This destroys the previous 'sessionid' cookie
+        # and ensures the 42 callback creates/logs in a fresh session.
         if request.user.is_authenticated:
-            return redirect('dashboard')
+            logout(request)
+            
         url = (
             f"https://api.intra.42.fr/oauth/authorize"
             f"?client_id={settings.FT_CLIENT_ID}"
@@ -121,7 +124,7 @@ class FortyTwoCallbackView(APIView):
 
 def local_signup_view(request):
     if request.method == "POST":
-        form = CustomUserCreationForm(request.POST) # Or your CustomUserCreationForm
+        form = CustomUserCreationForm(request.POST, request.FILES) # Or your CustomUserCreationForm
         if form.is_valid():
             user = form.save()
             
@@ -136,7 +139,7 @@ def local_signup_view(request):
             # Now dashboard_view will see is_profile_complete=True and let them in
             return redirect('dashboard') 
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'user_app/signup.html', {'form': form})
 
 # --- PAGE VIEWS ---
@@ -145,46 +148,80 @@ def landing_page(request):
     return render(request, 'user_app/landing.html')
 
 def profile_setup_view(request):
-    if not request.user.is_authenticated:
-        return redirect('landing')
-    
     if request.method == 'POST':
-        request.user.display_name = request.POST.get('display_name')
-        if request.FILES.get('avatar'):
-            request.user.avatar_file = request.FILES.get('avatar')
-        request.user.is_profile_complete = True
-        request.user.save()
-        return redirect('dashboard')
+        # Here we use UserProfileForm because the user already exists in the DB
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_profile_complete = True
+            user.save()
+            return redirect('dashboard')
+    else:
+        form = UserProfileForm(instance=request.user)
+    
+    return render(request, 'user_app/setup.html', {'form': form})
         
-    return render(request, 'user_app/setup.html')
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from .models import CustomUser, Relationship
+from django.db.models import Q
 
 @login_required
 def dashboard_view(request):
-    # --- FRIEND REQUEST LOGIC ---
-    if request.method == "POST" and "target_username" in request.POST:
-        target_name = request.POST.get("target_username")
-        try:
-            target_user = CustomUser.objects.get(username=target_name)
-            if target_user == request.user:
-                messages.error(request, "You cannot add yourself.")
-            else:
-                Relationship.objects.get_or_create(from_user=request.user, to_user=target_user)
-                messages.success(request, f"Request sent to {target_name}!")
-        except CustomUser.DoesNotExist:
-            messages.error(request, "User not found.")
+    if not request.user.is_authenticated:
+        return redirect('login')
 
-    if request.method == "POST" and "approve_id" in request.POST:
-        rel = Relationship.objects.get(id=request.POST.get("approve_id"), to_user=request.user)
-        rel.status = 'friends'
-        rel.save()
+    # --- 1. HANDLE ACTIONS (POST) ---
+    if request.method == "POST":
+        # ACTION: Add Friend
+        if "target_username" in request.POST:
+            target_name = request.POST.get("target_username").strip()
+            try:
+                target_user = CustomUser.objects.get(username=target_name)
+                if target_user == request.user:
+                    messages.error(request, "You cannot add yourself.")
+                else:
+                    # Check if ANY relationship already exists
+                    exists = Relationship.objects.filter(
+                        (Q(from_user=request.user, to_user=target_user) | 
+                         Q(from_user=target_user, to_user=request.user))
+                    ).exists()
+                    
+                    if exists:
+                        messages.info(request, "A request is already pending or you are already friends.")
+                    else:
+                        Relationship.objects.create(from_user=request.user, to_user=target_user, status='pending')
+                        messages.success(request, f"Request sent to {target_name}!")
+            except CustomUser.DoesNotExist:
+                messages.error(request, "User not found.")
+            return redirect('dashboard')
 
-    # --- DATA FETCHING ---
+        # ACTION: Approve Request
+        if "approve_id" in request.POST:
+            rel = get_object_or_404(Relationship, id=request.POST.get("approve_id"), to_user=request.user)
+            rel.status = 'friends'
+            rel.save()
+            messages.success(request, "Friend request approved!")
+            return redirect('dashboard')
+
+        # ACTION: Remove Friend
+        if "remove_id" in request.POST:
+            rel_id = request.POST.get("remove_id")
+            # This deletes the relationship regardless of who started it
+            Relationship.objects.filter(
+                Q(id=rel_id) & (Q(from_user=request.user) | Q(to_user=request.user))
+            ).delete()
+            messages.success(request, "Friend removed.")
+            return redirect('dashboard')
+
+    # --- 2. FETCH DATA (GET) ---
+    # Make sure these strings ('pending', 'friends') match your Model EXACTLY
     pending_requests = Relationship.objects.filter(to_user=request.user, status='pending')
     
-    # Get all friends where the relationship status is 'friends'
     friends_relations = Relationship.objects.filter(
-        (models.Q(from_user=request.user) | models.Q(to_user=request.user)),
-        status='friends'
+        Q(status='friends') & (Q(from_user=request.user) | Q(to_user=request.user))
     )
 
     return render(request, 'user_app/dashboard.html', {
@@ -289,3 +326,12 @@ def delete_profile_view(request):
         return redirect('landing') # Redirect to signup or home
         
     return render(request, 'user_app/delete_confirm.html')
+
+
+from rest_framework import generics
+from .models import CustomUser
+from .serializers import CustomUserSerializer
+
+class MyModelListAPI(generics.ListCreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = CustomUserSerializer

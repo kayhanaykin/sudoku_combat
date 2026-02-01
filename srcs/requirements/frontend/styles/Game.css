@@ -75,7 +75,11 @@
 
 .difficulty
 {
-  background-color: #ffeaa7; border: 0.2vmin solid #f1c40f;
+  background-color: #ff5151;
+  border: 0.2vmin solid #f50800;
+  font-size: 1.8vmin;
+  font-weight: bold;
+  color: #ffffff
 }
 
 .game-main-area
@@ -93,7 +97,6 @@
   padding: 1.5vmin;
   border-radius: 1vmin;
   text-align: center;
-  box-shadow: 0 0.5vmin 1vmin rgba(0,0,0,0.1);
   width: 12vmin; 
   height: 12vmin;
   display: flex;
@@ -106,12 +109,18 @@
 
 .card-title
 {
-  font-weight: bold; font-size: 1.6vmin;
+  background-color: #e5e7eb;
+  font-weight: bold;
+  font-size: 1.6vmin;
+  color: #000505;
+  display: flex;
 }
 
 .mode-text
 {
-  font-size: 1.8vmin; font-weight: bold; color: #7f8c8d;
+  font-size: 1.8vmin;
+  font-weight: bold;
+  color: #9a9b9b;
 }
 
 .right-card
@@ -121,12 +130,15 @@
 
 .hearts-container
 {
-  display: flex; gap: 0.3vmin; font-size: 1.8vmin;
+  display: flex;
+  gap: 0.3vmin;
+  font-size: 1.8vmin;
 }
 
 .heart-icon.broken
 {
-  opacity: 0.4; filter: grayscale(1);
+  opacity: 0.4;
+  filter: grayscale(1);
 }
 
 .sudoku-board
@@ -152,13 +164,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border-right: 0.1vmin solid #cbd5e1;
-  border-bottom: 0.1vmin solid #cbd5e1;
+  border-right: 0.1vmin solid #8c8d8f;
+  border-bottom: 0.1vmin solid #8c8d8f;
   font-size: 2.2vmin;
   font-weight: 500;
   cursor: pointer;
   user-select: none;
   transition: background-color 0.1s;
+  color: #2c3e50;
+  font-weight: bold;
 }
 
 .sudoku-cell:nth-child(3n)
@@ -180,16 +194,6 @@
 .sudoku-cell:nth-child(n+73)
 {
   border-bottom: none;
-}
-
-.sudoku-cell.selected
-{
-  background-color: #bbdefb;
-}
-
-.sudoku-cell.fixed
-{
-  background-color: #f1f5f9; color: #1e293b; font-weight: 700;
 }
 
 .sudoku-cell:hover:not(.fixed)
@@ -272,27 +276,36 @@
   border-radius: 0.6vmin;
   cursor: pointer;
 }
+
 .num-key:active
 {
   transform: scale(0.95);
 }
 
-.sudoku-cell.highlighted-area
+.highlighted-area
 {
-  background-color: #e3f2fd !important;
-  transition: background-color 0.2s ease;
+  background-color: #d1f2eb !important;
 }
 
-.sudoku-cell.fixed.highlighted-area
+.highlighted-same-number
 {
-  background-color: #d1e5f5 !important;
+  background-color: #a3e4d7 !important;
+  color: #0f4f42 !important;
+  font-weight: bold;
 }
 
 .sudoku-cell.selected
 {
-  background-color: #86c1f1 !important;
+  background-color: #2ecc71 !important;
   color: white !important;
-  border-color: #1976d2;
+  font-weight: bold;
+}
+
+.sudoku-cell.fixed
+{
+  background-color: #ffffff;
+  color: #2c3e50;
+  font-weight: bold;
 }
 
 @media (max-width: 768px)

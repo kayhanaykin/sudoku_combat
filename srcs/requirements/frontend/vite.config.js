@@ -5,10 +5,16 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: true,      // Docker dışından erişim için şart
-    port: 5173,      // Port numarası
+    host: true,
+    port: 5173,
+    strictPort: true,
     watch: {
-      usePolling: true, // Dosyaları sürekli kontrol et
+      usePolling: true,
+    },
+    hmr: {
+      clientPort: 8443,
+      host: "localhost",
+      protocol: "wss",
     }
   }
 })

@@ -14,7 +14,8 @@
   display: flex;
   gap: 40px;
   width: 100%;
-  max-width: 1500px;
+  max-width: 1700px;
+  padding: 80px 30px;
   align-items: stretch;
 }
 
@@ -29,7 +30,7 @@
 
 .mode-card
 {
-  background: white;
+  background: rgb(255, 255, 255);
   border-radius: 20px;
   padding: 40px;
   cursor: pointer;
