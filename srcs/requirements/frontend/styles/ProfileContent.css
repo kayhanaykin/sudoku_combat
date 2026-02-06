@@ -1,5 +1,5 @@
-/* Ana Konteyner */
-.o-dashboard-container {
+.o-dashboard-container
+{
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -8,8 +8,8 @@
     margin: 0 auto;
 }
 
-/* Edit Inputs */
-.profile-info-edit-area {
+.profile-info-edit-area
+{
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -18,7 +18,8 @@
     margin-bottom: 10px;
 }
 
-.profile-edit-input {
+.profile-edit-input
+{
     width: 90%;
     padding: 8px 12px;
     border: 1px solid #d1d5db;
@@ -29,34 +30,91 @@
     transition: border-color 0.2s;
 }
 
-.profile-edit-input:focus {
+.profile-edit-input:focus
+{
     border-color: var(--primary-green);
 }
 
-.profile-edit-input.title-input {
+.profile-edit-input.title-input
+{
     font-weight: bold;
     font-size: 1.2rem;
 }
 
-/* Buton Düzenlemeleri */
-.divider-line {
+.o-profile-grid
+{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.profile-card-base, 
+.m-profile-column, 
+.m-friend-section,
+.badge-widget-container
+{
+    width: 350px;
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 15px
+}
+
+.m-friend-section .empty-state-box,
+.m-friend-section .friend-list,
+.badge-list
+
+{
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: thin; /* Firefox için ince scrollbar */
+    min-height: 0;
+    padding-right: 5px;
+}
+
+@media (max-width: 1024px)
+{
+    .o-profile-grid
+    {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-card-base
+    {
+        height: auto;
+        min-height: 400px;
+    }
+}
+
+.divider-line
+{
     height: 1px;
     background-color: #e5e7eb;
     margin: 10px 0;
     width: 100%;
 }
 
-.danger-btn {
+.danger-btn
+{
     background-color: #ef4444 !important;
     color: white !important;
     border: none !important;
 }
 
-.danger-btn:hover {
+.danger-btn:hover
+{
     background-color: #dc2626 !important;
 }
 
-.text-btn-danger {
+.text-btn-danger
+{
     background: transparent;
     color: #dc2626;
     border: 1px solid #fee2e2;
@@ -67,19 +125,21 @@
     transition: all 0.2s;
 }
 
-.text-btn-danger:hover {
+.text-btn-danger:hover
+{
     background-color: #fef2f2;
     border-color: #dc2626;
 }
 
-/* --- TABLO STİLLERİ --- */
-.o-stats-section {
+.o-stats-section
+{
     padding: 25px;
     width: 100%;
-    overflow-x: auto; /* Mobilde taşarsa kaydır */
+    overflow-x: auto;
 }
 
-.section-title {
+.section-title
+{
     color: var(--dark-green);
     margin-bottom: 20px;
     font-size: 1.2rem;
@@ -87,13 +147,15 @@
     padding-bottom: 10px;
 }
 
-.stats-table {
+.stats-table
+{
     width: 100%;
     border-collapse: collapse;
     font-family: 'Inter', sans-serif;
 }
 
-.stats-table th {
+.stats-table th
+{
     text-align: left;
     padding: 12px 15px;
     color: #6b7280;
@@ -103,48 +165,74 @@
     border-bottom: 1px solid #e5e7eb;
 }
 
-.stats-table td {
+.stats-table td
+{
     padding: 15px;
     color: #374151;
     border-bottom: 1px solid #f3f4f6;
     font-size: 0.95rem;
 }
 
-.stats-table tr:last-child td {
+.stats-table tr:last-child td
+{
     border-bottom: none;
 }
 
-.stats-table tr:hover {
+.stats-table tr:hover
+{
     background-color: #f9fafb;
 }
 
-/* Difficulty Dots */
-.diff-cell {
+.diff-cell
+{
     display: flex;
     align-items: center;
     gap: 10px;
     font-weight: 500;
 }
 
-.diff-dot {
+.diff-dot
+{
     width: 8px;
     height: 8px;
     border-radius: 50%;
     display: inline-block;
 }
 
-.diff-dot.easy { background-color: #4ade80; }
-.diff-dot.medium { background-color: #facc15; }
-.diff-dot.hard { background-color: #f97316; }
-.diff-dot.expert { background-color: #ef4444; }
+.diff-dot.easy
+{
+    background-color: #4ade80;
+}
 
-.win-rate-bar-container {
+.diff-dot.medium
+{
+    background-color: #facc15;
+}
+
+.diff-dot.hard
+{
+    background-color: #ec7928;
+}
+
+.diff-dot.expert
+{
+    background-color: #f03939;
+}
+
+.diff-dot.extreme
+{
+    background-color: #cf0202dd;
+}
+
+.win-rate-bar-container
+{
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.progress-bar {
+.progress-bar
+{
     flex-grow: 1;
     height: 6px;
     background-color: #e5e7eb;
@@ -153,13 +241,15 @@
     max-width: 100px;
 }
 
-.progress-fill {
+.progress-fill
+{
     height: 100%;
     background-color: var(--primary-green);
     border-radius: 10px;
 }
 
-.total-row {
+.total-row
+{
     background-color: #f0fdf4 !important;
     color: var(--dark-green);
 }

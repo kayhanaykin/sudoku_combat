@@ -265,21 +265,39 @@ def debug_user_list(request):
     users = CustomUser.objects.all().order_by('-id') # Newest users first
     return render(request, 'user_app/debug_user_list.html', {'users': users})
 
+from django.http import JsonResponse
+import json
+
 @login_required
 def edit_profile_view(request):
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
-        if form.is_valid():
-            user = form.save(commit=False)
-            # If the checkbox is checked, delete the avatar file reference
-            if form.cleaned_data.get('remove_avatar'):
-                user.avatar = None
-            user.save()
-            return redirect('dashboard')
-    else:
-        form = UserProfileForm(instance=request.user)
-    
-    return render(request, 'user_app/edit_profile.html', {'form': form})
+        user = request.user
+        
+        if 'avatar' in request.FILES:
+            try:
+                user.avatar = request.FILES['avatar']
+                user.save()
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Avatar updated successfully',
+                    'new_avatar_url': user.avatar.url
+                })
+            except Exception as e:
+                return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+        try:
+            if request.body:
+                data = json.loads(request.body)
+                if 'display_name' in data:
+                    user.display_name = data['display_name']
+                    user.save()
+                    return JsonResponse({'status': 'success', 'message': 'Profile updated'})
+        except json.JSONDecodeError:
+            pass
+
+        return JsonResponse({'status': 'error', 'message': 'Invalid data'}, status=400)
+
+    return JsonResponse({'status': 'error', 'message': 'Method not allowed'}, status=405)
 
 
 @login_required

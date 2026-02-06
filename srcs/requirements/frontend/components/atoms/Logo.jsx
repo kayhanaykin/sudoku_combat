@@ -8,7 +8,7 @@ const Logo = () => {
     cursor: 'pointer',
     fontSize: '1.8rem',
     fontWeight: '800',
-    color: '#14532d',
+    color: '#067b35',
     fontFamily: "'Segoe UI', sans-serif",
     userSelect: 'none'
   };

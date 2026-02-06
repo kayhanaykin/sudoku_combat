@@ -124,19 +124,19 @@ services:
 
   # --- FRONTEND (REACT) ---
   frontend:
-      build:
-        context: ./requirements/frontend
-        dockerfile: Dockerfile
-      container_name: react_frontend
-      volumes:
-        - ./requirements/frontend:/app
-        - /app/node_modules
-      networks:
-        - transcendence_network
-      restart: always
-      ports:
-        - "5173:5173"
-      command: ["npm", "run", "dev", "--", "--host"]
+    build:
+      context: ./requirements/frontend
+      dockerfile: Dockerfile
+    container_name: react_frontend
+    volumes:
+      - ./requirements/frontend:/app
+      - /app/node_modules
+    networks:
+      - transcendence_network
+    restart: always
+    ports:
+      - "5173:5173"
+    command: ["npm", "run", "dev", "--", "--host"]
 
 networks:
   transcendence_network:

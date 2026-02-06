@@ -16,25 +16,27 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
 
   const handlePlayClick = (mode) => {
-    if (mode === 'online') {
+    if (mode === 'online')
       setIsOnlineModalOpen(true);
-    } else {
+    else
       setIsDifficultyOpen(true);
-    }
   };
 
   // --- ONLINE: ODA OLUŞTURMA ---
   const handleCreateRoom = async () => {
     setLoading(true);
-    try {
+    try
+    {
       const data = await createRoom(user.id);
       console.log("Room Created:", data);
-
       navigate('/online-game', { state: { roomId: data.roomId, role: 'owner' } });
-      
-    } catch (err) {
+    }
+    catch (err)
+    {
       alert("Error creating room: " + err.message);
-    } finally {
+    }
+    finally
+    {
       setLoading(false);
       setIsOnlineModalOpen(false);
     }
@@ -43,15 +45,18 @@ const Home = () => {
   // --- ONLINE: ODAYA KATILMA ---
   const handleJoinRoom = async (roomId) => {
     setLoading(true);
-    try {
+    try
+    {
       const data = await joinRoom(roomId, user.id);
       console.log("Room Joined:", data);
-
       navigate('/online-game', { state: { roomId: data.roomId, role: 'guest' } });
-
-    } catch (err) {
+    }
+    catch (err)
+    {
       alert("Error joining room: " + err.message);
-    } finally {
+    }
+    finally
+    {
       setLoading(false);
       setIsOnlineModalOpen(false);
     }
@@ -60,10 +65,13 @@ const Home = () => {
   // --- OFFLINE: ZORLUK SEÇME ---
   const handleDifficultySelect = async (difficulty) => {
     setIsDifficultyOpen(false);
-    try {
+    try
+    {
       const gameData = await startGame('offline', difficulty);
       navigate('/offline-game', { state: { gameData, difficulty } });
-    } catch (error) {
+    }
+    catch (error)
+    {
       console.error(error);
       alert("Error starting single game.");
     }

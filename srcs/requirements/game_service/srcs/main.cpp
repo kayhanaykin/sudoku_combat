@@ -117,7 +117,6 @@ int main()
             for (int j = 0; j < 9; ++j)
                 grid[i][j] = x["grid"][i][j].i();
 
-        // Fonksiyonu yeni ismiyle çağırıyoruz
         crow::json::wvalue result = generate_hint_wrapper(grid);
         
         return crow::response(result);
