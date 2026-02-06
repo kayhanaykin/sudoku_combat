@@ -5,7 +5,8 @@ import { registerUser, loginUser, API_BASE_URL } from '../../services/api';
 const INTRA_REGISTER_URL = `${API_BASE_URL}/api/user/auth/login/`;
 
 const SignUp = ({ isOpen, onClose, onSwitchToLogin }) => {
-  if (!isOpen) return null;
+  if (!isOpen)
+    return null;
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');

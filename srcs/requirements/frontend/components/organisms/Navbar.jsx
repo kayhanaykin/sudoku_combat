@@ -63,7 +63,8 @@ const Navbar = () => {
         <>
           <Login 
             isOpen={isLoginOpen} 
-            onClose={() => setIsLoginOpen(false)} 
+            onClose={() => setIsLoginOpen(false)}
+            onSwitchToSignup={openSignUp}
           />
 
           <SignUp 

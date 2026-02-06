@@ -245,7 +245,7 @@ export const getUserStats = async (userId) => {
         resolve({
             totalGames: 0,
             winRate: "%0",
-            ranks: { easy: "-", medium: "-", hard: "-", expert: "-" }
+            ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
         });
     }, 500); 
   });

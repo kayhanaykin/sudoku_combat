@@ -18,6 +18,7 @@ const ProfileInfo = ({ userDetails, stats }) => {
           <StatRow label="Medium" value={stats?.ranks?.medium} indent />
           <StatRow label="Hard" value={stats?.ranks?.hard} indent />
           <StatRow label="Expert" value={stats?.ranks?.expert} indent />
+          <StatRow label="Extreme" value={stats?.ranks?.extreme} indent />
         </div>
       </div>
     </>

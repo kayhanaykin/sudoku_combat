@@ -25,16 +25,13 @@ const OnlineGame = () => {
       {/* --- GO TO HOMEPAGE BUTTON (ATOM) --- */}
       <BackToHomeLink />
 
-      {/* --- HEADER --- */}
       <GameHeader 
         timer={timer} 
         difficulty={difficulty} 
       />
 
-      {/* --- MAIN AREA --- */}
       <div className="game-main-area">
         
-        {/* LEFT: Player 1 */}
         <PlayerCard 
           title="Player 1" 
           score={0} 
