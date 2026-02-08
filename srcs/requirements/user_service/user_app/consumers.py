@@ -6,25 +6,34 @@ from channels.db import database_sync_to_async
 class PresenceConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.user = self.scope["user"]
-        # FIXED: Removed the extra spaces before 'if'
         if self.user.is_authenticated:
             self.room_group_name = "online_users"
             await self.channel_layer.group_add(self.room_group_name, self.channel_name)
-            
             await self.accept()
 
-            # Update DB to Online and shout to others
+            # 1. Update DB to Online
             await self.update_user_status(True)
-            await self.broadcast_status("online")
 
-            # Get list of who is already here and send to self
-            online_users = await self.get_online_users()
+            # 2. Get the list of people who are ALREADY online
+            online_user_ids = await self.get_online_users()
+
+            # 3. Send the initial list ONLY to the person who just joined
             await self.send(text_data=json.dumps({
                 "type": "initial_status",
-                "online_users": online_users
+                "online_users": online_user_ids
             }))
+
+            # 4. Broadcast to EVERYONE else that I just joined
+            await self.broadcast_status("online")
         else:
             await self.close()
+
+    async def receive(self, text_data):
+        # This acts as a "Heartbeat". Every 30s the frontend sends {}
+        # to keep the last_seen timestamp fresh.
+        await self.update_user_status(True)
+
+    # ... keep your disconnect and broadcast_status methods ...
 
     async def disconnect(self, close_code):
         if hasattr(self, 'room_group_name'):
