@@ -25,10 +25,14 @@ class StartGameRequest(BaseModel):
     user_id: int = Field(alias="userId")
 
 class MoveRequest(BaseModel):
-    game_id: str
+    game_id: str = Field(alias="gameId")
     row: int
     col: int
     value: int
+
+    class Config:
+        populate_by_name = True
+        allow_population_by_field_name = True
 
 def get_game_from_redis(game_id: str):
     data = r.get(f"play:{game_id}")

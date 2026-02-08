@@ -53,7 +53,7 @@ int main()
     {
         auto x = crow::json::load(req.body);
         if (!x)
-        return crow::response(400);
+            return crow::response(400);
 
         std::array<std::array<int, 9>, 9> grid;
         for (int i = 0; i < 9; ++i)
