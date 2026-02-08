@@ -1,18 +1,17 @@
-NAME        = sudoku_server
+NAME        = game_service
 CXX         = g++
-# Flags including our tools folder and standalone Asio mode, standalone discards 500mb unessary lib download
+# Flags including our tools folder and standalone Asio mode
 CXXFLAGS    = -Wall -Wextra -Werror -std=c++17 -I./tools -DASIO_STANDALONE
-# to link the POSIX Threads library
-LDFLAGS     = -lpthread
+# Linker Flags (PostgreSQL kütüphaneleri eklendi)
+LDFLAGS     = -lpthread -lpqxx -lpq
 
-# Locate all source files in the src/ directory
+# Locate all source files in the srcs/ directory
 SRCS        = $(wildcard srcs/*.cpp)
-# Shorthand to change .cpp to .o (keeps the src/ prefix)
+# Shorthand to change .cpp to .o
 OBJS        = $(SRCS:.cpp=.o)
 
 all: $(NAME)
 
-# Link the executable
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
 
@@ -30,7 +29,4 @@ re: fclean all
 run: $(NAME)
 	./$(NAME)
 
-file: $(NAME)
-	./$(NAME) > output.txt
-
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re run

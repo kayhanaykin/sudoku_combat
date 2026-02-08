@@ -1,67 +1,68 @@
-// #include "includes.hpp"
-
-// int	main()
-// {
-// 	// tester();
-// 	std::array<std::array<int, 9>, 9> grid;
-// 	std::array<std::array<int, 9>, 9> grid_solved;
-// 	SolverStats stats;
-// 	int hardness;
-
-// 	std::cout << "Please Enter Hardness 1(EASY) to 5(EXTREME): ";
-// 	scanf("%d", &hardness);
-// 	game_generator(grid, grid_solved, hardness, stats);
-// 	print_grid(grid);
-// 	analyse_grid(stats, grid);
-// 	print_stats(stats);
-// 	play(grid, grid_solved);
-// 	return 0;
-// }
-
 #include "asio.hpp"
 #include "crow_all.h"
-#include "includes.hpp"
+#include <iostream>
+#include <array>
+#include <string>
+#include "includes.hpp" 
 
-// 1. Define outside (Global scope)
-// This is just the "bucket" that holds the data
-std::array<std::array<int, 9>, 9> global_solution;
-
-int main() {
+int main()
+{
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/api/new-game")
-    ([&]() {
-        // 2. Define the PUZZLE grid locally so it's fresh
+    CROW_ROUTE(app, "/generate").methods(crow::HTTPMethod::GET)
+    ([&](const crow::request& req)
+    {
+        const char* diff_param = req.url_params.get("difficulty");
+        int difficulty = 1; 
+        
+        if (diff_param) {
+            std::string diff_str = diff_param;
+            if (diff_str == "Easy")
+                difficulty = 1;
+            else if (diff_str == "Medium")
+                difficulty = 2;
+            else if (diff_str == "Hard")
+                difficulty = 3;
+            else if (diff_str == "Expert")
+                difficulty = 4;
+            else if (diff_str == "Extreme")
+                difficulty = 5;
+        }
+
         std::array<std::array<int, 9>, 9> local_puzzle;
+        std::array<std::array<int, 9>, 9> local_solution;
         SolverStats stats;
 
-        // 3. This call OVERWRITES the global_solution with the new answer
-        // and fills local_puzzle with the new holes.
-        game_generator(local_puzzle, global_solution, 1, stats);
+        game_generator(local_puzzle, local_solution, difficulty, stats);
 
         crow::json::wvalue response;
         for (int i = 0; i < 9; ++i)
+        {
             for (int j = 0; j < 9; ++j)
-                response["grid"][i][j] = local_puzzle[i][j];
+            {
+                response["board"][i][j] = local_puzzle[i][j];
+                response["solution"][i][j] = local_solution[i][j];
+            }
+        }
 
-        return response;
+        return crow::response(response);
     });
 
-    CROW_ROUTE(app, "/api/check-move").methods(crow::HTTPMethod::POST)
-    ([&](const crow::request& req) { // Capture by reference to see global_solution
+    CROW_ROUTE(app, "/hint").methods(crow::HTTPMethod::POST)
+    ([](const crow::request& req)
+    {
         auto x = crow::json::load(req.body);
-        if (!x) return crow::response(400);
+        if (!x)
+        return crow::response(400);
 
-        int r = x["row"].i();
-        int c = x["col"].i();
-        int val = x["value"].i();
+        std::array<std::array<int, 9>, 9> grid;
+        for (int i = 0; i < 9; ++i)
+            for (int j = 0; j < 9; ++j)
+                grid[i][j] = x["grid"][i][j].i();
 
-        // 4. Compares against the most recently generated solution
-        bool is_correct = (global_solution[r][c] == val);
+        crow::json::wvalue result = generate_hint_wrapper(grid);
         
-        crow::json::wvalue res;
-        res["correct"] = is_correct;
-        return crow::response(res);
+        return crow::response(result);
     });
 
     app.port(8080).multithreaded().run();

@@ -7,9 +7,9 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-body {
+body
+{
   background-color: var(--bg-color);
   color: var(--text-dark);
   min-height: 100vh;
 }
-/* ... Diğer genel ayarlar ... */

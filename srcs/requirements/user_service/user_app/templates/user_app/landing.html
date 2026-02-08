@@ -1,0 +1,19 @@
+<div class="auth-gate" style="text-align: center; margin-top: 100px;">
+    <h1>Welcome to Transcendence Sudoku</h1>
+    <p>How would you like to start?</p>
+    
+    <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+        <a href="{% url 'signin_options' %}" class="btn" style="padding: 20px 40px; background: #007bff; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            SIGN IN
+        </a>
+
+        <a href="{% url 'signup_options' %}" class="btn" style="padding: 20px 40px; background: #28a745; color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            SIGN UP
+        </a>
+    </div>
+    <footer style="margin-top: 50px;">
+    <a href="{% url 'debug_user_list' %}" style="color: #ccc; font-size: 0.8em; text-decoration: none;">
+        [Dev] View All Users
+    </a>
+</footer>
+</div>

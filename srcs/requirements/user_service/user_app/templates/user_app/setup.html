@@ -1,0 +1,8 @@
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <h2>Complete Your Profile</h2>
+    
+    {{ form.as_p }}
+    
+    <button type="submit">Save and Start Playing</button>
+</form>

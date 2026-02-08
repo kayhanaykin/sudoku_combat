@@ -1,0 +1,5 @@
+/api/combat/
+
+room/create
+room/join
+room/leave
