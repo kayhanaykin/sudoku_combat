@@ -8,13 +8,29 @@ srcs/requirements/backend/cpp_backend/tools/asio/
 srcs/requirements/backend/cpp_backend/tools/asio.hpp
 srcs/requirements/backend/cpp_backend/tools/crow_all.h
 
-# Ignore node modules
-**/node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 # Ignore build artifacts
 *.o
 *.exe
 sudoku_server
+
+# Python junk
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Word/Excel temporary files
+~$*
+
+# Django specific
+db.sqlite3
+db.sqlite3-journal
+
+# Docker
+.docker-compose.un~
+
+# Common OS files
+.DS_Store
+Thumbs.db
+node_modules/

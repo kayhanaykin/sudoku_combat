@@ -1,0 +1,29 @@
+.o-navbar
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    height: 80px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 50;
+    background-color: #f0f1f0;
+}
+
+.navbar-actions
+{
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+@media (max-width: 768px)
+{
+    .o-navbar
+    {
+        padding: 0 20px;
+    }
+}

@@ -1,5 +1,5 @@
-:root {
-  /* Renk Paleti */
+:root
+{
   --primary: #2c3e50;
   --primary-hover: #34495e;
   --secondary: #ffffff;
@@ -9,12 +9,10 @@
   --text-muted: #7f8c8d;
   --border-color: #eaeaea;
   
-  /* Rank Renkleri */
   --gold: #f3d046;
   --silver: #8e9292;
   --bronze: #c37425;
 
-  /* Spacing & Radius */
   --radius-md: 12px;
   --radius-sm: 6px;
   --shadow-sm: 0 4px 6px rgba(0,0,0,0.02);

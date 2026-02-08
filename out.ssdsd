@@ -1,0 +1,73 @@
+game_service  | (2026-01-22 11:34:29) [INFO    ] Crow/master server is running at http://0.0.0.0:8080 using 4 threads
+game_service  | (2026-01-22 11:34:29) [INFO    ] Call `app.loglevel(crow::LogLevel::Warning)` to hide Info level logs.
+user_service  | Waiting for postgres...
+user_db       | The files belonging to this database system will be owned by user "postgres".
+user_db       | This user must also own the server process.
+user_db       | 
+user_db       | The database cluster will be initialized with locale "en_US.utf8".
+user_db       | The default database encoding has accordingly been set to "UTF8".
+user_db       | The default text search configuration will be set to "english".
+user_db       | 
+user_db       | Data page checksums are disabled.
+user_db       | 
+user_db       | fixing permissions on existing directory /var/lib/postgresql/data ... ok
+user_db       | creating subdirectories ... ok
+user_db       | selecting dynamic shared memory implementation ... posix
+user_db       | selecting default max_connections ... 100
+user_db       | selecting default shared_buffers ... 128MB
+user_db       | selecting default time zone ... UTC
+user_db       | creating configuration files ... ok
+user_db       | running bootstrap script ... ok
+user_db       | sh: locale: not found
+user_db       | 2026-01-22 11:34:30.539 UTC [34] WARNING:  no usable system locales were found
+user_db       | performing post-bootstrap initialization ... ok
+user_db       | syncing data to disk ... ok
+user_db       | 
+user_db       | 
+user_db       | Success. You can now start the database server using:
+user_db       | 
+user_db       |     pg_ctl -D /var/lib/postgresql/data -l logfile start
+user_db       | 
+user_db       | initdb: warning: enabling "trust" authentication for local connections
+user_db       | initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb.
+user_db       | waiting for server to start....2026-01-22 11:34:32.057 UTC [40] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+user_db       | 2026-01-22 11:34:32.077 UTC [40] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+user_db       | 2026-01-22 11:34:32.103 UTC [43] LOG:  database system was shut down at 2026-01-22 11:34:31 UTC
+user_db       | 2026-01-22 11:34:32.117 UTC [40] LOG:  database system is ready to accept connections
+user_db       |  done
+user_db       | server started
+user_db       | CREATE DATABASE
+user_db       | 
+user_db       | 
+user_db       | /usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*
+user_db       | 
+user_db       | waiting for server to shut down...2026-01-22 11:34:32.735 UTC [40] LOG:  received fast shutdown request
+user_db       | .2026-01-22 11:34:32.869 UTC [40] LOG:  aborting any active transactions
+user_db       | 2026-01-22 11:34:32.875 UTC [40] LOG:  background worker "logical replication launcher" (PID 46) exited with exit code 1
+user_db       | 2026-01-22 11:34:32.880 UTC [41] LOG:  shutting down
+user_db       | 2026-01-22 11:34:32.895 UTC [41] LOG:  checkpoint starting: shutdown immediate
+user_db       | 2026-01-22 11:34:33.227 UTC [41] LOG:  checkpoint complete: wrote 921 buffers (5.6%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.048 s, sync=0.253 s, total=0.348 s; sync files=301, longest=0.174 s, average=0.001 s; distance=4239 kB, estimate=4239 kB
+user_db       | 2026-01-22 11:34:33.238 UTC [40] LOG:  database system is shut down
+user_db       |  done
+user_db       | server stopped
+user_db       | 
+user_db       | PostgreSQL init process complete; ready for start up.
+user_db       | 
+user_db       | 2026-01-22 11:34:33.396 UTC [1] LOG:  starting PostgreSQL 15.15 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+user_db       | 2026-01-22 11:34:33.396 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+user_db       | 2026-01-22 11:34:33.396 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+user_db       | 2026-01-22 11:34:33.426 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+user_db       | 2026-01-22 11:34:33.449 UTC [56] LOG:  database system was shut down at 2026-01-22 11:34:33 UTC
+user_db       | 2026-01-22 11:34:33.468 UTC [1] LOG:  database system is ready to accept connections
+user_db       | 2026-01-22 11:39:33.926 UTC [54] LOG:  checkpoint starting: time
+user_db       | 2026-01-22 11:39:36.441 UTC [54] LOG:  checkpoint complete: wrote 25 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.281 s, sync=0.077 s, total=2.516 s; sync files=11, longest=0.064 s, average=0.007 s; distance=65 kB, estimate=65 kB
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: using the "epoll" event method
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: nginx/1.28.0
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: built by gcc 14.2.0 (Alpine 14.2.0) 
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: OS: Linux 6.6.87.2-microsoft-standard-WSL2
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: getrlimit(RLIMIT_NOFILE): 1048576:1048576
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: start worker processes
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: start worker process 8
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: start worker process 9
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: start worker process 10
+nginx         | 2026/01/22 11:34:35 [notice] 1#1: start worker process 11

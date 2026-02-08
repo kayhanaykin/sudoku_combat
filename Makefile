@@ -1,6 +1,12 @@
 # Compose automatically looks for a file named .env 
 # in the directory where the docker compose command is run.
 
+export COMPOSE_BAKE=true
+
+# Colors for pretty logs
+GREEN = \033[0;32m
+RESET = \033[0m
+
 COMPOSE = docker compose -f srcs/docker-compose.yml
 
 # --build eger dockerfile degistiyse, 
@@ -9,27 +15,45 @@ COMPOSE = docker compose -f srcs/docker-compose.yml
 # --build dockerfile da bir revizyon varsa yeniden image olusturuyor.
 # -d detached mode, docker-compose terminali ele gecirmesin diye.
 # sureki loglamaya devam ediyor.
-all: build list
+all: down build list
+
+down:
+	@echo "$(GREEN)Stopping services...$(RESET)"
+	@$(COMPOSE) down
+
+up:
+	@echo "$(GREEN)Starting services...$(RESET)"
+	@$(COMPOSE) up -d
 
 clean:
-	$(COMPOSE) down
+	@echo "$(GREEN)Stopping services...$(RESET)"
+	@$(COMPOSE) down -v --rmi all --remove-orphans
 
 fclean: clean
-	docker system prune -a --force
-	docker volume prune --force
-
-prune:
-	docker system prune -af
+	@echo "$(GREEN)Cleaning up...$(RESET)"
+	@docker system prune -a --force
+	@docker volume prune --force
 
 re: clean all
 
-build: 
-	$(COMPOSE) build
-	$(COMPOSE) up -d
+build:
+	@echo "$(GREEN)Building containers...$(RESET)"
+	@$(COMPOSE) build
+	@echo "$(GREEN)Starting services...$(RESET)"
+	@$(COMPOSE) up -d
 	
 list:
 	@sleep 1
-	@echo ""
-	docker ps -a
+	@echo "$(GREEN)Listing running containers...$(RESET)"
+	@docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-.PHONY: all clean fclean re build list
+# Run Django Migrations (Crucial for changed models)
+migrate:
+	@echo "$(GREEN)Running migrations...$(RESET)"
+	@$(COMPOSE) exec user_service python manage.py makemigrations
+	@$(COMPOSE) exec user_service python manage.py migrate
+
+logs:
+	@$(COMPOSE) logs -f user_service nginx
+
+.PHONY: all clean fclean re build list down migrate logs up

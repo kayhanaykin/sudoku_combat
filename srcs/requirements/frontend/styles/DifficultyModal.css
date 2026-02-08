@@ -1,0 +1,77 @@
+.difficulty-overlay
+{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: inherit;
+}
+
+.difficulty-modal
+{
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 500px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+
+.difficulty-title
+{
+  margin-bottom: 2rem;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.difficulty-grid
+{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.difficulty-btn
+{
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.difficulty-btn:hover
+{
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+}
+
+.difficulty-close-btn
+{
+  margin-top: 2rem;
+  background: none;
+  border: none;
+  color: #7f8c8d;
+  cursor: pointer;
+  font-size: 1rem;
+  text-decoration: underline;
+  padding: 5px;
+}
+
+@keyframes fadeIn
+{
+  from { opacity: 0; transform: scale(0.95) translateY(-20px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

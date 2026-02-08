@@ -1,0 +1,57 @@
+.a-home-btn
+{
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    z-index: 9999 !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, #4ade80 0%, #22c55e 10%);
+    color: white;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    text-decoration: none;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.a-home-text
+{
+    font-weight: 700;
+    font-size: 1.5rem;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.a-home-icon
+{
+    font-size: 1.7rem;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+}
+
+.a-home-btn:hover
+{
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6);
+    background: linear-gradient(90deg, #5ce590 0%, #2bd46d 100%);
+}
+
+.a-home-btn:active
+{
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+}
+
+@media (max-width: 768px)
+{
+    .a-home-btn
+    {
+        position: static;
+        margin: 20px auto;
+        width: fit-content;
+    }
+}

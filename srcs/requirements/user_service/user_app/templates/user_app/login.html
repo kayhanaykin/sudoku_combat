@@ -1,0 +1,23 @@
+<div class="login-container" style="text-align: center; margin-top: 50px;">
+    <h2>Local Sign In</h2>
+    
+    <form method="post" style="display: inline-block; text-align: left; border: 1px solid #ccc; padding: 20px; border-radius: 8px;">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <p style="color: red;">Invalid username or password.</p>
+        {% endif %}
+
+        <div class="form-group" style="margin-bottom: 15px;">
+            {{ form.as_p }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Log In
+        </div>
+    </form>
+
+    <p style="margin-top: 20px;">
+        <a href="{% url 'landing' %}">← Back to Options</a>
+    </p>
+</div>

@@ -1,0 +1,52 @@
+.a-profile-image-container
+{
+    position: relative;
+    overflow: hidden;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 4px solid #23da63;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease;
+}
+
+.a-profile-img
+{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.a-profile-image-container:hover
+{
+    transform: scale(1.02);
+}
+
+.a-profile-overlay
+{
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.a-profile-overlay span
+{
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.a-profile-image-container:hover .a-profile-overlay
+{
+    opacity: 1;
+}
