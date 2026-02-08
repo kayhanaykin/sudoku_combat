@@ -13,35 +13,67 @@ from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.tokens import RefreshToken
 from .forms import CustomUserCreationForm, UserProfileForm
 from .models import CustomUser, Relationship
-
+from django.http import JsonResponse
 
 # --- HELPER FOR UNLIMITED LOGIN ---
 
-def set_jwt_cookie_and_redirect(user, target_url=None):
-    """
-    Centralized logic to issue tokens and redirect.
-    If target_url is provided, it uses that. 
-    Otherwise, it falls back to checking is_profile_complete.
-    """
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from rest_framework_simplejwt.tokens import RefreshToken
+
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from rest_framework_simplejwt.tokens import RefreshToken
+
+def set_jwt_cookie_and_redirect(user, request, target_url=None):
+    # 1. Generate the tokens
     refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
     
-    # 1. Decide the destination
-    if target_url:
-        target = target_url
-    else:
-        # Fallback logic for general logins
-        target = 'dashboard' if user.is_profile_complete else 'profile_setup'
+    # 2. Refined JSON Check
+    # We only return JSON if the request explicitly asks for it AND it's not a standard browser page load
+    is_json_requested = 'application/json' in request.headers.get('Accept', '')
+    is_postman_or_api = request.content_type == 'application/json'
+    
+    # Check if this is a standard HTML form submission (typical browser behavior)
+    is_browser_form = request.headers.get('Content-Type') == 'application/x-www-form-urlencoded'
+
+    if (is_json_requested or is_postman_or_api) and not is_browser_form:
+        return JsonResponse({
+            'message': 'Login successful',
+            'access': access_token,
+            'refresh': str(refresh),
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'display_name': getattr(user, 'display_name', user.username)
+            }
+        })
+
+    # 3. Standard Browser Redirect Logic
+    # Check if profile is complete (adjust 'is_profile_complete' to your actual model field)
+    is_complete = getattr(user, 'is_profile_complete', True)
+    target = target_url or ('dashboard' if is_complete else 'setup')
     
     response = redirect(target)
     
-    # 2. Set the Refresh Token in a long-lived, secure cookie
+    # 4. Set Cookies
+    # refresh_token remains secure and hidden (httponly=True)
     response.set_cookie(
-        key='refresh_token',
-        value=str(refresh),
-        httponly=True,   
-        secure=True,     # Since you are using HTTPS on 8443
-        samesite='Lax',
-        max_age=31536000 
+        key='refresh_token', 
+        value=str(refresh), 
+        httponly=True, 
+        secure=True, 
+        samesite='Lax'
+    )
+    
+    # access_token MUST be accessible by JS (httponly=False) so the WebSocket can grab it
+    response.set_cookie(
+        key='access_token', 
+        value=access_token, 
+        httponly=False,  # <--- CRITICAL: Set to False for WebSockets
+        secure=True, 
+        samesite='Lax'
     )
     
     return response
@@ -120,7 +152,7 @@ class FortyTwoCallbackView(APIView):
             target = 'profile_setup'
 
         # Use your existing JWT helper with the dynamic target_url
-        return set_jwt_cookie_and_redirect(user, target_url=target)
+        return set_jwt_cookie_and_redirect(user, request, target_url=target)
 
 def local_signup_view(request):
     if request.method == "POST":
@@ -236,15 +268,47 @@ def logout_view(request):
     response.delete_cookie('access_token')
     return response
 
+from django.views.decorators.csrf import csrf_exempt
+
+import json
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.http import JsonResponse
+from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def local_login_view(request):
     if request.method == "POST":
+        # Handle logout if user is already logged in (prevents session conflicts)
         if request.user.is_authenticated:
             logout(request)
+        
+        # --- CASE 1: JSON Request (Postman / API) ---
+        if request.content_type == 'application/json':
+            try:
+                data = json.loads(request.body)
+                username = data.get('username')
+                password = data.get('password')
+                
+                user = authenticate(username=username, password=password)
+                if user:
+                    # NOTE: We do NOT call login(request, user) here.
+                    # This avoids creating a sessionid cookie, which is what 
+                    # triggers the CSRF/Referer 403 error in Postman.
+                    return set_jwt_cookie_and_redirect(user, request)
+                
+                return JsonResponse({'error': 'Invalid credentials'}, status=401)
+            except json.JSONDecodeError:
+                return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+
+        # --- CASE 2: Standard Form (Browser) ---
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            # We DO call login() for the browser so the session works normally
             login(request, user)
-            return set_jwt_cookie_and_redirect(user)
+            return set_jwt_cookie_and_redirect(user, request)
     else:
         form = AuthenticationForm()
         
