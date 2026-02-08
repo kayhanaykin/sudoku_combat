@@ -80,16 +80,6 @@
   gap: 20px;
 }
 
-.a-profile-avatar
-{
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    border: 4px solid var(--primary-green);
-    object-fit: cover;
-    margin-bottom: 15px;
-}
-
 .a-profile-name
 {
     color: var(--dark-green);

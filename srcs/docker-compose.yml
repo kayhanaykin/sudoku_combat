@@ -68,23 +68,6 @@ services:
     networks:
       - transcendence_network
     restart: unless-stopped
-    
-  statistics_db:
-    image: postgres:15-alpine
-    container_name: statistics_db
-    environment:
-      POSTGRES_USER: bn_user
-      POSTGRES_PASSWORD: bn_pass
-      POSTGRES_DB: game_stats_db
-    volumes:
-      - statistics_db_data:/var/lib/postgresql/data 
-    networks:
-      - transcendence_network
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bn_user -d game_stats_db"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
 
   combat_service:
     build: ./requirements/combat_service
@@ -121,6 +104,50 @@ services:
       timeout: 1s
       retries: 5
       start_period: 1s
+
+  # Python Service (Logic + DB)
+  play_service:
+    build: ./requirements/play_service
+    container_name: play_service
+    expose:
+      - "8000"
+    depends_on:
+      - play_redis_db
+      - game_service
+      - statistics_db
+    networks:
+      - transcendence_network
+    environment:
+      - REDIS_HOST=play_redis_db
+      - GENERATOR_URL=http://game_service:8080
+      - DATABASE_URL=postgresql://bn_user:bn_pass@statistics_db/game_stats_db
+    restart: unless-stopped
+
+  play_redis_db:
+    image: redis:alpine
+    container_name: play_redis_db
+    expose:
+      - "6379"
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+    
+  statistics_db:
+    image: postgres:15-alpine
+    container_name: statistics_db
+    environment:
+      POSTGRES_USER: bn_user
+      POSTGRES_PASSWORD: bn_pass
+      POSTGRES_DB: game_stats_db
+    volumes:
+      - statistics_db_data:/var/lib/postgresql/data 
+    networks:
+      - transcendence_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bn_user -d game_stats_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   # --- FRONTEND (REACT) ---
   frontend:

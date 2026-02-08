@@ -104,17 +104,49 @@ export const registerUser = async (username, email, password) => {
 
 
 export const startGame = async (mode, difficulty) => {
-  const url = `${API_BASE_URL}/api/game/start`; 
-  
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify({ mode, difficulty }),
-  });
+  const url = `${API_BASE_URL}/api/play/start`;
 
-  if (!response.ok)
-    throw new Error('The game cannot be started');
-  return await response.json();
+  const difficultyMap = {
+    1: "Easy",
+    2: "Medium",
+    3: "Hard",
+    4: "Expert",
+    5: "Extreme"
+  };
+
+  const difficultyStr = difficultyMap[difficulty] || difficulty;
+
+  const payload = {
+    difficulty: difficultyStr,
+    userId: 1
+  };
+
+  console.log("Sending Payload:", payload); 
+
+  try
+  {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok)
+    {
+      const errorData = await response.json();
+      console.error("Backend Error:", errorData);
+      throw new Error(errorData.detail || 'Game start failed');
+    }
+
+    return await response.json();
+  }
+  catch (error)
+  {
+    console.error("API Error:", error);
+    throw error;
+  }
 };
 
 export const makeMove = async (gameId, row, col, value) => {
