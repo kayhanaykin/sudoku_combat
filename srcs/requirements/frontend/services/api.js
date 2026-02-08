@@ -150,7 +150,14 @@ export const startGame = async (mode, difficulty) => {
 };
 
 export const makeMove = async (gameId, row, col, value) => {
-  const url = `${API_BASE_URL}/api/game/move`;
+  const url = `${API_BASE_URL}/api/play/move`;
+
+  const payload = {
+    gameId,
+    row: parseInt(row),
+    col: parseInt(col),
+    value: parseInt(value)
+  };
 
   const response = await fetch(url, {
     method: 'POST',

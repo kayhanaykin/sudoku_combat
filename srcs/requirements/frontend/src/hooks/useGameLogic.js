@@ -52,12 +52,15 @@ const useGameLogic = (mode = 'offline') =>
       
       if (gameData)
       {
-        const rawBoard = gameData.board || gameData.grid;
-        const id = gameData.gameId;
+        const rawBoard = gameData.board || gameData.current_board;
+        const id = gameData.game_id || gameData.gameId;
+        
         if (rawBoard)
           setBoard(formatBoardFromData(rawBoard));
         if (id)
           setGameId(id);
+        if (gameData.lives !== undefined)
+          setLives(gameData.lives);
       }
       
       if (diffLevel)
@@ -97,41 +100,56 @@ const useGameLogic = (mode = 'offline') =>
     if (board[r][c].isFixed)
       return;
 
-    const newBoard = [...board];
-    newBoard[r] = [...newBoard[r]];
-    newBoard[r][c] = { ...newBoard[r][c], value: number, isError: false };
-    setBoard(newBoard);
-    setShowError(false);
+    if (number === 0)
+      {
+        setBoard(prev => {
+            const newBoard = [...prev];
+            newBoard[r] = [...newBoard[r]];
+            newBoard[r][c] = { ...newBoard[r][c], value: 0, isError: false };
+            return newBoard;
+        });
+        return;
+    }
 
     try
     {
-      const result = await makeMove(gameId || '1', r, c, number);
+      const response = await makeMove(gameId, r, c, number);
       
-      if (result.correct === false && number !== 0)
+      if (response.result === 'CORRECT')
       {
-        const newLives = lives - 1;
-        setLives(newLives);
-        
-        if (newLives === 0)
-        {
-          setErrorMessage("GAME OVER 💀");
-          setIsGameOver(true);
-          setShowError(true);
-        }
-        else
-        {
-          setErrorMessage("Wrong Move! 💔");
-          setShowError(true);
-          setTimeout(() => setShowError(false), 1500);
-        }
-
-        setBoard(prev =>
-        {
-          const updated = [...prev];
-          updated[r] = [...updated[r]];
-          updated[r][c] = { ...updated[r][c], isError: true };
-          return updated;
+        setBoard(prev => {
+            const newBoard = [...prev];
+            newBoard[r] = [...newBoard[r]];
+            newBoard[r][c] = { ...newBoard[r][c], value: number, isError: false };
+            return newBoard;
         });
+        setShowError(false);
+      }
+      else if (response.result === 'WIN')
+      {
+        setBoard(prev => {
+            const newBoard = [...prev];
+            newBoard[r] = [...newBoard[r]];
+            newBoard[r][c] = { ...newBoard[r][c], value: number, isError: false };
+            return newBoard;
+        });
+        setErrorMessage("YOU WON! 🎉");
+        setIsGameOver(true);
+        setShowError(true);
+      }
+      else if (response.result === 'WRONG')
+      {
+        setLives(response.lives);
+        setErrorMessage("Wrong Move!");
+        setShowError(true);
+        setTimeout(() => setShowError(false), 1500);
+      }
+      else if (response.result === 'GAME_OVER' || response.status === 'LOST')
+      {
+        setLives(0);
+        setErrorMessage("GAME OVER 💀");
+        setIsGameOver(true);
+        setShowError(true);
       }
     }
     catch (error)
@@ -190,7 +208,6 @@ const useGameLogic = (mode = 'offline') =>
         body: JSON.stringify({ grid: simpleGrid })
       });
 
-      const text = await response.text();
       if (!response.ok)
       {
         setErrorMessage("Server Error: " + response.status);
@@ -198,7 +215,7 @@ const useGameLogic = (mode = 'offline') =>
         return;
       }
 
-      const data = JSON.parse(text);
+      const data = await response.json();
 
       if (data.found)
       {
@@ -208,7 +225,7 @@ const useGameLogic = (mode = 'offline') =>
       }
       else
       {
-        setErrorMessage("⚠️ " + data.message);
+        setErrorMessage("⚠️ " + (data.message || "No hint found"));
         setShowError(true);
         setTimeout(() => setShowError(false), 3000);
       }
