@@ -1,116 +1,59 @@
 #include "asio.hpp"
 #include "crow_all.h"
-#include <pqxx/pqxx>
 #include <iostream>
 #include <array>
+#include <string>
 #include "includes.hpp" 
-
-std::array<std::array<int, 9>, 9> global_solution;
 
 int main()
 {
-    init_game_db();
     crow::SimpleApp app;
 
-    CROW_ROUTE(app, "/start").methods(crow::HTTPMethod::POST)
+    CROW_ROUTE(app, "/generate").methods(crow::HTTPMethod::GET)
     ([&](const crow::request& req)
     {
-        auto x = crow::json::load(req.body);
-        if (!x)
-            return crow::response(400, "Invalid JSON format");
+        const char* diff_param = req.url_params.get("difficulty");
+        int difficulty = 1; 
+        
+        if (diff_param) {
+            std::string diff_str = diff_param;
+            if (diff_str == "Easy")
+                difficulty = 1;
+            else if (diff_str == "Medium")
+                difficulty = 2;
+            else if (diff_str == "Hard")
+                difficulty = 3;
+            else if (diff_str == "Expert")
+                difficulty = 4;
+            else if (diff_str == "Extreme")
+                difficulty = 5;
+        }
 
-        int difficulty = 1;
-        if (x.has("difficulty"))
-            difficulty = x["difficulty"].i();
-    
         std::array<std::array<int, 9>, 9> local_puzzle;
+        std::array<std::array<int, 9>, 9> local_solution;
         SolverStats stats;
 
-        game_generator(local_puzzle, global_solution, difficulty, stats);
+        game_generator(local_puzzle, local_solution, difficulty, stats);
 
         crow::json::wvalue response;
         for (int i = 0; i < 9; ++i)
+        {
             for (int j = 0; j < 9; ++j)
-                response["grid"][i][j] = local_puzzle[i][j];
+            {
+                response["board"][i][j] = local_puzzle[i][j];
+                response["solution"][i][j] = local_solution[i][j];
+            }
+        }
 
         return crow::response(response);
-    });
-
-    CROW_ROUTE(app, "/move").methods(crow::HTTPMethod::POST)
-    ([&](const crow::request& req)
-    {
-        auto x = crow::json::load(req.body);
-        if (!x)
-            return crow::response(400);
-
-        int r = x["row"].i();
-        int c = x["col"].i();
-        int val = x["value"].i();
-
-        bool is_correct = (val == 0) ? true : (global_solution[r][c] == val);
-        
-        crow::json::wvalue res;
-        res["correct"] = is_correct;
-        return crow::response(res);
-    });
-
-    CROW_ROUTE(app, "/api/record-game").methods(crow::HTTPMethod::POST)
-    ([](const crow::request& req)
-    {
-        auto x = crow::json::load(req.body);
-        if (!x)
-            return crow::response(400, "Invalid JSON");
-
-        int user_id = x["userId"].i();
-        std::string mode = x["mode"].s();
-        std::string result = x["result"].s();
-        bool is_win = (result == "win");
-
-        update_stats(user_id, mode, is_win);
-        update_stats(user_id, "Total", is_win);
-
-        return crow::response(200, "Stats updated");
-    });
-
-    CROW_ROUTE(app, "/api/leaderboard/<string>").methods(crow::HTTPMethod::GET)
-    ([](std::string mode)
-    {
-        try
-        {
-            pqxx::connection* C = create_connection();
-            if (!C)
-                return crow::response(500, "DB Connection Failed");
-
-            pqxx::nontransaction N(*C);
-            std::string sql = "SELECT user_id, wins, games_played, COALESCE(username, 'User #' || user_id) "
-                              "FROM player_stats WHERE mode = '" + N.esc(mode) + "' "
-                              "ORDER BY wins DESC LIMIT 10";
-            pqxx::result R = N.exec(sql);
-
-            crow::json::wvalue result;
-            int i = 0;
-            for (auto row : R)
-            {
-                result[i]["userId"] = row[0].as<int>();
-                result[i]["wins"] = row[1].as<int>();
-                result[i]["games"] = row[2].as<int>();
-                result[i]["username"] = row[3].as<std::string>();
-                i++;
-            }
-            delete C;
-            return crow::response(result);
-        }
-        catch (std::exception &e)
-        {
-            return crow::response(500, e.what());
-        }
     });
 
     CROW_ROUTE(app, "/hint").methods(crow::HTTPMethod::POST)
     ([](const crow::request& req)
     {
         auto x = crow::json::load(req.body);
-        if (!x) return crow::response(400);
+        if (!x)
+        return crow::response(400);
 
         std::array<std::array<int, 9>, 9> grid;
         for (int i = 0; i < 9; ++i)
