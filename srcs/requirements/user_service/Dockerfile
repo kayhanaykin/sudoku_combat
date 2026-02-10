@@ -14,11 +14,8 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./entrypoint.sh /usr/src/app/entrypoint.sh
-RUN chmod +x /usr/src/app/entrypoint.sh
-
 COPY . .
 
 # Run on 8001 to match your Nginx config
 EXPOSE 8001
-ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]

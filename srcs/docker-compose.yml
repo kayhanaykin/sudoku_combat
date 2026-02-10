@@ -1,5 +1,7 @@
-name: transcendence
+version: '3.8'
+
 services:
+  # --- NGINX (Reverse Proxy) ---
   nginx:
     build: ./requirements/nginx
     container_name: nginx
@@ -18,7 +20,9 @@ services:
       - game_service
       - user_service
       - combat_service
+      - play_service
 
+  # --- C++ GAME SERVICE ---
   game_service:
     build: ./requirements/game_service
     container_name: game_service
@@ -28,7 +32,7 @@ services:
       - transcendence_network
     restart: unless-stopped
 
-# ===== USER SERVICE =====
+  # --- USER SERVICE (Django) ---
   user_service:
     build: ./requirements/user_service
     container_name: user_service
@@ -36,13 +40,16 @@ services:
     volumes:
       - ./requirements/user_service:/app
       - user_media:/app/media
+      - /home/kayhan/Downloads:/mnt/downloads:ro
     depends_on:
       user_db:
         condition: service_healthy
       user_redis:
         condition: service_started
     restart: unless-stopped
-    command: daphne -b 0.0.0.0 -p 8000 user_project.asgi:application
+    command: daphne -b 0.0.0.0 -p 8001 user_project.asgi:application
+    ports:
+      - "8001:8001"
     networks:
       - transcendence_network
 
@@ -57,10 +64,10 @@ services:
       - transcendence_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s     # How often to check
-      timeout: 5s      # How long to wait for a response
-      retries: 5       # How many failures before marking as "unhealthy"
-      start_period: 5s # Grace period for the initial boot
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
       
   user_redis:
     image: redis:alpine
@@ -69,6 +76,7 @@ services:
       - transcendence_network
     restart: unless-stopped
 
+  # --- COMBAT SERVICE (NestJS) ---
   combat_service:
     build: ./requirements/combat_service
     container_name: combat_service
@@ -105,12 +113,14 @@ services:
       retries: 5
       start_period: 1s
 
-  # Python Service (Logic + DB)
+  # --- PLAY SERVICE (Python Logic) ---
   play_service:
     build: ./requirements/play_service
     container_name: play_service
     expose:
       - "8000"
+    ports:
+      - "8000:8000"
     depends_on:
       - play_redis_db
       - game_service

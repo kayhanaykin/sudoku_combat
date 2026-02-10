@@ -4,6 +4,7 @@ import { API_BASE_URL, getCookie } from '../../services/api';
 import BadgeWidget from '../molecules/BadgeWidget';
 import InfoBadge from '../atoms/InfoBadge';
 import ProfileImage from '../atoms/ProfileImage';
+import FriendListWidget from '../organisms/FriendListWidget';
 import EditProfileModal from './EditProfileModal';
 import '../../styles/ProfileContent.css';
 
@@ -19,9 +20,7 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
         {
             const data = await getUserDetails();
             if (data)
-            {
                 setUserData(data);
-            }
             setLoading(false);
         };
         loadData();
@@ -81,9 +80,7 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
     const totalWinRate = totalPlayed > 0 ? Math.round((totalWon / totalPlayed) * 100) : 0;
 
     if (loading)
-    {
         return <div className="o-dashboard-container">Loading...</div>;
-    }
 
     return (
         <div className="o-dashboard-container">
@@ -118,13 +115,9 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
                     </div>
                 </div>
 
-                {/* COLUMN 2: FRIEND LIST */}
+                {/* COLUMN 2: FRIEND LIST (UPDATED) */}
                 <div className="profile-card-base m-friend-section">
-                    <h3>Friend List</h3>
-                    <div className="empty-state-box" style={{ flex: 1, overflowY: 'auto' }}>
-                        <p>No friends online currently.</p>
-                        <button className="green-btn small">Add Friend</button>
-                    </div>
+                    <FriendListWidget />
                 </div>
 
                 {/* COLUMN 3: BADGES */}
