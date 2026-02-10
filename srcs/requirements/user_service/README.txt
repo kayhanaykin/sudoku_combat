@@ -118,6 +118,42 @@ OUTPUT JSON
 Success (200 OK): { "message": "Friendship/Request removed." }
 Error (404 Not Found): { "error": "Relationship not found." }
 
+
+==============================
+FRIEND LIST & ONLINE STATUS ENDPOINTS
+==============================
+
+REST API ENDPOINTS
+------------------
+
+1. Get current user info (includes online status):
+  ENDPOINT: /api/v1/user/me/
+  METHOD: GET
+  RESPONSE: { ... "is_online": true/false, ... }
+
+2. Get friend list (includes online status):
+  ENDPOINT: /api/v1/user/friends/
+  METHOD: GET
+  RESPONSE: { "friends": [ { ... "is_online": true/false, ... } ], ... }
+
+3. Friend request actions (send, approve, remove):
+  ENDPOINT: /api/v1/user/friends/
+  METHOD: POST
+  BODY: { "action": "send"/"approve"/"remove", ... }
+
+
+WEBSOCKET ENDPOINT
+------------------
+
+1. Online status real-time updates:
+  URL: ws://<host>/ws/presence/
+  (handled by PresenceConsumer)
+  - On connect: user is marked online, receives list of online users
+  - On disconnect: user is marked offline, others are notified
+  - On status change: all clients receive { "user_id": <id>, "status": "online"/"offline" }
+
+See user_app/routing.py for WebSocket route and user_app/consumers.py for logic.
+
 ENDPOINT: /api/user/profile/edit/
 
 METHOD:
