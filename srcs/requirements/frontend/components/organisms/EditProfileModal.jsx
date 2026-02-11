@@ -1,114 +1,127 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProfileImage from '../atoms/ProfileImage';
-import '../../styles/Modal.css';
+import '../../styles/EditProfileModal.css';
 
-const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) => 
+const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
 {
-    const [nickname, setNickname] = useState('');
-    const [previewAvatar, setPreviewAvatar] = useState(null);
+    const [displayName, setDisplayName] = useState('');
+    const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    
-    const fileInputRef = useRef(null);
 
-    useEffect(() => 
+    useEffect(() =>
     {
         if (isOpen && currentUserData)
         {
-            setNickname(currentUserData.nickname || '');
-            setPreviewAvatar(currentUserData.avatar);
+            setDisplayName(currentUserData.nickname || currentUserData.display_name || '');
+            setPreviewUrl(currentUserData.avatar || null);
             setSelectedFile(null);
-            setIsLoading(false);
         }
     }, [isOpen, currentUserData]);
 
     if (!isOpen)
+    {
         return null;
+    }
 
-    const handleFileChange = (e) => 
+    const handleFileChange = (e) =>
     {
         const file = e.target.files[0];
         if (file)
         {
             setSelectedFile(file);
-            setPreviewAvatar(URL.createObjectURL(file));
+            setPreviewUrl(URL.createObjectURL(file));
         }
     };
 
-    const handleAvatarClick = () => 
-    {
-        fileInputRef.current.click();
-    };
-
-    const handleSubmit = async () => 
+    const handleSubmit = async () =>
     {
         setIsLoading(true);
-        await onSave(nickname, selectedFile);
+        const formData = new FormData();
+        formData.append('display_name', displayName);
+        
+        if (selectedFile)
+        {
+            formData.append('avatar', selectedFile);
+        }
+
+        await onSave(formData);
         setIsLoading(false);
     };
 
     return (
-        <div className="modal-overlay" onClick={onClose}>
-            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                <button className="modal-close-icon" onClick={onClose}>✕</button>
+        <div className="ep-overlay" onClick={onClose}>
+            <div className="ep-card" onClick={(e) => e.stopPropagation()}>
+                
+                <div className="ep-header">
+                    <h3>
+                        Edit Profile
+                    </h3>
+                    <button className="ep-close-btn" onClick={onClose}>
+                        &times;
+                    </button>
+                </div>
 
-                <h2 className="modal-title">Edit Profile</h2>
-
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', width: '100%' }}>
-                    
-                    {/* Avatar Section */}
-                    <div style={{ position: 'relative', cursor: 'pointer' }} onClick={handleAvatarClick}>
-                        <ProfileImage 
-                            src={previewAvatar} 
-                            style={{ width: '120px', height: '120px', border: '4px solid #f0f0f0' }} 
-                        />
-                        <div className="a-profile-overlay" style={{ borderRadius: '50%' }}>
-                            <span>Change</span>
-                        </div>
+                <div className="ep-body">
+                    <div className="ep-avatar-section">
+                        <label className="ep-avatar-wrapper">
+                            <ProfileImage 
+                                src={previewUrl} 
+                                style={{ width: '100%', height: '100%' }} 
+                            />
+                            <div className="ep-avatar-overlay">
+                                <span className="ep-avatar-icon">
+                                    📷
+                                </span>
+                            </div>
+                            <input 
+                                type="file" 
+                                accept="image/*" 
+                                onChange={handleFileChange}
+                                style={{ display: 'none' }}
+                            />
+                        </label>
+                        <span className="ep-hint">
+                            Tap photo to change
+                        </span>
                     </div>
-                    
-                    {/* Hidden Input */}
-                    <input 
-                        type="file" 
-                        ref={fileInputRef}
-                        onChange={handleFileChange}
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                    />
 
-                    {/* Nickname Input */}
-                    <div style={{ width: '100%' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#444' }}>
-                            Nickname
+                    <div className="ep-form-group">
+                        <label className="ep-label">
+                            Display Name
                         </label>
                         <input 
+                            className="ep-input"
                             type="text" 
-                            className="profile-edit-input"
-                            style={{ width: '100%', textAlign: 'left' }}
-                            value={nickname}
-                            onChange={(e) => setNickname(e.target.value)}
-                            placeholder="Enter your nickname"
+                            value={displayName} 
+                            onChange={(e) => setDisplayName(e.target.value)}
+                            placeholder="How should we call you?"
+                            maxLength={20}
                         />
                     </div>
 
-                    <div className="modal-actions">
-                        <button 
-                            className="modal-btn primary" 
-                            onClick={handleSubmit}
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Saving...' : 'Save Changes'}
-                        </button>
-                        
-                        <button 
-                            className="modal-btn secondary" 
-                            onClick={onClose}
-                            disabled={isLoading}
-                        >
-                            Cancel
-                        </button>
+                    <div className="ep-form-group">
+                        <label className="ep-label">
+                            Username
+                        </label>
+                        <input 
+                            className="ep-input"
+                            type="text" 
+                            value={`@${currentUserData?.username || ''}`} 
+                            disabled 
+                        />
                     </div>
                 </div>
+
+                <div className="ep-footer">
+                    <button className="ep-btn ep-btn-cancel" onClick={onClose} disabled={isLoading}>
+                        Cancel
+                    </button>
+                    <button className="ep-btn ep-btn-save" onClick={handleSubmit} disabled={isLoading}>
+                        {isLoading ? 'Saving...' : 'Save Changes'}
+                    </button>
+                </div>
+
             </div>
         </div>
     );

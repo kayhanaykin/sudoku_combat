@@ -1,0 +1,271 @@
+.ep-overlay
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(83, 81, 81, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.ep-card
+{
+    background: #ffffff;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 24px;
+    box-shadow: 0 20px 60px -10px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.ep-header
+{
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.ep-header h3
+{
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #111827;
+    letter-spacing: -0.5px;
+}
+
+.ep-close-btn
+{
+    background: #f3f4f6;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ep-close-btn:hover
+{
+    background: #fee2e2;
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.ep-body
+{
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.ep-avatar-section
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.ep-avatar-wrapper
+{
+    position: relative;
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    padding: 4px;
+    background: #fff;
+    border: 2px dashed #d1d5db;
+    cursor: pointer;
+    transition: border-color 0.3s;
+}
+
+.ep-avatar-wrapper:hover
+{
+    border-color: #10b981;
+}
+
+.ep-avatar-wrapper img
+{
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.ep-avatar-overlay
+{
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.ep-avatar-wrapper:hover .ep-avatar-overlay
+{
+    opacity: 1;
+}
+
+.ep-avatar-icon
+{
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.ep-hint
+{
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.ep-form-group
+{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.ep-label
+{
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #374151;
+    margin-left: 4px;
+}
+
+.ep-input
+{
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid #f3f4f6;
+    font-size: 0.95rem;
+    color: #1f2937;
+    background: #f9fafb;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.ep-input:focus
+{
+    background: #fff;
+    border-color: #10b981;
+    box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+}
+
+.ep-input:disabled
+{
+    background: #f3f4f6;
+    color: #9ca3af;
+    border-color: transparent;
+    cursor: not-allowed;
+}
+
+.ep-footer
+{
+    padding: 20px 30px;
+    background: #ffffff;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.ep-btn
+{
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+    border: none;
+}
+
+.ep-btn:active
+{
+    transform: scale(0.98);
+}
+
+.ep-btn-cancel
+{
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.ep-btn-cancel:hover
+{
+    background: #e5e7eb;
+    color: #1f2937;
+}
+
+.ep-btn-save
+{
+    background: #10b981;
+    color: white;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.ep-btn-save:hover
+{
+    background: #059669;
+    box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+}
+
+.ep-btn-save:disabled
+{
+    background: #a7f3d0;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+@keyframes epFadeIn
+{
+    from
+    {
+        opacity: 0;
+    }
+    to
+    {
+        opacity: 1;
+    }
+}
+
+@keyframes epPopIn
+{
+    from
+    {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to
+    {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

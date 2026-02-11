@@ -1,78 +1,66 @@
 import React from 'react';
+import ActionBtn from '../atoms/ActionBtn';
 
-const FriendItem = ({ id, username, isOnline, status, onApprove, onRemove }) => {
-  const isPending = status === 'pending';
+const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApprove, onRemove }) => 
+{
+    const isPending = status === 'pending';
+    const BASE_URL = 'https://localhost:8443'; 
+    
+    const statusClass = isPending 
+        ? 'pending' 
+        : (isOnline ? 'online' : 'offline');
 
-  return (
-    <div style={containerStyle}>
-      <div style={infoStyle}>
-        {!isPending && (
-          <div style={{ 
-            ...statusDotStyle, 
-            backgroundColor: isOnline ? '#4CAF50' : '#ccc' 
-          }} />
-        )}
-        <span style={textStyle}>{username}</span>
-      </div>
-      
-      <div style={actionContainerStyle}>
-        {isPending && (
-          <button 
-            onClick={() => onApprove(id)} 
-            style={{ ...btnStyle, backgroundColor: '#4CAF50' }}
-          >
-            ✓
-          </button>
-        )}
-        <button 
-          onClick={() => onRemove(id)} 
-          style={{ ...btnStyle, backgroundColor: '#f44336' }}
-        >
-          ✕
-        </button>
-      </div>
-    </div>
-  );
-};
+    let avatarSrc;
 
-const containerStyle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '8px',
-  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  borderRadius: '8px',
-  marginBottom: '5px'
-};
+    if (avatar)
+    {
+        avatarSrc = avatar.startsWith('http') ? avatar : `${BASE_URL}${avatar}`;
+    }
+    else
+    {
+        avatarSrc = "https://ui-avatars.com/api/?background=random&name=" + username;
+    }
 
-const infoStyle = {
-  display: 'flex', 
-  alignItems: 'center', 
-  gap: '8px'
-};
-
-const statusDotStyle = {
-  width: '8px', 
-  height: '8px', 
-  borderRadius: '50%'
-};
-
-const textStyle = {
-  color: 'white'
-};
-
-const actionContainerStyle = {
-  display: 'flex', 
-  gap: '5px'
-};
-
-const btnStyle = {
-  border: 'none',
-  color: 'white',
-  borderRadius: '4px',
-  padding: '4px 8px',
-  cursor: 'pointer',
-  fontSize: '0.8rem'
+    return (
+        <div className="friend-item">
+            <div className="user-info">
+                <div className="avatar-wrapper">
+                    <img 
+                        src={avatarSrc} 
+                        alt={username} 
+                        className="friend-avatar" 
+                        onError={(e) => { e.target.src = "https://ui-avatars.com/api/?background=random&name=" + username; }}
+                    />
+                    <div className={`status-indicator ${statusClass}`} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span className="username" style={{ fontSize: '0.95rem' }}>
+                        {displayName || username}
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+                        @{username}
+                    </span>
+                </div>
+            </div>
+            
+            <div className="actions" style={{ display: 'flex', gap: '8px' }}>
+                {isPending && (
+                    <ActionBtn 
+                        className="btn-approve" 
+                        onClick={() => onApprove(id)}
+                    >
+                        ✓
+                    </ActionBtn>
+                )}
+                <ActionBtn 
+                    className="btn-remove" 
+                    onClick={() => onRemove(id)}
+                >
+                    ✕
+                </ActionBtn>
+            </div>
+        </div>
+    );
 };
 
 export default FriendItem;
