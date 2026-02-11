@@ -1,72 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import { getUserDetails, updateUserAvatar } from '../../services/userService';
-import { API_BASE_URL, getCookie } from '../../services/api';
+import { getUserDetails, updateUserProfile } from '../../services/userService';
 import BadgeWidget from '../molecules/BadgeWidget';
-import InfoBadge from '../atoms/InfoBadge';
 import ProfileImage from '../atoms/ProfileImage';
 import FriendListWidget from '../organisms/FriendListWidget';
 import EditProfileModal from './EditProfileModal';
 import '../../styles/ProfileContent.css';
 
-const ProfileContent = ({ stats, onLogout, onDeleteAccount }) => 
+const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
 {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
-    useEffect(() => 
+    useEffect(() =>
     {
-        const loadData = async () => 
+        const loadData = async () =>
         {
-            const data = await getUserDetails();
-            if (data)
-                setUserData(data);
-            setLoading(false);
+            try
+            {
+                const data = await getUserDetails();
+                if (data)
+                {
+                    setUserData(data);
+                }
+            }
+            catch (error)
+            {
+                console.error("Failed to load profile data", error);
+            }
+            finally
+            {
+                setLoading(false);
+            }
         };
         loadData();
     }, []);
 
-    const handleSaveProfile = async (newNickname, newAvatarFile) => 
+    // GÜNCELLENMİŞ KAYIT FONKSİYONU
+    const handleSaveProfile = async (formData) =>
     {
         try
         {
-            if (newNickname && newNickname !== userData.nickname)
-            {
-                const url = `${API_BASE_URL}/api/user/profile/edit/`;
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': getCookie('csrftoken'),
-                    },
-                    body: JSON.stringify({ display_name: newNickname })
-                });
+            // Modal'dan gelen FormData'yı direkt servise yolluyoruz
+            const result = await updateUserProfile(formData);
 
-                if (response.ok)
-                    setUserData(prev => ({ ...prev, nickname: newNickname }));
-            }
-
-            if (newAvatarFile)
+            if (result && result.user)
             {
-                const result = await updateUserAvatar(newAvatarFile);
-                if (result.success)
-                {
-                    const timestamp = new Date().getTime();
-                    const freshAvatarUrl = `${result.avatar}?t=${timestamp}`;
-                    setUserData(prev => ({ ...prev, avatar: freshAvatarUrl }));
-                }
+                // Dönen veriyi formatla
+                const updatedUser = {
+                    ...userData, // Eski verileri koru
+                    nickname: result.user.display_name || result.user.username, // Yeni ismi işle
+                    email: result.user.email,
+                    // Avatar URL'ini güncelle (Timestamp ile cache-busting)
+                    avatar: result.user.avatar 
+                        ? `${result.user.avatar}?t=${new Date().getTime()}`
+                        : userData.avatar
+                };
+
+                setUserData(updatedUser);
+                setIsEditModalOpen(false); // Modalı kapat
             }
-            setIsEditModalOpen(false);
         }
         catch (error)
         {
             console.error("Profile update failed:", error);
-            alert("An error occurred while updating profile.");
+            alert(`Error: ${error.message}`);
         }
     };
 
     const difficulties = ['Easy', 'Medium', 'Hard', 'Expert', 'Extreme'];
-    const detailedStats = difficulties.map(diff => 
+
+    const detailedStats = difficulties.map(diff =>
     {
         const played = stats?.ranks?.[diff.toLowerCase()]?.played || 0;
         const won = stats?.ranks?.[diff.toLowerCase()]?.won || 0;
@@ -80,29 +84,34 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
     const totalWinRate = totalPlayed > 0 ? Math.round((totalWon / totalPlayed) * 100) : 0;
 
     if (loading)
+    {
         return <div className="o-dashboard-container">Loading...</div>;
+    }
 
     return (
         <div className="o-dashboard-container">
             <div className="o-profile-grid">
-                
-                {/* COLUMN 1: PROFILE INFO */}
+
                 <div className="profile-card-base m-profile-column">
                     <div className="a-profile-header">
-                        <div 
-                            onClick={() => setIsEditModalOpen(true)} 
-                            title="Edit Profile"
+                        <div
                             style={{ cursor: 'pointer' }}
+                            onClick={() => setIsEditModalOpen(true)}
                         >
-                            <ProfileImage 
-                                src={userData?.avatar} 
-                                style={{ width: '150px', height: '150px' }} 
+                            <ProfileImage
+                                src={userData?.avatar}
+                                style={{ width: '150px', height: '150px' }}
                             />
                         </div>
-                        
+
                         <div className="profile-info-edit-area">
-                            <h2 className="a-profile-name">{userData?.nickname}</h2>
-                            <p className="a-profile-email">@{userData?.username}</p>
+                            <h2 className="a-profile-name">
+                                {/* display_name yoksa nickname göster, o da yoksa boş */}
+                                {userData?.display_name || userData?.nickname}
+                            </h2>
+                            <p className="a-profile-email">
+                                @{userData?.username}
+                            </p>
                         </div>
                     </div>
 
@@ -110,25 +119,30 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
                         <button className="green-btn outline" onClick={() => setIsEditModalOpen(true)}>
                             Edit Profile
                         </button>
-                        <button className="green-btn danger-btn" onClick={onLogout}>Log Out</button>
-                        <button className="text-btn-danger" onClick={onDeleteAccount}>Delete Account</button>
+                        <button className="green-btn danger-btn" onClick={onLogout}>
+                            Log Out
+                        </button>
+                        <button className="text-btn-danger" onClick={onDeleteAccount}>
+                            Delete Account
+                        </button>
                     </div>
                 </div>
 
-                {/* COLUMN 2: FRIEND LIST (UPDATED) */}
                 <div className="profile-card-base m-friend-section">
                     <FriendListWidget />
                 </div>
 
-                {/* COLUMN 3: BADGES */}
                 <div className="profile-card-base">
                     <BadgeWidget />
                 </div>
 
             </div>
 
+            {/* İstatistik Tablosu */}
             <div className="profile-card-base o-stats-section">
-                <h3 className="section-title">Performance Statistics</h3>
+                <h3 className="section-title">
+                    Performance Statistics
+                </h3>
                 <div className="stats-table-wrapper">
                     <table className="stats-table">
                         <thead>
@@ -179,6 +193,7 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
                 </div>
             </div>
 
+            {/* Modal */}
             <EditProfileModal
                 isOpen={isEditModalOpen}
                 onClose={() => setIsEditModalOpen(false)}

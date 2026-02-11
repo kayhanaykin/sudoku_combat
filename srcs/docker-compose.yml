@@ -40,7 +40,7 @@ services:
     volumes:
       - ./requirements/user_service:/app
       - user_media:/app/media
-      - /home/kayhan/Downloads:/mnt/downloads:ro
+      - /home/ekaraurg/Downloads:/mnt/downloads:ro
     depends_on:
       user_db:
         condition: service_healthy
@@ -108,10 +108,10 @@ services:
       - transcendence_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U bn_user -d combat_db"]
-      interval: 1s
-      timeout: 1s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 1s
+      start_period: 10s
 
   # --- PLAY SERVICE (Python Logic) ---
   play_service:

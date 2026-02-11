@@ -56,4 +56,8 @@ migrate:
 logs:
 	@$(COMPOSE) logs -f user_service nginx
 
+%:
+	@echo "$(GREEN)Restarting service: $@...$(RESET)"
+	@$(COMPOSE) restart $@
+
 .PHONY: all clean fclean re build list down migrate logs up
