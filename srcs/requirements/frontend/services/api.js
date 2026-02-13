@@ -1,15 +1,13 @@
-export const API_BASE_URL = "https://localhost:8443"; 
+export const API_BASE_URL = "https://localhost:8443";
 
+// Çerez okuma fonksiyonu
 export function getCookie(name) {
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '')
-  {
+  if (document.cookie && document.cookie !== '') {
     const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++)
-    {
+    for (let i = 0; i < cookies.length; i++) {
       const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '='))
-      {
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -18,7 +16,7 @@ export function getCookie(name) {
   return cookieValue;
 }
 
-
+// Header oluşturucu
 const getHeaders = () => {
   const csrftoken = getCookie('csrftoken');
   return {
@@ -27,41 +25,60 @@ const getHeaders = () => {
   };
 };
 
+// --- YENİ EKLENEN KISIM: CSRF TOKEN ALMA ---
+// Eğer çerez yoksa, backend'e basit bir GET isteği atıp çerezi zorla alıyoruz.
+const ensureCsrfToken = async () => {
+  const csrfToken = getCookie('csrftoken');
+  if (!csrfToken) {
+    console.log("🍪 CSRF Çerezi bulunamadı, sunucudan isteniyor...");
+    try {
+      // Backend'de herhangi bir GET endpoint'i çalışır, 
+      // genelde login sayfasını GET etmek çerezi set eder.
+      // Eğer backend'de özel bir '/api/csrf/' endpointin yoksa, 
+      // bu adres muhtemelen 405 veya 404 dönse bile çerezi set edecektir.
+      await fetch(`${API_BASE_URL}/api/v1/user/login/`, { 
+        method: 'GET',
+        credentials: 'include' // Çerezi kaydetmek için ŞART
+      });
+      console.log("🍪 CSRF Çerezi alındı.");
+    } catch (e) {
+      console.warn("CSRF Fetch hatası (Önemli olmayabilir):", e);
+    }
+  }
+};
+
 export const loginUser = async (username, password) => {
-  const url = `${API_BASE_URL}/api/v1/user/login/`; 
+  const url = `${API_BASE_URL}/api/v1/user/login/`;
+
+  // 1. Önce CSRF Çerezini Garantiye Al
+  await ensureCsrfToken();
 
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: getHeaders(),
+      headers: getHeaders(), // Güncel çerezi header'a ekler
       body: JSON.stringify({ username, password }),
+      credentials: 'include' // <--- BU ÇOK ÖNEMLİ (Çerezlerin taşınmasını sağlar)
     });
 
     const textData = await response.text();
-    
     console.log("RAW SERVER RESPONSE:", textData);
 
     let data;
-    try
-    {
+    try {
       data = JSON.parse(textData);
-    }
-    catch (err)
-    {
-      console.error("JSON Parse Error. Server may have sent HTML.");
-      throw new Error("Server error: Returned unexpected response (Probably 404 or 500 HTML page).");
+    } catch (err) {
+      console.error("JSON Parse Error.");
+      throw new Error("Sunucu hatası: Beklenmeyen yanıt döndü.");
     }
 
-    if (!response.ok)
-    {
-       const errorMessage = data.detail || data.message || 'Login failed.';
-       throw new Error(errorMessage);
+    if (!response.ok) {
+      const errorMessage = data.detail || data.message || 'Login failed.';
+      throw new Error(errorMessage);
     }
-    
+
     return data;
-  }
-  catch (error)
-  {
+  } catch (error) {
     console.error("Login Error:", error);
     throw error;
   }
@@ -70,8 +87,9 @@ export const loginUser = async (username, password) => {
 export const registerUser = async (username, email, password) => {
   const url = `${API_BASE_URL}/api/v1/user/signup/`;
 
-  try
-  {
+  await ensureCsrfToken(); // Kayıt olurken de çerez lazım olabilir
+
+  try {
     const response = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
@@ -81,69 +99,100 @@ export const registerUser = async (username, email, password) => {
         email,
         avatar: null
       }),
+      credentials: 'include' // Çerezler için
     });
 
     const data = await response.json();
-    if (!response.ok)
-    {
+    if (!response.ok) {
       let errorMsg = data.message;
-
       if (!errorMsg && typeof data === 'object')
         errorMsg = Object.values(data).flat().join(' ');
-
-      throw new Error(errorMsg || 'Registration failed (Unknown Error).');
+      throw new Error(errorMsg || 'Registration failed.');
     }
     return data;
-  }
-  catch (error)
-  {
+  } catch (error) {
     console.error("API Error:", error);
     throw error;
   }
 };
 
+// --- DİĞER FONKSİYONLAR (credentials: 'include' eklendi) ---
+
+export const getFriends = async () => {
+  const url = `${API_BASE_URL}/api/v1/user/friends/`;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getHeaders(),
+      credentials: 'include'
+    });
+    if (!response.ok) throw new Error('Failed to fetch friends list');
+    return await response.json();
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+};
+
+export const removeFriend = async (friendId) => {
+  const url = `${API_BASE_URL}/api/v1/user/friends/remove/`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ friend_id: friendId }),
+      credentials: 'include'
+    });
+    if (!response.ok) throw new Error('Failed to remove friend');
+    return await response.json();
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+};
+
+export const addFriend = async (username) => {
+  const url = `${API_BASE_URL}/api/v1/user/friends/add/`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ username }),
+      credentials: 'include'
+    });
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Failed to add friend');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
+};
 
 export const startGame = async (mode, difficulty) => {
   const url = `${API_BASE_URL}/api/play/start`;
-
-  const difficultyMap = {
-    1: "Easy",
-    2: "Medium",
-    3: "Hard",
-    4: "Expert",
-    5: "Extreme"
-  };
-
+  const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
   const difficultyStr = difficultyMap[difficulty] || difficulty;
+  
+  // userId'yi localStorage'dan veya context'ten almak daha doğru olur
+  // Şimdilik 1 olarak bıraktık
+  const payload = { difficulty: difficultyStr, userId: 1 };
 
-  const payload = {
-    difficulty: difficultyStr,
-    userId: 1
-  };
-
-  console.log("Sending Payload:", payload); 
-
-  try
-  {
+  try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload)
+      headers: { 'Content-Type': 'application/json' }, // CSRF gerekmeyebilir ama gerekirse getHeaders() kullan
+      body: JSON.stringify(payload),
+      credentials: 'include'
     });
-
-    if (!response.ok)
-    {
+    if (!response.ok) {
       const errorData = await response.json();
-      console.error("Backend Error:", errorData);
       throw new Error(errorData.detail || 'Game start failed');
     }
-
     return await response.json();
-  }
-  catch (error)
-  {
+  } catch (error) {
     console.error("API Error:", error);
     throw error;
   }
@@ -151,69 +200,46 @@ export const startGame = async (mode, difficulty) => {
 
 export const makeMove = async (gameId, row, col, value) => {
   const url = `${API_BASE_URL}/api/play/move`;
-
-  const payload = {
-    gameId,
-    row: parseInt(row),
-    col: parseInt(col),
-    value: parseInt(value)
-  };
-
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify({ gameId, row, col, value }),
+    credentials: 'include'
   });
-
-  if (!response.ok)
-    throw new Error('The move could not be sent');
+  if (!response.ok) throw new Error('The move could not be sent');
   return await response.json();
 };
 
 export const getLeaderboard = async (mode = 'Total') => {
   const url = `${API_BASE_URL}/api/game/leaderboard/${mode}`;
-
-  try
-  {
+  try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' } 
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include'
     });
-    
-    if (!response.ok)
-    {
-      console.error("Leaderboard fetch failed:", response.status);
-      return [];
-    }
+    if (!response.ok) return [];
     return await response.json();
-  }
-  catch (error)
-  {
-    console.error("Leaderboard network error:", error);
+  } catch (error) {
     return [];
   }
 };
 
 export const recordGameResult = async (userId, mode, isWin) => {
   const url = `${API_BASE_URL}/api/game/record-game`;
-
-  try
-  {
+  try {
     await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ 
-        userId, 
-        mode, 
-        result: isWin ? "win" : "lose"
-      }),
+      body: JSON.stringify({ userId, mode, result: isWin ? "win" : "lose" }),
+      credentials: 'include'
     });
   } catch (error) {
     console.error("Score recording failed:", error);
   }
 };
 
-
+// Mock Functions (Bunları backend hazır olunca değiştirebilirsin)
 export const getUserDetails = async (userId) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -228,56 +254,6 @@ export const getUserDetails = async (userId) => {
   });
 };
 
-export const createRoom = async (userId) => {
-  const url = `${API_BASE_URL}/api/combat/room/create`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify({ userId }),
-  });
-
-  if (!response.ok)
-    throw new Error('Failed to create room');
-  return await response.json();
-};
-
-export const joinRoom = async (roomId, userId) => {
-  const url = `${API_BASE_URL}/api/combat/room/join/${roomId}`;
-
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify({ userId }),
-  });
-
-  if (!response.ok)
-  {
-    const err = await response.json();
-    throw new Error(err.message || 'Failed to join room');
-  }
-  return await response.json();
-};
-
-export const logoutUser = async () => {
-  const url = `${API_BASE_URL}/logout/`;
-
-  try
-  {
-    await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken'),
-      },
-    });
-  }
-  catch (error)
-  {
-    console.error("Logout request failed:", error);
-  }
-};
-
 export const getUserStats = async (userId) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -290,30 +266,63 @@ export const getUserStats = async (userId) => {
   });
 };
 
+export const logoutUser = async () => {
+  const url = `${API_BASE_URL}/logout/`;
+  try {
+    await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken'),
+      },
+      credentials: 'include'
+    });
+  } catch (error) {
+    console.error("Logout request failed:", error);
+  }
+};
+
+export const createRoom = async (userId) => {
+  const url = `${API_BASE_URL}/api/combat/room/create`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ userId }),
+    credentials: 'include'
+  });
+  if (!response.ok) throw new Error('Failed to create room');
+  return await response.json();
+};
+
+export const joinRoom = async (roomId, userId) => {
+  const url = `${API_BASE_URL}/api/combat/room/join/${roomId}`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: getHeaders(),
+    body: JSON.stringify({ userId }),
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.message || 'Failed to join room');
+  }
+  return await response.json();
+};
+
 export const deleteUserAccount = async () => {
   const url = `${API_BASE_URL}/api/user/profile/delete/`;
-
-  try
-  {
+  try {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'X-CSRFToken': getCookie('csrftoken'),
       },
+      credentials: 'include'
     });
-
-    if (response.ok)
-      return true;
-    else
-    {
-      console.error("Delete failed");
-      return false;
-    }
-  }
-  catch (error)
-  {
-    console.error("Network error during deletion:", error);
+    return response.ok;
+  } catch (error) {
+    console.error("Delete failed:", error);
     return false;
   }
 };
