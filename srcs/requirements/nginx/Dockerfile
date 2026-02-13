@@ -34,7 +34,7 @@ RUN openssl req -x509 -nodes -days 365 \
 # COPY sources are relative to the build context, not the Dockerfile’s directory
 # niginx birden fazla conf doyasi ile calisabilir, ve birlestirir
 RUN rm -f /etc/nginx/conf.d/* 
-COPY conf/nginx.conf /etc/nginx/conf.d/nginx.conf
+COPY conf/nginx.conf /etc/nginx/nginx.conf
 
 # Default arguments: stay in foreground
 ENTRYPOINT [ "nginx", "-g", "daemon off;" ]
