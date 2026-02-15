@@ -98,7 +98,7 @@ const useFriendList = () =>
         {
             return {
                 ...f,
-                is_online: onlineUserIds.has(f.userId)
+                is_online: onlineUserIds.has(Number(f.userId))
             };
         }
         return f;

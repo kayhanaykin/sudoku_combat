@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 
 function checkAuthCookie() {
-    if (!document.cookie)
-        return false;
-    return document.cookie.includes('access_token') || 
-           document.cookie.includes('sessionid') || 
-           document.cookie.includes('jwt');
+    // If there's a csrftoken, we're likely on a session that can try to connect
+    return document.cookie.includes('csrftoken') || 
+           document.cookie.includes('access_token') || 
+           document.cookie.includes('sessionid');
 }
 
 const useOnlineStatus = () => {
