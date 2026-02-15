@@ -1,76 +1,48 @@
 import { API_BASE_URL, getCookie } from './api';
 
-export const getUserDetails = async () => {
-  const url = `${API_BASE_URL}/api/user/profile/edit/`;
-  const infoUrl = `${API_BASE_URL}/api/v1/user/me/`; 
-
-  try
-  {
-    const response = await fetch(infoUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-CSRFToken': getCookie('csrftoken'),
-      },
+export const getUserDetails = async () =>
+{
+    const response = await fetch(`${API_BASE_URL}/api/v1/user/me/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
     });
 
     if (!response.ok)
-      throw new Error(`Fetch failed: ${response.status}`);
-
-    const data = await response.json();
-
-    return {
-      id: data.id,
-      username: data.username,
-      nickname: data.display_name || data.username,
-      email: data.email,
-      avatar: data.avatar ? `${API_BASE_URL}${data.avatar}` : null,
-      isOnline: data.is_online,
-    };
-  }
-  catch (error)
-  {
-    console.error("User details error:", error);
-    return null;
-  }
+    {
+        throw new Error('Failed to fetch user details');
+    }
+    return await response.json();
 };
 
-export const updateUserAvatar = async (file) => {
-  const url = `${API_BASE_URL}/api/user/profile/edit/`; 
+// DİKKAT: Fonksiyon adı 'updateUserProfile' (Avatar değil)
+export const updateUserProfile = async (formData) =>
+{
+    const url = `${API_BASE_URL}/api/v1/user/profile/edit/`;
 
-  const formData = new FormData();
-  formData.append('avatar', file);
-
-  try
-  {
     const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
-      },
-      body: formData,
+        method: 'PUT',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            // Content-Type YOK! (Otomatik Boundary için)
+        },
+        body: formData
     });
 
     if (!response.ok)
     {
-        const errText = await response.text();
-        throw new Error(`Upload failed: ${response.status} - ${errText}`);
+        const errorText = await response.text();
+        try
+        {
+            const jsonError = JSON.parse(errorText);
+            throw new Error(jsonError.detail || jsonError.error || 'Update failed');
+        }
+        catch (e)
+        {
+            throw new Error(`Server Error: ${response.status}`);
+        }
     }
 
-    const data = await response.json();
-
-    if (data.status === 'success')
-    {
-      return {
-        success: true,
-        avatar: `${API_BASE_URL}${data.new_avatar_url}`
-      };
-    }
-    return { success: false };
-  }
-  catch (error)
-  {
-    console.error("Avatar upload error:", error);
-    throw error;
-  }
+    return await response.json();
 };

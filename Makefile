@@ -19,15 +19,14 @@ all: down build list
 
 down:
 	@echo "$(GREEN)Stopping services...$(RESET)"
-	@$(COMPOSE) down
-
+	@docker stop $$(docker ps -q) 2>/dev/null || echo "No containers running."
 up:
 	@echo "$(GREEN)Starting services...$(RESET)"
 	@$(COMPOSE) up -d
 
 clean:
-	@echo "$(GREEN)Stopping services...$(RESET)"
-	@$(COMPOSE) down -v --rmi all --remove-orphans
+	@echo "Force removing all containers..."
+	@docker rm -f $$(docker ps -aq) 2>/dev/null || echo "Nothing to remove."
 
 fclean: clean
 	@echo "$(GREEN)Cleaning up...$(RESET)"
@@ -55,5 +54,11 @@ migrate:
 
 logs:
 	@$(COMPOSE) logs -f user_service nginx
+
+seed:
+	docker exec -it user_service python seed_db.py
+%:
+	@echo "$(GREEN)Restarting service: $@...$(RESET)"
+	@$(COMPOSE) restart $@
 
 .PHONY: all clean fclean re build list down migrate logs up

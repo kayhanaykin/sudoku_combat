@@ -7,21 +7,28 @@ import ConfirmationModal from '../components/organisms/ConfirmationModal';
 import { getUserDetails, getUserStats, logoutUser, deleteUserAccount } from '../services/api';
 import '../styles/Profile.css';
 
-const Profile = () => {
+const Profile = () =>
+{
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  
+
   const [userDetails, setUserDetails] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = async () =>
+  {
+    document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+
     try
     {
       await logoutUser();
-    } 
+    }
     catch (error)
     {
       console.error(error);
@@ -33,13 +40,15 @@ const Profile = () => {
     }
   };
 
-  const handleDeleteRequest = () => {
+  const handleDeleteRequest = () =>
+  {
     setIsDeleteModalOpen(true);
   };
 
-  const handleConfirmDelete = async () => {
+  const handleConfirmDelete = async () =>
+  {
     const success = await deleteUserAccount();
-    
+
     if (success)
     {
       setIsDeleteModalOpen(false);
@@ -54,12 +63,14 @@ const Profile = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
+  useEffect(() =>
+  {
+    const fetchData = async () =>
+    {
       if (!user)
         return;
       setLoading(true);
-      
+
       const details = await getUserDetails();
       if (details)
       {
@@ -79,19 +90,19 @@ const Profile = () => {
   return (
     <div className="profile-page-container" style={{ position: 'relative' }}>
       <BackToHomeLink />
-      
+
       {loading ? (
         <div style={{ color: '#14532d', marginTop: '100px' }}>Loading Profile...</div>
       ) : (
         <>
-          <ProfileContent 
-            userDetails={userDetails} 
-            stats={stats} 
+          <ProfileContent
+            userDetails={userDetails}
+            stats={stats}
             onLogout={handleLogout}
             onDeleteAccount={handleDeleteRequest}
           />
 
-          <ConfirmationModal 
+          <ConfirmationModal
             isOpen={isDeleteModalOpen}
             onClose={() => setIsDeleteModalOpen(false)}
             onConfirm={handleConfirmDelete}
