@@ -3,6 +3,13 @@ from rest_framework.decorators import api_view
 from .models import CustomUser
 from .serializers import CustomUserSerializer # İsim değişti!
 
+
+from django.middleware.csrf import get_token
+from django.http import JsonResponse
+
+def get_csrf_token(request):
+    return JsonResponse({'csrfToken': get_token(request)})
+
 @api_view(['GET'])
 def current_user_api(request):
     """Giriş yapmış kullanıcının bilgilerini JSON döner."""

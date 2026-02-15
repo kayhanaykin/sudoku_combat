@@ -28,22 +28,15 @@ const getHeaders = () => {
 // --- YENİ EKLENEN KISIM: CSRF TOKEN ALMA ---
 // Eğer çerez yoksa, backend'e basit bir GET isteği atıp çerezi zorla alıyoruz.
 const ensureCsrfToken = async () => {
-  const csrfToken = getCookie('csrftoken');
-  if (!csrfToken) {
-    console.log("🍪 CSRF Çerezi bulunamadı, sunucudan isteniyor...");
-    try {
-      // Backend'de herhangi bir GET endpoint'i çalışır, 
-      // genelde login sayfasını GET etmek çerezi set eder.
-      // Eğer backend'de özel bir '/api/csrf/' endpointin yoksa, 
-      // bu adres muhtemelen 405 veya 404 dönse bile çerezi set edecektir.
-      await fetch(`${API_BASE_URL}/api/v1/user/login/`, { 
-        method: 'GET',
-        credentials: 'include' // Çerezi kaydetmek için ŞART
-      });
-      console.log("🍪 CSRF Çerezi alındı.");
-    } catch (e) {
-      console.warn("CSRF Fetch hatası (Önemli olmayabilir):", e);
-    }
+  try {
+    // Adresi 'csrf' olarak düzelttik ve GET isteği atıyoruz
+    await fetch(`${API_BASE_URL}/api/v1/user/csrf/`, { 
+      method: 'GET', 
+      credentials: 'include' 
+    });
+    console.log("CSRF cookie requested successfully");
+  } catch (err) {
+    console.error("CSRF setup failed:", err);
   }
 };
 
