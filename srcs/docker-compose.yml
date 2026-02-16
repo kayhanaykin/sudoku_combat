@@ -18,8 +18,8 @@ services:
     depends_on:
       - game_service
       - user_service
+      - play_service
       # - combat_service
-      # - play_service
 
   # --- C++ GAME SERVICE ---
   game_service:
@@ -39,7 +39,7 @@ services:
     volumes:
       - ./requirements/user_service:/app
       - user_media:/app/media
-      - /home/kaykin/Downloads/:/mnt/downloads:ro
+      - ${HOME}/Downloads/:/mnt/downloads:ro
     depends_on:
       user_db:
         condition: service_healthy
@@ -112,34 +112,34 @@ services:
   #     retries: 5
   #     start_period: 10s
 
-  # # --- PLAY SERVICE (Python Logic) ---
-  # play_service:
-  #   build: ./requirements/play_service
-  #   container_name: play_service
-  #   expose:
-  #     - "8000"
-  #   ports:
-  #     - "8000:8000"
-  #   depends_on:
-  #     - play_redis_db
-  #     - game_service
-  #     - statistics_db
-  #   networks:
-  #     - transcendence_network
-  #   environment:
-  #     - REDIS_HOST=play_redis_db
-  #     - GENERATOR_URL=http://game_service:8080
-  #     - DATABASE_URL=postgresql://bn_user:bn_pass@statistics_db/game_stats_db
-  #   restart: unless-stopped
+  # --- PLAY SERVICE (Python Logic) ---
+  play_service:
+    build: ./requirements/play_service
+    container_name: play_service
+    expose:
+      - "8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      - play_redis_db
+      - game_service
+      # - statistics_db
+    networks:
+      - transcendence_network
+    environment:
+      - REDIS_HOST=play_redis_db
+      - GENERATOR_URL=http://game_service:8080
+      - DATABASE_URL=postgresql://bn_user:bn_pass@statistics_db/game_stats_db
+    restart: unless-stopped
 
-  # play_redis_db:
-  #   image: redis:alpine
-  #   container_name: play_redis_db
-  #   expose:
-  #     - "6379"
-  #   networks:
-  #     - transcendence_network
-  #   restart: unless-stopped
+  play_redis_db:
+    image: redis:alpine
+    container_name: play_redis_db
+    expose:
+      - "6379"
+    networks:
+      - transcendence_network
+    restart: unless-stopped
     
   # statistics_db:
   #   image: postgres:15-alpine

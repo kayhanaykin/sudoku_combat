@@ -1,55 +1,87 @@
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from .models import CustomUser
-from .serializers import CustomUserSerializer # İsim değişti!
-
-
+from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
+from django.db.models import Q
 from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 
+from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework_simplejwt.tokens import RefreshToken
+
+# Channels katmanı (WebSocket haberleşmesi için)
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+# Modeller ve Serializerlar
+from .models import CustomUser, Relationship
+from .serializers import CustomUserSerializer, RegisterSerializer
+
+# --- YARDIMCI FONKSİYONLAR (JWT & COOKIE) ---
+
+def get_tokens_for_user(user):
+    """Kullanıcı için manuel JWT token üretir."""
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+def set_jwt_cookies(response, user):
+    """Response nesnesine JWT token'larını cookie olarak ekler."""
+    tokens = get_tokens_for_user(user)
+    
+    # Access Token (Kısa ömürlü - 1 saat)
+    response.set_cookie(
+        key='access_token',
+        value=tokens['access'],
+        httponly=False,  # Frontend okuyabilsin diye False (WebSocket için)
+        samesite='Lax',
+        secure=True,
+        max_age=3600
+    )
+    
+    # Refresh Token (Uzun ömürlü - 1 gün)
+    response.set_cookie(
+        key='refresh_token',
+        value=tokens['refresh'],
+        httponly=True,   # Güvenlik için JS okuyamasın
+        samesite='Lax',
+        secure=True,
+        max_age=86400
+    )
+
+# --- TEMEL VIEWLER ---
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def get_csrf_token(request):
+    """Frontend'in CSRF token alabilmesi için endpoint."""
     return JsonResponse({'csrfToken': get_token(request)})
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def current_user_api(request):
-    """Giriş yapmış kullanıcının bilgilerini JSON döner."""
-    if request.user.is_authenticated:
-        serializer = CustomUserSerializer(request.user)
-        return Response(serializer.data)
-    return Response({"error": "Not authenticated"}, status=401)
+    """Giriş yapmış kullanıcının bilgilerini döner."""
+    serializer = CustomUserSerializer(request.user)
+    return Response(serializer.data)
 
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from django.contrib.auth import login
-from .serializers import RegisterSerializer
+# --- AUTH (GİRİŞ/KAYIT/ÇIKIŞ) ---
 
-@api_view(['POST'])
-@permission_classes([AllowAny]) # Kayıt olmak için giriş yapmış olmaya gerek yok
-def signup_api(request):
-    serializer = RegisterSerializer(data=request.data)
-    if serializer.is_valid():
-        user = serializer.save()
-        login(request, user) # Session tabanlı auth kullanıyorsan giriş yaptırır
-        return Response({
-            "message": "User created successfully",
-            "user": {
-                "username": user.username,
-                "display_name": user.display_name
-            }
-        }, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# --- EN TEPEYE EKLENECEK IMPORTLAR ---
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
-from django.contrib.auth import authenticate, login, logout
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
-from rest_framework import status
-
-@api_view(['POST'])
+# --- LOGIN API GÜNCELLEMESİ ---
+@api_view(['POST', 'GET'])
 @permission_classes([AllowAny])
+@ensure_csrf_cookie
 def login_api(request):
-    # Eğer kullanıcı zaten giriş yapmışsa çıkış yaptır (isteğe bağlı)
+    if request.method == 'GET':
+        return Response({"message": "CSRF cookie set"})
+
     if request.user.is_authenticated:
         logout(request)
 
@@ -57,69 +89,109 @@ def login_api(request):
     password = request.data.get('password')
 
     if not username or not password:
-        return Response(
-            {"error": "Please provide both username and password."},
-            status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({"error": "Username and password required"}, status=400)
 
-    # Kullanıcıyı doğrula
     user = authenticate(request, username=username, password=password)
 
-    if user is not None:
+    if user:
         login(request, user)
-        # Eğer JWT kullanıyorsan burada token oluşturup cookie'ye set edebilirsin
-        # Şimdilik başarılı mesajı ve kullanıcı bilgilerini dönüyoruz
-        return Response({
-            "message": "Login successful",
-            "user": {
-                "id": user.id,
-                "username": user.username,
-                "display_name": getattr(user, 'display_name', user.username)
+        
+        user.is_online = True
+        user.save()
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "online_users",
+            {
+                "type": "user_update",
+                "user_id": user.id,
+                "status": "online"
             }
-        }, status=status.HTTP_200_OK)
-    else:
-        return Response(
-            {"error": "Invalid username or password."},
-            status=status.HTTP_401_UNAUTHORIZED
         )
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework import status
-from django.db.models import Q
-from django.shortcuts import get_object_or_404
-from .models import Relationship, CustomUser
-from .serializers import CustomUserSerializer # Mevcut serializer'ın
+        response = Response({
+            "message": "Login successful", 
+            "user": {
+                "id": user.id, 
+                "username": user.username,
+                "avatar": user.avatar.url if user.avatar else None
+            }
+        }, status=200)
+        
+        set_jwt_cookies(response, user)
+        return response
+    
+    return Response({"error": "Invalid credentials"}, status=401)
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from django.db.models import Q
-from .models import Relationship, CustomUser
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def signup_api(request):
+    serializer = RegisterSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        login(request, user)
+        
+        response = Response({
+            "message": "User created successfully",
+            "user": {
+                "id": user.id,
+                "username": user.username
+            }
+        }, status=201)
+        
+        set_jwt_cookies(response, user)
+        return response
+    return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def logout_api(request):
+    """
+    Kullanıcıyı sistemden çıkarır, offline yapar ve çerezleri siler.
+    """
+    try:
+        request.user.is_online = False
+        request.user.save()
+
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            "online_users",
+            {
+                "type": "user_update",
+                "user_id": request.user.id,
+                "status": "offline"
+            }
+        )
+
+        logout(request)
+        
+        response = Response({"message": "Logged out successfully"}, status=200)
+        
+        cookies_to_delete = ['access_token', 'refresh_token', 'csrftoken', 'sessionid']
+        for cookie in cookies_to_delete:
+            response.delete_cookie(cookie)
+            
+        return response
+    except Exception as e:
+        return Response({"error": str(e)}, status=500)
+
+# --- ARKADAŞLIK İŞLEMLERİ ---
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def friend_action_api(request):
-    # --- GET: Listeleme ---
     if request.method == 'GET':
-        # Bekleyen istekler (Sana gelenler)
         pending = Relationship.objects.filter(to_user=request.user, status='pending')
         
-        # Onaylanmış arkadaşlar
         friends_rel = Relationship.objects.filter(
             Q(status='friends') & (Q(from_user=request.user) | Q(to_user=request.user))
         )
 
-        # Arkadaş Listesi
         friends_data = []
         for rel in friends_rel:
             friend_user = rel.to_user if rel.from_user == request.user else rel.from_user
             
-            # GÜVENLİ ERİŞİM: display_name yoksa username kullan
-            d_name = getattr(friend_user, 'display_name', None)
-            if not d_name:
-                d_name = friend_user.username
+            d_name = getattr(friend_user, 'display_name', None) or friend_user.username
 
             friends_data.append({
                 "id": friend_user.id,
@@ -130,20 +202,17 @@ def friend_action_api(request):
                 "rel_id": rel.id
             })
 
-        # Bekleyen İstekler Listesi
         pending_data = []
         for r in pending:
-            # GÜVENLİ ERİŞİM
-            p_d_name = getattr(r.from_user, 'display_name', None)
-            if not p_d_name:
-                p_d_name = r.from_user.username
+            p_d_name = getattr(r.from_user, 'display_name', None) or r.from_user.username
 
             pending_data.append({
                 "id": r.from_user.id,
                 "username": r.from_user.username,
                 "display_name": p_d_name,
                 "avatar": r.from_user.avatar.url if r.from_user.avatar else None,
-                "rel_id": r.id
+                "rel_id": r.id,
+                "type": "incoming"
             })
 
         return Response({
@@ -152,7 +221,6 @@ def friend_action_api(request):
         })
 
     # --- POST: Aksiyonlar (Send, Approve, Remove) ---
-    # (Burası aynı kalıyor, değiştirmene gerek yok ama tam olsun diye ekliyorum)
     action = request.data.get("action")
     
     if action == "send":
@@ -165,16 +233,21 @@ def friend_action_api(request):
         if target_user == request.user:
              return Response({"error": "You cannot add yourself."}, status=400)
 
-        rel, created = Relationship.objects.get_or_create(
-            from_user=request.user,
-            to_user=target_user,
-            defaults={'status': 'pending'}
-        )
+        exists = Relationship.objects.filter(
+            (Q(from_user=request.user) & Q(to_user=target_user)) |
+            (Q(from_user=target_user) & Q(to_user=request.user))
+        ).exists()
+
+        if exists:
+            return Response({"message": "Relationship already exists"}, status=200)
+
+        Relationship.objects.create(from_user=request.user, to_user=target_user, status='pending')
         return Response({"message": f"Request sent to {target_username}!"}, status=201)
 
     elif action == "approve":
         try:
-            rel = Relationship.objects.get(id=request.data.get("rel_id"), to_user=request.user)
+            rel_id = request.data.get("rel_id")
+            rel = Relationship.objects.get(id=rel_id, to_user=request.user)
             rel.status = 'friends'
             rel.save()
             return Response({"message": "Friend request approved!"})
@@ -182,49 +255,31 @@ def friend_action_api(request):
             return Response({"error": "Request not found"}, status=404)
 
     elif action == "remove":
+        rel_id = request.data.get("rel_id")
         Relationship.objects.filter(
-            Q(id=request.data.get("rel_id")) & (Q(from_user=request.user) | Q(to_user=request.user))
+            Q(id=rel_id) & (Q(from_user=request.user) | Q(to_user=request.user))
         ).delete()
         return Response({"message": "Friendship/Request removed."})
 
     return Response({"error": "Invalid action."}, status=400)
 
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import JSONParser
-from django.core.files.base import ContentFile
-import base64
-
-from rest_framework.decorators import api_view, permission_classes, parser_classes
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.response import Response
-from rest_framework import status
-from django.core.files.base import ContentFile
-import base64
+# --- PROFİL DÜZENLEME ---
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 @parser_classes([MultiPartParser, FormParser])
 def edit_api(request):
     user = request.user
-    
-    # request.data form verilerini içerir
     data = request.data
 
-    # Display name ve email güncelleme
     if 'display_name' in data:
         user.display_name = data['display_name']
     
     if 'email' in data:
         user.email = data['email']
 
-    # Avatar güncelleme (Dosya Yükleme Mantığı)
-    # Frontend 'remove_avatar' string olarak "true" gönderebilir, kontrol edelim.
     if data.get('remove_avatar') == 'true' or data.get('remove_avatar') is True:
         user.avatar = None
-    
-    # request.FILES üzerinden dosyayı alıyoruz (Base64 decode gerekmez)
     elif 'avatar' in request.FILES:
         user.avatar = request.FILES['avatar']
 
