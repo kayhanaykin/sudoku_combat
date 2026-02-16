@@ -1,118 +1,146 @@
 .hero-section
 {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  min-height: calc(100vh - 80px);
-  background-color: #f8f9fa;
-  padding: 60px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px 30px;
+    padding-top: 50px;
+    position: relative;
+    overflow: hidden;
+}
+
+.home-decorative-board
+{
+    margin-bottom: -20px;
+    transform: scale(0.75);
+    opacity: 0.9;
+    /* pointer-events: none; */
+    animation: fadeInBoard 1.2s ease-out forwards;
 }
 
 .dashboard-container
 {
-  display: flex;
-  gap: 40px;
-  width: 100%;
-  max-width: 1700px;
-  padding: 80px 30px;
-  align-items: stretch;
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    max-width: 1300px;
+    z-index: 2;
+    align-items: stretch;
+    justify-content: center;
 }
 
 .actions-column
 {
-  flex: 1.2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 25px;
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
+/* Mode Card: Daha büyük ve belirgin */
 .mode-card
 {
-  background: rgb(255, 255, 255);
-  border-radius: 20px;
-  padding: 40px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-  border: 2px solid transparent;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    width: 900px;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 50px 40px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border: 3px solid transparent;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .mode-card:hover
 {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-  border-color: #3498db;
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
 }
 
+/* Renk vurguları (Yeşil temana uygun) */
 .mode-card.online:hover
 {
-  border-color: #3498db;
-  background: linear-gradient(to right, #ffffff, #f0f8ff);
+    border-color: #29972d;
+    background: linear-gradient(to right, #ffffff, #f0fdf4);
 }
 
 .mode-card.offline:hover
 {
-  border-color: #3498db;
-  background: linear-gradient(to right, #ffffff, #fffaf0);
+    border-color: #29972d;
+    background: linear-gradient(to right, #ffffff, #f7fee7);
 }
 
 .icon-wrapper
 {
-  font-size: 3.5rem;
-  background-color: #f1f3f5;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  flex-shrink: 0;
+    font-size: 4rem; /* İkon büyütüldü */
+    background-color: #f0fdf4;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+    color: #29972d;
 }
 
 .card-content h2
 {
-  margin: 0;
-  font-size: 1.8rem;
-  color: #2c3e50;
+    margin: 0;
+    font-size: 2.2rem; /* Başlık büyütüldü */
+    color: #1a2e1b;
+    font-weight: 800;
 }
 
 .card-content p
 {
-  margin: 5px 0 0;
-  color: #7f8c8d;
-  font-size: 1.1rem;
+    margin: 8px 0 0;
+    color: #4b5563;
+    font-size: 1.2rem; /* Alt metin büyütüldü */
 }
 
 .leaderboard-wrapper
 {
-  flex: 0.8;
-  display: flex;
-  flex-direction: column;
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
 }
 
-@media (max-width: 900px)
+@keyframes fadeInBoard 
 {
-  .dashboard-container
-  {
-    flex-direction: column;
-    align-items: center;
-    max-width: 600px;
-  }
+    from 
+    { 
+        opacity: 0; 
+        transform: scale(0.65) translateY(20px); 
+    }
+    to 
+    { 
+        opacity: 0.9; 
+        transform: scale(0.75) translateY(0); 
+    }
+}
 
-  .actions-column, 
-  .leaderboard-wrapper
-  {
-    width: 100%;
-    flex: auto;
-  }
+@media (max-width: 1024px)
+{
+    .dashboard-container
+    {
+        flex-direction: column;
+        align-items: center;
+    }
 
-  .mode-card
-  {
-    padding: 30px;
-  }
+    .home-decorative-board
+    {
+        transform: scale(0.6);
+        margin-bottom: -40px;
+    }
+
+    .mode-card
+    {
+        padding: 35px;
+    }
 }

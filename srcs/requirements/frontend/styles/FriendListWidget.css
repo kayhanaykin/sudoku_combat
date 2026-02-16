@@ -186,42 +186,52 @@
     color: #374151;
 }
 
-.action-btn
+.action-btn 
 {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: none;
+    width: 26px !important;
+    height: 26px !important;
+    border-radius: 6px !important;
+    border: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    font-size: 0.85rem !important;
+    font-weight: bold !important;
+    padding: 0 !important;
+    min-width: unset !important;
+}
+
+.btn-approve 
+{
+    background-color: #22c55e !important;
+    color: white !important;
+}
+
+.btn-approve:hover 
+{
+    background-color: #16a34a !important;
+    transform: scale(1.1);
+}
+
+.btn-remove 
+{
+    background-color: #ef4444 !important;
+    color: white !important;
+}
+
+.btn-remove:hover 
+{
+    background-color: #dc2626 !important;
+    transform: scale(1.1);
+}
+
+.actions 
+{
     display: flex;
+    gap: 6px;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 1.1rem;
-}
-
-.btn-approve
-{
-    background-color: #dcfce7;
-    color: #16a34a;
-}
-
-.btn-approve:hover
-{
-    background-color: #16a34a;
-    color: white;
-}
-
-.btn-remove
-{
-    background-color: #fee2e2;
-    color: #dc2626;
-}
-
-.btn-remove:hover
-{
-    background-color: #dc2626;
-    color: white;
 }
 
 .btn-add

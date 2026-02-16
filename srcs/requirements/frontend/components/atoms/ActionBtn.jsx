@@ -1,15 +1,12 @@
 import React from 'react';
 
-const ActionBtn = ({ onClick, disabled, children, className = '' }) => {
-  return (
-    <button 
-      className={`action-btn ${className}`} 
-      onClick={onClick} 
-      disabled={disabled}
-    >
-      {children}
-    </button>
-  );
+const ActionBtn = ({ className, children, ...props }) => 
+{
+    return (
+        <button className={className} {...props}>
+            {children}
+        </button>
+    );
 };
 
 export default ActionBtn;

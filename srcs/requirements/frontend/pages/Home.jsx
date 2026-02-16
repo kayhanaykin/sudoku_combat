@@ -1,135 +1,223 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from '../components/organisms/Navbar';
+import Navbar from '../components/molecules/Navbar';
 import Leaderboard from '../components/organisms/LeaderboardWidget';
 import DifficultyModal from '../components/organisms/DifficultyModal';
 import OnlineGameModal from '../components/molecules/OnlineGamePopup';
-import { startGame, createRoom, joinRoom } from '../services/api';
+import SudokuBoard from '../components/organisms/SudokuBoard';
+import { useAuth } from '../src/context/AuthContext'; 
+import { startGame, createCombatRoom, joinRoom } from '../services/api';
 import '../styles/Home.css';
 
-const Home = () => {
-  const navigate = useNavigate();
-  const user = { id: "101" };
+const Home = () =>
+{
+    const navigate = useNavigate();
+    const { user } = useAuth();
 
-  const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
-  const [isOnlineModalOpen, setIsOnlineModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+    // Referans ve State Tanımları
+    const boardRef = useRef(null); // Board dışını tespit etmek için
+    const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
+    const [isOnlineModalOpen, setIsOnlineModalOpen] = useState(false);
+    const [difficultyContext, setDifficultyContext] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-  const handlePlayClick = (mode) => {
-    if (mode === 'online')
-      setIsOnlineModalOpen(true);
-    else
-      setIsDifficultyOpen(true);
-  };
-
-  // --- ONLINE: ODA OLUŞTURMA ---
-  const handleCreateRoom = async () => {
-    setLoading(true);
-    try
+    const [selectedCell, setSelectedCell] = useState(null);
+    const [boardData, setBoardData] = useState(() => 
     {
-      const data = await createRoom(user.id);
-      console.log("Room Created:", data);
-      navigate('/online-game', { state: { roomId: data.roomId, role: 'owner' } });
-    }
-    catch (err)
+        const initialBoard = Array.from({ length: 9 }, () =>
+            Array.from({ length: 9 }, () => ({ value: 0, isFixed: false, isError: false }))
+        );
+        
+        let count = 0;
+        while (count < 18) 
+        {
+            const r = Math.floor(Math.random() * 9);
+            const c = Math.floor(Math.random() * 9);
+            const val = Math.floor(Math.random() * 9) + 1;
+
+            if (initialBoard[r][c].value === 0) 
+            {
+                initialBoard[r][c] = { value: val, isFixed: true, isError: false };
+                count++;
+            }
+        }
+        return initialBoard;
+    });
+
+    // --- DIŞARIYA TIKLAMA VE KLAVYE MANTIĞI ---
+
+    const handleKeyDown = useCallback((e) => 
     {
-      alert("Error creating room: " + err.message);
-    }
-    finally
+        if (!selectedCell) return;
+        const { r, c } = selectedCell;
+        if (boardData[r][c].isFixed) return;
+
+        if (e.key >= '1' && e.key <= '9') 
+        {
+            const newBoard = [...boardData];
+            newBoard[r][c] = { ...newBoard[r][c], value: parseInt(e.key) };
+            setBoardData(newBoard);
+        } 
+        else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') 
+        {
+            const newBoard = [...boardData];
+            newBoard[r][c] = { ...newBoard[r][c], value: 0 };
+            setBoardData(newBoard);
+        }
+    }, [selectedCell, boardData]);
+
+    useEffect(() => 
     {
-      setLoading(false);
-      setIsOnlineModalOpen(false);
-    }
-  };
+        // 1. Klavye dinleyici
+        window.addEventListener('keydown', handleKeyDown);
 
-  // --- ONLINE: ODAYA KATILMA ---
-  const handleJoinRoom = async (roomId) => {
-    setLoading(true);
-    try
+        // 2. Dışarı tıklama dinleyici
+        const handleClickOutside = (event) => 
+        {
+            if (boardRef.current && !boardRef.current.contains(event.target)) 
+            {
+                setSelectedCell(null); // Board dışına tıklandıysa seçimi kaldır
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => 
+        {
+            window.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [handleKeyDown]);
+
+    const handleCellClick = (r, c) => 
     {
-      const data = await joinRoom(roomId, user.id);
-      console.log("Room Joined:", data);
-      navigate('/online-game', { state: { roomId: data.roomId, role: 'guest' } });
-    }
-    catch (err)
+        setSelectedCell({ r, c });
+    };
+
+    // --- DİĞER FONKSİYONLAR ---
+
+    const getUserId = () =>
     {
-      alert("Error joining room: " + err.message);
-    }
-    finally
+        if (!user) return null;
+        return user.id || (user.user && user.user.id);
+    };
+
+    const currentUserId = getUserId();
+
+    const handlePlayClick = (mode) =>
     {
-      setLoading(false);
-      setIsOnlineModalOpen(false);
-    }
-  };
+        if (mode === 'online') setIsOnlineModalOpen(true);
+        else 
+        {
+            setDifficultyContext('OFFLINE');
+            setIsDifficultyOpen(true);
+        }
+    };
 
-  // --- OFFLINE: ZORLUK SEÇME ---
-  const handleDifficultySelect = async (difficulty) => {
-    setIsDifficultyOpen(false);
-    try
+    const handleOnlineCreateClick = () =>
     {
-      const gameData = await startGame('offline', difficulty);
-      navigate('/offline-game', { state: { gameData, difficulty } });
-    }
-    catch (error)
+        setIsOnlineModalOpen(false);
+        setDifficultyContext('ONLINE');
+        setIsDifficultyOpen(true);
+    };
+
+    const handleJoinRoom = async (roomId) =>
     {
-      console.error(error);
-      alert("Error starting single game.");
-    }
-  };
+        if (!roomId) return alert("Please enter a Room ID");
+        if (!currentUserId) return alert("User ID not found.");
 
-  return (
-    <>
-      <Navbar />
+        setLoading(true);
+        try
+        {
+            const data = await joinRoom(roomId, currentUserId);
+            navigate('/online-game', { state: { roomId: data.roomId, role: 'guest' } });
+        }
+        catch (err)
+        {
+            alert("Error: " + err.message);
+        }
+        finally
+        {
+            setLoading(false);
+            setIsOnlineModalOpen(false);
+        }
+    };
 
-      <main className="hero-section">
-        <div className="dashboard-container">
-          
-          <div className="actions-column">
-            
-            {/* ONLINE BUTONU */}
-            <div className="mode-card online" onClick={() => handlePlayClick('online')}>
-              <div className="icon-wrapper">⚔️</div>
-              <div className="card-content">
-                <h2>Play Combat</h2>
-                <p>Play with friends or random opponents</p>
-              </div>
-            </div>
+    const handleDifficultySelect = async (difficulty) =>
+    {
+        setIsDifficultyOpen(false);
+        setLoading(true);
+        const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
+        const levelStr = difficultyMap[difficulty] || difficulty;
 
-            {/* OFFLINE BUTONU */}
-            <div className="mode-card offline" onClick={() => handlePlayClick('offline')}>
-              <div className="icon-wrapper">🗡️</div>
-              <div className="card-content">
-                <h2>Play Single</h2>
-                <p>Play solo to improve your skills</p>
-              </div>
-            </div>
+        try
+        {
+            if (difficultyContext === 'OFFLINE')
+            {
+                const gameData = await startGame('offline', difficulty);
+                navigate('/offline-game', { state: { gameData, difficulty } });
+            }
+            else if (difficultyContext === 'ONLINE')
+            {
+                const data = await createCombatRoom(currentUserId, levelStr);
+                navigate('/online-game', { state: { roomId: data.roomId, role: 'owner' } });
+            }
+        }
+        catch (error) { alert(error.message); }
+        finally { setLoading(false); setDifficultyContext(null); }
+    };
 
-          </div>
+    return (
+        <>
+            <Navbar />
+            <main className="hero-section">
+                
+                {/* BoardRef'i buradaki div'e bağlıyoruz */}
+                <div className="home-decorative-board" ref={boardRef}>
+                    <SudokuBoard 
+                        board={boardData} 
+                        selectedCell={selectedCell} 
+                        onCellClick={handleCellClick}
+                        showError={false}
+                    />
+                </div>
 
-          <div className="leaderboard-wrapper">
-             <Leaderboard />
-          </div>
+                <div className="dashboard-container">
+                    <div className="actions-column">
+                        <div className="mode-card online" onClick={() => handlePlayClick('online')}>
+                            <div className="icon-wrapper">⚔️</div>
+                            <div className="card-content">
+                                <h2>Play Combat</h2>
+                                <p>Play with friends or random opponents</p>
+                            </div>
+                        </div>
+                        <div className="mode-card offline" onClick={() => handlePlayClick('offline')}>
+                            <div className="icon-wrapper">🗡️</div>
+                            <div className="card-content">
+                                <h2>Play Single</h2>
+                                <p>Play solo to improve your skills</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="leaderboard-wrapper">
+                        <Leaderboard />
+                    </div>
+                </div>
+            </main>
 
-        </div>
-      </main>
-
-      {/* OFFLINE MODAL */}
-      <DifficultyModal 
-        isOpen={isDifficultyOpen} 
-        onClose={() => setIsDifficultyOpen(false)}
-        onSelect={handleDifficultySelect}
-      />
-
-      {/* ONLINE MODAL */}
-      <OnlineGameModal
-        isOpen={isOnlineModalOpen}
-        onClose={() => setIsOnlineModalOpen(false)}
-        onCreate={handleCreateRoom}
-        onJoin={handleJoinRoom}
-        isLoading={loading}
-      />
-    </>
-  );
+            <DifficultyModal 
+                isOpen={isDifficultyOpen} 
+                onClose={() => setIsDifficultyOpen(false)}
+                onSelect={handleDifficultySelect}
+            />
+            <OnlineGameModal
+                isOpen={isOnlineModalOpen}
+                onClose={() => setIsOnlineModalOpen(false)}
+                onCreate={handleOnlineCreateClick}
+                onJoin={handleJoinRoom}
+                isLoading={loading}
+            />
+        </>
+    );
 };
 
 export default Home;

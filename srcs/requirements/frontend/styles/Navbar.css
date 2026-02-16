@@ -1,29 +1,173 @@
-.o-navbar
+.navbar
 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 40px;
-    height: 80px;
+    padding: 0 60px;
+    height: 100px;
     width: 100%;
     position: absolute;
     top: 0;
     left: 0;
     z-index: 50;
     background-color: #f0f1f0;
+    border-bottom: 2px solid #e0e0e0;
 }
 
-.navbar-actions
+.logo a
+{
+    font-size: 32px;
+    font-weight: 900;
+    text-decoration: none;
+    color: #338437;
+    letter-spacing: -1px;
+}
+
+.auth-buttons
 {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     align-items: center;
+}
+
+.profile-dropdown-container, .friends-dropdown-container
+{
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-trigger-btn, .friends-trigger-btn
+{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 30px !important;
+    border-radius: 35px !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    background-color: #29972d !important; 
+    color: #ffffff !important; 
+    border: 2px solid #03830b !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.profile-trigger-btn:hover, .friends-trigger-btn:hover
+{
+    transform: translateY(-2px);
+    background-color: #248528 !important;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+}
+
+.nav-avatar-img
+{
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid white;
+}
+
+.nav-profile-dropdown-menu, .nav-friends-dropdown-menu
+{
+    position: absolute;
+    top: calc(100% + 15px);
+    right: 0;
+    background: white;
+    border: 3px solid #222;
+    border-radius: 14px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.nav-profile-dropdown-menu
+{
+    width: 250px;
+    padding: 12px 0;
+}
+
+.nav-friends-dropdown-menu
+{
+    width: 400px;
+    padding: 20px;
+}
+
+.navbar-widget-wrapper
+{
+    width: 100%;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dropdown-user-info
+{
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dropdown-user-info strong
+{
+    font-size: 1.1rem;
+    color: #111;
+}
+
+.dropdown-user-info span
+{
+    font-size: 0.85rem;
+    color: #666;
+}
+
+.dropdown-menu-item
+{
+    width: 100%;
+    padding: 14px 20px;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    transition: background 0.2s;
+}
+
+.dropdown-menu-item:hover
+{
+    background: #f0f1f0;
+}
+
+.dropdown-divider
+{
+    height: 1px;
+    background: #222;
+    margin: 8px 0;
+    opacity: 0.1;
+}
+
+.logout-action
+{
+    color: #d9534f;
 }
 
 @media (max-width: 768px)
 {
-    .o-navbar
+    .navbar
     {
         padding: 0 20px;
+        height: 90px;
+    }
+    .logo a
+    {
+        font-size: 28px;
+    }
+    .nav-display-name, .friends-trigger-btn
+    {
+        display: none;
     }
 }

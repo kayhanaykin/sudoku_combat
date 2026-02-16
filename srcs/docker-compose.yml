@@ -19,7 +19,6 @@ services:
       - game_service
       - user_service
       - play_service
-      # - combat_service
 
   # --- C++ GAME SERVICE ---
   game_service:
@@ -75,72 +74,45 @@ services:
       - transcendence_network
     restart: unless-stopped
 
-  # # --- COMBAT SERVICE (NestJS) ---
-  # combat_service:
-  #   build: ./requirements/combat_service
-  #   container_name: combat_service
-  #   env_file: .env
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./requirements/combat_service:/app
-  #     - /app/node_modules
-  #   depends_on:
-  #     combat_db:
-  #       condition: service_healthy
-  #   networks:
-  #     - transcendence_network
-  #   restart: unless-stopped
-  #   command: ["npm", "run", "start:dev"]
-
-  # combat_db:
-  #   image: postgres:15-alpine
-  #   container_name: combat_db
-  #   environment:
-  #     POSTGRES_USER: bn_user
-  #     POSTGRES_PASSWORD: bn_pass
-  #     POSTGRES_DB: combat_db
-  #   volumes:
-  #     - combat_db:/var/lib/postgresql/data
-  #   restart: unless-stopped
-  #   networks:
-  #     - transcendence_network
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "pg_isready -U bn_user -d combat_db"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 5
-  #     start_period: 10s
-
-  # --- PLAY SERVICE (Python Logic) ---
+  # --- PLAY SERVICE (Python/FastAPI - Game Engine & Socket) ---
   play_service:
     build: ./requirements/play_service
     container_name: play_service
     expose:
       - "8000"
-    ports:
-      - "8000:8000"
     depends_on:
       - play_redis_db
       - game_service
-      # - statistics_db
     networks:
       - transcendence_network
     environment:
       - REDIS_HOST=play_redis_db
       - GENERATOR_URL=http://game_service:8080
-      - DATABASE_URL=postgresql://bn_user:bn_pass@statistics_db/game_stats_db
+      # - STATS_SERVICE_URL=http://statistics_service:8005
     restart: unless-stopped
 
   play_redis_db:
     image: redis:alpine
     container_name: play_redis_db
-    expose:
-      - "6379"
     networks:
       - transcendence_network
     restart: unless-stopped
-    
+
+  # # --- STATISTICS SERVICE (Match Records & Leaderboard) ---
+  # statistics_service:
+  #   build: ./requirements/statistics_service
+  #   container_name: statistics_service
+  #   expose:
+  #     - "8005"
+  #   depends_on:
+  #     statistics_db:
+  #       condition: service_healthy
+  #   networks:
+  #     - transcendence_network
+  #   environment:
+  #     - DATABASE_URL=postgresql://bn_user:bn_pass@statistics_db/game_stats_db
+  #   restart: unless-stopped
+
   # statistics_db:
   #   image: postgres:15-alpine
   #   container_name: statistics_db
@@ -182,4 +154,3 @@ volumes:
   user_db_data:
   user_media:
   # statistics_db_data:
-  # combat_db:
