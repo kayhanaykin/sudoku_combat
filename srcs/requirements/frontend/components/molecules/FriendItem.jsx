@@ -43,17 +43,17 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
                 </div>
             </div>
             
-            <div className="actions" style={{ display: 'flex', gap: '8px' }}>
+            <div className="actions">
                 {isPending && (
                     <ActionBtn 
-                        className="btn-approve" 
+                        className="action-btn btn-approve" 
                         onClick={() => onApprove(id)}
                     >
                         ✓
                     </ActionBtn>
                 )}
                 <ActionBtn 
-                    className="btn-remove" 
+                    className="action-btn btn-remove" 
                     onClick={() => onRemove(id)}
                 >
                     ✕

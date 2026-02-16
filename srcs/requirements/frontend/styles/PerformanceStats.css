@@ -1,0 +1,96 @@
+.o-stats-section .section-title
+{
+    font-size: 1.2rem;
+    padding-left: 10px;
+    padding-bottom: 5px;
+    text-align: left;
+    font-weight: 800;
+    color: var(--dark-green);
+    margin-bottom: 25px;
+    letter-spacing: -0.5px;
+}
+
+.stats-table-wrapper
+{
+    width: 100%;
+    overflow-x: auto;
+}
+
+.stats-table
+{
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', sans-serif;
+}
+
+.stats-table th, 
+.stats-table td
+{
+    text-align: center;
+    vertical-align: middle;
+    padding: 15px;
+    color: #374151;
+    border-bottom: 1px solid #f3f4f6;
+    font-size: 0.95rem;
+}
+
+.stats-table td.diff-cell 
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-bottom: none;
+}
+
+.diff-cell
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+}
+
+.diff-dot
+{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.diff-dot.easy { background-color: #4ade80; }
+.diff-dot.medium { background-color: #facc15; }
+.diff-dot.hard { background-color: #ec7928; }
+.diff-dot.expert { background-color: #f03939; }
+.diff-dot.extreme { background-color: #880000; }
+
+.win-rate-bar-container
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.progress-bar
+{
+    flex: 0 1 100px; 
+    height: 8px;
+    background-color: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill
+{
+    height: 100%;
+    background-color: #4ade80;
+}
+
+.total-row
+{
+    background-color: #f0fdf4 !important;
+    font-weight: bold;
+    color: #14532d;
+}

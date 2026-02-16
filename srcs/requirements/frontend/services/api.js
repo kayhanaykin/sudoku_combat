@@ -319,3 +319,29 @@ export const deleteUserAccount = async () => {
     return false;
   }
 };
+
+export const createCombatRoom = async (userId, level) => {
+  const url = `${API_BASE_URL}/api/room/create`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ 
+        userId: userId.toString(), 
+        level: level
+      }),
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Oda oluşturulamadı');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Combat Room Error:", error);
+    throw error;
+  }
+};
