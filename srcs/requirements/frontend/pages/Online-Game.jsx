@@ -30,6 +30,7 @@ const OnlineGame = () => {
         difficulty={difficulty} 
       />
 
+      {/* --- MAIN AREA --- */}
       <div className="game-main-area">
         
         <PlayerCard 
