@@ -151,8 +151,7 @@ const Home = () => {
                 // API call to create room
                 const data = await createCombatRoom(currentUserId, levelStr);
                 
-                // Handle different possible response keys (camelCase or snake_case)
-                const roomId = data.roomId || data.room_id || data.id;
+                const roomId = data.roomId;
 
                 if (!roomId) {
                     throw new Error("Failed to retrieve Room ID from server.");
