@@ -31,17 +31,16 @@ export class AppController
 			return ERROR.LEVEL_REQUIRED;
 		try
 		{
-			const res = await fetch(`http://game_service:8080/new-game?level=${body.level}`,
+			const res = await fetch(`http://game_service:8080/generate?level=${body.level}`,
 			{
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ level: body.level })
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' }
 			});
 			const gameData = await res.json();
 			const room = this.roomRepository.create({
 				ownerId: body.userId,
-				solvedBoard: gameData.solvedBoard,
-				currBoard: gameData.currBoard,
+				solvedBoard: gameData.solution,
+				currBoard: gameData.board,
 				health: [3, 0],
 				status: 'waiting'
 			});

@@ -1,5 +1,5 @@
 {
-  "name": "stats_server",
+  "name": "combat_service",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -32,9 +32,10 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
+    "@nestjs/cli": "^11.0.16",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.1",
+    "@nestjs/typeorm": "^11.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^22.10.7",
