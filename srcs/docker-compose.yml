@@ -18,7 +18,8 @@ services:
     depends_on:
       - game_service
       - user_service
-      - play_service
+      # - play_service
+      - combat_service
 
   # --- C++ GAME SERVICE ---
   game_service:
@@ -55,6 +56,10 @@ services:
     image: postgres:15-alpine
     container_name: user_db
     env_file: .env
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=transcendence_db
     volumes:
       - user_db_data:/var/lib/postgresql/data
     restart: unless-stopped
@@ -75,28 +80,28 @@ services:
     restart: unless-stopped
 
   # --- PLAY SERVICE (Python/FastAPI - Game Engine & Socket) ---
-  play_service:
-    build: ./requirements/play_service
-    container_name: play_service
-    expose:
-      - "8000"
-    depends_on:
-      - play_redis_db
-      - game_service
-    networks:
-      - transcendence_network
-    environment:
-      - REDIS_HOST=play_redis_db
-      - GENERATOR_URL=http://game_service:8080
-      # - STATS_SERVICE_URL=http://statistics_service:8005
-    restart: unless-stopped
+  # play_service:
+  #   build: ./requirements/play_service
+  #   container_name: play_service
+  #   expose:
+  #     - "8000"
+  #   depends_on:
+  #     - play_redis_db
+  #     - game_service
+  #   networks:
+  #     - transcendence_network
+  #   environment:
+  #     - REDIS_HOST=play_redis_db
+  #     - GENERATOR_URL=http://game_service:8080
+  #     # - STATS_SERVICE_URL=http://statistics_service:8005
+  #   restart: unless-stopped
 
-  play_redis_db:
-    image: redis:alpine
-    container_name: play_redis_db
-    networks:
-      - transcendence_network
-    restart: unless-stopped
+  # play_redis_db:
+  #   image: redis:alpine
+  #   container_name: play_redis_db
+  #   networks:
+  #     - transcendence_network
+  #   restart: unless-stopped
 
   # # --- STATISTICS SERVICE (Match Records & Leaderboard) ---
   # statistics_service:
@@ -130,6 +135,56 @@ services:
   #     timeout: 5s
   #     retries: 5
 
+  combat_service:
+    build: ./requirements/combat_service
+    container_name: combat_service
+    env_file: .env
+    ports:
+      - "8003:8003"
+    depends_on:
+      - room_service
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+    command: ["npm", "run", "start:dev"]
+
+  room_service:
+    build: ./requirements/room_service
+    container_name: room_service
+    env_file: .env
+    volumes:
+      - ./requirements/room_service:/app
+      - /app/node_modules 
+    ports:
+      - "8002:8002"
+    depends_on:
+      room_db:
+        condition: service_healthy 
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+    command: ["npm", "run", "start:dev"]
+
+  room_db:
+    image: postgres:15-alpine
+    container_name: room_db
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER_room}      # room_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_room} # room_pass
+      - POSTGRES_DB=${POSTGRES_DB_room}          # room_db
+    volumes:
+      - room_db:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - transcendence_network
+    healthcheck:
+      # DÜZELTME: Yanlış DB ve User yerine, room değişkenlerini kullanıyoruz
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_room} -d ${POSTGRES_DB_room}"]
+      interval: 5s   # 1s çok agresif olabilir, 5s daha sağlıklıdır
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
   # --- FRONTEND (REACT) ---
   frontend:
     build:
@@ -154,3 +209,4 @@ volumes:
   user_db_data:
   user_media:
   # statistics_db_data:
+  room_db:

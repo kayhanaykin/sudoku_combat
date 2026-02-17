@@ -9,34 +9,32 @@ import { useAuth } from '../src/context/AuthContext';
 import { startGame, createCombatRoom, joinRoom } from '../services/api';
 import '../styles/Home.css';
 
-const Home = () =>
-{
+const Home = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
 
-    // Referans ve State Tanımları
-    const boardRef = useRef(null); // Board dışını tespit etmek için
+    // Refs & State
+    const boardRef = useRef(null); 
     const [isDifficultyOpen, setIsDifficultyOpen] = useState(false);
     const [isOnlineModalOpen, setIsOnlineModalOpen] = useState(false);
-    const [difficultyContext, setDifficultyContext] = useState(null);
+    const [difficultyContext, setDifficultyContext] = useState(null); // 'ONLINE' or 'OFFLINE'
     const [loading, setLoading] = useState(false);
 
+    // Decorative Board State
     const [selectedCell, setSelectedCell] = useState(null);
-    const [boardData, setBoardData] = useState(() => 
-    {
+    const [boardData, setBoardData] = useState(() => {
+        // Initialize a random decorative board
         const initialBoard = Array.from({ length: 9 }, () =>
             Array.from({ length: 9 }, () => ({ value: 0, isFixed: false, isError: false }))
         );
         
         let count = 0;
-        while (count < 18) 
-        {
+        while (count < 18) {
             const r = Math.floor(Math.random() * 9);
             const c = Math.floor(Math.random() * 9);
             const val = Math.floor(Math.random() * 9) + 1;
 
-            if (initialBoard[r][c].value === 0) 
-            {
+            if (initialBoard[r][c].value === 0) {
                 initialBoard[r][c] = { value: val, isFixed: true, isError: false };
                 count++;
             }
@@ -44,126 +42,137 @@ const Home = () =>
         return initialBoard;
     });
 
-    // --- DIŞARIYA TIKLAMA VE KLAVYE MANTIĞI ---
+    // --- INTERACTION LOGIC (Decorative Board) ---
 
-    const handleKeyDown = useCallback((e) => 
-    {
+    const handleKeyDown = useCallback((e) => {
         if (!selectedCell) return;
         const { r, c } = selectedCell;
         if (boardData[r][c].isFixed) return;
 
-        if (e.key >= '1' && e.key <= '9') 
-        {
+        if (e.key >= '1' && e.key <= '9') {
             const newBoard = [...boardData];
             newBoard[r][c] = { ...newBoard[r][c], value: parseInt(e.key) };
             setBoardData(newBoard);
         } 
-        else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') 
-        {
+        else if (e.key === 'Backspace' || e.key === 'Delete' || e.key === '0') {
             const newBoard = [...boardData];
             newBoard[r][c] = { ...newBoard[r][c], value: 0 };
             setBoardData(newBoard);
         }
     }, [selectedCell, boardData]);
 
-    useEffect(() => 
-    {
-        // 1. Klavye dinleyici
+    useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
 
-        // 2. Dışarı tıklama dinleyici
-        const handleClickOutside = (event) => 
-        {
-            if (boardRef.current && !boardRef.current.contains(event.target)) 
-            {
-                setSelectedCell(null); // Board dışına tıklandıysa seçimi kaldır
+        const handleClickOutside = (event) => {
+            if (boardRef.current && !boardRef.current.contains(event.target)) {
+                setSelectedCell(null);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
 
-        return () => 
-        {
+        return () => {
             window.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, [handleKeyDown]);
 
-    const handleCellClick = (r, c) => 
-    {
+    const handleCellClick = (r, c) => {
         setSelectedCell({ r, c });
     };
 
-    // --- DİĞER FONKSİYONLAR ---
+    // --- GAME LOGIC ---
 
-    const getUserId = () =>
-    {
+    const getUserId = () => {
         if (!user) return null;
         return user.id || (user.user && user.user.id);
     };
 
     const currentUserId = getUserId();
 
-    const handlePlayClick = (mode) =>
-    {
-        if (mode === 'online') setIsOnlineModalOpen(true);
-        else 
-        {
+    // Triggered when clicking "Play Combat" or "Play Single"
+    const handlePlayClick = (mode) => {
+        if (mode === 'online') {
+            setIsOnlineModalOpen(true);
+        } else {
             setDifficultyContext('OFFLINE');
             setIsDifficultyOpen(true);
         }
     };
 
-    const handleOnlineCreateClick = () =>
-    {
+    // Triggered inside OnlineGameModal -> "Create Room"
+    const handleOnlineCreateClick = () => {
         setIsOnlineModalOpen(false);
         setDifficultyContext('ONLINE');
         setIsDifficultyOpen(true);
     };
 
-    const handleJoinRoom = async (roomId) =>
-    {
-        if (!roomId) return alert("Please enter a Room ID");
-        if (!currentUserId) return alert("User ID not found.");
+    // Triggered inside OnlineGameModal -> "Join Room"
+    const handleJoinRoom = async (roomIdInput) => {
+        if (!roomIdInput) return alert("Please enter a Room ID");
+        if (!currentUserId) return alert("User ID not found. Please log in.");
 
         setLoading(true);
-        try
-        {
-            const data = await joinRoom(roomId, currentUserId);
-            navigate('/online-game', { state: { roomId: data.roomId, role: 'guest' } });
-        }
-        catch (err)
-        {
-            alert("Error: " + err.message);
-        }
-        finally
-        {
+        try {
+            const data = await joinRoom(roomIdInput, currentUserId);
+            // Assuming backend returns { roomId: "..." }
+            navigate('/online-game', { 
+                state: { 
+                    roomId: data.roomId || data.room_id, 
+                    role: 'guest' 
+                } 
+            });
+        } catch (err) {
+            console.error(err);
+            alert("Error joining room: " + err.message);
+        } finally {
             setLoading(false);
             setIsOnlineModalOpen(false);
         }
     };
 
-    const handleDifficultySelect = async (difficulty) =>
-    {
+    // Triggered when difficulty is selected (for both Online Create & Offline)
+    const handleDifficultySelect = async (difficulty) => {
         setIsDifficultyOpen(false);
         setLoading(true);
+        
+        // Map numeric difficulty to string if backend expects string
         const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
-        const levelStr = difficultyMap[difficulty] || difficulty;
+        const levelStr = difficultyMap[difficulty] || "Medium";
 
-        try
-        {
-            if (difficultyContext === 'OFFLINE')
-            {
+        try {
+            if (difficultyContext === 'OFFLINE') {
                 const gameData = await startGame('offline', difficulty);
                 navigate('/offline-game', { state: { gameData, difficulty } });
-            }
-            else if (difficultyContext === 'ONLINE')
-            {
+            } 
+            else if (difficultyContext === 'ONLINE') {
+                if (!currentUserId) throw new Error("User not authenticated");
+
+                // API call to create room
                 const data = await createCombatRoom(currentUserId, levelStr);
-                navigate('/online-game', { state: { roomId: data.roomId, role: 'owner' } });
+                
+                // Handle different possible response keys (camelCase or snake_case)
+                const roomId = data.roomId || data.room_id || data.id;
+
+                if (!roomId) {
+                    throw new Error("Failed to retrieve Room ID from server.");
+                }
+
+                navigate('/online-game', { 
+                    state: { 
+                        roomId: roomId, 
+                        role: 'owner',
+                        difficulty: levelStr
+                    } 
+                });
             }
+        } catch (error) {
+            console.error("Game Start Error:", error);
+            alert(error.message || "An error occurred while starting the game.");
+        } finally {
+            setLoading(false);
+            setDifficultyContext(null);
         }
-        catch (error) { alert(error.message); }
-        finally { setLoading(false); setDifficultyContext(null); }
     };
 
     return (
@@ -171,7 +180,7 @@ const Home = () =>
             <Navbar />
             <main className="hero-section">
                 
-                {/* BoardRef'i buradaki div'e bağlıyoruz */}
+                {/* Decorative Board */}
                 <div className="home-decorative-board" ref={boardRef}>
                     <SudokuBoard 
                         board={boardData} 
@@ -181,34 +190,45 @@ const Home = () =>
                     />
                 </div>
 
+                {/* Dashboard Actions */}
                 <div className="dashboard-container">
                     <div className="actions-column">
+                        
+                        {/* Online / Combat Mode */}
                         <div className="mode-card online" onClick={() => handlePlayClick('online')}>
                             <div className="icon-wrapper">⚔️</div>
                             <div className="card-content">
                                 <h2>Play Combat</h2>
-                                <p>Play with friends or random opponents</p>
+                                <p>Challenge friends or random opponents</p>
                             </div>
                         </div>
+
+                        {/* Offline / Single Mode */}
                         <div className="mode-card offline" onClick={() => handlePlayClick('offline')}>
                             <div className="icon-wrapper">🗡️</div>
                             <div className="card-content">
                                 <h2>Play Single</h2>
-                                <p>Play solo to improve your skills</p>
+                                <p>Practice solo to improve your skills</p>
                             </div>
                         </div>
+
                     </div>
+                    
+                    {/* Leaderboard Widget */}
                     <div className="leaderboard-wrapper">
                         <Leaderboard />
                     </div>
                 </div>
             </main>
 
+            {/* Modals */}
             <DifficultyModal 
                 isOpen={isDifficultyOpen} 
                 onClose={() => setIsDifficultyOpen(false)}
                 onSelect={handleDifficultySelect}
+                isLoading={loading}
             />
+            
             <OnlineGameModal
                 isOpen={isOnlineModalOpen}
                 onClose={() => setIsOnlineModalOpen(false)}

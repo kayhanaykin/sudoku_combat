@@ -276,7 +276,7 @@ export const logoutUser = async () => {
 };
 
 export const createRoom = async (userId) => {
-  const url = `${API_BASE_URL}/api/combat/room/create`;
+  const url = `${API_BASE_URL}/api/room/create`;
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
@@ -288,7 +288,7 @@ export const createRoom = async (userId) => {
 };
 
 export const joinRoom = async (roomId, userId) => {
-  const url = `${API_BASE_URL}/api/combat/room/join/${roomId}`;
+  const url = `${API_BASE_URL}/api/room/join/${roomId}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
