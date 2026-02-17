@@ -143,37 +143,24 @@ def signup_api(request):
         return response
     return Response(serializer.errors, status=400)
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
+from django.contrib.auth import logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
 def logout_api(request):
-    """
-    Kullanıcıyı sistemden çıkarır, offline yapar ve çerezleri siler.
-    """
-    try:
-        request.user.is_online = False
-        request.user.save()
-
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            "online_users",
-            {
-                "type": "user_update",
-                "user_id": request.user.id,
-                "status": "offline"
-            }
-        )
-
-        logout(request)
+    if request.method == "POST":
+        logout(request) # Django session'ı kapatır
+        response = JsonResponse({'message': 'Successfully logged out'})
         
-        response = Response({"message": "Logged out successfully"}, status=200)
+        # Tüm çerezleri sil
+        response.delete_cookie('sessionid')
+        response.delete_cookie('csrftoken')
+        response.delete_cookie('access_token')
+        response.delete_cookie('refresh_token')
         
-        cookies_to_delete = ['access_token', 'refresh_token', 'csrftoken', 'sessionid']
-        for cookie in cookies_to_delete:
-            response.delete_cookie(cookie)
-            
         return response
-    except Exception as e:
-        return Response({"error": str(e)}, status=500)
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
 
 # --- ARKADAŞLIK İŞLEMLERİ ---
 

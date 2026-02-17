@@ -7,7 +7,6 @@ urlpatterns = [
     path('auth/callback/', views.FortyTwoCallbackView.as_view(), name='fortytwo-callback'),
     path('signup/', views.local_signup_view, name='local-signup'),
     path('setup/', views.profile_setup_view, name='profile_setup'),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
     path('logout/', views.logout_view, name='logout'),
     path('login/', views.local_login_view, name='login'),
     path('signin-choices/', views.signin_options_view, name='signin_options'),
