@@ -146,6 +146,7 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 
 # 1. CSRF Trusted Origins (Browser'dan Nginx'e gelen adresler)
 # Port 8443 üzerinden gelindiği için bunları eklemeliyiz.
+CSRF_COOKIE_HTTPONLY = False
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "wss://localhost:8443",

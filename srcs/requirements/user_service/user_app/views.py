@@ -26,54 +26,31 @@ from django.shortcuts import redirect
 from rest_framework_simplejwt.tokens import RefreshToken
 
 def set_jwt_cookie_and_redirect(user, request, target_url=None):
-    # 1. Generate the tokens
     refresh = RefreshToken.for_user(user)
     access_token = str(refresh.access_token)
     
-    # 2. Refined JSON Check
-    # We only return JSON if the request explicitly asks for it AND it's not a standard browser page load
-    is_json_requested = 'application/json' in request.headers.get('Accept', '')
-    is_postman_or_api = request.content_type == 'application/json'
-    
-    # Check if this is a standard HTML form submission (typical browser behavior)
-    is_browser_form = request.headers.get('Content-Type') == 'application/x-www-form-urlencoded'
+    target = target_url or 'dashboard'
+    # Django içinde redirect('profile_setup') gibi isimler kullanıyorsan 
+    # frontend URL'ine (/) yönlendirdiğinden emin ol.
+    response = redirect('/') # Frontend ana sayfasına yönlendir
 
-    if (is_json_requested or is_postman_or_api) and not is_browser_form:
-        return JsonResponse({
-            'message': 'Login successful',
-            'access': access_token,
-            'refresh': str(refresh),
-            'user': {
-                'id': user.id,
-                'username': user.username,
-                'display_name': getattr(user, 'display_name', user.username)
-            }
-        })
-
-    # 3. Standard Browser Redirect Logic
-    # Check if profile is complete (adjust 'is_profile_complete' to your actual model field)
-    is_complete = getattr(user, 'is_profile_complete', True)
-    target = target_url or ('dashboard' if is_complete else 'setup')
-    
-    response = redirect(target)
-    
-    # 4. Set Cookies
-    # refresh_token remains secure and hidden (httponly=True)
+    # Çerezlerin tüm pathlerde geçerli olması için path='/' ekle
     response.set_cookie(
         key='refresh_token', 
         value=str(refresh), 
         httponly=True, 
         secure=True, 
-        samesite='Lax'
+        samesite='None', # Cross-origin localhost senaryoları için
+        path='/'
     )
     
-    # access_token MUST be accessible by JS (httponly=False) so the WebSocket can grab it
     response.set_cookie(
         key='access_token', 
         value=access_token, 
-        httponly=False,  # <--- CRITICAL: Set to False for WebSockets
+        httponly=False, 
         secure=True, 
-        samesite='Lax'
+        samesite='None',
+        path='/'
     )
     
     return response
@@ -141,18 +118,18 @@ class FortyTwoCallbackView(APIView):
 
         # Log into Django session
         login(request, user)
-        
+        request.session.modified = True
         # 4. Smart Redirection Logic
         # A: User is new -> Go to Setup
         # B: User existed but never finished setup -> Go to Setup
         # C: User is returning and finished setup -> Go to Dashboard
         
-        target = 'dashboard'
+        target = '/'
         if created or not user.is_profile_complete:
             target = 'profile_setup'
 
         # Use your existing JWT helper with the dynamic target_url
-        return set_jwt_cookie_and_redirect(user, request, target_url=target)
+        return set_jwt_cookie_and_redirect(user, request)
 
 def local_signup_view(request):
     if request.method == "POST":
