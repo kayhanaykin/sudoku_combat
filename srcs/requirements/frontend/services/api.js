@@ -192,7 +192,7 @@ export const startGame = async (mode, difficulty) => {
 };
 
 export const makeMove = async (gameId, row, col, value) => {
-  const url = `${API_BASE_URL}/api/play/move`;
+  const url = `${API_BASE_URL}/api/combat/move`;
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
@@ -276,7 +276,7 @@ export const logoutUser = async () => {
 };
 
 export const createRoom = async (userId) => {
-  const url = `${API_BASE_URL}/api/room/create`;
+  const url = `${API_BASE_URL}/api/combat/create`;
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
@@ -288,7 +288,7 @@ export const createRoom = async (userId) => {
 };
 
 export const joinRoom = async (roomId, userId) => {
-  const url = `${API_BASE_URL}/api/room/join/${roomId}`;
+  const url = `${API_BASE_URL}/api/combat/join/${roomId}`;
   const response = await fetch(url, {
     method: 'POST',
     headers: getHeaders(),
@@ -321,7 +321,7 @@ export const deleteUserAccount = async () => {
 };
 
 export const createCombatRoom = async (userId, level) => {
-  const url = `${API_BASE_URL}/api/room/create`;
+  const url = `${API_BASE_URL}/api/combat/create`;
 
   try {
     const response = await fetch(url, {

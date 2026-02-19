@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Room } from './room.entity';
@@ -10,27 +10,42 @@ const ERROR = {
 	ROOM_FULL: { success: false, message: 'Room is full' },
 	OWNER_CANNOT_JOIN: { success: false, message: 'Owner cannot join as guest' },
 	DB_ERROR: (error: any) => ({ success: false, message: 'Database error', error: error.message }),
-	USER_NOT_IN_ROOM: { success: false, message: 'User is not in this room' }
+	USER_NOT_IN_ROOM: { success: false, message: 'User is not in this room' },
+	LEVEL_REQUIRED: { success: false, message: 'level is required' }
 };
 
-@Controller('room')
+@Controller()
 export class AppController
 {
 	constructor(
 		@InjectRepository(Room)
-		private roomRepository: Repository<Room>
-	) {}
+		private roomRepository: Repository<Room>)
+	{}
 
 	@Post('create')
-	async	roomCreate(@Body() body: { userId: string })
+	async	roomCreate(@Body() body: { userId: string, level: string })
 	{
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
+		if (!body.level)
+			return ERROR.LEVEL_REQUIRED;
 		try
 		{
-			const room = this.roomRepository.create({ ownerId: body.userId });
+			const res = await fetch(`http://game_service:8080/generate?level=${body.level}`,
+			{
+				method: 'GET',
+				headers: { 'Content-Type': 'application/json' }
+			});
+			const gameData = await res.json();
+			const room = this.roomRepository.create({
+				ownerId: body.userId,
+				solvedBoard: gameData.solution,
+				currBoard: gameData.board,
+				health: [3, 0],
+				status: 'waiting'
+			});
 			const saved = await this.roomRepository.save(room);
-			return {success: true, roomId: saved.id };
+			return { success: true, roomId: saved.id };
 		}
 		catch (error)
 		{
@@ -56,6 +71,7 @@ export class AppController
 				return ERROR.OWNER_CANNOT_JOIN;
 			room.guestId = body.userId;
 			room.status = 'playing';
+			room.health = [room.health[0], 3];
 			await this.roomRepository.save(room);
 			return { success: true, roomId: room.id };
 		}
@@ -94,6 +110,7 @@ export class AppController
 			else if (room.guestId === body.userId)
 			{
 				room.guestId = null;
+				room.health = [room.health[0], 0];
 				room.status = 'waiting';
 			}
 			else
@@ -102,6 +119,72 @@ export class AppController
 			}
 			await this.roomRepository.save(room);
 			return { success: true, message: 'Left room' };
+		}
+		catch (error)
+		{
+			return ERROR.DB_ERROR(error);
+		}
+	}
+
+	@Post('validate-move/roomId=:roomId')
+	async	validateMove(@Param('roomId') roomId: string, @Body() body: { row: number, col: number, value: number })
+	{
+		if (!roomId)
+			return (ERROR.ROOM_ID_REQUIRED);
+		try
+		{
+			const room = await this.roomRepository.findOne({ where: { id: +roomId } });
+			if (!room)
+				return (ERROR.ROOM_NOT_FOUND);
+			return { valid: (body.value === room.solvedBoard[body.row][body.col]) };
+		}
+		catch (error)
+		{
+			return (ERROR.DB_ERROR(error));
+		}
+	}
+
+	@Get('game-state/roomId=:roomId')
+	async	getGameState(@Param('roomId') roomId: string)
+	{
+		if (!roomId)
+			return (ERROR.ROOM_ID_REQUIRED);
+		try
+		{
+			const room = await this.roomRepository.findOne({ where: {id: +roomId } });
+			if (!room)
+				return (ERROR.ROOM_NOT_FOUND);
+			return {
+				success: true,
+				ownerId: room.ownerId,
+				guestId: room.guestId,
+				currBoard: room.currBoard,
+				health: room.health,
+				status: room.status
+			}
+		}
+		catch (error)
+		{
+			return (ERROR.DB_ERROR(error));
+		}
+	}
+
+	@Get('list')
+	async getRoomList()
+	{
+		try
+		{
+			const rooms = await this.roomRepository.find();
+
+			const safeRooms = rooms.map(room => ({
+				id: room.id,
+				ownerId: room.ownerId,
+				guestId: room.guestId,
+				status: room.status,
+				health: room.health,
+			}));
+
+			return { success: true, count: safeRooms.length, rooms: safeRooms };
 		}
 		catch (error)
 		{

@@ -67,11 +67,11 @@ services:
       - transcendence_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-      start_period: 5s
-      
+      interval: 3s
+      timeout: 3s
+      retries: 3
+      start_period: 3s
+
   user_redis:
     image: redis:alpine
     container_name: user_redis
@@ -139,51 +139,38 @@ services:
     build: ./requirements/combat_service
     container_name: combat_service
     env_file: .env
-    ports:
-      - "8003:8003"
-    depends_on:
-      - room_service
-    networks:
-      - transcendence_network
-    restart: unless-stopped
-    command: ["npm", "run", "start:dev"]
-
-  room_service:
-    build: ./requirements/room_service
-    container_name: room_service
-    env_file: .env
     volumes:
-      - ./requirements/room_service:/app
+      - ./requirements/combat_service:/app
       - /app/node_modules 
     ports:
       - "8002:8002"
     depends_on:
-      room_db:
-        condition: service_healthy 
+      combat_db:
+        condition: service_healthy
     networks:
       - transcendence_network
     restart: unless-stopped
     command: ["npm", "run", "start:dev"]
 
-  room_db:
+  combat_db:
     image: postgres:15-alpine
-    container_name: room_db
+    container_name: combat_db
     environment:
-      - POSTGRES_USER=${POSTGRES_USER_room}      # room_user
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_room} # room_pass
-      - POSTGRES_DB=${POSTGRES_DB_room}          # room_db
+      - POSTGRES_USER=${POSTGRES_USER_combat}      # combat_user
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_combat} # combat_pass
+      - POSTGRES_DB=${POSTGRES_DB_combat}          # combat_db
     volumes:
-      - room_db:/var/lib/postgresql/data
+      - combat_db:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - transcendence_network
     healthcheck:
-      # DÜZELTME: Yanlış DB ve User yerine, room değişkenlerini kullanıyoruz
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_room} -d ${POSTGRES_DB_room}"]
-      interval: 5s   # 1s çok agresif olabilir, 5s daha sağlıklıdır
-      timeout: 5s
-      retries: 5
-      start_period: 5s
+      # DÜZELTME: Yanlış DB ve User yerine, combat değişkenlerini kullanıyoruz
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_combat} -d ${POSTGRES_DB_combat}"]
+      interval: 3s   # 1s çok agresif olabilir, 3s daha sağlıklıdır
+      timeout: 3s
+      retries: 3
+      start_period: 3s
 
   # --- FRONTEND (REACT) ---
   frontend:
@@ -208,5 +195,5 @@ networks:
 volumes:
   user_db_data:
   user_media:
+  combat_db:
   # statistics_db_data:
-  room_db:
