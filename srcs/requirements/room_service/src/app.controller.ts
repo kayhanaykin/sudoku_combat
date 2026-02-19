@@ -169,3 +169,26 @@ export class AppController
 		}
 	}
 }
+
+@Get('list')
+    async getRoomList()
+    {
+        try
+        {
+            const rooms = await this.roomRepository.find();
+
+            const safeRooms = rooms.map(room => ({
+                id: room.id,
+                ownerId: room.ownerId,
+                guestId: room.guestId,
+                status: room.status,
+                health: room.health,
+            }));
+
+            return { success: true, count: safeRooms.length, rooms: safeRooms };
+        }
+        catch (error)
+        {
+            return ERROR.DB_ERROR(error);
+        }
+    }
