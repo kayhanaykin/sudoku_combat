@@ -1,14 +1,12 @@
-#pragma once                                  
+#pragma once
 
-#include <cstdlib>                            
-#include <cstring>                            
-#include <optional>                           
-#include <string>                             
-#include <tuple>
-#include <unordered_map>                      
-#include <vector>                             
+#include <cstdlib>
+#include <iostream>
+#include <optional>
+#include <string>
+#include <vector>
 
-#include <sqlite3.h>                          
+#include <pqxx/pqxx>
 
-#include "../tools/asio.hpp"                  
-#include "../tools/crow_all.h"                
+#include "../tools/asio.hpp"
+#include "../tools/crow_all.h"
