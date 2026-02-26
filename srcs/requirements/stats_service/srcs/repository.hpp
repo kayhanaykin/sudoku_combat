@@ -9,15 +9,22 @@ namespace stats
     {
         int wins;
         int losses;
-        std::optional<int> best_time_seconds;
+        std::optional<int> best_time;
     };
 
-    Bucket record_result(const std::string& username,
-                         int difficulty,
-                         const std::string& mode,
-                         const std::string& result,
-                         std::optional<int> time_seconds);
+    struct StatsRow
+    {
+        int         difficulty;
+        std::string mode;
+        Bucket      bucket;
+    };
 
-    std::vector<std::tuple<int, std::string, Bucket>> fetch_user(const std::string& username);
-    std::vector<std::tuple<int, std::string, Bucket>> fetch_user_diff(const std::string& username, int difficulty);
+    Bucket record_result(const std::string &username,
+                         int difficulty,
+                         const std::string &mode,
+                         const std::string &result,
+                         std::optional<int> time_sec);
+
+    std::vector<StatsRow> get_user_stats(const std::string &username);
+    std::vector<StatsRow> get_user_diff_stats(const std::string &username, int difficulty);
 }
