@@ -5,9 +5,8 @@
 
 namespace stats
 {
-    crow::json::wvalue bucket_json(const Bucket& b);
-    crow::json::wvalue user_stats_json(
-        const std::string& username,
-        const std::vector<std::tuple<int, std::string, Bucket>>& rows);
-    crow::response error_json(int code, const std::string& msg);
+    crow::json::wvalue bucket_to_json(const Bucket &b);
+    crow::json::wvalue stats_to_json(const std::string &username,
+                                     const std::vector<StatsRow> &rows);
+    crow::response     make_error(int code, const std::string &msg);
 }
