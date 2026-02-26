@@ -1,74 +1,75 @@
-#include "db.hpp"                                          
+#include "db.hpp"
 
-namespace stats                                            
+#include <chrono>
+#include <thread>
+
+namespace stats
 {
-    std::string db_path()                                  
+    static std::string get_env(const char *key, const char *fallback)
     {
-        const char* env = std::getenv("STATS_DB_PATH");     
-        if (env && *env)                                   
-            return std::string(env);                        
-        return "/app/data/stats.db";                        
+        const char *val = std::getenv(key);
+        if (val && val[0] != '\0')
+            return val;
+        return fallback;
     }
 
-    sqlite3* open_db()                                     
+    std::string get_conn_string()
     {
-        sqlite3* db = nullptr;                              
-        std::string path = db_path();                       
+        std::string host = get_env("STATS_DB_HOST", "statistics_db");
+        std::string port = get_env("STATS_DB_PORT", "5432");
+        std::string db   = get_env("STATS_DB_NAME", "game_stats_db");
+        std::string user = get_env("STATS_DB_USER", "bn_user");
+        std::string pass = get_env("STATS_DB_PASS", "bn_pass");
 
-        if (sqlite3_open(path.c_str(), &db) != SQLITE_OK)   
-        {
-            if (db)                                         
-                sqlite3_close(db);                          
-            return nullptr;                                 
-        }
-
-        sqlite3_busy_timeout(db, 2000);                     
-
-        sqlite3_exec(db, "PRAGMA journal_mode=WAL;", 0, 0, 0);   
-        sqlite3_exec(db, "PRAGMA synchronous=NORMAL;", 0, 0, 0); 
-
-        return db;                                          
+        return "host=" + host
+             + " port=" + port
+             + " dbname=" + db
+             + " user=" + user
+             + " password=" + pass;
     }
 
-    void close_db(sqlite3* db)                              
+    static void create_tables()
     {
-        if (db)                                             
-            sqlite3_close(db);                              
-    }
+        pqxx::connection conn(get_conn_string());
+        pqxx::work tx(conn);
 
-    bool init_schema()                                      
-    {
-        sqlite3* db = open_db();                            
-        if (!db)                                            
-            return false;                                   
-
-        const char* sql =                                   
+        tx.exec(
             "CREATE TABLE IF NOT EXISTS player_stats ("
-            "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            "username TEXT NOT NULL,"
-            "difficulty INTEGER NOT NULL,"
-            "mode TEXT NOT NULL,"
-            "wins INTEGER NOT NULL DEFAULT 0,"
-            "losses INTEGER NOT NULL DEFAULT 0,"
-            "best_time_seconds INTEGER,"
-            "updated_at TEXT NOT NULL DEFAULT (datetime('now')),"
-            "UNIQUE(username, difficulty, mode)"
-            ");"
-            "CREATE INDEX IF NOT EXISTS idx_player_stats_username "
-            "ON player_stats(username);";
+            "  id             BIGSERIAL PRIMARY KEY,"
+            "  username        TEXT NOT NULL,"
+            "  difficulty      INT  NOT NULL,"
+            "  mode            TEXT NOT NULL,"
+            "  wins            INT  NOT NULL DEFAULT 0,"
+            "  losses          INT  NOT NULL DEFAULT 0,"
+            "  best_time_seconds INT,"
+            "  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),"
+            "  UNIQUE(username, difficulty, mode)"
+            ")"
+        );
 
-        char* err = nullptr;                                
-        int rc = sqlite3_exec(db, sql, nullptr, nullptr, &err); 
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_ps_username "
+            "ON player_stats(username)"
+        );
 
-        if (rc != SQLITE_OK)                                
+        tx.commit();
+    }
+
+    bool init_db(int retries, int wait_ms)
+    {
+        for (int i = 0; i < retries; i++)
         {
-            if (err)                                        
-                sqlite3_free(err);                          
-            close_db(db);                                   
-            return false;                                   
+            try
+            {
+                create_tables();
+                return true;
+            }
+            catch (const std::exception &e)
+            {
+                std::cerr << "db not ready: " << e.what() << "\n";
+                std::this_thread::sleep_for(std::chrono::milliseconds(wait_ms));
+            }
         }
-
-        close_db(db);                                       
-        return true;                                        
+        return false;
     }
 }

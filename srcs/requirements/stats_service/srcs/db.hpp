@@ -1,15 +1,9 @@
-#pragma once                                              
+#pragma once
 
-#include <string>
+#include "includes.hpp"
 
-#include <sqlite3.h>
-
-namespace stats                                            
+namespace stats
 {
-    std::string db_path();                                 
-
-    bool init_schema();                                    
-
-    sqlite3* open_db();                                    
-    void close_db(sqlite3* db);                             
+    std::string get_conn_string();
+    bool init_db(int retries, int wait_ms);
 }
