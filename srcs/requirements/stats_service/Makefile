@@ -8,7 +8,8 @@ CXXFLAGS += -I./tools
 CXXFLAGS += -DASIO_STANDALONE
 
 LDFLAGS = -lpthread
-LDFLAGS += -lsqlite3
+LDFLAGS += -lpqxx
+LDFLAGS += -lpq
 
 SRCS = $(wildcard srcs/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
