@@ -1,10 +1,11 @@
 FROM debian:bookworm AS builder
 
-RUN apt-get update && apt-get in	stall -y \
+RUN apt-get update && apt-get install -y \
     build-essential \
     wget \
     ca-certificates \
-    libsqlite3-dev \
+    libpq-dev \
+    libpqxx-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -27,17 +28,13 @@ FROM debian:bookworm-slim
 
 RUN apt-get update && apt-get install -y \
     libstdc++6 \
-    libsqlite3-0 \
+    libpq5 \
+    libpqxx-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-RUN mkdir -p /app/data
-
-ENV STATS_DB_PATH=/app/data/stats.db
-
 COPY --from=builder /app/stats_server .
 
 EXPOSE 8090
-
 CMD ["./stats_server"]
