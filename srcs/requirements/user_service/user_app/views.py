@@ -75,6 +75,9 @@ class FortyTwoLoginView(APIView):
         )
         return redirect(url)
 
+# Dosyanın en üstünde zaten var ama kontrol et:
+from django.http import JsonResponse 
+
 class FortyTwoCallbackView(APIView):
     """Handles return from 42, fetches user data, and logs them in."""
     permission_classes = [AllowAny]
@@ -82,7 +85,7 @@ class FortyTwoCallbackView(APIView):
     def get(self, request):
         code = request.GET.get('code')
         if not code:
-            return Response({"error": "No code provided"}, status=400)
+            return JsonResponse({"error": "No code provided"}, status=400)
 
         # 1. Exchange code for Access Token
         token_response = requests.post("https://api.intra.42.fr/oauth/token", data={
@@ -94,7 +97,9 @@ class FortyTwoCallbackView(APIView):
         })
         
         if token_response.status_code != 200:
-            return Response({"error": "Failed to get token"}, status=400)
+            error_details = token_response.json()
+            print("🚨 42 API Token Hatası:", error_details) 
+            return JsonResponse({"error": "Failed to get token", "details": error_details}, status=400)
             
         access_token = token_response.json().get("access_token")
 

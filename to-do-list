@@ -14,3 +14,12 @@ compose da unless-stopped gelistirilip healtcheck eklenebilir, şart değil
 V19 Evo page bulunmayaca çalışılacak
 Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak.
 evo icin db dolduracak bir script yazilacak makefile fill_db isimli bir target olarak eklenecek. 
+
+create room'a tıklanınca bir room_id dönmesi gerekiyor. Daha sonra bu room_id'nin gösterildiği bir bekleme odası gösterilecek.
+Room_service'te odayı oluşturan kullanıcı bu room_id ile ilişkilendirilecek.
+Daha sonra farklı bir kullanıcı bu room_id'ye giriş yaparsa bir broadcast olacak.(Bu kısımda websocket kullanılacak.)
+Ve otomatik olarak oyun başlayacak. Oyun başladığında her iki kullanıcıya da bir mesaj gönderilecek ve oyun ekranına yönlendirilecekler
+Oyun başlarken combat_service'in game_service'e istek atarak oyun board'unu alması gerekiyor. Bu board her iki kullanıcıya da gönderilecek.
+Oyun sırasında her iki kullanıcı da hamle yaptığında bu hamle combat_service'e gönderilecek ve combat_service hamleyi doğruladıktan sonra
+her iki kullanıcıya da güncellenmiş board'u gönderecek. Oyun sonunda kazanan belirlenip her iki kullanıcıya da gösterilecek.
+Oyun sonunda her iki kullanıcıya da bir mesaj gönderilecek ve ana sayfaya yönlendirilecekler.

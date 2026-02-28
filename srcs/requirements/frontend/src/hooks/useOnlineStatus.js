@@ -1,26 +1,31 @@
 import { useState, useEffect, useRef } from 'react';
 
-function checkAuthCookie() {
-    // If there's a csrftoken, we're likely on a session that can try to connect
+function checkAuthCookie() 
+{
     return document.cookie.includes('csrftoken') || 
            document.cookie.includes('access_token') || 
            document.cookie.includes('sessionid');
 }
 
-const useOnlineStatus = () => {
+const useOnlineStatus = () => 
+{
     const [onlineUsers, setOnlineUsers] = useState(new Set());
     const socketRef = useRef(null);
     const reconnectTimeoutRef = useRef(null);
 
-    useEffect(() => {
+    useEffect(() => 
+    {
+        let isUnmounted = false;
+
         if (!checkAuthCookie())
             return;
 
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const wsUrl = `${protocol}//${window.location.host}/ws/presence/`;
 
-        const connect = () => {
-            if (!checkAuthCookie())
+        const connect = () => 
+        {
+            if (!checkAuthCookie() || isUnmounted)
                 return;
 
             const ws = new WebSocket(wsUrl);
@@ -28,7 +33,8 @@ const useOnlineStatus = () => {
 
             ws.onopen = () => console.log('✅ WS Online Status Connected');
 
-            ws.onmessage = (event) => {
+            ws.onmessage = (event) => 
+            {
                 try
                 {
                     const data = JSON.parse(event.data);
@@ -48,6 +54,7 @@ const useOnlineStatus = () => {
                                 newSet.add(userId);
                             else
                                 newSet.delete(userId);
+                            
                             return newSet;
                         });
                     }
@@ -58,7 +65,11 @@ const useOnlineStatus = () => {
                 }
             };
 
-            ws.onclose = (e) => {
+            ws.onclose = (e) => 
+            {
+                if (isUnmounted) 
+                    return;
+
                 if (e.code === 4003)
                     return;
                 
@@ -69,16 +80,29 @@ const useOnlineStatus = () => {
 
         connect();
 
-        const heartbeat = setInterval(() => {
+        const heartbeat = setInterval(() => 
+        {
             if (socketRef.current?.readyState === WebSocket.OPEN) 
                 socketRef.current.send(JSON.stringify({ type: 'heartbeat' }));
         }, 30000);
 
-        return () => {
+        return () => 
+        {
+            isUnmounted = true;
+            
             clearInterval(heartbeat);
+            
             if (reconnectTimeoutRef.current)
                 clearTimeout(reconnectTimeoutRef.current);
-            socketRef.current?.close();
+            
+            if (socketRef.current) 
+            {
+                const ws = socketRef.current;
+                ws.onclose = null;
+                
+                if (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING) 
+                    ws.close();
+            }
         };
     }, []);
 

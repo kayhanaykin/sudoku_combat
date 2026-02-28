@@ -20,6 +20,7 @@ all: down build list
 down:
 	@echo "$(GREEN)Stopping services...$(RESET)"
 	@docker stop $$(docker ps -q) 2>/dev/null || echo "No containers running."
+
 up:
 	@echo "$(GREEN)Starting services...$(RESET)"
 	@$(COMPOSE) up -d
@@ -57,8 +58,9 @@ logs:
 
 seed:
 	docker exec -it user_service python seed_db.py
-%:
-	@echo "$(GREEN)Restarting service: $@...$(RESET)"
-	@$(COMPOSE) restart $@
+# (Örn: make restart-combat_service)
+restart-%:
+	@echo "$(GREEN)Restarting service: $*...$(RESET)"
+	@$(COMPOSE) restart $*
 
 .PHONY: all clean fclean re build list down migrate logs up
