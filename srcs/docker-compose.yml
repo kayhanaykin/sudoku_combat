@@ -139,10 +139,16 @@ services:
     build: ./requirements/combat_service
     container_name: combat_service
     env_file: .env
+    volumes:
+      - ./requirements/combat_service:/app
+      - /app/node_modules 
     ports:
       - "8003:8003"
     depends_on:
-      - room_service
+      room_db:
+        condition: service_healthy
+      room_service:
+        condition: service_started
     networks:
       - transcendence_network
     restart: unless-stopped
@@ -178,9 +184,8 @@ services:
     networks:
       - transcendence_network
     healthcheck:
-      # DÜZELTME: Yanlış DB ve User yerine, room değişkenlerini kullanıyoruz
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_room} -d ${POSTGRES_DB_room}"]
-      interval: 5s   # 1s çok agresif olabilir, 5s daha sağlıklıdır
+      interval: 5s
       timeout: 5s
       retries: 5
       start_period: 5s

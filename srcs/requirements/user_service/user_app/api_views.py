@@ -284,3 +284,21 @@ def edit_api(request):
         }, status=200)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
+
+from django.shortcuts import get_object_or_404
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def user_info_api(request, user_id):
+    """Verilen ID'ye göre kullanıcının temel bilgilerini döner (Lobi için)"""
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        d_name = getattr(user, 'display_name', None) or user.username
+        
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "display_name": d_name
+        }, status=status.HTTP_200_OK)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)

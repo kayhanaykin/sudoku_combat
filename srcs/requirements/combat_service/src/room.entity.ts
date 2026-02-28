@@ -1,17 +1,32 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity('rooms')
+@Entity()
 export class Room
 {
-	@PrimaryGeneratedColumn()
-	id: number;
+    @PrimaryGeneratedColumn('increment')
+    id: number;
 
-	@Column()
-	ownerId: string;
+    @Column()
+    ownerId: string;
 
-	@Column({ nullable: true })
-	guestId: string | null;
+    @Column({ default: 'Unknown Player' })
+    ownerName: string;
 
-	@Column({ default: 'waiting' })
-	status: string
+    @Column({ type: 'varchar', nullable: true })
+    guestId: string | null;
+
+    @Column()
+    difficulty: string;
+
+    @Column('json', { nullable: true })
+    currBoard: any;
+
+    @Column('json', { nullable: true })
+    solvedBoard: any;
+
+    @Column('simple-array', { nullable: true })
+    health: number[];
+
+    @Column({ default: 'waiting' })
+    status: string;
 }

@@ -19,7 +19,7 @@ function App()
         <WebSocketProvider>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/online-game" element={<OnlineGame />} />
+            <Route path="/online-game/:roomId" element={<OnlineGame />} />
             <Route path="/offline-game" element={<OfflineGame />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/profile" element={<Profile />} />

@@ -80,7 +80,7 @@ export const loginUser = async (username, password) => {
 export const registerUser = async (username, email, password) => {
   const url = `${API_BASE_URL}/api/v1/user/signup/`;
 
-  await ensureCsrfToken(); // Kayıt olurken de çerez lazım olabilir
+  await ensureCsrfToken();
 
   try {
     const response = await fetch(url, {
@@ -92,7 +92,7 @@ export const registerUser = async (username, email, password) => {
         email,
         avatar: null
       }),
-      credentials: 'include' // Çerezler için
+      credentials: 'include'
     });
 
     const data = await response.json();
@@ -129,16 +129,20 @@ export const getFriends = async () => {
 
 export const removeFriend = async (friendId) => {
   const url = `${API_BASE_URL}/api/v1/user/friends/remove/`;
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ friend_id: friendId }),
       credentials: 'include'
     });
-    if (!response.ok) throw new Error('Failed to remove friend');
+    if (!response.ok)
+      throw new Error('Failed to remove friend');
     return await response.json();
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("API Error:", error);
     throw error;
   }
@@ -146,49 +150,67 @@ export const removeFriend = async (friendId) => {
 
 export const addFriend = async (username) => {
   const url = `${API_BASE_URL}/api/v1/user/friends/add/`;
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ username }),
       credentials: 'include'
     });
-    if (!response.ok) {
+    if (!response.ok)
+    {
       const err = await response.json();
       throw new Error(err.message || 'Failed to add friend');
     }
     return await response.json();
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("API Error:", error);
     throw error;
   }
 };
 
-export const startGame = async (mode, difficulty) => {
-  const url = `${API_BASE_URL}/api/play/start`;
-  const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
-  const difficultyStr = difficultyMap[difficulty] || difficulty;
-  
-  // userId'yi localStorage'dan veya context'ten almak daha doğru olur
-  // Şimdilik 1 olarak bıraktık
-  const payload = { difficulty: difficultyStr, userId: 1 };
+export const startGame = async (mode, difficulty) =>
+{
+    const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
+    const levelStr = difficultyMap[difficulty] || "Medium";
 
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' }, // CSRF gerekmeyebilir ama gerekirse getHeaders() kullan
-      body: JSON.stringify(payload),
-      credentials: 'include'
+    const response = await fetch('https://localhost:8443/api/play/start/offline', 
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ difficulty: levelStr })
     });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || 'Game start failed');
+    
+    if (!response.ok)
+    {
+        const errorText = await response.text();
+        throw new Error(`Server returned ${response.status}: ${errorText}`);
     }
-    return await response.json();
-  } catch (error) {
-    console.error("API Error:", error);
-    throw error;
-  }
+    
+    return response.json();
+};
+
+export const createCombatRoom = async (userId, levelStr, currentUserName) =>
+{
+    const response = await fetch('https://localhost:8443/api/play/start/online', 
+    {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(
+        { 
+            userId: userId, 
+            difficulty: levelStr, 
+            ownerName: currentUserName 
+        })
+    });
+    
+    if (!response.ok)
+        throw new Error("Failed to create online room");
+    
+    return response.json();
 };
 
 export const makeMove = async (gameId, row, col, value) => {
@@ -199,40 +221,47 @@ export const makeMove = async (gameId, row, col, value) => {
     body: JSON.stringify({ gameId, row, col, value }),
     credentials: 'include'
   });
-  if (!response.ok) throw new Error('The move could not be sent');
+  if (!response.ok)
+    throw new Error('The move could not be sent');
   return await response.json();
 };
 
 export const getLeaderboard = async (mode = 'Total') => {
   const url = `${API_BASE_URL}/api/game/leaderboard/${mode}`;
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include'
     });
-    if (!response.ok) return [];
+    if (!response.ok)
+      return [];
     return await response.json();
-  } catch (error) {
+  }
+  catch (error)
+  {
     return [];
   }
 };
 
 export const recordGameResult = async (userId, mode, isWin) => {
   const url = `${API_BASE_URL}/api/game/record-game`;
-  try {
+  try
+  {
     await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ userId, mode, result: isWin ? "win" : "lose" }),
       credentials: 'include'
     });
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("Score recording failed:", error);
   }
 };
 
-// Mock Functions (Bunları backend hazır olunca değiştirebilirsin)
 export const getUserDetails = async (userId) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -261,7 +290,8 @@ export const getUserStats = async (userId) => {
 
 export const logoutUser = async () => {
   const url = `${API_BASE_URL}/logout/`;
-  try {
+  try
+  {
     await fetch(url, {
       method: 'POST',
       headers: {
@@ -270,7 +300,9 @@ export const logoutUser = async () => {
       },
       credentials: 'include'
     });
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("Logout request failed:", error);
   }
 };
@@ -283,7 +315,8 @@ export const createRoom = async (userId) => {
     body: JSON.stringify({ userId }),
     credentials: 'include'
   });
-  if (!response.ok) throw new Error('Failed to create room');
+  if (!response.ok)
+    throw new Error('Failed to create room');
   return await response.json();
 };
 
@@ -295,7 +328,8 @@ export const joinRoom = async (roomId, userId) => {
     body: JSON.stringify({ userId }),
     credentials: 'include'
   });
-  if (!response.ok) {
+  if (!response.ok)
+  {
     const err = await response.json();
     throw new Error(err.message || 'Failed to join room');
   }
@@ -304,7 +338,8 @@ export const joinRoom = async (roomId, userId) => {
 
 export const deleteUserAccount = async () => {
   const url = `${API_BASE_URL}/api/user/profile/delete/`;
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -314,34 +349,10 @@ export const deleteUserAccount = async () => {
       credentials: 'include'
     });
     return response.ok;
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("Delete failed:", error);
     return false;
-  }
-};
-
-export const createCombatRoom = async (userId, level) => {
-  const url = `${API_BASE_URL}/api/room/create`;
-
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ 
-        userId: userId.toString(), 
-        level: level
-      }),
-      credentials: 'include'
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Oda oluşturulamadı');
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Combat Room Error:", error);
-    throw error;
   }
 };

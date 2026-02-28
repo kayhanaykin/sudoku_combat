@@ -9,4 +9,5 @@ urlpatterns = [
     path('profile/edit/', api_views.edit_api, name='epi_edit'),
     path('csrf/', api_views.get_csrf_token, name='get_csrf_token'),
     path('logout/', api_views.logout_api, name='api_logout'),
+    path('info/<int:user_id>/', api_views.user_info_api, name='user_info_api'),
 ]

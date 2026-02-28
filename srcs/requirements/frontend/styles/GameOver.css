@@ -1,0 +1,166 @@
+/* Overlay Container */
+.game-over-overlay
+{
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    animation: fadeIn 1s ease forwards;
+}
+
+/* Winner Effect (Golden Glow) */
+.overlay-win
+{
+    background: rgba(255, 215, 0, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+/* Loser Effect (Dark Red/Grayish) */
+.overlay-lose
+{
+    background: rgba(40, 0, 0, 0.6);
+    backdrop-filter: blur(5px) grayscale(0.8);
+}
+
+/* Box Design */
+.game-over-box
+{
+    background: var(--bg-color, #1a1a2e);
+    padding: 3rem;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    z-index: 10;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.text-win
+{
+    color: #ffd700;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px #ffd700;
+}
+
+.text-lose
+{
+    color: #ff4444;
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px #ff0000;
+}
+
+.players-result p
+{
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: white;
+}
+
+.winner-text span 
+{
+    color: #ffd700;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.loser-text span
+{
+    color: #ff4444;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-decoration: line-through;
+}
+
+.back-home-btn
+{
+    margin-top: 2rem;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    background: #4a4e69;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.back-home-btn:hover
+{
+    background: #9a8c98;
+}
+
+/* CONFETTI EFFECT (Pure CSS) */
+.confetti-container
+{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -10%;
+    pointer-events: none;
+}
+
+.confetti
+{
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    animation: fall 3s linear infinite;
+}
+
+.piece-0
+{
+    background: #f00;
+}
+
+.piece-1
+{
+    
+    background: #0f0;
+}
+.piece-2
+{
+    background: #00f;
+}
+
+.piece-3
+{
+    background: #ff0;
+}
+
+.piece-4
+{
+    background: #0ff;
+}
+
+/* RAIN EFFECT (Pure CSS) */
+.rain-container
+{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: -10%;
+    pointer-events: none;
+}
+
+.drop
+{
+    position: absolute;
+    width: 2px;
+    height: 50px;
+    background: rgba(255,255,255,0.3);
+    animation: fall 1s linear infinite;
+}
+
+@keyframes fall
+{
+    to { transform: translateY(110vh) rotate(360deg); }
+}
+
+@keyframes fadeIn
+{
+    from { opacity: 0; } to { opacity: 1; }
+}
