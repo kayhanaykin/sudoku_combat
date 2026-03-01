@@ -16,7 +16,22 @@ export const getUserDetails = async () =>
     return await response.json();
 };
 
-// DİKKAT: Fonksiyon adı 'updateUserProfile' (Avatar değil)
+export const getUserById = async (userId) =>
+{
+    const response = await fetch(`${API_BASE_URL}/api/v1/user/info/${userId}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+
+    if (!response.ok)
+    {
+        throw new Error('Failed to fetch user by id');
+    }
+    return await response.json();
+};
+
 export const updateUserProfile = async (formData) =>
 {
     const url = `${API_BASE_URL}/api/v1/user/profile/edit/`;
@@ -25,7 +40,6 @@ export const updateUserProfile = async (formData) =>
         method: 'PUT',
         headers: {
             'X-CSRFToken': getCookie('csrftoken'),
-            // Content-Type YOK! (Otomatik Boundary için)
         },
         body: formData
     });

@@ -52,37 +52,30 @@ export class AppGateway
                 const currBoardRes = await fetch(`http://room_service:8002/api/room/game-state/${data.roomId}`);
                 const gameState = await currBoardRes.json();
                 
+                const payload = JSON.stringify(
+                { 
+                    event: 'sync_game', 
+                    gameState: gameState, 
+                    ownerHealth, 
+                    guestHealth, 
+                    valid, 
+                    loser,
+                    winner,
+                    isWin,
+                    moveBy: data.role
+                });
+
                 roomClients.forEach((ws: WebSocket) =>
                 {
                     if (ws.readyState === ws.OPEN)
                     {
-                        ws.send(JSON.stringify(
-                        { 
-                            event: 'sync_game', 
-                            gameState: gameState, 
-                            ownerHealth, 
-                            guestHealth, 
-                            valid, 
-                            loser,
-                            winner,
-                            isWin
-                        }));
+                        ws.send(payload);
                     }
                 });
                 
                 if (this.spectator && this.spectator.readyState === this.spectator.OPEN)
                 {
-                    this.spectator.send(JSON.stringify(
-                    { 
-                        event: 'sync_game', 
-                        gameState: gameState, 
-                        ownerHealth, 
-                        guestHealth, 
-                        valid, 
-                        loser,
-                        winner,
-                        isWin
-                    }));
+                    this.spectator.send(payload);
                 }
             }
         }

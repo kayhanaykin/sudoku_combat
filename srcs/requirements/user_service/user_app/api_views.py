@@ -298,7 +298,8 @@ def user_info_api(request, user_id):
         return Response({
             "id": user.id,
             "username": user.username,
-            "display_name": d_name
+            "display_name": d_name,
+            "avatar": user.avatar.url if user.avatar else None
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)

@@ -208,31 +208,29 @@
 
 .center-toast
 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.8);
-  background-color: rgba(231, 76, 60, 0.95);
-  color: white;
-  padding: 1.5vmin 3vmin;
-  border-radius: 1vmin;
-  font-size: 2.5vmin;
-  font-weight: 800;
-  text-align: center;
-  white-space: nowrap;
-  z-index: 50;
-  box-shadow: 0 1vmin 2vmin rgba(0,0,0,0.3);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  pointer-events: none; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(231, 76, 60, 0.95);
+    color: white;
+    padding: 15px 35px;
+    border-radius: 12px;
+    font-size: 1.8rem;
+    font-weight: bold;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    text-align: center;
 }
 
 .center-toast.visible
 {
-  opacity: 1;
-  visibility: visible;
-  transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+    visibility: visible;
 }
 
 .controls-area
@@ -380,4 +378,48 @@
 .modal-btn:hover
 {
   background-color: #2ecc71;
+}
+
+.player-card
+{
+    background-color: #f3f7ff;
+    padding: 2vmin;
+    border-radius: 1.5vmin;
+    text-align: center;
+    width: 18vmin;
+    min-height: 21vmin;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1vmin;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.right-card
+{
+    opacity: 0.8;
+}
+
+.a-profile-image-container.game-avatar
+{
+    width: 9vmin !important; 
+    height: 9vmin !important;
+    border-width: 0.5vmin !important;
+    margin-bottom: 0.3vmin;
+}
+
+.card-title
+{
+    background-color: transparent;
+    font-weight: bold;
+    font-size: 2.3vmin;
+    color: #020d18;
+}
+
+.hearts-container
+{
+    display: flex;
+    gap: 0.4vmin;
+    font-size: 2vmin;
 }

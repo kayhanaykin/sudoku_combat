@@ -3,7 +3,7 @@ import { getUserDetails, updateUserProfile } from '../../services/userService';
 import BadgeWidget from '../molecules/BadgeWidget';
 import ProfileImage from '../atoms/ProfileImage';
 import FriendListWidget from '../organisms/FriendListWidget';
-import PerformanceStats from '../molecules/PerformanceStats'; // Yeni bileşeni ekledik
+import PerformanceStats from '../molecules/PerformanceStats';
 import EditProfileModal from './EditProfileModal';
 import '../../styles/ProfileContent.css';
 
@@ -88,7 +88,6 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
                 </div>
             </div>
 
-            {/* Ayrı bir bileşen olarak buraya ekledik */}
             <PerformanceStats stats={stats} />
 
             <EditProfileModal

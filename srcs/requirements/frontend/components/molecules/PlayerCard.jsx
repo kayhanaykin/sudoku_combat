@@ -1,21 +1,45 @@
 import React from 'react';
-import HeartIcon from '../atoms/HeartIcon';
+import ProfileImage from '../atoms/ProfileImage';
 
-const PlayerCard = ({ title, score, lives, maxLives = 3, align = 'left' }) => {
-  const renderHearts = () => {
-    const hearts = [];
-    for (let i = 1; i <= maxLives; i++)
-      hearts.push(<HeartIcon key={i} broken={i > lives} />);
-    return <div className="hearts-container">{hearts}</div>;
-  };
+const BASE_URL = 'https://localhost:8443';
 
-  return (
-    <div className={`player-card ${align === 'right' ? 'right-card' : ''}`}>
-      <div className="card-title">{title}</div>
-      <small>Score: {score}</small>
-      {renderHearts()}
-    </div>
-  );
+const PlayerCard = ({ title, lives, align, avatar }) => 
+{
+    let finalAvatarUrl = null;
+    
+    if (avatar) 
+        finalAvatarUrl = avatar.startsWith('http') ? avatar : `${BASE_URL}${avatar}`;
+
+    const renderHearts = () => 
+    {
+        const hearts = [];
+        for (let i = 0; i < 3; i++) 
+        {
+            hearts.push(
+                <span key={i} className={`heart-icon ${i >= lives ? 'broken' : ''}`}>
+                    {i >= lives ? '🖤' : '❤️'}
+                </span>
+            );
+        }
+        return hearts;
+    };
+
+    return (
+        <div className={`player-card ${align === 'right' ? 'right-card' : ''}`}>
+            
+            <ProfileImage 
+                src={finalAvatarUrl} 
+                className="game-avatar" 
+            />
+
+            <div className="card-title">{title}</div>
+            
+            <div className="hearts-container">
+                {renderHearts()}
+            </div>
+            
+        </div>
+    );
 };
 
 export default PlayerCard;

@@ -1,6 +1,5 @@
 export const API_BASE_URL = "https://localhost:8443";
 
-// Çerez okuma fonksiyonu
 export function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== '') {
@@ -16,7 +15,6 @@ export function getCookie(name) {
   return cookieValue;
 }
 
-// Header oluşturucu
 const getHeaders = () => {
   const csrftoken = getCookie('csrftoken');
   return {
@@ -25,17 +23,17 @@ const getHeaders = () => {
   };
 };
 
-// --- YENİ EKLENEN KISIM: CSRF TOKEN ALMA ---
-// Eğer çerez yoksa, backend'e basit bir GET isteği atıp çerezi zorla alıyoruz.
 const ensureCsrfToken = async () => {
-  try {
-    // Adresi 'csrf' olarak düzelttik ve GET isteği atıyoruz
+  try
+  {
     await fetch(`${API_BASE_URL}/api/v1/user/csrf/`, { 
       method: 'GET', 
       credentials: 'include' 
     });
     console.log("CSRF cookie requested successfully");
-  } catch (err) {
+  }
+  catch (err)
+  {
     console.error("CSRF setup failed:", err);
   }
 };
@@ -43,35 +41,41 @@ const ensureCsrfToken = async () => {
 export const loginUser = async (username, password) => {
   const url = `${API_BASE_URL}/api/v1/user/login/`;
 
-  // 1. Önce CSRF Çerezini Garantiye Al
   await ensureCsrfToken();
 
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'POST',
-      headers: getHeaders(), // Güncel çerezi header'a ekler
+      headers: getHeaders(),
       body: JSON.stringify({ username, password }),
-      credentials: 'include' // <--- BU ÇOK ÖNEMLİ (Çerezlerin taşınmasını sağlar)
+      credentials: 'include'
     });
 
     const textData = await response.text();
     console.log("RAW SERVER RESPONSE:", textData);
 
     let data;
-    try {
+    try
+    {
       data = JSON.parse(textData);
-    } catch (err) {
+    }
+    catch (err)
+    {
       console.error("JSON Parse Error.");
       throw new Error("Sunucu hatası: Beklenmeyen yanıt döndü.");
     }
 
-    if (!response.ok) {
+    if (!response.ok)
+    {
       const errorMessage = data.detail || data.message || 'Login failed.';
       throw new Error(errorMessage);
     }
 
     return data;
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("Login Error:", error);
     throw error;
   }
@@ -82,7 +86,8 @@ export const registerUser = async (username, email, password) => {
 
   await ensureCsrfToken();
 
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
@@ -96,32 +101,37 @@ export const registerUser = async (username, email, password) => {
     });
 
     const data = await response.json();
-    if (!response.ok) {
+    if (!response.ok)
+    {
       let errorMsg = data.message;
       if (!errorMsg && typeof data === 'object')
         errorMsg = Object.values(data).flat().join(' ');
       throw new Error(errorMsg || 'Registration failed.');
     }
     return data;
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("API Error:", error);
     throw error;
   }
 };
 
-// --- DİĞER FONKSİYONLAR (credentials: 'include' eklendi) ---
-
 export const getFriends = async () => {
   const url = `${API_BASE_URL}/api/v1/user/friends/`;
-  try {
+  try
+  {
     const response = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),
       credentials: 'include'
     });
-    if (!response.ok) throw new Error('Failed to fetch friends list');
+    if (!response.ok)
+      throw new Error('Failed to fetch friends list');
     return await response.json();
-  } catch (error) {
+  }
+  catch (error)
+  {
     console.error("API Error:", error);
     throw error;
   }

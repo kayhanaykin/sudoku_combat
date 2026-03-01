@@ -9,7 +9,10 @@ import HintModal from '../components/organisms/HintModal';
 import ActionBtn from '../components/atoms/ActionBtn';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 import GameOverOverlay from '../components/organisms/GameOverOverlay';
+import { getUserById } from '../services/userService'; 
 import '../styles/Game.css';
+
+const BASE_URL = 'https://localhost:8443';
 
 const OnlineGame = () => 
 {
@@ -18,6 +21,16 @@ const OnlineGame = () =>
     const ws = useRef(null);
 
     const isOwner = location.state?.role === 'owner';
+    
+    const [players, setPlayers] = useState({ 
+        you: { name: 'Loading...', avatar: null }, 
+        opponent: { name: 'Waiting...', avatar: null } 
+    });
+
+    const getAvatarUrl = (avatarPath) => {
+        if (!avatarPath) return null;
+        return avatarPath.startsWith('http') ? avatarPath : `${BASE_URL}${avatarPath}`;
+    };
 
     const sendOnlineMove = (row, col, value) => 
     {
@@ -26,14 +39,7 @@ const OnlineGame = () =>
             ws.current.send(JSON.stringify(
             {
                 event: 'move',
-                data: 
-                {
-                    roomId: roomId.toString(),
-                    role: isOwner ? 'owner' : 'guest',
-                    row: row,
-                    col: col,
-                    value: value
-                }
+                data: { roomId: roomId.toString(), role: isOwner ? 'owner' : 'guest', row, col, value }
             }));
         }
     };
@@ -51,25 +57,60 @@ const OnlineGame = () =>
 
     useEffect(() => 
     {
-        if (!roomId) 
+        const fetchNames = async () => 
         {
-            return;
-        }
+            try 
+            {
+                const res = await fetch(`https://localhost:8443/api/room/game-state/${roomId}`);
+                const data = await res.json();
+                
+                if (data.success) 
+                {
+                    const oData = await getUserById(data.ownerId);
+                    const oName = oData.display_name || oData.nickname || oData.username || "Player 1";
+                    const oAvatar = getAvatarUrl(oData.avatar);
+                    
+                    let gName = 'Waiting...';
+                    let gAvatar = null;
+                    if (data.guestId) 
+                    {
+                        const gData = await getUserById(data.guestId);
+                        gName = gData.display_name || gData.nickname || gData.username || "Player 2";
+                        gAvatar = getAvatarUrl(gData.avatar);
+                    }
 
+                    if (isOwner)
+                    {
+                        setPlayers({ you: { name: oName, avatar: oAvatar }, opponent: { name: gName, avatar: gAvatar } });
+                    }
+                    else
+                    {
+                        setPlayers({ you: { name: gName, avatar: gAvatar }, opponent: { name: oName, avatar: oAvatar } });
+                    }
+                }
+            } 
+            catch(e) 
+            {
+                setPlayers({ you: { name: 'You', avatar: null }, opponent: { name: 'Opponent', avatar: null } });
+            }
+        };
+        fetchNames();
+    }, [roomId, isOwner]);
+
+    useEffect(() => 
+    {
+        if (!roomId) return;
         ws.current = new WebSocket('wss://localhost:8443/api/play');
 
         ws.current.onopen = () => 
         {
-            ws.current.send(JSON.stringify(
-            {
-                event: 'join_room',
-                data: { roomId: roomId.toString() }
-            }));
+            ws.current.send(JSON.stringify({ event: 'join_room', data: { roomId: roomId.toString() } }));
         };
 
         ws.current.onmessage = (event) => 
         {
             const message = JSON.parse(event.data);
+            const myRole = isOwner ? 'owner' : 'guest';
 
             switch (message.event) 
             {
@@ -77,20 +118,34 @@ const OnlineGame = () =>
                     if (message.gameState && message.gameState.currBoard) 
                     {
                         updateBoardFromOpponent(message.gameState.currBoard);
+                        
+                        setPlayers(prev => 
+                        {
+                            if (isOwner && prev.opponent.name === 'Waiting...' && message.gameState.guestId) 
+                            {
+                                getUserById(message.gameState.guestId).then(gData => 
+                                {
+                                    const newGuestName = gData.display_name || gData.nickname || gData.username;
+                                    const newGuestAvatar = getAvatarUrl(gData.avatar);
+                                    setPlayers(p => ({ ...p, opponent: { name: newGuestName, avatar: newGuestAvatar } }));
+                                });
+                            }
+                            return prev;
+                        });
                     }
                     
-                    if (isOwner) 
+                    if (isOwner)
                     {
                         setLives(message.ownerHealth);
                         setOpponentLives(message.guestHealth);
-                    } 
-                    else 
+                    }
+                    else
                     {
                         setLives(message.guestHealth);
                         setOpponentLives(message.ownerHealth);
                     }
 
-                    if (message.valid === false) 
+                    if (message.valid === false && message.moveBy === myRole) 
                     {
                         setErrorMessage("Wrong Move!");
                         setShowError(true);
@@ -99,24 +154,17 @@ const OnlineGame = () =>
 
                     if (message.winner || message.loser) 
                     {
-                        const myRole = isOwner ? 'owner' : 'guest';
-                        
-                        setTimeout(() => 
-                        {
-                            if (message.winner === myRole) 
-                            {
-                                setGameResult('win');
-                            } 
-                            else 
-                            {
-                                setGameResult('lose');
-                            }
-                        }, message.valid === false ? 1000 : 0);
+                        let isMeWinner = false;
+                        if (message.winner) isMeWinner = (message.winner === myRole);
+                        else if (message.loser) isMeWinner = (message.loser !== myRole);
+
+                        const delay = (message.valid === false && message.moveBy === myRole) ? 1500 : 0;
+                        setTimeout(() => setGameResult(prev => prev ? prev : (isMeWinner ? 'win' : 'lose')), delay);
                     }
                     break;
                 
                 case 'player_left':
-                    setGameResult('win');
+                    setGameResult(prev => prev ? prev : 'win');
                     break;
                 
                 case 'error':
@@ -128,64 +176,43 @@ const OnlineGame = () =>
             }
         };
 
-        return () => 
-        {
-            if (ws.current) 
-            {
-                ws.current.close();
-            }
-        };
+        return () => { if (ws.current) ws.current.close(); };
     }, [roomId, isOwner]);
 
     return (
         <div className="game-container" style={{ position: 'relative' }}>
-            
-            <GameOverOverlay 
-                result={gameResult} 
-                winnerName={gameResult === 'win' ? "You" : "Opponent"} 
-                loserName={gameResult === 'lose' ? "You" : "Opponent"} 
-            />
+            <div className={`center-toast ${showError ? 'visible' : ''}`}>
+                {errorMessage}
+            </div>
+
+            <GameOverOverlay result={gameResult} />
 
             <BackToHomeLink />
             
-            <GameHeader 
-                timer={timer} 
-                difficulty={difficulty} 
-            />
+            <GameHeader timer={timer} difficulty={difficulty} />
 
             <div className="game-main-area">
-                <PlayerCard title="You" lives={lives} />
+                <PlayerCard title={players.you.name} avatar={players.you.avatar} lives={lives} />
 
                 <SudokuBoard 
                     board={board}
                     selectedCell={selectedCell}
                     onCellClick={handleCellClick}
-                    showError={showError}
-                    errorMessage={errorMessage}
                     isGameOver={isGameOver || gameResult !== null}
+                    showError={showError} 
+                    errorMessage={errorMessage}
                 />
 
-                <PlayerCard title="Opponent" lives={opponentLives} align="right" />
+                <PlayerCard title={players.opponent.name} avatar={players.opponent.avatar} lives={opponentLives} align="right" />
             </div>
 
             <div className="controls-area">
-                <ActionBtn onClick={() => handleInput(0)} disabled={isGameOver || gameResult !== null}>
-                    Erase
-                </ActionBtn>
-                
-                <ActionBtn onClick={handleHint} disabled={isGameOver || gameResult !== null}>
-                    Hint
-                </ActionBtn>
+                <ActionBtn onClick={() => handleInput(0)} disabled={isGameOver || gameResult !== null}>Erase</ActionBtn>
+                <ActionBtn onClick={handleHint} disabled={isGameOver || gameResult !== null}>Hint</ActionBtn>
             </div>
 
             <Numpad onNumberClick={handleInput} disabled={isGameOver || gameResult !== null} />
-
-            <HintModal 
-                isOpen={isHintModalOpen} 
-                data={hintData} 
-                onApply={applyHint} 
-            />
-
+            <HintModal isOpen={isHintModalOpen} data={hintData} onApply={applyHint} />
         </div>
     );
 };
