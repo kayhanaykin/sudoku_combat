@@ -9,7 +9,8 @@ const EMPTY_BOARD = Array(9).fill(null).map(() => Array(9).fill({
 }));
 
 const formatBoardFromData = (rawBoard) => {
-    if (!rawBoard) return [];
+    if (!rawBoard)
+        return [];
     return rawBoard.map(row => row.map(num => ({
         value: num,
         isFixed: num !== 0,
@@ -47,41 +48,51 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null) => {
 
     useEffect(() => {
         if (location.state) {
-            if (mode === 'offline') {
+            if (mode === 'offline')
+            {
                 const { gameData, difficulty: diffLevel } = location.state;
                 
                 if (gameData) {
                     const rawBoard = gameData.board || gameData.current_board;
                     const id = gameData.game_id || gameData.gameId;
                     
-                    if (rawBoard) setBoard(formatBoardFromData(rawBoard));
-                    if (id) setGameId(id);
-                    if (gameData.lives !== undefined) setLives(gameData.lives);
+                    if (rawBoard)
+                        setBoard(formatBoardFromData(rawBoard));
+                    if (id)
+                        setGameId(id);
+                    if (gameData.lives !== undefined)
+                        setLives(gameData.lives);
                 }
                 
                 if (diffLevel) {
                     const levels = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
                     setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
                 }
-            } else if (mode === 'online') {
+            }
+            else if (mode === 'online')
+            {
                 const { difficulty: diffLevel, role } = location.state;
                 const roomId = urlRoomId; 
                 
-                if (roomId) {
+                if (roomId)
+                {
                     setGameId(roomId);
                     
                     const fetchGameState = async () => {
-                        try {
+                        try
+                        {
                             const response = await fetch(`https://localhost:8443/api/room/game-state/${roomId}`);
                             const data = await response.json();
                             
-                            if (data.success && data.currBoard) {
+                            if (data.success && data.currBoard)
+                            {
                                 setBoard(formatBoardFromData(data.currBoard));
-                                if (data.health) {
+                                if (data.health)
                                     setLives(role === 'owner' ? data.health[0] : data.health[1]);
-                                }
                             }
-                        } catch (error) {
+                        }
+                        catch (error)
+                        {
                             console.error("Error fetching online board:", error);
                         }
                     };
@@ -89,7 +100,8 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null) => {
                     fetchGameState();
                 }
                 
-                if (diffLevel) setDifficulty(diffLevel);
+                if (diffLevel)
+                    setDifficulty(diffLevel);
             }
         }
     }, [location, mode, urlRoomId]);
@@ -144,9 +156,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null) => {
             });
 
             if (mode === 'online' && sendOnlineMove)
-            {
                 sendOnlineMove(r, c, 0);
-            }
             return;
         }
 
@@ -204,9 +214,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null) => {
             setShowError(false);
 
             if (sendOnlineMove)
-            {
                 sendOnlineMove(r, c, number);
-            }
         }
     };
 
@@ -328,7 +336,8 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null) => {
         handleCellClick, handleInput, handleHint, applyHint,
         setIsHintModalOpen, setHintData, setBoard, setLives,
         updateBoardFromOpponent, setShowError, setErrorMessage,
-        gameResult, setGameResult
+        gameResult, setGameResult,
+        setSelectedCell
     };
 };
 

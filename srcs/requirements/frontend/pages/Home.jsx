@@ -78,9 +78,7 @@ const Home = () =>
         const handleClickOutside = (event) =>
         {
             if (boardRef.current && !boardRef.current.contains(event.target))
-            {
                 setSelectedCell(null);
-            }
         };
         document.addEventListener('mousedown', handleClickOutside);
 
@@ -183,9 +181,7 @@ const Home = () =>
                 const roomId = data.roomId || data.room_id || data.id;
 
                 if (!roomId)
-                {
                     throw new Error("Failed to retrieve Room ID from server.");
-                }
 
                 setCreatedRoomId(roomId);
                 setPlayerRole('owner');
