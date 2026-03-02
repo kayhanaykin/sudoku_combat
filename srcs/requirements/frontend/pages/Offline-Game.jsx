@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import useGameLogic from '../src/hooks/useGameLogic';
 import GameHeader from '../components/molecules/GameHeader';
@@ -15,14 +15,30 @@ import '../styles/Game.css';
 const OfflineGame = () => 
 {
     const location = useLocation();
+    const boardRef = useRef(null);
     const [playerName, setPlayerName] = useState('You');
 
     const { 
         board, timer, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
         isHintModalOpen, hintData, handleHint, applyHint,
-        gameResult
+        gameResult,
+        setSelectedCell
     } = useGameLogic('offline'); 
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (boardRef.current && !boardRef.current.contains(event.target))
+            {
+                const isControlClick = event.target.closest('.controls-area') || event.target.closest('.numpad-grid');
+                if (!isControlClick && setSelectedCell)
+                    setSelectedCell(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [setSelectedCell]);
 
     useEffect(() => 
     {
@@ -60,14 +76,16 @@ const OfflineGame = () =>
             <div className="game-main-area">
                 <PlayerCard title={playerName} lives={lives} />
 
-                <SudokuBoard 
-                    board={board}
-                    selectedCell={selectedCell}
-                    onCellClick={handleCellClick}
-                    isGameOver={isGameOver || gameResult !== null}
-                    showError={showError} 
-                    errorMessage={errorMessage}
-                />
+                <div ref={boardRef} style={{ position: 'relative' }}>
+                    <SudokuBoard 
+                        board={board}
+                        selectedCell={selectedCell}
+                        onCellClick={handleCellClick}
+                        isGameOver={isGameOver || gameResult !== null}
+                        showError={showError} 
+                        errorMessage={errorMessage}
+                    />
+                </div>
 
                 <div className="player-card right-card">
                     <div className="card-title">Mode</div>

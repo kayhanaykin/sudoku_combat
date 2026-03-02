@@ -18,7 +18,9 @@ const OnlineGame = () =>
 {
     const { roomId } = useParams();
     const location = useLocation();
+    
     const ws = useRef(null);
+    const boardRef = useRef(null); 
 
     const isOwner = location.state?.role === 'owner';
     
@@ -28,7 +30,8 @@ const OnlineGame = () =>
     });
 
     const getAvatarUrl = (avatarPath) => {
-        if (!avatarPath) return null;
+        if (!avatarPath)
+            return null;
         return avatarPath.startsWith('http') ? avatarPath : `${BASE_URL}${avatarPath}`;
     };
 
@@ -50,10 +53,27 @@ const OnlineGame = () =>
         isHintModalOpen, hintData, handleHint, applyHint,
         setLives, updateBoardFromOpponent,
         setShowError, setErrorMessage,
-        gameResult, setGameResult
+        gameResult, setGameResult,
+        setSelectedCell
     } = useGameLogic('online', sendOnlineMove); 
 
     const [opponentLives, setOpponentLives] = useState(3);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (boardRef.current && !boardRef.current.contains(event.target))
+            {
+                const isControlClick = event.target.closest('.controls-area') || event.target.closest('.numpad-grid');
+                if (!isControlClick && setSelectedCell)
+                {
+                    setSelectedCell(null);
+                }
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [setSelectedCell]);
 
     useEffect(() => 
     {
@@ -99,7 +119,8 @@ const OnlineGame = () =>
 
     useEffect(() => 
     {
-        if (!roomId) return;
+        if (!roomId)
+            return;
         ws.current = new WebSocket('wss://localhost:8443/api/play');
 
         ws.current.onopen = () => 
@@ -155,8 +176,10 @@ const OnlineGame = () =>
                     if (message.winner || message.loser) 
                     {
                         let isMeWinner = false;
-                        if (message.winner) isMeWinner = (message.winner === myRole);
-                        else if (message.loser) isMeWinner = (message.loser !== myRole);
+                        if (message.winner)
+                            isMeWinner = (message.winner === myRole);
+                        else if (message.loser)
+                            isMeWinner = (message.loser !== myRole);
 
                         const delay = (message.valid === false && message.moveBy === myRole) ? 1500 : 0;
                         setTimeout(() => setGameResult(prev => prev ? prev : (isMeWinner ? 'win' : 'lose')), delay);
@@ -194,14 +217,16 @@ const OnlineGame = () =>
             <div className="game-main-area">
                 <PlayerCard title={players.you.name} avatar={players.you.avatar} lives={lives} />
 
-                <SudokuBoard 
-                    board={board}
-                    selectedCell={selectedCell}
-                    onCellClick={handleCellClick}
-                    isGameOver={isGameOver || gameResult !== null}
-                    showError={showError} 
-                    errorMessage={errorMessage}
-                />
+                <div ref={boardRef} style={{ position: 'relative' }}>
+                    <SudokuBoard 
+                        board={board}
+                        selectedCell={selectedCell}
+                        onCellClick={handleCellClick}
+                        isGameOver={isGameOver || gameResult !== null}
+                        showError={showError} 
+                        errorMessage={errorMessage}
+                    />
+                </div>
 
                 <PlayerCard title={players.opponent.name} avatar={players.opponent.avatar} lives={opponentLives} align="right" />
             </div>
