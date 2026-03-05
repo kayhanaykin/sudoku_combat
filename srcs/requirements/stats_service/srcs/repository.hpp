@@ -19,12 +19,24 @@ namespace stats
         Bucket      bucket;
     };
 
+    struct MatchEntry
+    {
+        std::string opponent;
+        int         difficulty;
+        std::string mode;
+        std::string result;
+        std::optional<int> time_seconds;
+        std::string played_at;
+    };
+
     Bucket record_result(const std::string &username,
                          int difficulty,
                          const std::string &mode,
                          const std::string &result,
-                         std::optional<int> time_sec);
+                         std::optional<int> time_sec,
+                         const std::string &opponent);
 
-    std::vector<StatsRow> get_user_stats(const std::string &username);
-    std::vector<StatsRow> get_user_diff_stats(const std::string &username, int difficulty);
+    std::vector<StatsRow>   get_user_stats(const std::string &username);
+    std::vector<StatsRow>   get_user_diff_stats(const std::string &username, int difficulty);
+    std::vector<MatchEntry> get_match_history(const std::string &username, int limit);
 }
