@@ -52,6 +52,24 @@ namespace stats
             "ON player_stats(username)"
         );
 
+        tx.exec(
+            "CREATE TABLE IF NOT EXISTS match_history ("
+            "  id              BIGSERIAL PRIMARY KEY,"
+            "  username         TEXT NOT NULL,"
+            "  opponent         TEXT,"
+            "  difficulty       INT  NOT NULL,"
+            "  mode             TEXT NOT NULL,"
+            "  result           TEXT NOT NULL,"
+            "  time_seconds     INT,"
+            "  played_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()"
+            ")"
+        );
+
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_mh_username "
+            "ON match_history(username)"
+        );
+
         tx.commit();
     }
 
