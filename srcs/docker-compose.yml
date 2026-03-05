@@ -131,7 +131,25 @@ services:
     networks:
       - transcendence_network
     restart: unless-stopped
-    
+
+  stats_service:
+    build: ./requirements/stats_service
+    container_name: stats_service
+    expose:
+      - "8090"
+    depends_on:
+      statistics_db:
+        condition: service_healthy
+    environment:
+      STATS_DB_HOST: statistics_db
+      STATS_DB_PORT: "5432"
+      STATS_DB_NAME: game_stats_db
+      STATS_DB_USER: bn_user
+      STATS_DB_PASS: bn_pass
+    networks:
+      - transcendence_network
+    restart: unless-stopped
+
   statistics_db:
     image: postgres:15-alpine
     container_name: statistics_db
