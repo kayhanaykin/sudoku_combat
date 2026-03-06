@@ -68,7 +68,11 @@ int main()
         if (mode == "offline" && result == "win" && !time_sec.has_value())
             return stats::make_error(400, "time_seconds required for offline win");
 
-        stats::Bucket b = stats::record_result(username, diff, mode, result, time_sec);
+        std::string opponent;
+        if (body.has("opponent"))
+            opponent = body["opponent"].s();
+
+        stats::Bucket b = stats::record_result(username, diff, mode, result, time_sec, opponent);
 
         crow::json::wvalue out;
         out["username"]   = username;
@@ -76,6 +80,16 @@ int main()
         out["mode"]       = mode;
         out["bucket"]     = stats::bucket_to_json(b);
         return crow::response(200, out);
+    });
+
+    CROW_ROUTE(app, "/api/stats/<string>/history")
+    ([](const std::string &username)
+    {
+        if (username.empty())
+            return stats::make_error(400, "username empty");
+
+        auto entries = stats::get_match_history(username, 20);
+        return crow::response(200, stats::history_to_json(username, entries));
     });
 
     CROW_ROUTE(app, "/api/stats/<string>/<int>")
