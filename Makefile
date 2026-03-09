@@ -1,53 +1,39 @@
-# Compose automatically looks for a file named .env 
-# in the directory where the docker compose command is run.
-
 export COMPOSE_BAKE=true
 
-# Colors for pretty logs
 GREEN = \033[0;32m
 RESET = \033[0m
 
 COMPOSE = docker compose -f srcs/docker-compose.yml
 
-# --build eger dockerfile degistiyse, 
-# docker-compose yeni versiyon var mi diye check etmeden, 
-# eski image i kullaniyor.
-# --build dockerfile da bir revizyon varsa yeniden image olusturuyor.
-# -d detached mode, docker-compose terminali ele gecirmesin diye.
-# sureki loglamaya devam ediyor.
-all: down build list
+all: build list
 
 down:
 	@echo "$(GREEN)Stopping services...$(RESET)"
-	@docker stop $$(docker ps -q) 2>/dev/null || echo "No containers running."
+	@$(COMPOSE) down
 
-up:
-	@echo "$(GREEN)Starting services...$(RESET)"
-	@$(COMPOSE) up -d
-
+# Projeyi, ağları ve VOLUMELERİ (Veritabanı kalıntılarını) tamamen siler!
 clean:
-	@echo "Force removing all containers..."
-	@docker rm -f $$(docker ps -aq) 2>/dev/null || echo "Nothing to remove."
+	@echo "$(GREEN)Force removing containers and VOLUMES...$(RESET)"
+	@$(COMPOSE) down -v
 
+# Sistemi tamamen temizler (Docker içindeki her şeyi)
 fclean: clean
-	@echo "$(GREEN)Cleaning up...$(RESET)"
-	@docker system prune -a --force
-	@docker volume prune --force
+	@echo "$(GREEN)Deep cleaning the system...$(RESET)"
+	@docker system prune -af
+	@docker volume prune -f
 
 re: clean all
 
+# Yeniden build edip ayağa kaldırır
 build:
-	@echo "$(GREEN)Building containers...$(RESET)"
-	@$(COMPOSE) build
-	@echo "$(GREEN)Starting services...$(RESET)"
-	@$(COMPOSE) up -d
-	
+	@echo "$(GREEN)Building and starting containers...$(RESET)"
+	@$(COMPOSE) up -d --build
+    
 list:
 	@sleep 1
 	@echo "$(GREEN)Listing running containers...$(RESET)"
 	@docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-# Run Django Migrations (Crucial for changed models)
 migrate:
 	@echo "$(GREEN)Running migrations...$(RESET)"
 	@$(COMPOSE) exec user_service python manage.py makemigrations
@@ -57,10 +43,11 @@ logs:
 	@$(COMPOSE) logs -f user_service nginx
 
 seed:
-	docker exec -it user_service python seed_db.py
-# (Örn: make restart-combat_service)
+	@$(COMPOSE) exec user_service python seed_db.py
+
+# İstediğin servisi yeniden başlatmak için (Örn: make restart-combat_service)
 restart-%:
 	@echo "$(GREEN)Restarting service: $*...$(RESET)"
 	@$(COMPOSE) restart $*
 
-.PHONY: all clean fclean re build list down migrate logs up
+.PHONY: all clean fclean re build list down migrate logs up seed
