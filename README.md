@@ -24,18 +24,18 @@ Our team organization is given below with details.
 
 We have planned weekly cluster meeting and bi-weekly online meetings.
 
-For team communication a simple whatsapp group is used.  
+For team communication a simple <font color="orange">**whatsapp**</font> group is used. For storing/version controlling we have used <font color="orange">__Github__</font>. 
 
-## Product Owner (PO), Mr. Ali Eren Palaz
+## Product Owner (PO), Mr. Ege Karaurgan
 Defines the product vision, prioritizes features, and ensures the project meets user needs.
 <ul>
 <li>Maintains the product backlog.</li>
 <li>Makes decisions on features and priorities.</li>
 <li>Validates completed work.</li>
-<li>Communicates with stakeholders (evaluators, peers).</li>
+<li>Communicates with developers.</li>
 </ul>
 
-## Project Manager (PM) / Scrum Master, Mr. Ege Karaurgan
+## Project Manager (PM) / Scrum Master, Mr. Ali Eren Palaz
 Facilitates team coordination and removes obstacles.
 <ul>
 <li>Organizes team meetings and planning sessions.</li>
@@ -94,13 +94,30 @@ Implement features and modules.
 The web application is about .... It is compose of. 
 
 # Programming Languages, Frameworks and Tools Used
-![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
-![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
-![Socket.io](https://img.shields.io/badge/Socket.io-black?style=for-the-badge&logo=socket.io&badgeColor=010101)
+
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+![Crow](https://img.shields.io/badge/Crow-%23222222.svg?style=for-the-badge&logo=crow&logoColor=white)
+![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+
+
 ![42](https://img.shields.io/badge/42-000000?style=for-the-badge&logo=42&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+
+# Database Schema
+## Overview
+
+The Sudoku Combat application uses a microservices architecture with multiple databases:
+
+- **Game Service**: No database
+- **User Service**: PostgreSQL (Django ORM) - User accounts, authentication, profiles, friends
+- **Room Service**: TypeORM with PostgreSQL - Game rooms and multiplayer sessions
+- **Combat Service**: No database
+- **Stats Service**: TypeORM with PostgreSQL - game stats and badges data, leaderboard
 
 # Installation of the Project
 ## 1<sup>st</sup> Step - Docker Engine
