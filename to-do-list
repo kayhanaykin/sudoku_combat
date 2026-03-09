@@ -23,3 +23,8 @@ Oyun başlarken combat_service'in game_service'e istek atarak oyun board'unu alm
 Oyun sırasında her iki kullanıcı da hamle yaptığında bu hamle combat_service'e gönderilecek ve combat_service hamleyi doğruladıktan sonra
 her iki kullanıcıya da güncellenmiş board'u gönderecek. Oyun sonunda kazanan belirlenip her iki kullanıcıya da gösterilecek.
 Oyun sonunda her iki kullanıcıya da bir mesaj gönderilecek ve ana sayfaya yönlendirilecekler.
+
+Odayı kurup oyun başlatmadan bekleme odasında çıkınca oda available rooms kısmında kalmaya devam ediyor. Sadece içinde birinin olduğu boş olan 
+odalar available rooms'ta gözüksün. 
+
+42_ekaraurg ismi kayıtlıyken intra ile kayıt olurken patlıyor düzeltilecek.
