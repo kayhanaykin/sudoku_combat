@@ -55,7 +55,10 @@ const OnlineGame = () =>
         setShowError, setErrorMessage,
         gameResult, setGameResult,
         setSelectedCell
-    } = useGameLogic('online', sendOnlineMove); 
+    } = useGameLogic('online', sendOnlineMove, { 
+        username: players.you.name, 
+        opponent: players.opponent.name 
+    });
 
     const [opponentLives, setOpponentLives] = useState(3);
 
@@ -65,9 +68,7 @@ const OnlineGame = () =>
             {
                 const isControlClick = event.target.closest('.controls-area') || event.target.closest('.numpad-grid');
                 if (!isControlClick && setSelectedCell)
-                {
                     setSelectedCell(null);
-                }
             }
         };
 
@@ -100,13 +101,9 @@ const OnlineGame = () =>
                     }
 
                     if (isOwner)
-                    {
                         setPlayers({ you: { name: oName, avatar: oAvatar }, opponent: { name: gName, avatar: gAvatar } });
-                    }
                     else
-                    {
                         setPlayers({ you: { name: gName, avatar: gAvatar }, opponent: { name: oName, avatar: oAvatar } });
-                    }
                 }
             } 
             catch(e) 
@@ -139,7 +136,6 @@ const OnlineGame = () =>
                     if (message.gameState && message.gameState.currBoard) 
                     {
                         updateBoardFromOpponent(message.gameState.currBoard);
-                        
                         setPlayers(prev => 
                         {
                             if (isOwner && prev.opponent.name === 'Waiting...' && message.gameState.guestId) 

@@ -24,7 +24,7 @@ const OfflineGame = () =>
         isHintModalOpen, hintData, handleHint, applyHint,
         gameResult,
         setSelectedCell
-    } = useGameLogic('offline'); 
+    } = useGameLogic('offline', null, { username: playerName });
 
     useEffect(() => {
         const handleClickOutside = (event) => {
