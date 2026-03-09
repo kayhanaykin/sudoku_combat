@@ -88,7 +88,7 @@ const ProfileContent = ({ stats, onLogout, onDeleteAccount }) =>
                 </div>
             </div>
 
-            <PerformanceStats stats={stats} />
+            <PerformanceStats username={userData?.username} />
 
             <EditProfileModal
                 isOpen={isEditModalOpen}

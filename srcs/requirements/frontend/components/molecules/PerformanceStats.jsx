@@ -1,22 +1,115 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/PerformanceStats.css';
 
-const PerformanceStats = ({ stats }) =>
+const PerformanceStats = ({ username }) =>
 {
-    const difficulties = ['Easy', 'Medium', 'Hard', 'Expert', 'Extreme'];
+    // Verimiz artık bir obje ({}) olarak gelecek, bu yüzden default değeri {} yapıyoruz.
+    const [statsData, setStatsData] = useState({});
+    const [loading, setLoading] = useState(true);
+
+    const difficulties = [
+        { id: 1, name: 'Easy' },
+        { id: 2, name: 'Medium' },
+        { id: 3, name: 'Hard' },
+        { id: 4, name: 'Expert' },
+        { id: 5, name: 'Extreme' }
+    ];
+
+    useEffect(() => 
+    {
+        if (!username)
+        {
+            setLoading(false);
+            return;
+        }
+
+        const fetchStats = async () => 
+        {
+            try
+            {
+                const response = await fetch(`https://localhost:8443/api/stats/${username}`);
+                if (response.ok) 
+                {
+                    const data = await response.json();
+                    
+                    if (data && data.difficulties)
+                    {
+                        // JSON objesini doğrudan state'e atıyoruz
+                        setStatsData(data.difficulties);
+                    }
+                    else 
+                    {
+                        setStatsData({}); 
+                    }
+                }
+            }
+            catch (error)
+            {
+                console.error("Failed to fetch stats", error);
+                setStatsData({});
+            }
+            finally
+            {
+                setLoading(false);
+            }
+        };
+
+        fetchStats();
+    }, [username]);
+
+    const formatTime = (seconds) => 
+    {
+        if (seconds === null || seconds === undefined || seconds === 0)
+            return '-';
+        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const s = (seconds % 60).toString().padStart(2, '0');
+        return `${m}:${s}`;
+    };
 
     const detailedStats = difficulties.map(diff =>
     {
-        const played = stats?.ranks?.[diff.toLowerCase()]?.played || 0;
-        const won = stats?.ranks?.[diff.toLowerCase()]?.won || 0;
-        const bestTime = stats?.ranks?.[diff.toLowerCase()]?.bestTime || '-';
+        // Gelen id'ye göre zorluk objesini alıyoruz (örn: statsData["2"])
+        const diffData = statsData[diff.id] || {};
+        
+        // Online ve Offline mod verilerini ayıklıyoruz
+        const onlineStats = diffData.online || {};
+        const offlineStats = diffData.offline || {};
+
+        const onlineWins = onlineStats.wins || 0;
+        const offlineWins = offlineStats.wins || 0;
+        const onlineLosses = onlineStats.losses || 0;
+        const offlineLosses = offlineStats.losses || 0;
+
+        // Toplam Kazanma ve Kaybetme Sayısı
+        const won = onlineWins + offlineWins;
+        const losses = onlineLosses + offlineLosses;
+        const played = won + losses;
+
         const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
-        return { name: diff, played, won, winRate, bestTime };
+
+        // En iyi zamanı bulma (Online ve Offline arasından null olmayan en düşük süreyi seçiyoruz)
+        let bestTimeSeconds = null;
+        
+        if (onlineStats.best_time_seconds)
+            bestTimeSeconds = onlineStats.best_time_seconds;
+            
+        if (offlineStats.best_time_seconds)
+        {
+            if (bestTimeSeconds === null || offlineStats.best_time_seconds < bestTimeSeconds)
+                bestTimeSeconds = offlineStats.best_time_seconds;
+        }
+
+        const bestTime = formatTime(bestTimeSeconds);
+
+        return { name: diff.name, played, won, winRate, bestTime };
     });
 
     const totalPlayed = detailedStats.reduce((acc, curr) => acc + curr.played, 0);
     const totalWon = detailedStats.reduce((acc, curr) => acc + curr.won, 0);
     const totalWinRate = totalPlayed > 0 ? Math.round((totalWon / totalPlayed) * 100) : 0;
+
+    if (loading)
+        return <div className="profile-card-base o-stats-section">Loading statistics...</div>;
 
     return (
         <div className="profile-card-base o-stats-section">
