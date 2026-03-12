@@ -30,3 +30,34 @@ odalar available rooms'ta gözüksün.
 42_ekaraurg ismi kayıtlıyken intra ile kayıt olurken patlıyor düzeltilecek.
 hint combattan kaldirilacak, diger tarafta 3 ile sinirlandirilacak.
 siteni  adi sudo ku olarak websitesinde degistirilecek, ana sayfada falan. 
+
+There should be no errors or warnings visible in the browser console.
+Minor warnings from third-party libraries may be acceptable if explained.
+Konsolda hata var kontrol edilecek.
+
+Email and password signup/login
+log in pop-up'ında username ile birlikte e-mail ile de giriş yapılabilecek.
+
+SQL injection attempts denenecek
+XSS attempts
+
+HTTP gelen requestleri redirect edicez HTTPS'e
+
+Arkadaşına oyun daveti gönderme eklenebilir
+
+Why they chose their tech stack
+
+Enable two players on separate computers to play the
+same game in real-time.
+
+Implement reconnection logic.
+
+The game must have clear rules and win/loss conditions. (Belki eklenebilir?)
+
+Handle connection/disconnection gracefully.
+
+Use an ORM for the database.(Bu yapıldı mı??)
+
+Progressive Web App (PWA) with offline support and installability.(Yapılabilir?)
+
+Support for additional browsers.(Yapılabilir?)
