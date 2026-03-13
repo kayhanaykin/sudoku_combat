@@ -132,7 +132,7 @@ class FortyTwoCallbackView(APIView):
             created = True
 
         # Log into Django session
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         request.session.modified = True
         # 4. Smart Redirection Logic
         # A: User is new -> Go to Setup
@@ -158,7 +158,7 @@ def local_signup_view(request):
             user.is_profile_complete = True   
             user.save()
             
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             
             # Now dashboard_view will see is_profile_complete=True and let them in
             return redirect('dashboard') 
@@ -299,7 +299,7 @@ def local_login_view(request):
         if form.is_valid():
             user = form.get_user()
             # We DO call login() for the browser so the session works normally
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return set_jwt_cookie_and_redirect(user, request)
     else:
         form = AuthenticationForm()

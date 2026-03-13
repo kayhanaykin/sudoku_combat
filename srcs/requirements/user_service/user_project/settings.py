@@ -167,3 +167,9 @@ CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "wss://localhost:8443",
 ]
+
+# Custom Authentication Backend
+AUTHENTICATION_BACKENDS = [
+    'user_app.backends.EmailOrUsernameModelBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
