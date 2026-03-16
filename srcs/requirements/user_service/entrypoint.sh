@@ -1,8 +1,15 @@
 #!/bin/sh
 
-# Use default values if variables are not set
-DB_HOST="${POSTGRES_HOST:-user_db}"
-DB_PORT="${POSTGRES_PORT:-5432}"
+# Check required environment variables
+[ -z "$POSTGRES_HOST" ] && echo "Error: POSTGRES_HOST not set" && exit 1
+[ -z "$POSTGRES_PORT" ] && echo "Error: POSTGRES_PORT not set" && exit 1
+[ -z "$DJANGO_SUPERUSER_USERNAME" ] && echo "Error: DJANGO_SUPERUSER_USERNAME not set" && exit 1
+[ -z "$DJANGO_SUPERUSER_EMAIL" ] && echo "Error: DJANGO_SUPERUSER_EMAIL not set" && exit 1
+[ -z "$DJANGO_SUPERUSER_PASSWORD" ] && echo "Error: DJANGO_SUPERUSER_PASSWORD not set" && exit 1
+[ -z "$DJANGO_SUPERUSER_DISPLAY_NAME" ] && echo "Error: DJANGO_SUPERUSER_DISPLAY_NAME not set" && exit 1
+
+DB_HOST="$POSTGRES_HOST"
+DB_PORT="$POSTGRES_PORT"
 
 echo "Waiting for postgres at $DB_HOST:$DB_PORT..."
 
@@ -32,12 +39,20 @@ echo "Checking for superuser..."
 python manage.py shell << END
 from django.contrib.auth import get_user_model
 import os
+import sys
+
+def get_env_strict(var):
+    val = os.getenv(var)
+    if not val:
+        print(f"Error: {var} environment variable is not set inside Python.")
+        sys.exit(1)
+    return val
 
 User = get_user_model()
-username = os.getenv('DJANGO_SUPERUSER_USERNAME', 'admin')
-email = os.getenv('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
-password = os.getenv('DJANGO_SUPERUSER_PASSWORD', 'admin123')
-display_name = os.getenv('DJANGO_SUPERUSER_DISPLAY_NAME', username)
+username = get_env_strict('DJANGO_SUPERUSER_USERNAME')
+email = get_env_strict('DJANGO_SUPERUSER_EMAIL')
+password = get_env_strict('DJANGO_SUPERUSER_PASSWORD')
+display_name = get_env_strict('DJANGO_SUPERUSER_DISPLAY_NAME')
 
 if not User.objects.filter(username=username).exists():
     User.objects.create_superuser(username, email, password, display_name=display_name)
