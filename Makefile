@@ -28,7 +28,11 @@ re: clean all
 build:
 	@echo "$(GREEN)Building and starting containers...$(RESET)"
 	@$(COMPOSE) up -d --build
-    
+
+build-%:
+	@echo "$(GREEN)Building and starting containers...$(RESET)"
+	@$(COMPOSE) up -d --build $*
+
 list:
 	@sleep 1
 	@echo "$(GREEN)Listing running containers...$(RESET)"
