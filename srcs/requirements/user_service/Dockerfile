@@ -24,5 +24,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN sed -i 's/\r$//' entrypoint.sh
+# the file is located at user_project/settings.py
+ENV DJANGO_SETTINGS_MODULE=user_project.settings
+
 EXPOSE 8001
 ENTRYPOINT ["sh", "/app/entrypoint.sh"]

@@ -47,6 +47,6 @@ seed:
 	@$(COMPOSE) exec user_service python seed_db.py
 
 logs-%:
-	@$(COMPOSE) logs $* --tail 1000000
+	@$(COMPOSE) logs $* --tail 10
 
 .PHONY: all clean fclean re build list down migrate logs up seed
