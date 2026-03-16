@@ -9,11 +9,17 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-2^#2)59o(yi_5dcyj1n$v!ssa1#x$v#)%z)l1$6%5)i$7rylbp')
+# Check required environment variables
+if not os.getenv('SECRET_KEY'): raise ValueError("CRITICAL ERROR: SECRET_KEY is not set!")
+if not os.getenv('POSTGRES_DB'): raise ValueError("CRITICAL ERROR: POSTGRES_DB is not set!")
+if not os.getenv('POSTGRES_USER'): raise ValueError("CRITICAL ERROR: POSTGRES_USER is not set!")
+if not os.getenv('POSTGRES_PASSWORD'): raise ValueError("CRITICAL ERROR: POSTGRES_PASSWORD is not set!")
+if not os.getenv('POSTGRES_PORT'): raise ValueError("CRITICAL ERROR: POSTGRES_PORT is not set!")
+
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG = True
 
 # Allowed Hosts: Nginx'ten gelen istekleri ve internal servis çağrılarını kabul et
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', 'ekay.42.fr']
@@ -69,11 +75,11 @@ ASGI_APPLICATION = 'user_project.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'user_db_name'),
-        'USER': os.getenv('POSTGRES_USER', 'user_name'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'user_password'),
+        'NAME': os.getenv('POSTGRES_DB'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
         'HOST': 'user_db',  # docker-compose servis adı
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'PORT': os.getenv('POSTGRES_PORT'),
     }
 }
 
