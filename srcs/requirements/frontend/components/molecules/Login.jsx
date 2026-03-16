@@ -27,6 +27,11 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
             const userData = await loginUser(username, password);
             login(userData);
             onClose();
+            
+            // Redirect superuser to debug-users page
+            if (userData.user && userData.user.is_superuser) {
+                window.location.href = '/debug-users';
+            }
         }
         catch (err)
         {

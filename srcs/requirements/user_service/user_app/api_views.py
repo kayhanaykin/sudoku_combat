@@ -114,7 +114,9 @@ def login_api(request):
             "user": {
                 "id": user.id, 
                 "username": user.username,
-                "avatar": user.avatar.url if user.avatar else None
+                "display_name": getattr(user, 'display_name', user.username),
+                "avatar": user.avatar.url if user.avatar else None,
+                "is_superuser": user.is_superuser
             }
         }, status=200)
         
@@ -303,3 +305,14 @@ def user_info_api(request, user_id):
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def debug_user_list_api(request):
+    """API endpoint to list all users for debug purposes. Restricted to superusers."""
+    if not request.user.is_superuser:
+        return Response({"error": "Unauthorized. Superuser access required."}, status=status.HTTP_403_FORBIDDEN)
+    
+    users = CustomUser.objects.all().order_by('-id')
+    serializer = CustomUserSerializer(users, many=True)
+    return Response(serializer.data)
