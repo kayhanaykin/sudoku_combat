@@ -14,7 +14,7 @@ down:
 # Projeyi, ağları ve VOLUMELERİ (Veritabanı kalıntılarını) tamamen siler!
 clean:
 	@echo "$(GREEN)Force removing containers and VOLUMES...$(RESET)"
-	@$(COMPOSE) down -v
+	@$(COMPOSE) down -v --remove-orphans
 
 # Sistemi tamamen temizler (Docker içindeki her şeyi)
 fclean: clean
@@ -32,22 +32,17 @@ build:
 list:
 	@sleep 1
 	@echo "$(GREEN)Listing running containers...$(RESET)"
-	@docker ps -a --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+	@docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
 migrate:
 	@echo "$(GREEN)Running migrations...$(RESET)"
 	@$(COMPOSE) exec user_service python manage.py makemigrations
 	@$(COMPOSE) exec user_service python manage.py migrate
 
-logs:
-	@$(COMPOSE) logs -f user_service nginx
-
 seed:
 	@$(COMPOSE) exec user_service python seed_db.py
 
-# İstediğin servisi yeniden başlatmak için (Örn: make restart-combat_service)
-restart-%:
-	@echo "$(GREEN)Restarting service: $*...$(RESET)"
-	@$(COMPOSE) restart $*
+logs-%:
+	@$(COMPOSE) logs $* --tail 1000000
 
 .PHONY: all clean fclean re build list down migrate logs up seed
