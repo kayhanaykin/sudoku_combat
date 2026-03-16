@@ -11,4 +11,6 @@ urlpatterns = [
     path('logout/', api_views.logout_api, name='api_logout'),
     path('info/<int:user_id>/', api_views.user_info_api, name='user_info_api'),
     path('debug-users/', api_views.debug_user_list_api, name='api-debug-users'),
+    path('auth/login/', api_views.FortyTwoLoginView.as_view(), name='api-fortytwo-login'),
+    path('auth/callback/', api_views.FortyTwoCallbackView.as_view(), name='api-fortytwo-callback'),
 ]

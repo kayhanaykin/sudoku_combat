@@ -5,21 +5,23 @@
 
 namespace stats
 {
-    static std::string get_env(const char *key, const char *fallback)
+    static std::string get_env(const char *key)
     {
         const char *val = std::getenv(key);
-        if (val && val[0] != '\0')
-            return val;
-        return fallback;
+        if (!val || val[0] == '\0') {
+            std::cerr << "CRITICAL ERROR: Environment variable " << key << " is not set!\n";
+            std::exit(1);
+        }
+        return val;
     }
-
+ 
     std::string get_conn_string()
     {
-        std::string host = get_env("STATS_DB_HOST", "statistics_db");
-        std::string port = get_env("STATS_DB_PORT", "5432");
-        std::string db   = get_env("STATS_DB_NAME", "game_stats_db");
-        std::string user = get_env("STATS_DB_USER", "bn_user");
-        std::string pass = get_env("STATS_DB_PASS", "bn_pass");
+        std::string host = get_env("STATS_DB_HOST");
+        std::string port = get_env("STATS_DB_PORT");
+        std::string db   = get_env("STATS_DB_NAME");
+        std::string user = get_env("STATS_DB_USER");
+        std::string pass = get_env("STATS_DB_PASS");
 
         return "host=" + host
              + " port=" + port
