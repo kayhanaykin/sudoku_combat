@@ -1,6 +1,9 @@
 #!/bin/sh
 
 # Check required environment variables
+# [ ... ]: This is the test command. 
+# It evaluates the expression inside the brackets and returns a status of 0 (true) or 1 (false).
+# -z: This is a specific flag that stands for "zero length."
 [ -z "$POSTGRES_HOST" ] && echo "Error: POSTGRES_HOST not set" && exit 1
 [ -z "$POSTGRES_PORT" ] && echo "Error: POSTGRES_PORT not set" && exit 1
 [ -z "$DJANGO_SUPERUSER_USERNAME" ] && echo "Error: DJANGO_SUPERUSER_USERNAME not set" && exit 1
@@ -30,30 +33,26 @@ while True:
 END
 
 echo "Applying migrations..."
-# makemigrations is usually done in dev, but safe here for 42 project
-python manage.py makemigrations user_app --noinput
 python manage.py migrate --noinput
 
 # --- AUTOMATED SUPERUSER CREATION ---
 echo "Checking for superuser..."
 python manage.py shell << END
-from django.contrib.auth import get_user_model
 import os
 import sys
+from django.contrib.auth import get_user_model
 
-def get_env_strict(var):
-    val = os.getenv(var)
-    if not val:
-        print(f"Error: {var} environment variable is not set inside Python.")
-        sys.exit(1)
-    return val
+username = os.getenv('DJANGO_SUPERUSER_USERNAME')
+email = os.getenv('DJANGO_SUPERUSER_EMAIL')
+password = os.getenv('DJANGO_SUPERUSER_PASSWORD')
+display_name = os.getenv('DJANGO_SUPERUSER_DISPLAY_NAME')
+
+if not username: print("Error: DJANGO_SUPERUSER_USERNAME is not set"); sys.exit(1)
+if not email: print("Error: DJANGO_SUPERUSER_EMAIL is not set"); sys.exit(1)
+if not password: print("Error: DJANGO_SUPERUSER_PASSWORD is not set"); sys.exit(1)
+if not display_name: print("Error: DJANGO_SUPERUSER_DISPLAY_NAME is not set"); sys.exit(1)
 
 User = get_user_model()
-username = get_env_strict('DJANGO_SUPERUSER_USERNAME')
-email = get_env_strict('DJANGO_SUPERUSER_EMAIL')
-password = get_env_strict('DJANGO_SUPERUSER_PASSWORD')
-display_name = get_env_strict('DJANGO_SUPERUSER_DISPLAY_NAME')
-
 if not User.objects.filter(username=username).exists():
     User.objects.create_superuser(username, email, password, display_name=display_name)
     print(f"Superuser '{username}' (display name: '{display_name}') created successfully.")
