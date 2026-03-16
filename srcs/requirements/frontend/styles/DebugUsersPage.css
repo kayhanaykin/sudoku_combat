@@ -1,0 +1,90 @@
+.debug-page-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: inherit;
+    color: var(--text-dark);
+}
+
+.debug-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 1rem;
+}
+
+.debug-header h1 {
+    font-size: 2rem;
+    color: var(--primary);
+    margin: 0;
+}
+
+.logout-btn {
+    padding: 0.6rem 1.5rem;
+    font-size: 1rem;
+}
+
+.debug-table-wrapper {
+    background: var(--secondary);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.debug-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.debug-table th, 
+.debug-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.debug-table th {
+    background-color: #f8f9fa;
+    font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.debug-table tbody tr:hover {
+    background-color: #fcfcfc;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.online {
+    background-color: #e6ffec;
+    color: #059669;
+}
+
+.status-badge.offline {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.debug-loading,
+.debug-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.debug-error {
+    color: #dc2626;
+}

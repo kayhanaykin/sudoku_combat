@@ -9,6 +9,7 @@ import OnlineGame from '../pages/Online-Game';
 import OfflineGame from '../pages/Offline-Game';
 import LeaderboardPage from '../pages/LeaderboardPage';
 import Profile from '../pages/Profile';
+import DebugUsersPage from '../pages/DebugUsersPage';
 
 function App()
 {
@@ -23,6 +24,7 @@ function App()
             <Route path="/offline-game" element={<OfflineGame />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/debug-users" element={<DebugUsersPage />} />
           </Routes>
         </WebSocketProvider>
       </AuthProvider>
