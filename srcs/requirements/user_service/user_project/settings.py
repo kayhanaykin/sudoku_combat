@@ -19,7 +19,7 @@ if not os.getenv('POSTGRES_PORT'): raise ValueError("CRITICAL ERROR: POSTGRES_PO
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
 # Allowed Hosts: Nginx'ten gelen istekleri ve internal servis çağrılarını kabul et
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', 'ekay.42.fr']

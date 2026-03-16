@@ -1,9 +1,13 @@
+from django.conf import settings
+from django.shortcuts import redirect
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
+import requests
 
+from rest_framework.views import APIView
 from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -52,6 +56,106 @@ def set_jwt_cookies(response, user):
         secure=True,
         max_age=86400
     )
+
+def set_jwt_cookie_and_redirect(user, request, target_url=None):
+    refresh = RefreshToken.for_user(user)
+    access_token = str(refresh.access_token)
+    
+    response = redirect('/') # Redirect to frontend home
+
+    response.set_cookie(
+        key='refresh_token', 
+        value=str(refresh), 
+        httponly=True, 
+        secure=True, 
+        samesite='Lax',
+        path='/'
+    )
+    
+    response.set_cookie(
+        key='access_token', 
+        value=access_token, 
+        httponly=False, 
+        secure=True, 
+        samesite='Lax',
+        path='/'
+    )
+    
+    return response
+
+# --- 42 OAUTH VIEWS ---
+
+class FortyTwoLoginView(APIView):
+    """Force logout then redirect to 42 Authorization."""
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        if request.user.is_authenticated:
+            logout(request)
+            
+        url = (
+            f"https://api.intra.42.fr/oauth/authorize"
+            f"?client_id={settings.FT_CLIENT_ID}"
+            f"&redirect_uri={settings.FT_REDIRECT_URI}"
+            f"&response_type=code"
+        )
+        return redirect(url)
+
+class FortyTwoCallbackView(APIView):
+    """Handles return from 42, fetches user data, and logs them in."""
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        code = request.GET.get('code')
+        if not code:
+            return JsonResponse({"error": "No code provided"}, status=400)
+
+        # 1. Exchange code for Access Token
+        token_response = requests.post("https://api.intra.42.fr/oauth/token", data={
+            "grant_type": "authorization_code",
+            "client_id": settings.FT_CLIENT_ID,
+            "client_secret": settings.FT_CLIENT_SECRET,
+            "code": code,
+            "redirect_uri": settings.FT_REDIRECT_URI,
+        })
+        
+        if token_response.status_code != 200:
+            return JsonResponse({"error": "Failed to get token"}, status=400)
+            
+        access_token = token_response.json().get("access_token")
+
+        # 2. Get User Info
+        user_info_res = requests.get("https://api.intra.42.fr/v2/me", headers={
+            "Authorization": f"Bearer {access_token}"
+        })
+        user_info = user_info_res.json()
+
+        # 3. Create or Get User
+        intra_id = user_info.get('id')
+        try:
+            user = CustomUser.objects.get(intra_id=intra_id)
+            created = False
+        except CustomUser.DoesNotExist:
+            base_username = f"42_{user_info.get('login')}"
+            username = base_username
+            counter = 1
+            while CustomUser.objects.filter(username=username).exists():
+                username = f"{base_username}_{counter}"
+                counter += 1
+                
+            user = CustomUser.objects.create(
+                intra_id=intra_id,
+                username=username,
+                email=user_info.get('email'),
+                is_active=True,
+                is_profile_complete=False 
+            )
+            created = True
+
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+        request.session.modified = True
+        
+        return set_jwt_cookie_and_redirect(user, request)
 
 # --- TEMEL VIEWLER ---
 
@@ -316,3 +420,11 @@ def debug_user_list_api(request):
     users = CustomUser.objects.all().order_by('-id')
     serializer = CustomUserSerializer(users, many=True)
     return Response(serializer.data)
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_account_api(request):
+    """API endpoint to delete the current user's account."""
+    user = request.user
+    user.delete()
+    return Response({"message": "Account successfully deleted"}, status=status.HTTP_200_OK)
