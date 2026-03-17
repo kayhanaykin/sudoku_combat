@@ -57,7 +57,7 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
 
                     <input 
                         type="text" 
-                        placeholder="Username" 
+                        placeholder="Username or Email" 
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         className="login-input"
