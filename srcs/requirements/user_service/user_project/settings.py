@@ -16,7 +16,6 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-2^#2)59o(yi_5dcyj1n$v!ssa1
 DEBUG = True
 
 # Allowed Hosts: Nginx'ten gelen istekleri ve internal servis çağrılarını kabul et
-# ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', 'ekay.42.fr']
 ALLOWED_HOSTS = ['*']
 
 
@@ -144,26 +143,22 @@ LOGIN_REDIRECT_URL = '/dashboard/'
 
 # --- SECURITY & PROXY SETTINGS ---
 
+CURRENT_DOMAIN = os.getenv('DOMAIN_NAME', 'localhost')
+
 # 1. CSRF Trusted Origins (Browser'dan Nginx'e gelen adresler)
-# Port 8443 üzerinden gelindiği için bunları eklemeliyiz.
 CSRF_COOKIE_HTTPONLY = False
 CSRF_TRUSTED_ORIGINS = [
     "https://localhost:8443",
     "wss://localhost:8443",
     "http://localhost:8443",
     "ws://localhost:8443",
+    "https://127.0.0.1:8443",
     "http://127.0.0.1:8443",
+    f"https://{CURRENT_DOMAIN}:8443",  
+    f"wss://{CURRENT_DOMAIN}:8443",
 ]
 
 # 2. Proxy Headers
-# Nginx HTTPS sonlandırıp içeriye HTTP gönderdiği için Django'nun HTTPS olduğunu anlaması lazım.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
 USE_X_FORWARDED_PORT = True
-
-ALLOWED_HOSTS = ['*']
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://localhost:8443",
-    "wss://localhost:8443",
-]

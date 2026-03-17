@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         // Backend'e "Benim geçerli bir çerezim var mı?" diye soruyoruz
-        const response = await fetch(`https://localhost:8443/api/v1/user/me/`, {
+        const response = await fetch(`/api/v1/user/me/`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
@@ -66,7 +66,7 @@ const logout = async () => {
       const csrfToken = getCookie('csrftoken');
 
       // 2. Logout isteği
-      await fetch(`https://localhost:8443/api/v1/user/logout/`, {
+      await fetch(`/api/v1/user/logout/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

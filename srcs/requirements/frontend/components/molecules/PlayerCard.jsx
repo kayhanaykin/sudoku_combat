@@ -1,7 +1,7 @@
 import React from 'react';
 import ProfileImage from '../atoms/ProfileImage';
 
-const BASE_URL = 'https://localhost:8443';
+const BASE_URL = '';
 
 const PlayerCard = ({ title, lives, align, avatar }) => 
 {
