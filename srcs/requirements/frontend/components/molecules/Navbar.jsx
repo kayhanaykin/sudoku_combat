@@ -21,7 +21,7 @@ const Navbar = () =>
     const dropdownRef = useRef(null);
     const friendsRef = useRef(null);
 
-    const BASE_URL = 'https://localhost:8443';
+    const BASE_URL = '';
 
     useEffect(() =>
     {

@@ -94,7 +94,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                     {
                         try 
                         {
-                            const response = await fetch(`https://localhost:8443/api/room/game-state/${roomId}`);
+                            const response = await fetch(`/api/room/game-state/${roomId}`);
                             const data = await response.json();
                             
                             if (data.success && data.currBoard) 
@@ -395,7 +395,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
                 try 
                 {
-                    const response = await fetch('https://localhost:8443/api/stats/report', 
+                    const response = await fetch('/api/stats/report', 
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },

@@ -12,7 +12,7 @@ import GameOverOverlay from '../components/organisms/GameOverOverlay';
 import { getUserById } from '../services/userService'; 
 import '../styles/Game.css';
 
-const BASE_URL = 'https://localhost:8443';
+const BASE_URL = '';
 
 const OnlineGame = () => 
 {
@@ -82,7 +82,7 @@ const OnlineGame = () =>
         {
             try 
             {
-                const res = await fetch(`https://localhost:8443/api/room/game-state/${roomId}`);
+                const res = await fetch(`/api/room/game-state/${roomId}`);
                 const data = await res.json();
                 
                 if (data.success) 
@@ -118,7 +118,8 @@ const OnlineGame = () =>
     {
         if (!roomId)
             return;
-        ws.current = new WebSocket('wss://localhost:8443/api/play');
+            
+        ws.current = new WebSocket(`wss://${window.location.host}/api/play`);
 
         ws.current.onopen = () => 
         {
