@@ -2,9 +2,9 @@ _This project has been created as part
 of the 42 curriculum by kaykin, ekarau, apalaz, yunozdem._
 
 
-## [Jump to Installation](#installation-of-the-project)
+## [Instructions - Jump to Installation](#installation-of-the-project)
 
-# Final Project of 42
+# Description - Final Project of 42
 ![Final Grade](https://img.shields.io/badge/Grade-100%20%2F%20100-success?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/42-Project-black?style=for-the-badge)
 
@@ -65,12 +65,14 @@ Implement features and modules.
 # Chosen Modules
 ## Use a Frontend Framework (React, 1pt)
 <ul>
+<li>Developed by Ege Karaurgan</li>
 <li>DOM ensures highly efficient updates and rendering, which provides the smooth and responsive user experience necessary for a real-time multiplayer game</li>
 <li>React's extensive ecosystem easily integrates with Django</li>
 </ul>
 
 ## Use a Backend Framework (Django, NestJS, 1pt)
 <ul>
+<li>Developed by Ali Eren Palaz</li>
 <li> Batteries-included framework enables the rapid development of essential backend components like user authentication 
 </li>
 <li>Django Channels to provide the powerful, built-in WebSocket support</li>
@@ -79,6 +81,7 @@ Implement features and modules.
 ## Implement Real-time features using Websockets (2pts)
 
 <ul>
+<li>Developed by Kayhan Aykın, Ege Karaurgan</li>
 <li>online status feature
 </li>
 <li>online game</li>
@@ -87,7 +90,8 @@ Implement features and modules.
 ## Use an ORM for the Database (1pt)
 
 <ul>
-<li>Room, Combat & User microservices have its own database with ORM. </li>
+<li>Developed by Kayhan Aykın, Ali Eren Palaz</li>
+<li>Combat & User microservices have its own database with ORM. </li>
 </ul>
 
 ## Reusable components ??
@@ -101,6 +105,7 @@ Implement features and modules.
 ## Standart User Management and Authentication (2pts)
 
 <ul>
+<li>Developed by Kayhan Aykın</li>
 <li>Users can update their profile information.
 </li>
 <li>Users can upload an avatar</li>
@@ -112,6 +117,7 @@ Implement features and modules.
 ## Game Statistics and Match History (1pt)
 
 <ul>
+<li>Developed by Yunus Emre Özdemir</li>
 <li>Track user game statistics (wins, losses, etc.)</li>
 <li>Display match history (1v1 games, dates, results, opponents)</li>
 <li>Show achievements and progression.</li>
@@ -121,6 +127,7 @@ Implement features and modules.
 ## Implement Remote Authentication with OAuth 2.0 (1pt)
 
 <ul>
+<li>Developed by Kayhan Aykın</li>
 <li>42 Intra login option. </li>
 </ul>
 
@@ -135,6 +142,7 @@ Implement features and modules.
 ## Remote players (2pts)
 
 <ul>
+<li>Developed by Ege Karaurgan</li>
 <li>Handle connection & disconnection with smooth UX for remote gameplay</li>
 <li>Implement reconnection logic</li>
 </ul>
@@ -142,6 +150,7 @@ Implement features and modules.
 ## A Gamification System (1pt)
 
 <ul>
+<li>Developed by Yunus Emre Özdemir</li>
 <li>Achievements, badges, leaderboards are implemented </li>
 <li>Data is stored in microservice database</li>
 <li>Game progress bars implemented.</li>
@@ -151,25 +160,53 @@ Implement features and modules.
 ## Backend as Microservices (2pts)
 
 <ul>
+<li>Developed by Kayhan Aykın</li>
 <li>Web app is split into five different microservices.</li>
 <li>Microservices are commmunicating with JSON messeages</li>
-<li>The tasks of the web application are divided into, ser service, combat service, room service, statistics service, game service.</li>
+<li>The tasks of the web application are divided into, user service, combat service, statistics service, game service.</li>
 </ul>
+
+# Features List
+
+<ul>
+<li>Frontend, Ege Karaurgan</li>
+<li>Game Service, Kayhan Aykın</li>
+<li>User Service, Kayhan Aykın</li>
+<li>Combat Service, Ali Eren Palaz</li>
+<li>Statistics Service, Yunus Emre Özdemir</li>
+</ul>
+
 
 # Programming Languages, Frameworks and Tools Used
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
+We chose Docker because it was the most efficient way to glue our C++, Python, and Node.js microservices together into a single system that our whole team can launch with one command without any "it works on my machine" errors.
+
 ![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+
+We chose NestJS because its modular structure and built-in WebSocket support made it the fastest way to build organized, real-time game services in TypeScript.
+
 ![C++](https://img.shields.io/badge/c++-%2300599C.svg?style=for-the-badge&logo=c%2B%2B&logoColor=white)
 ![Crow](https://img.shields.io/badge/Crow-%23222222.svg?style=for-the-badge&logo=crow&logoColor=white)
+
+We chose C++ and Crow to ensure the core game logic runs with maximum performance and minimal latency, providing a lightweight yet powerful backbone for real-time Sudoku calculations.
+
 ![Django](https://img.shields.io/badge/django-%23092E20.svg?style=for-the-badge&logo=django&logoColor=white)
+
+We chose Django because its "batteries-included" features and robust authentication system allowed us to rapidly build a secure and scalable user management service for the project.
+
 ![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+
+We chose PostgreSQL because it is a reliable and powerful relational database that is well-suited for storing structured data such as user information and game statistics.
 
 ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
 
+We chose React because its virtual DOM and component-based structure allow for the highly efficient, real-time UI updates needed for a fast-paced multiplayer game.
 
 ![42](https://img.shields.io/badge/42-000000?style=for-the-badge&logo=42&logoColor=white)
 ![JWT](https://img.shields.io/badge/JWT-black?style=for-the-badge&logo=JSON%20web%20tokens)
+
+We chose JWT to provide a secure, stateless authentication method that allows our microservices to independently verify user identities without relying on a central session store.
 
 # Database Schema
 ## Overview
@@ -201,10 +238,8 @@ docker --version
 make
 ```
 
-## 4<sup>th</sup> Step - Browse
-Everything is ready. 
-
-Reach site from any browser, using, [https://ekay.42.fr](https://ekay.42.fr).
+## 4<sup>th</sup> Step - Browser
+Everything is ready, reach site from Chorme or Firefox, using, [https://localhost:8443](https://localhost:8443).
 
 # Resources
 ## Markdown
@@ -220,10 +255,34 @@ Reach site from any browser, using, [https://ekay.42.fr](https://ekay.42.fr).
 </ul>
 
 ## AI Usage
-### Game Engine
-<ul>
-<li>Suggested the best programming language as C++.
-<li>Informed about the independence of three diagonal boxes.
-<li>Symantics of backtracking algorithm.  
-</ul>
+### AI Usage
+#### Game Service (C++)
+- Assisted in implementing the optimized backtracking algorithm for Sudoku generation.
+- Provided guidance on efficient memory management for real-time game state calculations.
+- Helped structure the Crow API endpoints for performance-critical game logic.
+
+#### User Service (Django)
+- Streamlined the implementation of the JWT-based authentication flow.
+- Assisted in designing the PostgreSQL schema for user profiles and friend relationships.
+- Helped configure Django Channels for handling real-time status updates.
+
+#### Room Service (NestJS)
+- Assisted in setting up the TypeORM entities for managing multiplayer room states.
+- Provided templates for implementing the room creation and joining logic.
+- Helped structure the WebSocket gateways for synchronized room events.
+
+#### Combat Service (NestJS)
+- Assisted in designing the real-time event system for high-concurrency game sessions.
+- Provided guidance on managing complex WebSocket connections during active gameplay.
+- Helped implement the logic for handling player disconnections and reconnections.
+
+#### Stats Service (NestJS)
+- Assisted in defining the database architecture for tracking detailed match history.
+- Provided logic for calculating and updating user achievements and leaderboards.
+- Helped structure the TypeORM queries for efficient statistics retrieval.
+
+#### Frontend (React)
+- Assisted in building reusable UI components with a consistent design system.
+- Provided guidance on managing complex global states using modern React hooks.
+- Helped integrate multiple microservice APIs into a cohesive dashboard experience.
 
