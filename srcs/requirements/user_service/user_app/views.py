@@ -110,19 +110,29 @@ class FortyTwoCallbackView(APIView):
         user_info = user_info_res.json()
 
         # 3. Create or Get User
-        # defaults are only applied if the user is being created for the first time
-        user, created = CustomUser.objects.get_or_create(
-            intra_id=user_info.get('id'),
-            defaults={
-                'username': f"42_{user_info.get('login')}",
-                'email': user_info.get('email'),
-                'is_active': True,
-                'is_profile_complete': False, # New 42 users must fill out setup
-            }
-        )
+        intra_id = user_info.get('id')
+        try:
+            user = CustomUser.objects.get(intra_id=intra_id)
+            created = False
+        except CustomUser.DoesNotExist:
+            base_username = f"42_{user_info.get('login')}"
+            username = base_username
+            counter = 1
+            while CustomUser.objects.filter(username=username).exists():
+                username = f"{base_username}_{counter}"
+                counter += 1
+                
+            user = CustomUser.objects.create(
+                intra_id=intra_id,
+                username=username,
+                email=user_info.get('email'),
+                is_active=True,
+                is_profile_complete=False # New 42 users must fill out setup
+            )
+            created = True
 
         # Log into Django session
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         request.session.modified = True
         # 4. Smart Redirection Logic
         # A: User is new -> Go to Setup
@@ -148,7 +158,7 @@ def local_signup_view(request):
             user.is_profile_complete = True   
             user.save()
             
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             
             # Now dashboard_view will see is_profile_complete=True and let them in
             return redirect('dashboard') 
@@ -289,7 +299,7 @@ def local_login_view(request):
         if form.is_valid():
             user = form.get_user()
             # We DO call login() for the browser so the session works normally
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return set_jwt_cookie_and_redirect(user, request)
     else:
         form = AuthenticationForm()

@@ -94,7 +94,7 @@ def login_api(request):
     user = authenticate(request, username=username, password=password)
 
     if user:
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         
         user.is_online = True
         user.save()
@@ -129,7 +129,7 @@ def signup_api(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         
         response = Response({
             "message": "User created successfully",
