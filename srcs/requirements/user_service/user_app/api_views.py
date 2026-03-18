@@ -303,3 +303,22 @@ def user_info_api(request, user_id):
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def user_by_username_api(request, username):
+    """Verilen username'e göre kullanıcının temel bilgilerini döner"""
+    try:
+        user = CustomUser.objects.get(username=username)
+        d_name = getattr(user, 'display_name', None) or user.username
+        
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "display_name": d_name,
+            "email": user.email,
+            "avatar": user.avatar.url if user.avatar else None
+        }, status=status.HTTP_200_OK)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
