@@ -5,6 +5,7 @@ const PerformanceStats = ({ username }) =>
 {
     const [statsData, setStatsData] = useState({});
     const [loading, setLoading] = useState(true);
+    const [selectedMode, setSelectedMode] = useState('online');
 
     const difficulties = [
         { id: 1, name: 'Easy' },
@@ -63,32 +64,14 @@ const PerformanceStats = ({ username }) =>
     const detailedStats = difficulties.map(diff =>
     {
         const diffData = statsData[diff.id] || {};
-        
-        const onlineStats = diffData.online || {};
-        const offlineStats = diffData.offline || {};
+        const modeStats = (diffData && diffData[selectedMode]) || {};
 
-        const onlineWins = onlineStats.wins || 0;
-        const offlineWins = offlineStats.wins || 0;
-        const onlineLosses = onlineStats.losses || 0;
-        const offlineLosses = offlineStats.losses || 0;
-
-        const won = onlineWins + offlineWins;
-        const losses = onlineLosses + offlineLosses;
+        const won = modeStats.wins || 0;
+        const losses = modeStats.losses || 0;
         const played = won + losses;
 
         const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
-
-        let bestTimeSeconds = null;
-        
-        if (onlineStats.best_time_seconds)
-            bestTimeSeconds = onlineStats.best_time_seconds;
-            
-        if (offlineStats.best_time_seconds)
-        {
-            if (bestTimeSeconds === null || offlineStats.best_time_seconds < bestTimeSeconds)
-                bestTimeSeconds = offlineStats.best_time_seconds;
-        }
-
+        const bestTimeSeconds = modeStats.best_time_seconds || null;
         const bestTime = formatTime(bestTimeSeconds);
 
         return { name: diff.name, played, won, winRate, bestTime };
@@ -103,7 +86,23 @@ const PerformanceStats = ({ username }) =>
 
     return (
         <div className="profile-card-base o-stats-section">
-            <h3 className="section-title">Statistics</h3>
+            <div className="stats-header-row">
+                <h3 className="section-title">Statistics</h3>
+                <div className="stats-mode-switch">
+                    <button
+                        className={`stats-mode-btn ${selectedMode === 'online' ? 'active' : ''}`}
+                        onClick={() => setSelectedMode('online')}
+                    >
+                        Online
+                    </button>
+                    <button
+                        className={`stats-mode-btn ${selectedMode === 'offline' ? 'active' : ''}`}
+                        onClick={() => setSelectedMode('offline')}
+                    >
+                        Offline
+                    </button>
+                </div>
+            </div>
             <div className="stats-table-wrapper">
                 <table className="stats-table">
                     <thead>

@@ -379,13 +379,14 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
             const reportStats = async () => 
             {
                 const diffMap = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Expert': 4, 'Extreme': 5 };
-                const diffInt = diffMap[difficulty] || 2; 
+                const diffInt = diffMap[difficulty] || 2;
+                const modeStr = mode === 'online' ? 'online' : 'offline';
 
                 const payload = 
                 {
                     username: playersInfo.username,
                     difficulty: diffInt,
-                    mode: mode,
+                    mode: modeStr,
                     result: gameResult,
                     time_seconds: seconds
                 };

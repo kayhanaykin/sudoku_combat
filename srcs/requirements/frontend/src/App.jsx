@@ -23,6 +23,7 @@ function App()
             <Route path="/offline-game" element={<OfflineGame />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:username" element={<Profile />} />
           </Routes>
         </WebSocketProvider>
       </AuthProvider>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useAuth } from '../src/context/AuthContext';
 import useGameLogic from '../src/hooks/useGameLogic';
 import GameHeader from '../components/molecules/GameHeader';
 import PlayerCard from '../components/molecules/PlayerCard';
@@ -15,6 +16,7 @@ import '../styles/Game.css';
 const OfflineGame = () => 
 {
     const location = useLocation();
+    const { user } = useAuth();
     const boardRef = useRef(null);
     const [playerName, setPlayerName] = useState('You');
 
@@ -24,7 +26,7 @@ const OfflineGame = () =>
         isHintModalOpen, hintData, handleHint, applyHint,
         gameResult,
         setSelectedCell
-    } = useGameLogic('offline', null, { username: playerName });
+    } = useGameLogic('offline', null, { username: user?.username || playerName });
 
     useEffect(() => {
         const handleClickOutside = (event) => {
