@@ -174,4 +174,77 @@ namespace stats
         }
         return entries;
     }
+
+    std::vector<LeaderboardEntry> get_leaderboard(std::optional<int> difficulty, int limit)
+    {
+        pqxx::connection conn(get_conn_string());
+        pqxx::work tx(conn);
+
+        pqxx::result res;
+        if (difficulty.has_value())
+        {
+            res = tx.exec_params(
+                "SELECT username, SUM(wins) AS wins, SUM(losses) AS losses"
+                "  FROM player_stats"
+                "  WHERE difficulty=$1 AND mode='online'"
+                "  GROUP BY username"
+                "  HAVING SUM(wins + losses) > 0",
+                difficulty.value());
+        }
+        else
+        {
+            res = tx.exec(
+                "SELECT username, SUM(wins) AS wins, SUM(losses) AS losses"
+                "  FROM player_stats"
+                "  WHERE mode='online'"
+                "  GROUP BY username"
+                "  HAVING SUM(wins + losses) > 0");
+        }
+
+        tx.commit();
+
+        std::vector<LeaderboardEntry> entries;
+        entries.reserve(res.size());
+
+        for (const auto &row : res)
+        {
+            LeaderboardEntry e;
+            e.username = row[0].as<std::string>();
+            e.wins = row[1].as<int>();
+            e.losses = row[2].as<int>();
+            e.games = e.wins + e.losses;
+
+            e.winrate = (e.games > 0)
+                ? static_cast<double>(e.wins) / static_cast<double>(e.games)
+                : 0.0;
+
+            const double prior_games = 10.0;
+            const double prior_rate = 0.50;
+            double adjusted_rate =
+                (static_cast<double>(e.wins) + (prior_games * prior_rate))
+                / (static_cast<double>(e.games) + prior_games);
+
+            double volume_factor = std::log1p(static_cast<double>(e.games));
+            e.score = adjusted_rate * volume_factor;
+
+            entries.push_back(e);
+        }
+
+        std::sort(entries.begin(), entries.end(),
+            [](const LeaderboardEntry &a, const LeaderboardEntry &b)
+            {
+                if (a.score != b.score)
+                    return a.score > b.score;
+                if (a.games != b.games)
+                    return a.games > b.games;
+                if (a.winrate != b.winrate)
+                    return a.winrate > b.winrate;
+                return a.username < b.username;
+            });
+
+        if (limit > 0 && static_cast<int>(entries.size()) > limit)
+            entries.resize(static_cast<size_t>(limit));
+
+        return entries;
+    }
 }
