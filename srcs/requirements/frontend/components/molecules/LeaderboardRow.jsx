@@ -34,7 +34,8 @@ const LeaderboardRow = ({ player, index }) =>
 {
   const rankClass = getRankClass(index);
   const icon = getRankIcon(index);
-  const displayName = player.username || player.display_name || `User #${player.user_id}`;
+  const displayName = player.display_name || player.username || `User #${player.user_id}`;
+  const username = player.username;
   const wins = player.wins || 0;
 
   return (
@@ -44,7 +45,10 @@ const LeaderboardRow = ({ player, index }) =>
       </span>
       
       <span className="col-player" style={{ fontSize: '1rem' }}>
-        {displayName}
+        <div>
+          {displayName}
+          {username && <span className="username-subtitle">@{username}</span>}
+        </div>
       </span>
 
       <span className="col-wins" style={{ fontSize: '1rem', width: 'auto' }}>
