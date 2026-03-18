@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ActionBtn from '../atoms/ActionBtn';
+import PlayerInfoPopup from './PlayerInfoPopup';
 
 const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApprove, onRemove }) => 
 {
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
     const isPending = status === 'pending';
     
     const BASE_URL = ''; 
@@ -20,34 +22,35 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
 
 
     return (
-        <div className="friend-item">
-            <div className="user-info">
-                <div className="avatar-wrapper">
-                    <img 
-                        src={avatarSrc} 
-                        alt={username} 
-                        className="friend-avatar" 
-                        onError={(e) => { e.target.src = "https://ui-avatars.com/api/?background=random&name=" + username; }}
-                    />
-                    <div className={`status-indicator ${statusClass}`} />
+        <>
+            <div className="friend-item" onClick={() => !isPending && setIsPopupOpen(true)} style={{ cursor: isPending ? 'default' : 'pointer' }}>
+                <div className="user-info">
+                    <div className="avatar-wrapper">
+                        <img 
+                            src={avatarSrc} 
+                            alt={username} 
+                            className="friend-avatar" 
+                            onError={(e) => { e.target.src = "https://ui-avatars.com/api/?background=random&name=" + username; }}
+                        />
+                        <div className={`status-indicator ${statusClass}`} />
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span className="username" style={{ fontSize: '0.95rem' }}>
+                            {displayName || username}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
+                            @{username}
+                        </span>
+                    </div>
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span className="username" style={{ fontSize: '0.95rem' }}>
-                        {displayName || username}
-                    </span>
-                    <span style={{ fontSize: '0.75rem', color: '#9ca3af' }}>
-                        @{username}
-                    </span>
-                </div>
-            </div>
-            
-            <div className="actions">
-                {isPending && (
-                    <ActionBtn 
-                        className="action-btn btn-approve" 
-                        onClick={() => onApprove(id)}
-                    >
-                        ✓
+                
+                <div className="actions">
+                    {isPending && (
+                        <ActionBtn 
+                            className="action-btn btn-approve" 
+                            onClick={() => onApprove(id)}
+                        >
+                            ✓
                     </ActionBtn>
                 )}
                 <ActionBtn 
@@ -57,7 +60,14 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
                     ✕
                 </ActionBtn>
             </div>
-        </div>
+            </div>
+
+            <PlayerInfoPopup 
+                isOpen={isPopupOpen} 
+                onClose={() => setIsPopupOpen(false)} 
+                username={username} 
+            />
+        </>
     );
 };
 
