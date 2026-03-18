@@ -91,28 +91,10 @@ services:
     depends_on:
       room_db:
         condition: service_healthy
-      room_service:
-        condition: service_started
     networks:
       - transcendence_network
     restart: unless-stopped
     command: ["npm", "run", "start:dev"]
-
-  room_service:
-    build: ./requirements/room_service
-    container_name: room_service
-    env_file: .env
-    volumes:
-      - ./requirements/room_service:/app
-      - /app/node_modules 
-    ports:
-      - "8002:8002"
-    depends_on:
-      room_db:
-        condition: service_healthy 
-    networks:
-      - transcendence_network
-    restart: unless-stopped
 
   room_db:
     image: postgres:15-alpine
