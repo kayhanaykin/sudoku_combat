@@ -170,19 +170,19 @@ export const removeFriend = async (friendId) =>
 
 export const addFriend = async (username) => 
 {
-  const url = `${API_BASE_URL}/api/v1/user/friends/add/`;
+  const url = `${API_BASE_URL}/api/v1/user/friends/`;
   try
   {
     const response = await fetch(url, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ action: 'send', target_username: username }),
       credentials: 'include'
     });
     if (!response.ok)
     {
       const err = await response.json();
-      throw new Error(err.message || 'Failed to add friend');
+      throw new Error(err.error || err.message || 'Failed to add friend');
     }
     return await response.json();
   }
@@ -246,26 +246,6 @@ export const makeMove = async (gameId, row, col, value) =>
   if (!response.ok)
     throw new Error('The move could not be sent');
   return await response.json();
-};
-
-export const getLeaderboard = async (mode = 'Total') => 
-{
-  const url = `${API_BASE_URL}/api/game/leaderboard/${mode}`;
-  try
-  {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include'
-    });
-    if (!response.ok)
-      return [];
-    return await response.json();
-  }
-  catch (error)
-  {
-    return [];
-  }
 };
 
 export const recordGameResult = async (userId, mode, isWin) => 
@@ -384,5 +364,59 @@ export const deleteUserAccount = async () =>
   {
     console.error("Delete failed:", error);
     return false;
+  }
+};
+
+export const getMatchHistory = async (username) => 
+{
+  try
+  {
+    const url = `${API_BASE_URL}/api/stats/${username}/history`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getHeaders(),
+      credentials: 'include'
+    });
+    
+    if (!response.ok)
+    {
+      console.error(`Failed to fetch match history: ${response.status}`);
+      return [];
+    }
+    
+    const data = await response.json();
+    return data || [];
+  }
+  catch (error)
+  {
+    console.error('Error fetching match history:', error);
+    return [];
+  }
+};
+
+export const getLeaderboard = async (mode = 'Total') => 
+{
+  try
+  {
+    const url = `${API_BASE_URL}/api/stats/leaderboard/${mode}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getHeaders(),
+      credentials: 'include'
+    });
+    
+    if (!response.ok)
+    {
+      console.error(`Failed to fetch leaderboard: ${response.status}`);
+      return [];
+    }
+    
+    const data = await response.json();
+    return data || [];
+  }
+  catch (error)
+  {
+    console.error('Error fetching leaderboard:', error);
+    return [];
   }
 };
