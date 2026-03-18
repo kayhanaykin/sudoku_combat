@@ -1,7 +1,7 @@
 NAME        = game_service
 CXX         = g++
 # Flags including our tools folder and standalone Asio mode
-CXXFLAGS    = -Wall -Wextra -Werror -std=c++17 -I./tools -DASIO_STANDALONE
+CXXFLAGS    = -Wall -Wextra -Werror -Wno-type-limits -std=c++17 -I./tools -DASIO_STANDALONE
 # Linker Flags (PostgreSQL kütüphaneleri eklendi)
 LDFLAGS     = -lpthread -lpqxx -lpq
 
