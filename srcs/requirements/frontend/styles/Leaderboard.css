@@ -153,6 +153,15 @@
   color: #CD7F32;
 }
 
+.username-subtitle
+{
+  display: block;
+  font-size: 0.75rem;
+  color: #9CA3AF;
+  font-weight: 400;
+  margin-top: 2px;
+}
+
 .rank-normal
 {
   background-color: white;
