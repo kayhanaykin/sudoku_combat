@@ -24,7 +24,34 @@ const useLeaderboardPage = () =>
         else if (data && Array.isArray(data.data))
           validData = data.data;
 
-        const sorted = validData.sort((a, b) => (b.wins || 0) - (a.wins || 0));
+        // Enrich with display names
+        const enrichedData = await Promise.all(
+          validData.map(async (player) => {
+            try {
+              const userResponse = await fetch(`/api/v1/user/by-username/${player.username}/`);
+              if (userResponse.ok) {
+                const userData = await userResponse.json();
+                return { ...player, display_name: userData.display_name };
+              }
+            } catch (err) {
+              console.error(`Failed to fetch display name for ${player.username}:`, err);
+            }
+            return player;
+          })
+        );
+
+        const sorted = [...enrichedData].sort((a, b) =>
+        {
+          const scoreDiff = (b.score || 0) - (a.score || 0);
+          if (scoreDiff !== 0)
+            return scoreDiff;
+
+          const gamesDiff = (b.games || 0) - (a.games || 0);
+          if (gamesDiff !== 0)
+            return gamesDiff;
+
+          return (b.winrate || 0) - (a.winrate || 0);
+        });
         setPlayers(sorted);
       }
       catch (error)
