@@ -10,6 +10,40 @@
     letter-spacing: -0.5px;
 }
 
+.stats-header-row
+{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.stats-mode-switch
+{
+    display: inline-flex;
+    gap: 8px;
+}
+
+.stats-mode-btn
+{
+    border: 1px solid #d1d5db;
+    background: #fff;
+    color: #374151;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.stats-mode-btn.active
+{
+    background: #14532d;
+    color: #fff;
+    border-color: #14532d;
+}
+
 .stats-table-wrapper
 {
     width: 100%;
