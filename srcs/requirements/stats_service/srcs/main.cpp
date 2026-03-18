@@ -18,6 +18,23 @@ static bool valid_diff(int d)
     return (d >= 1 && d <= 5);
 }
 
+static std::optional<int> mode_to_diff(const std::string &mode)
+{
+    if (mode == "Total")
+        return std::nullopt;
+    if (mode == "Easy")
+        return 1;
+    if (mode == "Medium")
+        return 2;
+    if (mode == "Hard")
+        return 3;
+    if (mode == "Expert")
+        return 4;
+    if (mode == "Extreme")
+        return 5;
+    return std::nullopt;
+}
+
 int main()
 {
     if (!stats::init_db(10, 2000))
@@ -90,6 +107,39 @@ int main()
 
         auto entries = stats::get_match_history(username, 20);
         return crow::response(200, stats::history_to_json(username, entries));
+    });
+
+    CROW_ROUTE(app, "/api/stats/leaderboard/<string>")
+    ([](const std::string &mode)
+    {
+        if (mode != "Total" && mode != "Easy" && mode != "Medium"
+            && mode != "Hard" && mode != "Expert" && mode != "Extreme")
+            return stats::make_error(400, "mode must be Total/Easy/Medium/Hard/Expert/Extreme");
+
+        std::optional<int> diff = mode_to_diff(mode);
+        auto entries = stats::get_leaderboard(diff, 100);
+
+        crow::json::wvalue out;
+        out["mode"] = mode;
+        out["count"] = static_cast<int>(entries.size());
+
+        std::vector<crow::json::wvalue> arr;
+        arr.reserve(entries.size());
+        for (const auto &e : entries)
+        {
+            crow::json::wvalue row;
+            row["username"] = e.username;
+            row["display_name"] = e.username; // TODO: Fetch from user service or database
+            row["wins"] = e.wins;
+            row["losses"] = e.losses;
+            row["games"] = e.games;
+            row["winrate"] = e.winrate;
+            row["score"] = e.score;
+            arr.push_back(std::move(row));
+        }
+
+        out["data"] = std::move(arr);
+        return crow::response(200, out);
     });
 
     CROW_ROUTE(app, "/api/stats/<string>/<int>")

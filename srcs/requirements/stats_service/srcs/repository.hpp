@@ -29,6 +29,16 @@ namespace stats
         std::string played_at;
     };
 
+    struct LeaderboardEntry
+    {
+        std::string username;
+        int         wins;
+        int         losses;
+        int         games;
+        double      winrate;
+        double      score;
+    };
+
     Bucket record_result(const std::string &username,
                          int difficulty,
                          const std::string &mode,
@@ -39,4 +49,5 @@ namespace stats
     std::vector<StatsRow>   get_user_stats(const std::string &username);
     std::vector<StatsRow>   get_user_diff_stats(const std::string &username, int difficulty);
     std::vector<MatchEntry> get_match_history(const std::string &username, int limit);
+    std::vector<LeaderboardEntry> get_leaderboard(std::optional<int> difficulty, int limit);
 }
