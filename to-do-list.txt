@@ -5,13 +5,9 @@
 -Check whether mandatory requirements are met
 -handle errors and warnings when browsing the website
 -Postman veya benzeri tester yazilmasi
--multiuser icin ekstra birsey gerekiyor mu?
 -Google Chrome'da çalışıyor mu test edilecek - mandatory
--Store credentials in a local .env
 -compose da unless-stopped gelistirilip healtcheck eklenebilir, şart değil
--Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak.
 -evo icin db dolduracak bir script yazilacak makefile fill_db isimli bir target olarak eklenecek. 
--create room'a tıklanınca bir room_id dönmesi gerekiyor. Daha sonra bu room_id'nin gösterildiği bir bekleme odası gösterilecek.
 -Room_service'te odayı oluşturan kullanıcı bu room_id ile ilişkilendirilecek.
 -Daha sonra farklı bir kullanıcı bu room_id'ye giriş yaparsa bir broadcast olacak.(Bu kısımda websocket kullanılacak.)
 Ve otomatik olarak oyun başlayacak. Oyun başladığında her iki kullanıcıya da bir mesaj gönderilecek ve oyun ekranına yönlendirilecekler
@@ -24,14 +20,8 @@ Ve otomatik olarak oyun başlayacak. Oyun başladığında her iki kullanıcıya
 -There should be no errors or warnings visible in the browser console.
 Minor warnings from third-party libraries may be acceptable if explained.
 No warnings or errors should appear in the browser console
--Email and password signup/login
-log in pop-up'ında username ile birlikte e-mail ile de giriş yapılabilecek.
 -SQL injection attempts denenecek, XSS attempts
--HTTP gelen requestleri redirect edicez HTTPS'e
 -Arkadaşına oyun daveti gönderme eklenebilir
--Why they chose their tech stack
--Enable two players on separate computers to play the
-same game in real-time. Kampuste bakılarak yapılacak
 -Implement reconnection logic.
 Handle connection/disconnection gracefully.
 -The game must have clear rules and win/loss conditions. (Belki eklenebilir?)
@@ -47,3 +37,13 @@ Handle connection/disconnection gracefully.
 -git hangi git pedagoya sorulacak, cluster git mi yoksa github mi?
 -V19 Evo page bulunmayaca çalışılacak
 -42_ekaraurg ismi kayıtlıyken intra ile kayıt olurken patlıyor düzeltilecek.
+-Why they chose their tech stack
+-Enable two players on separate computers to play the
+-same game in real-time. Kampuste bakılarak yapılacak
+-Email and password signup/login
+-Store credentials in a local .env
+-create room'a tıklanınca bir room_id dönmesi gerekiyor. Daha sonra bu room_id'nin gösterildiği bir bekleme odası gösterilecek.
+-HTTP gelen requestleri redirect edicez HTTPS'e (bunu yapmadik ama yapmak mantiksiz oldugu icin)
+-log in pop-up'ında username ile birlikte e-mail ile de giriş yapılabilecek.
+-multiuser icin ekstra birsey gerekiyor mu?
+-Authorisation nasıl yapılacak, socket icin tek sefer mi, her request e mi arasitirilacak.
