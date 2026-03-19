@@ -3,7 +3,7 @@ import { useAuth } from '../../src/context/AuthContext';
 import { loginUser } from '../../services/api';
 import '../../styles/login.css';
 
-const INTRA_AUTH_URL = "https://localhost:8443/api/user/auth/login/";
+const INTRA_AUTH_URL = "/api/user/auth/login/";
 
 const Login = ({ isOpen, onClose, onSwitchToSignup }) => 
 {

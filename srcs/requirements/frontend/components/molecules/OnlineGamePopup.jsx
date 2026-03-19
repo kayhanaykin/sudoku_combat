@@ -31,7 +31,7 @@ const OnlineGameModal = ({
     setIsFetchingRooms(true);
     try
     {
-      const res = await fetch('https://localhost:8443/api/room/list');
+      const res = await fetch('/api/room/list');
       const data = await res.json();
       
       if (data.success && data.rooms)
@@ -65,7 +65,7 @@ const OnlineGameModal = ({
       pollInterval = setInterval(async () => {
         try
         {
-          const res = await fetch(`https://localhost:8443/api/room/game-state/${createdRoomId}`);
+          const res = await fetch(`/api/room/game-state/${createdRoomId}`);
           const data = await res.json();
           
           if (data.success && data.status === 'playing')
@@ -84,7 +84,6 @@ const OnlineGameModal = ({
 
     return () => clearInterval(pollInterval);
   }, [view, createdRoomId]);
-  // -------------------------------------------------------------
 
   useEffect(() => {
     if (isOpponentJoined)

@@ -4,7 +4,8 @@ import ActionBtn from '../atoms/ActionBtn';
 const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApprove, onRemove }) => 
 {
     const isPending = status === 'pending';
-    const BASE_URL = 'https://localhost:8443'; 
+    
+    const BASE_URL = ''; 
     
     const statusClass = isPending 
         ? 'pending' 
@@ -13,13 +14,10 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
     let avatarSrc;
 
     if (avatar)
-    {
         avatarSrc = avatar.startsWith('http') ? avatar : `${BASE_URL}${avatar}`;
-    }
     else
-    {
         avatarSrc = "https://ui-avatars.com/api/?background=random&name=" + username;
-    }
+
 
     return (
         <div className="friend-item">

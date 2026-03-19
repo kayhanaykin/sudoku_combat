@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppGateway } from './app.gateway';
 import { CombatController } from './combat.controller';
+import { AppController } from './app.controller';
 import { Room } from './room.entity';
 
 @Module({
@@ -18,7 +19,7 @@ import { Room } from './room.entity';
 		}),
         TypeOrmModule.forFeature([Room])
     ],
-    controllers: [CombatController],
+    controllers: [CombatController, AppController],
     providers: [AppGateway]
 })
 export class AppModule {}

@@ -1,12 +1,16 @@
-export const API_BASE_URL = "https://localhost:8443";
+export const API_BASE_URL = "";
 
-export function getCookie(name) {
+export function getCookie(name) 
+{
   let cookieValue = null;
-  if (document.cookie && document.cookie !== '') {
+  if (document.cookie && document.cookie !== '') 
+  {
     const cookies = document.cookie.split(';');
-    for (let i = 0; i < cookies.length; i++) {
+    for (let i = 0; i < cookies.length; i++) 
+    {
       const cookie = cookies[i].trim();
-      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+      if (cookie.substring(0, name.length + 1) === (name + '=')) 
+      {
         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
         break;
       }
@@ -15,7 +19,8 @@ export function getCookie(name) {
   return cookieValue;
 }
 
-const getHeaders = () => {
+const getHeaders = () => 
+{
   const csrftoken = getCookie('csrftoken');
   return {
     'Content-Type': 'application/json',
@@ -23,7 +28,8 @@ const getHeaders = () => {
   };
 };
 
-const ensureCsrfToken = async () => {
+const ensureCsrfToken = async () => 
+{
   try
   {
     await fetch(`${API_BASE_URL}/api/v1/user/csrf/`, { 
@@ -38,7 +44,8 @@ const ensureCsrfToken = async () => {
   }
 };
 
-export const loginUser = async (username, password) => {
+export const loginUser = async (username, password) => 
+{
   const url = `${API_BASE_URL}/api/v1/user/login/`;
 
   await ensureCsrfToken();
@@ -81,7 +88,8 @@ export const loginUser = async (username, password) => {
   }
 };
 
-export const registerUser = async (username, email, password) => {
+export const registerUser = async (username, email, password) => 
+{
   const url = `${API_BASE_URL}/api/v1/user/signup/`;
 
   await ensureCsrfToken();
@@ -117,7 +125,8 @@ export const registerUser = async (username, email, password) => {
   }
 };
 
-export const getFriends = async () => {
+export const getFriends = async () => 
+{
   const url = `${API_BASE_URL}/api/v1/user/friends/`;
   try
   {
@@ -137,7 +146,8 @@ export const getFriends = async () => {
   }
 };
 
-export const removeFriend = async (friendId) => {
+export const removeFriend = async (friendId) => 
+{
   const url = `${API_BASE_URL}/api/v1/user/friends/remove/`;
   try
   {
@@ -158,7 +168,8 @@ export const removeFriend = async (friendId) => {
   }
 };
 
-export const addFriend = async (username) => {
+export const addFriend = async (username) => 
+{
   const url = `${API_BASE_URL}/api/v1/user/friends/add/`;
   try
   {
@@ -187,7 +198,7 @@ export const startGame = async (mode, difficulty) =>
     const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
     const levelStr = difficultyMap[difficulty] || "Medium";
 
-    const response = await fetch('https://localhost:8443/api/play/start/offline', 
+    const response = await fetch(`${API_BASE_URL}/api/play/start/offline`, 
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -205,7 +216,7 @@ export const startGame = async (mode, difficulty) =>
 
 export const createCombatRoom = async (userId, levelStr, currentUserName) =>
 {
-    const response = await fetch('https://localhost:8443/api/play/start/online', 
+    const response = await fetch(`${API_BASE_URL}/api/play/start/online`, 
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -223,7 +234,8 @@ export const createCombatRoom = async (userId, levelStr, currentUserName) =>
     return response.json();
 };
 
-export const makeMove = async (gameId, row, col, value) => {
+export const makeMove = async (gameId, row, col, value) => 
+{
   const url = `${API_BASE_URL}/api/play/move`;
   const response = await fetch(url, {
     method: 'POST',
@@ -236,7 +248,8 @@ export const makeMove = async (gameId, row, col, value) => {
   return await response.json();
 };
 
-export const getLeaderboard = async (mode = 'Total') => {
+export const getLeaderboard = async (mode = 'Total') => 
+{
   const url = `${API_BASE_URL}/api/game/leaderboard/${mode}`;
   try
   {
@@ -255,7 +268,8 @@ export const getLeaderboard = async (mode = 'Total') => {
   }
 };
 
-export const recordGameResult = async (userId, mode, isWin) => {
+export const recordGameResult = async (userId, mode, isWin) => 
+{
   const url = `${API_BASE_URL}/api/game/record-game`;
   try
   {
@@ -272,7 +286,8 @@ export const recordGameResult = async (userId, mode, isWin) => {
   }
 };
 
-export const getUserDetails = async (userId) => {
+export const getUserDetails = async (userId) => 
+{
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
@@ -286,7 +301,8 @@ export const getUserDetails = async (userId) => {
   });
 };
 
-export const getUserStats = async (userId) => {
+export const getUserStats = async (userId) => 
+{
   return new Promise((resolve) => {
     setTimeout(() => {
         resolve({
@@ -298,7 +314,8 @@ export const getUserStats = async (userId) => {
   });
 };
 
-export const logoutUser = async () => {
+export const logoutUser = async () => 
+{
   const url = `${API_BASE_URL}/logout/`;
   try
   {
@@ -317,7 +334,8 @@ export const logoutUser = async () => {
   }
 };
 
-export const createRoom = async (userId) => {
+export const createRoom = async (userId) => 
+{
   const url = `${API_BASE_URL}/api/room/create`;
   const response = await fetch(url, {
     method: 'POST',
@@ -330,7 +348,8 @@ export const createRoom = async (userId) => {
   return await response.json();
 };
 
-export const joinRoom = async (roomId, userId) => {
+export const joinRoom = async (roomId, userId) => 
+{
   const url = `${API_BASE_URL}/api/room/join/${roomId}`;
   const response = await fetch(url, {
     method: 'POST',
@@ -346,7 +365,8 @@ export const joinRoom = async (roomId, userId) => {
   return await response.json();
 };
 
-export const deleteUserAccount = async () => {
+export const deleteUserAccount = async () => 
+{
   const url = `${API_BASE_URL}/api/user/profile/delete/`;
   try
   {
