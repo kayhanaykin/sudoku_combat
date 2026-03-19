@@ -120,6 +120,7 @@ class FortyTwoCallbackView(APIView):
         })
         
         if token_response.status_code != 200:
+            print(f"42 Token Error: {token_response.status_code} {token_response.text}", flush=True)
             return JsonResponse({"error": "Failed to get token"}, status=400)
             
         access_token = token_response.json().get("access_token")
@@ -147,8 +148,7 @@ class FortyTwoCallbackView(APIView):
                 intra_id=intra_id,
                 username=username,
                 email=user_info.get('email'),
-                is_active=True,
-                is_profile_complete=False 
+                is_active=True
             )
             created = True
 

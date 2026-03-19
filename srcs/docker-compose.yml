@@ -47,8 +47,6 @@ services:
         condition: service_started
     restart: unless-stopped
     command: daphne -b 0.0.0.0 -p 8001 user_project.asgi:application
-    ports:
-      - "8001:8001"
     networks:
       - transcendence_network
 

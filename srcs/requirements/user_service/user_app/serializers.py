@@ -8,7 +8,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CustomUser
-        fields = ['id', 'username', 'display_name', 'email', 'avatar', 'status', 'is_online', 'is_profile_complete', 'is_superuser']
+        fields = ['id', 'username', 'display_name', 'email', 'avatar', 'status', 'is_online', 'is_superuser']
 
 class RelationshipSerializer(serializers.ModelSerializer):
     class Meta:
@@ -38,6 +38,5 @@ class RegisterSerializer(serializers.ModelSerializer):
             password=validated_data['password']
         )
         user.display_name = user.username
-        user.is_profile_complete = True
         user.save()
         return user

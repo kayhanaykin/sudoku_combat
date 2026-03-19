@@ -7,14 +7,6 @@ class CustomUser(AbstractUser):
     intra_id = models.IntegerField(unique=True, null=True, blank=True)
     display_name = models.CharField(max_length=50, unique=True, null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
-    avatar_url = models.URLField(max_length=500, null=True, blank=True)
-    
-    # 2FA Data (Security Requirement)
-    is_2fa_enabled = models.BooleanField(default=False)
-    two_factor_secret = models.CharField(max_length=32, null=True, blank=True)
-    
-    # Flag to check if they finished custom form
-    is_profile_complete = models.BooleanField(default=False)
 
     # Social Features (Friends & Status)
     # last_seen tracks the exact moment of the last WebSocket pulse or request

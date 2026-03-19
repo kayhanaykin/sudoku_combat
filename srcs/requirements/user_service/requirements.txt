@@ -18,6 +18,16 @@ djangorestframework
 #  REST stands for REpresentational State Transfer.
 #  JSON (JavaScript Object Notation). XML, YAML, CSV, HTML, Binary and etc.
 
+# psycopg2-binary:
+#  PostgreSQL adapter for Python.
+#  It is used to connect to the PostgreSQL database.
+#  In this project, it is used to connect to the PostgreSQL database.
+
+# Pillow:
+#  Python Imaging Library (PIL) is a fork of the Python Imaging Library.
+#  It is used for image processing, such as opening, manipulating, and saving many different image file formats.
+#  In this project, it is used to process and save user avatars.
+
 # django-cors-headers:
 #  due to microservice structure, react request from a different port 
 #  browers have same-origin Policy, and blocks requests to other ports
