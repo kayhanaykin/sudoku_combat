@@ -1,10 +1,243 @@
 import React, { useState } from 'react';
+import styled, { keyframes } from 'styled-components';
 import { useAuth } from '../../src/context/AuthContext';
 import { loginUser } from '../../services/api';
-import '../../styles/login.css';
 
 const INTRA_AUTH_URL = "/api/user/auth/login/";
 
+// ANIMATIONS
+const fadeIn = keyframes`
+    from 
+    { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+    }
+    to 
+    { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+`;
+
+// STYLED COMPONENTS
+const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    font-family: inherit;
+`;
+
+const ModalContainer = styled.div`
+    background-color: var(--secondary);
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    width: 350px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    animation: ${fadeIn} 0.3s ease-out;
+`;
+
+const Title = styled.h2`
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--text-dark);
+    margin-top: 0;
+`;
+
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+`;
+
+const ErrorMessage = styled.div`
+    color: #e74c3c;
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+`;
+
+const Input = styled.input`
+    padding: 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    background-color: #fff;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus
+    {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 2px rgba(44, 62, 80, 0.2);
+    }
+    
+    &:disabled
+    {
+        background-color: #f3f4f6;
+        cursor: not-allowed;
+    }
+`;
+
+const SubmitButton = styled.button`
+    padding: 10px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s, opacity 0.2s;
+    width: 100%;
+    
+    cursor: ${props => 
+    {
+        if (props.disabled)
+            return 'not-allowed';
+            
+        return 'pointer';
+    }};
+
+    opacity: ${props => 
+    {
+        if (props.disabled)
+            return '0.7';
+            
+        return '1';
+    }};
+
+    &:hover
+    {
+        background-color: ${props => 
+        {
+            if (props.disabled)
+                return 'var(--primary)';
+                
+            return 'var(--primary-hover)';
+        }};
+    }
+`;
+
+const Divider = styled.div`
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 1rem 0;
+    color: #aaa;
+    font-size: 0.8rem;
+
+    &::before,
+    &::after
+    {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #ddd;
+    }
+
+    span
+    {
+        padding: 0 10px;
+    }
+`;
+
+const IntraButton = styled.button`
+    padding: 10px;
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: var(--radius-sm, 6px);
+    font-size: 1rem;
+    font-weight: bold;
+    transition: opacity 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+
+    cursor: ${props => 
+    {
+        if (props.disabled)
+            return 'not-allowed';
+            
+        return 'pointer';
+    }};
+    
+    opacity: ${props => 
+    {
+        if (props.disabled)
+            return '0.7';
+            
+        return '1';
+    }};
+
+    &:hover
+    {
+        opacity: ${props => 
+        {
+            if (props.disabled)
+                return '0.7';
+                
+            return '0.9';
+        }};
+    }
+`;
+
+const FooterContainer = styled.div`
+    margin-top: 15px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+`;
+
+const SignupButton = styled.button`
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: underline;
+    padding: 0 5px;
+    font-size: 0.9rem;
+`;
+
+const CloseButton = styled.button`
+    margin-top: 1rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    width: 100%;
+    text-decoration: underline;
+    font-size: 0.9rem;
+
+    cursor: ${props => 
+    {
+        if (props.disabled)
+            return 'not-allowed';
+            
+        return 'pointer';
+    }};
+
+    &:hover
+    {
+        color: ${props => 
+        {
+            if (props.disabled)
+                return 'var(--text-muted)';
+                
+            return 'var(--text-dark)';
+        }};
+    }
+`;
+
+// COMPONENT DEFINITION
 const Login = ({ isOpen, onClose, onSwitchToSignup }) => 
 {
     const { login } = useAuth();
@@ -30,7 +263,10 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
         }
         catch (err)
         {
-            setError(err.message || "Login failed");
+            if (err.message)
+                setError(err.message);
+            else
+                setError("Login failed");
         }
         finally
         {
@@ -43,88 +279,84 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
         window.location.href = INTRA_AUTH_URL;
     };
 
+    const handleSwitchToSignup = () =>
+    {
+        onClose();
+        
+        if (onSwitchToSignup)
+            onSwitchToSignup();
+    };
+
+    let submitButtonText = 'Log In';
+    if (isLoading)
+        submitButtonText = 'Logging in...';
+
     return (
-        <div className="login-overlay" onClick={onClose}>
-            <div className="login-modal" onClick={(e) => e.stopPropagation()}>
-                <h2 className="login-title">Log In</h2>
+        <Overlay onClick={onClose}>
+            <ModalContainer onClick={(e) => e.stopPropagation()}>
                 
-                <form onSubmit={handleSubmit} className="login-form">
-                    {error && (
-                        <div style={{ color: '#e74c3c', textAlign: 'center', fontSize: '0.9rem', marginBottom: '10px' }}>
+                <Title>
+                    Log In
+                </Title>
+                
+                <Form onSubmit={handleSubmit}>
+                    
+                    {error && 
+                    (
+                        <ErrorMessage>
                             {error}
-                        </div>
+                        </ErrorMessage>
                     )}
 
-                    <input 
+                    <Input 
                         type="text" 
                         placeholder="Username or Email" 
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="login-input"
-                        required
-                        disabled={isLoading}
-                    />
-                    <input 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="login-input"
                         required
                         disabled={isLoading}
                     />
                     
-                    <button 
-                        type="submit" 
-                        className="login-submit-btn" 
+                    <Input 
+                        type="password" 
+                        placeholder="Password" 
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
                         disabled={isLoading}
-                        style={{ opacity: isLoading ? 0.7 : 1 }}
-                    >
-                        {isLoading ? 'Logging in...' : 'Log In'}
-                    </button>
+                    />
+                    
+                    <SubmitButton type="submit" disabled={isLoading}>
+                        {submitButtonText}
+                    </SubmitButton>
 
-                    <div className="login-divider">
+                    <Divider>
                         <span>OR</span>
-                    </div>
+                    </Divider>
 
-                    <button 
+                    <IntraButton 
                         type="button" 
                         onClick={handleIntraLogin}
-                        className="login-intra-btn"
                         disabled={isLoading}
                     >
                         Sign in with 42
-                    </button>
-                </form>
+                    </IntraButton>
+                    
+                </Form>
 
-                <div style={{ marginTop: '15px', textAlign: 'center', fontSize: '0.9rem' }}>
-                    <span style={{ color: '#666' }}>Don't have an account? </span>
-                    <button 
-                        type="button"
-                        onClick={() => {
-                            onClose();
-                            if (onSwitchToSignup)
-                              onSwitchToSignup();
-                        }}
-                        style={{ 
-                            background: 'none', 
-                            border: 'none', 
-                            color: '#3498db', 
-                            cursor: 'pointer', 
-                            fontWeight: 'bold',
-                            textDecoration: 'underline',
-                            padding: '0 5px'
-                        }}
-                    >
+                <FooterContainer>
+                    <span>Don't have an account? </span>
+                    <SignupButton type="button" onClick={handleSwitchToSignup}>
                         Sign up
-                    </button>
-                </div>
+                    </SignupButton>
+                </FooterContainer>
 
-                <button onClick={onClose} className="login-close-btn" disabled={isLoading}>
+                <CloseButton onClick={onClose} disabled={isLoading}>
                     Close
-                </button>
-            </div>
-        </div>
+                </CloseButton>
+                
+            </ModalContainer>
+        </Overlay>
     );
 };
 

@@ -1,14 +1,154 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { device } from '../../src/utils/device';
 import useFriendList from '../../src/hooks/useFriendList';
 import AddFriendForm from '../molecules/AddFriendForm';
 import FriendItem from '../molecules/FriendItem';
-import '../../styles/FriendListWidget.css';
 
+// STYLED COMPONENTS
+const WidgetContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    color: #374151;
+`;
+
+const WidgetHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f3f4f6;
+    padding-bottom: 10px;
+`;
+
+const WidgetTitle = styled.span`
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #15803d;
+`;
+
+const RefreshButton = styled.button`
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover
+    {
+        color: #4ade80;
+    }
+`;
+
+const SearchForm = styled.form`
+    margin-bottom: 12px;
+`;
+
+const SearchInputWrapper = styled.div`
+    display: flex;
+    gap: 6px;
+`;
+
+const SearchInput = styled.input`
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background: #f9fafb;
+    color: #374151;
+    outline: none;
+    transition: all 0.2s;
+
+    &:focus
+    {
+        border-color: #4ade80;
+        background: #fff;
+        box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.1);
+    }
+`;
+
+const SearchButton = styled.button`
+    padding: 8px 12px;
+    background-color: #14532d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+
+    &:hover
+    {
+        background-color: #166534;
+    }
+`;
+
+const StatusMessage = styled.div`
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 0.85rem;
+    margin-bottom: 15px;
+    font-weight: 500;
+    
+    background-color: ${props => props.$isError ? '#fef2f2' : '#f0fdf4'};
+    color: ${props => props.$isError ? '#991b1b' : '#166534'};
+`;
+
+const FriendListScrollArea = styled.div`
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar
+    {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb
+    {
+        background: #e5e7eb;
+        border-radius: 10px;
+    }
+`;
+
+const SectionTitle = styled.h5`
+    font-size: 0.75rem;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+    margin: 15px 0 8px 0;
+`;
+
+const EmptyMessage = styled.p`
+    text-align: center;
+    color: #9ca3af;
+    margin-top: 30px;
+    font-size: 0.9rem;
+`;
+
+// COMPONENT DEFINITION
 const FriendListWidget = () =>
 {
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
+    
     const {
         friends,
         loading,
@@ -26,84 +166,71 @@ const FriendListWidget = () =>
     const handleSearchProfile = (e) =>
     {
         e.preventDefault();
-        if (searchInput.trim()) {
+        
+        if (searchInput.trim()) 
+        {
             navigate(`/profile/${searchInput.trim()}`);
             setSearchInput('');
         }
     };
 
     return (
-        <div className="friend-widget-container">
+        <WidgetContainer>
 
-            <div className="widget-header">
-                <span className="widget-title">
+            <WidgetHeader>
+                <WidgetTitle>
                     Social Hub
-                </span>
-                <button onClick={refresh} className="refresh-btn" title="Refresh">
+                </WidgetTitle>
+                <RefreshButton onClick={refresh} title="Refresh">
                     ⟳
-                </button>
-            </div>
+                </RefreshButton>
+            </WidgetHeader>
 
-            <form onSubmit={handleSearchProfile} style={{ marginBottom: '12px' }}>
-                <div style={{ display: 'flex', gap: '6px' }}>
-                    <input
+            <SearchForm onSubmit={handleSearchProfile}>
+                <SearchInputWrapper>
+                    <SearchInput
                         type="text"
                         placeholder="Search profile..."
                         value={searchInput}
                         onChange={(e) => setSearchInput(e.target.value)}
-                        style={{
-                            flex: 1,
-                            padding: '8px 10px',
-                            border: '1px solid #e5e7eb',
-                            borderRadius: '6px',
-                            fontSize: '0.85rem',
-                            fontFamily: 'inherit'
-                        }}
                     />
-                    <button
-                        type="submit"
-                        style={{
-                            padding: '8px 12px',
-                            backgroundColor: '#14532d',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '6px',
-                            cursor: 'pointer',
-                            fontWeight: 600,
-                            fontSize: '0.8rem'
-                        }}
-                    >
+                    <SearchButton type="submit">
                         Go
-                    </button>
-                </div>
-            </form>
+                    </SearchButton>
+                </SearchInputWrapper>
+            </SearchForm>
 
             <AddFriendForm onAdd={addFriend} />
 
-            {error && (
-                <div className="status-msg msg-error">
+            {error !== null && error !== '' && 
+            (
+                <StatusMessage $isError={true}>
                     {error}
-                </div>
+                </StatusMessage>
             )}
 
-            {successMsg && (
-                <div className="status-msg msg-success">
+            {successMsg !== null && successMsg !== '' && 
+            (
+                <StatusMessage $isError={false}>
                     {successMsg}
-                </div>
+                </StatusMessage>
             )}
 
-            <div className="friend-list-scroll">
-                {loading ? (
-                    <div className="msg-empty">
+            <FriendListScrollArea>
+                {loading === true ? 
+                (
+                    <EmptyMessage>
                         Loading...
-                    </div>
-                ) : (
+                    </EmptyMessage>
+                ) : 
+                (
                     <>
-                        {pendingRequests.length > 0 && (
+                        {pendingRequests.length > 0 && 
+                        (
                             <>
-                                <h5 className="section-title">
+                                <SectionTitle>
                                     Requests ({pendingRequests.length})
-                                </h5>
+                                </SectionTitle>
                                 {pendingRequests.map(req => (
                                     <FriendItem
                                         key={req.id}
@@ -119,14 +246,15 @@ const FriendListWidget = () =>
                             </>
                         )}
 
-                        <h5 className="section-title">
+                        <SectionTitle>
                             Friends ({activeFriends.length})
-                        </h5>
+                        </SectionTitle>
 
-                        {activeFriends.length === 0 && (
-                            <p className="msg-empty">
+                        {activeFriends.length === 0 && 
+                        (
+                            <EmptyMessage>
                                 No active friends.
-                            </p>
+                            </EmptyMessage>
                         )}
 
                         {activeFriends.map(friend => (
@@ -143,8 +271,9 @@ const FriendListWidget = () =>
                         ))}
                     </>
                 )}
-            </div>
-        </div>
+            </FriendListScrollArea>
+
+        </WidgetContainer>
     );
 };
 
