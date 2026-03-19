@@ -38,6 +38,7 @@ Handle connection/disconnection gracefully.
 -Use an ORM for the database.(Bu yapıldı mı??)
 -Progressive Web App (PWA) with offline support and installability.(Yapılabilir?)
 -Support for additional browsers.(Yapılabilir?)
+-Birisinin profiline gidip sonra go to homepage yapınca çevrimdışı gözüküyor ve hesap bulunamadı oluyor(Hata!!!)
 
 ---------------------
 ------COMPLETED------
