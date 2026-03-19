@@ -3,7 +3,6 @@ import '../../styles/PerformanceStats.css';
 
 const PerformanceStats = ({ username }) =>
 {
-    // Verimiz artık bir obje ({}) olarak gelecek, bu yüzden default değeri {} yapıyoruz.
     const [statsData, setStatsData] = useState({});
     const [loading, setLoading] = useState(true);
 
@@ -27,20 +26,15 @@ const PerformanceStats = ({ username }) =>
         {
             try
             {
-                const response = await fetch(`https://localhost:8443/api/stats/${username}`);
+                const response = await fetch(`/api/stats/${username}`);
                 if (response.ok) 
                 {
                     const data = await response.json();
                     
                     if (data && data.difficulties)
-                    {
-                        // JSON objesini doğrudan state'e atıyoruz
                         setStatsData(data.difficulties);
-                    }
                     else 
-                    {
                         setStatsData({}); 
-                    }
                 }
             }
             catch (error)
@@ -68,10 +62,8 @@ const PerformanceStats = ({ username }) =>
 
     const detailedStats = difficulties.map(diff =>
     {
-        // Gelen id'ye göre zorluk objesini alıyoruz (örn: statsData["2"])
         const diffData = statsData[diff.id] || {};
         
-        // Online ve Offline mod verilerini ayıklıyoruz
         const onlineStats = diffData.online || {};
         const offlineStats = diffData.offline || {};
 
@@ -80,14 +72,12 @@ const PerformanceStats = ({ username }) =>
         const onlineLosses = onlineStats.losses || 0;
         const offlineLosses = offlineStats.losses || 0;
 
-        // Toplam Kazanma ve Kaybetme Sayısı
         const won = onlineWins + offlineWins;
         const losses = onlineLosses + offlineLosses;
         const played = won + losses;
 
         const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
 
-        // En iyi zamanı bulma (Online ve Offline arasından null olmayan en düşük süreyi seçiyoruz)
         let bestTimeSeconds = null;
         
         if (onlineStats.best_time_seconds)
