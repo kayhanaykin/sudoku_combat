@@ -5,7 +5,7 @@ RESET = \033[0m
 
 COMPOSE = docker compose -f srcs/docker-compose.yml
 
-all: build list
+all: build migrate list
 
 up:
 	@echo "🔍 Sistemin IP adresi taranıyor..."
@@ -32,7 +32,7 @@ fclean: clean
 	@docker system prune -af
 	@docker volume prune -f
 
-re: clean all
+re: clean all migrate
 
 # Yeniden build edip ayağa kaldırır
 build:
