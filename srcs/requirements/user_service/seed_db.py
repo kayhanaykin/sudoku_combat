@@ -83,9 +83,6 @@ def seed_local_users():
             display_name=f"Player_{i}",
             # Eğer modelinde alanın adı 'avatar' ise (ImageField):
             avatar=db_avatar_path, 
-            # Eğer alanın adı 'avatar_url' ise (Charfield):
-            # avatar_url=db_avatar_path,
-            is_profile_complete=True,
             intra_id=None
         )
         print(f"Eklendi: {u_name}")

@@ -1,7 +1,7 @@
 # format/
 # learning_material/
 # planlama/
-# .env
+.env
 
 # Ignore the downloaded C++ libraries
 srcs/requirements/backend/cpp_backend/tools/asio/
