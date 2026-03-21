@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { makeMove } from '../../services/api';
+import { makeMove } from '../services/api';
 
 const EMPTY_BOARD = Array(9).fill(null).map(() => Array(9).fill(
 {
