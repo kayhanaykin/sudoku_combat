@@ -1,0 +1,117 @@
+components:
+total 0
+drwxrwxrwx 1 karau karau 512 Mar 18 09:58 .
+drwxrwxrwx 1 karau karau 512 Mar 20 18:10 ..
+drwxrwxrwx 1 karau karau 512 Mar 19 22:01 atoms
+drwxrwxrwx 1 karau karau 512 Mar 20 17:19 molecules
+drwxrwxrwx 1 karau karau 512 Mar 20 17:22 organisms
+
+components/atoms:
+total 24
+drwxrwxrwx 1 karau karau  512 Mar 19 22:01 .
+drwxrwxrwx 1 karau karau  512 Mar 18 09:58 ..
+-rwxrwxrwx 1 karau karau 2443 Mar 19 20:23 ActionBtn.jsx
+-rwxrwxrwx 1 karau karau 1980 Mar 19 18:20 BackToHomeLink.jsx
+-rwxrwxrwx 1 karau karau 1302 Mar 19 22:28 InfoBadge.jsx
+-rwxrwxrwx 1 karau karau 1481 Mar 19 22:27 ProfileButton.jsx
+-rwxrwxrwx 1 karau karau 2572 Mar 19 22:27 ProfileImage.jsx
+-rwxrwxrwx 1 karau karau 2327 Mar 19 22:26 SudokuCell.jsx
+
+components/molecules:
+total 144
+drwxrwxrwx 1 karau karau   512 Mar 20 17:19 .
+drwxrwxrwx 1 karau karau   512 Mar 18 09:58 ..
+-rwxrwxrwx 1 karau karau  2300 Mar 19 20:32 AddFriendForm.jsx
+-rwxrwxrwx 1 karau karau  2316 Mar 18 09:58 BadgeWidget.jsx
+-rwxrwxrwx 1 karau karau  2594 Mar 20 16:55 ConfirmationModal.jsx
+-rwxrwxrwx 1 karau karau  3308 Mar 20 17:03 DifficultyModal.jsx
+-rwxrwxrwx 1 karau karau  9757 Mar 20 17:05 EditProfileModal.jsx
+-rwxrwxrwx 1 karau karau  6155 Mar 19 22:25 FriendItem.jsx
+-rwxrwxrwx 1 karau karau  2732 Mar 20 17:37 GameHeader.jsx
+-rwxrwxrwx 1 karau karau  2032 Mar 20 17:19 HintModal.jsx
+-rwxrwxrwx 1 karau karau  5672 Mar 19 22:24 LeaderboardFullRow.jsx
+-rwxrwxrwx 1 karau karau  2746 Mar 19 22:21 LeaderboardRow.jsx
+-rwxrwxrwx 1 karau karau  1668 Mar 19 22:19 LeaderboardTabs.jsx
+-rwxrwxrwx 1 karau karau  8058 Mar 20 16:51 Login.jsx
+-rwxrwxrwx 1 karau karau  8003 Mar 20 12:38 MatchHistoryTable.jsx
+-rwxrwxrwx 1 karau karau 11625 Mar 20 16:52 Navbar.jsx
+-rwxrwxrwx 1 karau karau  1867 Mar 20 12:50 Numpad.jsx
+-rwxrwxrwx 1 karau karau 13654 Mar 20 12:56 OnlineGamePopup.jsx
+-rwxrwxrwx 1 karau karau  9454 Mar 20 14:33 PerformanceStats.jsx
+-rwxrwxrwx 1 karau karau  2776 Mar 20 14:34 PlayerCard.jsx
+-rwxrwxrwx 1 karau karau  6588 Mar 20 16:47 PlayerInfoPopup.jsx
+-rwxrwxrwx 1 karau karau 10437 Mar 20 16:50 Signup.jsx
+
+components/organisms:
+total 52
+drwxrwxrwx 1 karau karau   512 Mar 20 17:22 .
+drwxrwxrwx 1 karau karau   512 Mar 18 09:58 ..
+-rwxrwxrwx 1 karau karau  6414 Mar 20 16:53 AvatarUploadModal.jsx
+-rwxrwxrwx 1 karau karau  7674 Mar 19 20:18 FriendListWidget.jsx
+-rwxrwxrwx 1 karau karau  5895 Mar 20 17:07 GameOverOverlay.jsx
+-rwxrwxrwx 1 karau karau  2103 Mar 20 17:20 LeaderboardTable.jsx
+-rwxrwxrwx 1 karau karau  2942 Mar 20 17:22 LeaderboardWidget.jsx
+-rwxrwxrwx 1 karau karau 12689 Mar 20 17:51 ProfileContent.jsx
+-rwxrwxrwx 1 karau karau  3213 Mar 20 17:25 SudokuBoard.jsx
+
+pages:
+total 60
+drwxrwxrwx 1 karau karau   512 Mar 18 19:07 .
+drwxrwxrwx 1 karau karau   512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau 13824 Mar 20 17:27 Home.jsx
+-rwxrwxrwx 1 karau karau  2209 Mar 19 22:15 LeaderboardPage.jsx
+-rwxrwxrwx 1 karau karau  8305 Mar 20 17:34 Offline-Game.jsx
+-rwxrwxrwx 1 karau karau 14866 Mar 20 17:43 Online-Game.jsx
+-rwxrwxrwx 1 karau karau 10009 Mar 20 17:48 Profile.jsx
+
+services:
+total 16
+drwxrwxrwx 1 karau karau  512 Mar 18 19:07 .
+drwxrwxrwx 1 karau karau  512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau 9525 Mar 18 19:07 api.js
+-rwxrwxrwx 1 karau karau 1455 Mar 18 09:58 userService.js
+
+src:
+total 13
+drwxrwxrwx 1 karau karau  512 Mar 20 18:10 .
+drwxrwxrwx 1 karau karau  512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau  606 Mar 18 09:58 App.css
+-rwxrwxrwx 1 karau karau 1143 Mar 18 19:07 App.jsx
+-rwxrwxrwx 1 karau karau  778 Mar 20 18:09 GlobalStyle.jsx
+drwxrwxrwx 1 karau karau  512 Mar 18 09:58 assets
+drwxrwxrwx 1 karau karau  512 Mar 18 09:58 context
+drwxrwxrwx 1 karau karau  512 Mar 18 19:07 hooks
+-rwxrwxrwx 1 karau karau 4050 Mar 18 09:58 index.css
+-rwxrwxrwx 1 karau karau  294 Mar 20 18:09 main.jsx
+drwxrwxrwx 1 karau karau  512 Mar 19 18:18 utils
+
+src/assets:
+total 12
+drwxrwxrwx 1 karau karau  512 Mar 18 09:58 .
+drwxrwxrwx 1 karau karau  512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau  844 Mar 18 09:58 42logo.svg
+-rwxrwxrwx 1 karau karau 4126 Mar 18 09:58 react.svg
+
+src/context:
+total 5
+drwxrwxrwx 1 karau karau  512 Mar 18 09:58 .
+drwxrwxrwx 1 karau karau  512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau 2900 Mar 18 09:58 AuthContext.jsx
+-rwxrwxrwx 1 karau karau  576 Mar 18 09:58 WebSocketContext.jsx
+
+src/hooks:
+total 36
+drwxrwxrwx 1 karau karau   512 Mar 18 19:07 .
+drwxrwxrwx 1 karau karau   512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau  4914 Mar 18 09:58 useFriendList.js
+-rwxrwxrwx 1 karau karau 13169 Mar 18 19:07 useGameLogic.js
+-rwxrwxrwx 1 karau karau  2023 Mar 18 19:07 useLeaderboardPage.js
+-rwxrwxrwx 1 karau karau  1883 Mar 18 19:07 useLeaderboardWidget.js
+-rwxrwxrwx 1 karau karau  3331 Mar 18 09:58 useOnlineStatus.js
+
+src/utils:
+total 1
+drwxrwxrwx 1 karau karau 512 Mar 19 18:18 .
+drwxrwxrwx 1 karau karau 512 Mar 20 18:10 ..
+-rwxrwxrwx 1 karau karau 572 Mar 19 18:18 device.js
+-rwxrwxrwx 1 karau karau 431 Mar 18 09:58 sudokuUtils.js

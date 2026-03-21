@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getLeaderboard } from '../../services/api';
+import { getLeaderboard } from '../services/api';
 
 const useLeaderboardWidget = () =>
 {
