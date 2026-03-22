@@ -11,6 +11,11 @@ export const AuthProvider = ({ children }) => {
     const checkAuth = async () => {
       try {
         // Backend'e "Benim geçerli bir çerezim var mı?" diye soruyoruz
+		const storedUser = localStorage.getItem('user');
+		if (!storedUser) {
+			setLoading(false);
+			return ;
+		}
         const response = await fetch(`/api/v1/user/me/`, {
           method: 'GET',
           headers: {

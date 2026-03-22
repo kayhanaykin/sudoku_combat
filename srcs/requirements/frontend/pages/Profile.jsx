@@ -4,7 +4,8 @@ import { useAuth } from '../src/context/AuthContext';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 import ProfileContent from '../components/organisms/ProfileContent';
 import ConfirmationModal from '../components/organisms/ConfirmationModal';
-import { getUserDetails, getUserStats, logoutUser, deleteUserAccount } from '../services/api';
+import { getUserStats, logoutUser, deleteUserAccount } from '../services/api';
+import { getUserDetails } from '../services/userService';
 import '../styles/Profile.css';
 
 const Profile = () =>
