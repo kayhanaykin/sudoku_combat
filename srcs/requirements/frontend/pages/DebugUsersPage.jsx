@@ -65,7 +65,6 @@ const DebugUsersPage = () => {
                                 <th>Username</th>
                                 <th>Display Name</th>
                                 <th>Email</th>
-                                <th>Online</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -75,11 +74,6 @@ const DebugUsersPage = () => {
                                     <td>{user.username}</td>
                                     <td>{user.display_name || '-'}</td>
                                     <td>{user.email || 'N/A'}</td>
-                                    <td>
-                                        <span className={`status-badge ${user.is_online ? 'online' : 'offline'}`}>
-                                            {user.is_online ? 'Online' : 'Offline'}
-                                        </span>
-                                    </td>
                                 </tr>
                             ))}
                         </tbody>
