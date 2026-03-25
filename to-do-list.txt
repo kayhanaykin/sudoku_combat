@@ -20,6 +20,7 @@ Handle connection/disconnection gracefully.
 -Use an ORM for the database.(Bu yapıldı mı??)
 -Progressive Web App (PWA) with offline support and installability.(Yapılabilir?)
 -Support for additional browsers.(Yapılabilir?)
+-farklı formatta ve boyutta resim upload denenebilir. izin verilmese de duzgun bir notification donebilir eger yapmiyorsa.
 
 ---------------------
 ------COMPLETED------
