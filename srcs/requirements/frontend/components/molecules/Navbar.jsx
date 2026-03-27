@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../src/context/AuthContext';
 import { API_BASE_URL } from '../../services/api';
 import { getUserDetails } from '../../services/userService';
+
 import FriendListWidget from '../organisms/FriendListWidget';
+import HowToPlayModal from '../organisms/HowToPlayModal';
+import '../../styles/HowToPlayBtn.css';
 import Login from './Login';
 import SignUp from './Signup';
 import '../../styles/Navbar.css';
@@ -17,6 +20,7 @@ const Navbar = () =>
     const [isSignUpOpen, setIsSignUpOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isFriendsOpen, setIsFriendsOpen] = useState(false);
+    const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
     
     const dropdownRef = useRef(null);
     const friendsRef = useRef(null);
@@ -108,11 +112,14 @@ const Navbar = () =>
                 <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
                     <a href="/">Sudoku42</a>
                 </div>
-                
                 <div className="auth-buttons">
+                    {/* How to Play butonu her zaman sol başta */}
+                    <button className="how-to-play-btn" onClick={() => setIsHowToPlayOpen(true)}>
+                        <span className="how-to-play-icon" role="img" aria-label="How to Play">🎮</span>
+                        How to Play
+                    </button>
                     {user ? (
                         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                            
                             <div className="friends-dropdown-container" ref={friendsRef}>
                                 <button 
                                     type="button"
@@ -121,7 +128,6 @@ const Navbar = () =>
                                 >
                                     👥 Friends
                                 </button>
-
                                 {isFriendsOpen && (
                                     <div className="nav-friends-dropdown-menu">
                                         <div className="navbar-widget-wrapper">
@@ -130,7 +136,6 @@ const Navbar = () =>
                                     </div>
                                 )}
                             </div>
-
                             <div className="profile-dropdown-container" ref={dropdownRef}>
                                 <button 
                                     type="button"
@@ -145,7 +150,6 @@ const Navbar = () =>
                                     />
                                     <span className="nav-display-name">{name}</span>
                                 </button>
-
                                 {isDropdownOpen && (
                                     <div className="nav-profile-dropdown-menu">
                                         <div className="dropdown-user-info">
@@ -176,7 +180,7 @@ const Navbar = () =>
                     )}
                 </div>
             </nav>
-
+            <HowToPlayModal isOpen={isHowToPlayOpen} onClose={() => setIsHowToPlayOpen(false)} />
             {!user && (
                 <>
                     <Login 
