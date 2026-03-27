@@ -1,28 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getUserAchievements } from '../../services/api';
 
-// API'den gelecek
-const DUMMY_BADGES = [
-  { id: 1, icon: '🥇', name: 'First Win' },
-  { id: 2, icon: '🚀', name: 'Speedster' },
-  { id: 3, icon: '🛡️', name: 'Defender' },
-  { id: 4, icon: '🔥', name: 'On Fire' },
-  { id: 5, icon: '🤖', name: 'Bot Killer' },
-  { id: 6, icon: '🎓', name: 'Graduate' },
-  { id: 7, icon: '🌟', name: 'Star' },
-  { id: 8, icon: '💎', name: 'Rich' },
-  { id: 9, icon: '👑', name: 'King' },
-  { id: 10, icon: '🎯', name: 'Sniper' },
-  { id: 11, icon: '👻', name: 'Ghost' },
-  { id: 12, icon: '💩', name: 'Lucky' },
-];
-
-const BadgeWidget = () => {
+const BadgeWidget = ({ username }) => {
+  const [achievements, setAchievements] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
-  const totalPages = Math.ceil(DUMMY_BADGES.length / itemsPerPage);
+  useEffect(() => {
+    const fetchAchievements = async () => {
+      if (username) {
+        const data = await getUserAchievements(username);
+        setAchievements(data);
+      }
+    };
+
+    fetchAchievements();
+  }, [username]);
+
+  const totalPages = Math.ceil(achievements.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBadges = DUMMY_BADGES.slice(startIndex, startIndex + itemsPerPage);
+  const currentBadges = achievements.slice(startIndex, startIndex + itemsPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages)
@@ -39,17 +36,23 @@ const BadgeWidget = () => {
       <h3>
         Achievements 
         <span style={{fontSize: '0.9rem', color: '#888'}}>
-            ({DUMMY_BADGES.length})
+            ({achievements.length})
         </span>
       </h3>
 
       <div className="m-badge-grid">
-        {currentBadges.map(badge => (
-          <div key={badge.id} className="a-badge-item">
-            <span className="a-badge-icon">{badge.icon}</span>
-            <span className="a-badge-name">{badge.name}</span>
-          </div>
-        ))}
+        {currentBadges.length > 0 ? (
+          currentBadges.map(badge => (
+            <div key={badge.id} className="a-badge-item" title={`Earned: ${new Date(badge.earned_at).toLocaleDateString()}`}>
+              <span className="a-badge-icon">{badge.icon}</span>
+              <span className="a-badge-name">{badge.name}</span>
+            </div>
+          ))
+        ) : (
+          <p style={{gridColumn: '1/-1', textAlign: 'center', color: '#999'}}>
+            No achievements unlocked yet
+          </p>
+        )}
       </div>
 
       {totalPages > 1 && (

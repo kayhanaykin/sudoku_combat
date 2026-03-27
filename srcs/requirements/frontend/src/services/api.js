@@ -125,6 +125,27 @@ export const registerUser = async (username, email, password) =>
   }
 };
 
+export const checkFriendStatus = async (username) => 
+{
+  const url = `${API_BASE_URL}/api/v1/user/friends/status/${username}/`;
+  try
+  {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getHeaders(),
+      credentials: 'include'
+    });
+    if (response.ok)
+      return await response.json();
+    return { status: 'none' };
+  }
+  catch (error)
+  {
+    console.error("API Error:", error);
+    return { status: 'none' };
+  }
+};
+
 export const getFriends = async () => 
 {
   const url = `${API_BASE_URL}/api/v1/user/friends/`;
@@ -281,17 +302,43 @@ export const getUserDetails = async (userId) =>
   });
 };
 
-export const getUserStats = async (userId) => 
+export const getUserStats = async (username) => 
 {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-        resolve({
-            totalGames: 0,
-            winRate: "%0",
-            ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
-        });
-    }, 500); 
-  });
+  try
+  {
+    const url = `${API_BASE_URL}/api/stats/${username}`;
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: getHeaders(),
+      credentials: 'include'
+    });
+    
+    if (!response.ok)
+    {
+      console.error(`Failed to fetch user stats: ${response.status}`);
+      return {
+        totalGames: 0,
+        winRate: 0,
+        ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
+      };
+    }
+    
+    const data = await response.json();
+    return data || {
+      totalGames: 0,
+      winRate: 0,
+      ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
+    };
+  }
+  catch (error)
+  {
+    console.error('Error fetching user stats:', error);
+    return {
+      totalGames: 0,
+      winRate: 0,
+      ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
+    };
+  }
 };
 
 export const logoutUser = async () => 
@@ -394,11 +441,11 @@ export const getMatchHistory = async (username) =>
   }
 };
 
-export const getLeaderboard = async (mode = 'Total') => 
+export const getLeaderboard = async (mode = 'Total', scope = 'alltime') => 
 {
   try
   {
-    const url = `${API_BASE_URL}/api/stats/leaderboard/${mode}`;
+    const url = `${API_BASE_URL}/api/stats/leaderboard/${mode}?scope=${encodeURIComponent(scope)}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),
@@ -417,6 +464,32 @@ export const getLeaderboard = async (mode = 'Total') =>
   catch (error)
   {
     console.error('Error fetching leaderboard:', error);
+    return [];
+  }
+};
+
+export const getUserAchievements = async (username) => 
+{
+  try 
+  {
+    const response = await fetch(`${API_BASE_URL}/api/v1/user/achievements/${username}/`, {
+      method: 'GET',
+      headers: getHeaders(),
+      credentials: 'include'
+    });
+    
+    if (!response.ok) 
+    {
+      console.error(`Failed to fetch achievements: ${response.status}`);
+      return [];
+    }
+    
+    const data = await response.json();
+    return data.achievements || [];
+  }
+  catch (error)
+  {
+    console.error('Error fetching achievements:', error);
     return [];
   }
 };

@@ -465,7 +465,7 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
                 {friendsSection}
 
                 <BaseCard>
-                    <BadgeWidget />
+                    <BadgeWidget username={currentUsername} />
                 </BaseCard>
                 
             </ProfileGrid>
