@@ -103,6 +103,33 @@ export class AppGateway
         }
     }
 
+    @SubscribeMessage('game_finished')
+    async handleGameFinished(
+        @MessageBody() data: { gameResult: string, difficulty: number, mode: string },
+        @ConnectedSocket() client: WebSocket )
+    {
+        const roomId = (client as any).roomId;
+        
+        if (roomId)
+        {
+            const roomClients = this.rooms.get(roomId);
+            
+            if (roomClients)
+            {
+                // Broadcast to opponent
+                roomClients.forEach((ws: WebSocket) =>
+                {
+                    if (ws !== client && ws.readyState === ws.OPEN)
+                    {
+                        ws.send(JSON.stringify({
+                            event: 'game_finished',
+                            gameResult: data.gameResult
+                        }));
+                    }
+                });
+            }
+        }
+    }
     async handleDisconnect(@ConnectedSocket() client: WebSocket)
     {
         const roomId = (client as any).roomId;

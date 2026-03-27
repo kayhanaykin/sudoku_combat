@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getLeaderboard } from '../services/api';
 
-const MODES = ['Total', 'Easy', 'Medium', 'Hard', 'Expert', 'Extreme'];
+const MODES = ['Extreme', 'Expert', 'Hard', 'Medium', 'Easy'];
 
 const useLeaderboardPage = () =>
 {
-  const [mode, setMode] = useState('Total');
+  const [mode, setMode] = useState('Extreme');
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,7 +16,7 @@ const useLeaderboardPage = () =>
       setLoading(true);
       try
       {
-        const data = await getLeaderboard(mode);
+        const data = await getLeaderboard(mode, 'alltime');
         
         let validData = [];
         if (Array.isArray(data))
@@ -24,14 +24,14 @@ const useLeaderboardPage = () =>
         else if (data && Array.isArray(data.data))
           validData = data.data;
 
-        // Enrich with display names
+        // Enrich with display names and avatars
         const enrichedData = await Promise.all(
           validData.map(async (player) => {
             try {
               const userResponse = await fetch(`/api/v1/user/by-username/${player.username}/`);
               if (userResponse.ok) {
                 const userData = await userResponse.json();
-                return { ...player, display_name: userData.display_name };
+                return { ...player, display_name: userData.display_name, avatar: userData.avatar };
               }
             } catch (err) {
               console.error(`Failed to fetch display name for ${player.username}:`, err);
