@@ -7,6 +7,30 @@ using json = nlohmann::json;
 
 namespace stats
 {
+    static double wilson_lower_bound(int wins, int losses)
+    {
+        const int n_int = wins + losses;
+        if (n_int <= 0)
+            return 0.0;
+
+        const double n = static_cast<double>(n_int);
+        const double z = 1.96; // 95% confidence
+        const double z2 = z * z;
+        const double p_hat = static_cast<double>(wins) / n;
+
+        const double numerator = p_hat + (z2 / (2.0 * n))
+            - z * std::sqrt((p_hat * (1.0 - p_hat) + (z2 / (4.0 * n))) / n);
+        const double denominator = 1.0 + (z2 / n);
+
+        double lower_bound = numerator / denominator;
+        if (lower_bound < 0.0)
+            lower_bound = 0.0;
+        if (lower_bound > 1.0)
+            lower_bound = 1.0;
+
+        return lower_bound;
+    }
+
     // Helper: Send achievement unlock to User Service
     static void unlock_achievement(const std::string &username, const std::string &achievement_type)
     {
@@ -373,22 +397,9 @@ namespace stats
                 ? static_cast<double>(e.wins) / static_cast<double>(e.games)
                 : 0.0;
 
-            // Score formula: winrate-based + volume bonus
-            // Scale: 0-10000 for winrate (0-100% → 0-10000) + 50 per game
-            // Examples:
-            // - 1 win, 0 losses: 10000 + 50 = 10050
-            // - 10 wins, 2 losses (83.3% wr): 8333 + 600 = 8933
-            // - 50 wins, 50 losses (50% wr): 5000 + 5000 = 10000
-            // - 100 wins, 20 losses (83.3% wr): 8333 + 6000 = 14333
-            const double prior_games = 10.0;
-            const double prior_rate = 0.50;
-            double adjusted_rate =
-                (static_cast<double>(e.wins) + (prior_games * prior_rate))
-                / (static_cast<double>(e.games) + prior_games);
-
-            int winrate_score = static_cast<int>(adjusted_rate * 10000.0);
-            int volume_score = static_cast<int>(e.games * 50);
-            e.score = static_cast<double>(winrate_score + volume_score);
+            // Wilson score lower bound (95% confidence), scaled to 0..10000
+            const double wilson = wilson_lower_bound(e.wins, e.losses);
+            e.score = std::round(wilson * 10000.0);
 
             entries.push_back(e);
         }

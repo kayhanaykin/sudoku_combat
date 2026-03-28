@@ -66,12 +66,33 @@ const StateMessage = styled.div`
 `;
 
 const EllipsisRow = styled.div`
-    text-align: center;
-    color: #9ca3af;
-    font-size: 1.4rem;
-    font-weight: 700;
-    letter-spacing: 4px;
-    margin: 2px 0;
+    display: grid;
+    grid-template-columns: 60px minmax(180px, 2fr) minmax(90px, 1fr) minmax(90px, 1fr) minmax(90px, 1fr);
+    column-gap: 10px;
+    align-items: center;
+    width: 100%;
+    min-height: 56px;
+    margin: 8px 0 10px 0;
+
+    @media ${device.mobileL}
+    {
+        grid-template-columns: 45px minmax(130px, 2fr) minmax(75px, 1fr) minmax(75px, 1fr);
+
+        .hide-on-mobile
+        {
+            display: none;
+        }
+    }
+`;
+
+const EllipsisCell = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 2rem;
+    font-weight: 800;
+    line-height: 1;
 `;
 
 // COMPONENT DEFINITION
@@ -108,7 +129,15 @@ const LeaderboardTable = ({ players, loading, mode }) =>
 
         if (currentUserOutsideTopFifty)
         {
-            rows.push(<EllipsisRow key="ellipsis">...</EllipsisRow>);
+            rows.push(
+                <EllipsisRow key="ellipsis">
+                    <EllipsisCell>⋮</EllipsisCell>
+                    <EllipsisCell>⋮</EllipsisCell>
+                    <EllipsisCell>⋮</EllipsisCell>
+                    <EllipsisCell>⋮</EllipsisCell>
+                    <EllipsisCell className="hide-on-mobile">⋮</EllipsisCell>
+                </EllipsisRow>
+            );
 
             const me = players[currentUserIndex];
             rows.push(
