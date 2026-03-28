@@ -77,7 +77,7 @@ namespace stats
             }
         }
 
-        // 5) Star (ilk 100'e girdiyse)
+        // 5) Star (ilk 50'ye girdiyse)
         bool is_star = check_star_leaderboard(username);
         if (is_star)
             achievements.push_back({"star", true, username});
@@ -239,13 +239,13 @@ namespace stats
         {
             pqxx::work tx(conn);
             
-            // Check if user appears in top 100 of any difficulty leaderboard
+            // Check if user appears in top 50 of global online leaderboard
             pqxx::result res = tx.exec_params(
                 "SELECT COUNT(*) FROM ("
                 "  SELECT username, SUM(wins) as total_wins FROM player_stats "
                 "  WHERE mode='online' GROUP BY username "
-                "  ORDER BY total_wins DESC LIMIT 100"
-                ") AS top_100 WHERE username=$1",
+                "  ORDER BY total_wins DESC LIMIT 50"
+                ") AS top_50 WHERE username=$1",
                 username);
             
             tx.commit();

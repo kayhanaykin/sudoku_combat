@@ -117,6 +117,8 @@ const PlayerCard = ({ title, lives, align, avatar }) =>
             
             <StyledProfileImage 
                 src={finalAvatarUrl} 
+                alt={title}
+                fallbackSeed={title}
             />
 
             <CardTitle>

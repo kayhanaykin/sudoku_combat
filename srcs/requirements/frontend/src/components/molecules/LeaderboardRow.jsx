@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../../context/AuthContext';
+import PlayerInfoPopup from './PlayerInfoPopup';
 
 // HELPER FUNCTION
 const getRankIcon = (index) =>
@@ -40,6 +43,8 @@ const RowContainer = styled.div`
         '#f3f4f6'
     };
 
+    cursor: pointer;
+
     &:hover 
     {
         transform: translateY(-1px);
@@ -53,6 +58,17 @@ const RankIcon = styled.span`
     font-weight: bold;
     color: #6b7280;
     text-align: center;
+    flex-shrink: 0;
+`;
+
+const Avatar = styled.img`
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 1px solid #e5e7eb;
+    background: #f3f4f6;
     flex-shrink: 0;
 `;
 
@@ -89,35 +105,72 @@ const PointsText = styled.span`
 // COMPONENT DEFINITION
 const LeaderboardRow = ({ player, index }) =>
 {
+    const [isPopupOpen, setIsPopupOpen] = useState(false);
+    const navigate = useNavigate();
+    const { user } = useAuth();
+
     const icon = getRankIcon(index);
     const displayName = player.display_name || player.username || `User #${player.user_id}`;
     const username = player.username;
     const wins = player.wins || 0;
+    const avatarSrc = player.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || displayName || 'US').slice(0, 2).toUpperCase())}`;
+
+    const isCurrentUser = user && user.username === username;
+
+    const handleRowClick = () =>
+    {
+        if (isCurrentUser)
+            navigate('/profile');
+        else
+            setIsPopupOpen(true);
+    };
+
+    const handleAvatarError = (e) =>
+    {
+        e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || displayName || 'US').slice(0, 2).toUpperCase())}`;
+    };
 
     return (
-        <RowContainer $rankIndex={index}>
-            
-            <RankIcon>
-                {icon}
-            </RankIcon>
-            
-            <PlayerInfo>
-                <DisplayName>
-                    {displayName}
-                </DisplayName>
-                {username !== undefined && username !== null && username !== '' && 
-                (
-                    <UsernameSubtitle>
-                        @{username}
-                    </UsernameSubtitle>
-                )}
-            </PlayerInfo>
-            
-            <PointsText>
-                {wins} pts
-            </PointsText>
-            
-        </RowContainer>
+        <>
+            <RowContainer $rankIndex={index} onClick={handleRowClick}>
+                
+                <RankIcon>
+                    {icon}
+                </RankIcon>
+
+                <Avatar
+                    src={avatarSrc}
+                    alt={username || displayName}
+                    onError={handleAvatarError}
+                />
+                
+                <PlayerInfo>
+                    <DisplayName>
+                        {displayName}
+                    </DisplayName>
+                    {username !== undefined && username !== null && username !== '' && 
+                    (
+                        <UsernameSubtitle>
+                            @{username}
+                        </UsernameSubtitle>
+                    )}
+                </PlayerInfo>
+                
+                <PointsText>
+                    {wins} pts
+                </PointsText>
+                
+            </RowContainer>
+
+            {!isCurrentUser && (
+                <PlayerInfoPopup
+                    isOpen={isPopupOpen}
+                    onClose={() => setIsPopupOpen(false)}
+                    username={username}
+                    dimBackground={false}
+                />
+            )}
+        </>
     );
 };
 

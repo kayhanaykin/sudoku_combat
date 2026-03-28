@@ -5,13 +5,13 @@ import { device } from '../../utils/device';
 // STYLED COMPONENTS
 const TabsContainer = styled.div`
     display: flex;
-    gap: 8px;
+    gap: ${props => props.$compact ? '6px' : '8px'};
     background-color: #f3f4f6;
-    padding: 6px;
+    padding: ${props => props.$compact ? '5px' : '6px'};
     border-radius: 14px;
-    margin-bottom: 25px;
+    margin-bottom: ${props => props.$compact ? '14px' : '25px'};
     
-    overflow-x: auto;
+    overflow-x: ${props => props.$noScroll ? 'hidden' : 'auto'};
     scrollbar-width: none;
     
     &::-webkit-scrollbar 
@@ -22,14 +22,17 @@ const TabsContainer = styled.div`
 
 const TabButton = styled.button`
     flex: 1;
-    padding: 10px 20px;
+    min-width: 0;
+    padding: ${props => props.$compact ? '7px 8px' : '10px 20px'};
     border: none;
     border-radius: 10px;
-    font-size: 1rem;
+    font-size: ${props => props.$compact ? '0.8rem' : '1rem'};
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     background-color: ${props => props.$isActive ? '#4ade80' : 'transparent'};
     color: ${props => props.$isActive ? '#ffffff' : '#6b7280'};
@@ -43,21 +46,22 @@ const TabButton = styled.button`
 
     @media ${device.mobileL}
     {
-        padding: 8px 16px;
-        font-size: 0.9rem;
+        padding: ${props => props.$compact ? '6px 7px' : '8px 16px'};
+        font-size: ${props => props.$compact ? '0.75rem' : '0.9rem'};
     }
 `;
 
 // COMPONENT DEFINITION
-const LeaderboardTabs = ({ modes, currentMode, onModeChange }) =>
+const LeaderboardTabs = ({ modes, currentMode, onModeChange, compact = false, noScroll = false }) =>
 {
     return (
-        <TabsContainer>
+        <TabsContainer $compact={compact} $noScroll={noScroll}>
             
             {modes.map((m) => (
                 <TabButton
                     key={m}
                     $isActive={currentMode === m}
+                    $compact={compact}
                     onClick={() => onModeChange(m)}
                 >
                     {m}

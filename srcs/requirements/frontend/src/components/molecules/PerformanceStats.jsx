@@ -182,7 +182,7 @@ const PerformanceStats = ({ username }) =>
         {
             try
             {
-                const response = await fetch(`/api/stats/${username}`);
+                const response = await fetch(`/api/stats/${encodeURIComponent(username)}`);
                 if (response.ok) 
                 {
                     const data = await response.json();
@@ -243,8 +243,13 @@ const PerformanceStats = ({ username }) =>
             winRate = Math.round((won / played) * 100);
 
         let bestTimeSeconds = null;
-        if (modeStats.best_time_seconds)
-            bestTimeSeconds = modeStats.best_time_seconds;
+        const rawBestTime = modeStats.best_time_seconds ?? modeStats.best_time ?? null;
+        if (rawBestTime !== null && rawBestTime !== undefined)
+        {
+            const parsed = Number(rawBestTime);
+            if (!Number.isNaN(parsed) && parsed >= 0)
+                bestTimeSeconds = parsed;
+        }
 
         const bestTime = formatTime(bestTimeSeconds);
 

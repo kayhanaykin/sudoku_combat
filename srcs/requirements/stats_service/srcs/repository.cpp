@@ -127,7 +127,7 @@ namespace stats
         int win_add  = (result == "win")  ? 1 : 0;
         int lose_add = (result == "lose") ? 1 : 0;
 
-        bool has_time = (mode == "offline" && result == "win" && time_sec.has_value());
+        bool has_time = (result == "win" && time_sec.has_value());
 
         pqxx::connection conn(get_conn_string());
         pqxx::work tx(conn);

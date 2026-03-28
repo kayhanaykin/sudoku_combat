@@ -16,7 +16,7 @@ const useLeaderboardPage = () =>
       setLoading(true);
       try
       {
-        const data = await getLeaderboard(mode, 'alltime');
+        const data = await getLeaderboard(mode, 'alltime', 0);
         
         let validData = [];
         if (Array.isArray(data))

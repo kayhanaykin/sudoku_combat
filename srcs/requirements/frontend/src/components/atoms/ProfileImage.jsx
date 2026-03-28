@@ -3,6 +3,19 @@ import styled from 'styled-components';
 
 const DEFAULT_AVATAR = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0iI2NjYyI+PHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPjwvc3ZnPg==";
 
+const buildInitialsAvatar = (seedText) =>
+{
+    if (!seedText || typeof seedText !== 'string')
+        return DEFAULT_AVATAR;
+
+    const cleaned = seedText.replace('@', '').trim();
+    if (!cleaned)
+        return DEFAULT_AVATAR;
+
+    const initials = cleaned.slice(0, 2).toUpperCase();
+    return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(initials)}`;
+};
+
 // STYLED COMPONENTS
 const OverlayWrapper = styled.div`
     position: absolute;
@@ -65,20 +78,21 @@ const AvatarImage = styled.img`
 `;
 
 // COMPONENT DEFINITION
-const ProfileImage = ({ src, alt = "Avatar", className = "", style = {}, onClick }) => 
+const ProfileImage = ({ src, alt = "Avatar", className = "", style = {}, onClick, fallbackSeed = "" }) => 
 {
-    const [imgSrc, setImgSrc] = useState(src || DEFAULT_AVATAR);
+    const fallbackAvatar = buildInitialsAvatar(fallbackSeed || alt);
+    const [imgSrc, setImgSrc] = useState(src || fallbackAvatar);
     const isClickable = (typeof onClick === 'function');
 
     useEffect(() => 
     {
-        setImgSrc(src || DEFAULT_AVATAR);
-    }, [src]);
+        setImgSrc(src || fallbackAvatar);
+    }, [src, fallbackAvatar]);
 
     const handleError = () => 
     {
-        if (imgSrc !== DEFAULT_AVATAR)
-            setImgSrc(DEFAULT_AVATAR);
+        if (imgSrc !== fallbackAvatar)
+            setImgSrc(fallbackAvatar);
     };
 
     return (

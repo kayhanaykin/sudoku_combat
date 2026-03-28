@@ -23,7 +23,7 @@ const Overlay = styled.div`
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: ${props => props.$dimBackground ? 'rgba(0, 0, 0, 0.5)' : 'rgba(255, 255, 255, 0.08)'};
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,20 +73,49 @@ const LoadingText = styled.div`
 const ContentWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
 `;
 
 const Header = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 14px;
     border-bottom: 2px solid #f0f0f0;
     padding-bottom: 12px;
-    
-    h3 
-    {
-        margin: 0;
-        font-size: 1.4rem;
-        color: #14532d;
-        font-weight: 700;
-    }
+`;
+
+const Avatar = styled.img`
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #dcfce7;
+    background: #f3f4f6;
+`;
+
+const NameBlock = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+`;
+
+const DisplayName = styled.h3`
+    margin: 0;
+    font-size: 1.2rem;
+    color: #14532d;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const Username = styled.span`
+    margin-top: 2px;
+    font-size: 0.82rem;
+    color: #6b7280;
+    font-weight: 400;
 `;
 
 const StatsContainer = styled.div`
@@ -142,10 +171,11 @@ const ViewProfileBtn = styled.button`
 `;
 
 // COMPONENT DEFINITION
-const PlayerInfoPopup = ({ isOpen, onClose, username }) => 
+const PlayerInfoPopup = ({ isOpen, onClose, username, dimBackground = true }) => 
 {
     const navigate = useNavigate();
     const [playerInfo, setPlayerInfo] = useState(null);
+    const [userInfo, setUserInfo] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => 
@@ -158,12 +188,21 @@ const PlayerInfoPopup = ({ isOpen, onClose, username }) =>
             try 
             {
                 setLoading(true);
-                const response = await fetch(`/api/stats/${username}`);
-                
-                if (response.ok) 
+                const [statsResponse, userResponse] = await Promise.all([
+                    fetch(`/api/stats/${username}`),
+                    fetch(`/api/v1/user/by-username/${username}/`)
+                ]);
+
+                if (statsResponse.ok)
                 {
-                    const data = await response.json();
+                    const data = await statsResponse.json();
                     setPlayerInfo(data);
+                }
+
+                if (userResponse.ok)
+                {
+                    const data = await userResponse.json();
+                    setUserInfo(data);
                 }
             } 
             catch (error) 
@@ -190,6 +229,8 @@ const PlayerInfoPopup = ({ isOpen, onClose, username }) =>
 
     let totalGames = 0;
     let totalWins = 0;
+    const displayName = userInfo?.display_name || username;
+    const avatarSrc = userInfo?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
 
     if (playerInfo && playerInfo.difficulties)
     {
@@ -224,6 +265,11 @@ const PlayerInfoPopup = ({ isOpen, onClose, username }) =>
         });
     }
 
+    const handleAvatarError = (e) =>
+    {
+        e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
+    };
+
     // LOGIC-DRIVEN RENDERING
     let popupContent = null;
     if (loading)
@@ -236,18 +282,13 @@ const PlayerInfoPopup = ({ isOpen, onClose, username }) =>
             statsContent = (
                 <StatsContainer>
                     <StatRowItem>
-                        <StatLabel>Total Games:</StatLabel>
+                        <StatLabel>Total Matches:</StatLabel>
                         <StatValue>{totalGames}</StatValue>
                     </StatRowItem>
 
                     <StatRowItem>
                         <StatLabel>Total Wins:</StatLabel>
                         <StatValue>{totalWins}</StatValue>
-                    </StatRowItem>
-
-                    <StatRowItem>
-                        <StatLabel>Username:</StatLabel>
-                        <StatValue>@{username}</StatValue>
                     </StatRowItem>
                 </StatsContainer>
             );
@@ -257,14 +298,22 @@ const PlayerInfoPopup = ({ isOpen, onClose, username }) =>
             <ContentWrapper>
                 
                 <Header>
-                    <h3>{username}</h3>
+                    <Avatar
+                        src={avatarSrc}
+                        alt={displayName}
+                        onError={handleAvatarError}
+                    />
+                    <NameBlock>
+                        <DisplayName>{displayName}</DisplayName>
+                        <Username>@{username}</Username>
+                    </NameBlock>
                 </Header>
 
                 {statsContent}
 
                 <ActionsContainer>
                     <ViewProfileBtn onClick={handleViewProfile}>
-                        View Full Profile
+                        Go to Profile
                     </ViewProfileBtn>
                 </ActionsContainer>
                 
@@ -273,7 +322,7 @@ const PlayerInfoPopup = ({ isOpen, onClose, username }) =>
     }
 
     return (
-        <Overlay onClick={onClose}>
+        <Overlay onClick={onClose} $dimBackground={dimBackground}>
             <PopupContainer onClick={(e) => e.stopPropagation()}>
                 
                 <CloseButton onClick={onClose}>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../../context/AuthContext';
 import { getUserDetails, updateUserProfile } from '../../services/userService';
-import { addFriend, getFriends } from '../../services/api';
+import { addFriend, getFriends, removeFriend } from '../../services/api';
 import BadgeWidget from '../molecules/BadgeWidget';
 import ProfileImage from '../atoms/ProfileImage';
 import FriendListWidget from '../organisms/FriendListWidget';
@@ -176,6 +176,16 @@ const AlreadyFriendsText = styled.p`
     margin: 0;
 `;
 
+const PendingText = styled.p`
+    padding: 10px 20px;
+    background-color: #fef9c3;
+    color: #854d0e;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: 500;
+    margin: 0;
+`;
+
 // COMPONENT DEFINITION
 const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOtherUser }) =>
 {
@@ -186,7 +196,48 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
     
     const [friendAddStatus, setFriendAddStatus] = useState('idle'); 
     const [friendAddMessage, setFriendAddMessage] = useState('');
-    const [isAlreadyFriends, setIsAlreadyFriends] = useState(false);
+    const [relationshipStatus, setRelationshipStatus] = useState('none');
+    const [relationshipId, setRelationshipId] = useState(null);
+
+    const refreshRelationshipStatus = async (targetUsername) =>
+    {
+        if (!targetUsername)
+            return 'none';
+
+        const friendsData = await getFriends();
+
+        const friends = Array.isArray(friendsData?.friends) ? friendsData.friends : [];
+        const sent = Array.isArray(friendsData?.sent_requests) ? friendsData.sent_requests : [];
+        const incoming = Array.isArray(friendsData?.pending_requests) ? friendsData.pending_requests : [];
+
+        const friendRel = friends.find(f => f.username === targetUsername);
+        if (friendRel)
+        {
+            setRelationshipStatus('friends');
+            setRelationshipId(friendRel.rel_id);
+            return 'friends';
+        }
+
+        const sentRel = sent.find(f => f.username === targetUsername);
+        if (sentRel)
+        {
+            setRelationshipStatus('sent');
+            setRelationshipId(sentRel.rel_id);
+            return 'sent';
+        }
+
+        const incomingRel = incoming.find(f => f.username === targetUsername);
+        if (incomingRel)
+        {
+            setRelationshipStatus('incoming');
+            setRelationshipId(incomingRel.rel_id);
+            return 'incoming';
+        }
+
+        setRelationshipStatus('none');
+        setRelationshipId(null);
+        return 'none';
+    };
 
     useEffect(() =>
     {
@@ -200,17 +251,7 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
                     
                     try 
                     {
-                        const friendsData = await getFriends();
-                        let isFriend = false;
-                        
-                        if (friendsData && friendsData.friends)
-                        {
-                            const found = friendsData.friends.some(f => f.username === userDetails.username);
-                            if (found)
-                                isFriend = true;
-                        }
-                        
-                        setIsAlreadyFriends(isFriend);
+                        await refreshRelationshipStatus(userDetails.username);
                     } 
                     catch (error) 
                     {
@@ -273,11 +314,32 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
         try 
         {
             setFriendAddStatus('loading');
-            await addFriend(userData?.username);
+            const response = await addFriend(userData?.username);
+
+            const responseMessage = String(response?.message || '').toLowerCase();
+            if (responseMessage.includes('relationship already exists'))
+            {
+                const status = await refreshRelationshipStatus(userData?.username);
+                if (status === 'friends')
+                    setFriendAddMessage('You are already friends with this user');
+                else
+                    setFriendAddMessage('Friend request is already pending');
+
+                setFriendAddStatus('error');
+
+                setTimeout(() =>
+                {
+                    setFriendAddStatus('idle');
+                    setFriendAddMessage('');
+                }, 2000);
+                return;
+            }
             
-            setFriendAddMessage('Friend request sent successfully!');
+            setFriendAddMessage('Friend request sent. Waiting for approval.');
             setFriendAddStatus('success');
-            setIsAlreadyFriends(true);
+            setRelationshipStatus('sent');
+
+            await refreshRelationshipStatus(userData?.username);
             
             setTimeout(() => 
             {
@@ -293,14 +355,17 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
             if (error.message)
                 errorMessage = error.message;
             
-            if (errorMessage.includes('already friends')) 
+            const lowerMessage = errorMessage.toLowerCase();
+
+            if (lowerMessage.includes('relationship already exists') || lowerMessage.includes('already friends') || lowerMessage.includes('pending')) 
             {
-                setFriendAddMessage('You are already friends with this user');
-                setIsAlreadyFriends(true);
-            } 
-            else if (errorMessage.includes('pending')) 
-            {
-                setFriendAddMessage('Friend request already pending');
+                const status = await refreshRelationshipStatus(userData?.username);
+
+                if (status === 'friends')
+                    setFriendAddMessage('You are already friends with this user');
+                else
+                    setFriendAddMessage('Friend request is already pending');
+
                 setFriendAddStatus('error');
             } 
             else 
@@ -314,6 +379,35 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
                 setFriendAddStatus('idle');
                 setFriendAddMessage('');
             }, 3000);
+        }
+    };
+
+    const handleRemoveFriend = async () =>
+    {
+        if (!relationshipId)
+            return;
+
+        try
+        {
+            setFriendAddStatus('loading');
+            await removeFriend(relationshipId);
+            setRelationshipStatus('none');
+            setRelationshipId(null);
+            setFriendAddStatus('success');
+            setFriendAddMessage('Friend removed successfully.');
+        }
+        catch (error)
+        {
+            setFriendAddStatus('error');
+            setFriendAddMessage('Failed to remove friend.');
+        }
+        finally
+        {
+            setTimeout(() =>
+            {
+                setFriendAddStatus('idle');
+                setFriendAddMessage('');
+            }, 2000);
         }
     };
 
@@ -361,12 +455,33 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
     {
         let friendActionBtn = null;
         
-        if (isAlreadyFriends)
+        if (relationshipStatus === 'friends')
         {
             friendActionBtn = (
-                <AlreadyFriendsText>
-                    ✓ Already Friends
-                </AlreadyFriendsText>
+                <>
+                    <AlreadyFriendsText>
+                        ✓ Already Friends
+                    </AlreadyFriendsText>
+                    <TextDangerBtn onClick={handleRemoveFriend}>
+                        Unfriend
+                    </TextDangerBtn>
+                </>
+            );
+        }
+        else if (relationshipStatus === 'sent')
+        {
+            friendActionBtn = (
+                <PendingText>
+                    ⏳ Friend Request Pending
+                </PendingText>
+            );
+        }
+        else if (relationshipStatus === 'incoming')
+        {
+            friendActionBtn = (
+                <PendingText>
+                    ⏳ Incoming Request (accept from Social Hub)
+                </PendingText>
             );
         }
         else
@@ -449,7 +564,7 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
                                     setIsEditModalOpen(true);
                             }}
                         >
-                            <StyledProfileImage src={currentAvatar} />
+                            <StyledProfileImage src={currentAvatar} fallbackSeed={currentUsername} />
                         </ImageWrapper>
                         <InfoEditArea>
                             <ProfileName>{displayName}</ProfileName>

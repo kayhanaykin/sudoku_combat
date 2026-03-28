@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import LeaderboardFullRow from '../molecules/LeaderboardFullRow';
+import { useAuth } from '../../context/AuthContext';
+import { device } from '../../utils/device';
 
 // STYLED COMPONENTS
 const TableContainer = styled.div`
@@ -10,9 +12,13 @@ const TableContainer = styled.div`
 `;
 
 const HeaderRow = styled.div`
-    display: flex;
-    padding: 10px 20px;
+    display: grid;
+    grid-template-columns: 60px minmax(180px, 2fr) minmax(90px, 1fr) minmax(90px, 1fr) minmax(90px, 1fr);
+    align-items: center;
+    column-gap: 10px;
+    padding: 12px 16px;
     border-bottom: 2px solid #eee;
+    margin-bottom: 4px;
 
     span 
     {
@@ -20,31 +26,36 @@ const HeaderRow = styled.div`
         color: #000;
         font-size: 0.95rem;
     }
+
+    @media ${device.mobileL}
+    {
+        grid-template-columns: 45px minmax(130px, 2fr) minmax(75px, 1fr) minmax(75px, 1fr);
+
+        .hide-on-mobile
+        {
+            display: none;
+        }
+    }
 `;
 
 const ColRank = styled.span`
-    width: 50px; 
     text-align: center; 
 `;
 
 const ColPlayer = styled.span`
-    flex: 1; 
     text-align: left; 
-    padding-left: 25px; 
+    padding-left: 10px; 
 `;
 
 const ColWins = styled.span`
-    width: 100px; 
     text-align: center; 
 `;
 
 const ColGames = styled.span`
-    width: 100px; 
     text-align: center; 
 `;
 
 const ColRate = styled.span`
-    width: 100px;
     text-align: center;
 `;
 
@@ -54,9 +65,20 @@ const StateMessage = styled.div`
     color: #888;
 `;
 
+const EllipsisRow = styled.div`
+    text-align: center;
+    color: #9ca3af;
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    margin: 2px 0;
+`;
+
 // COMPONENT DEFINITION
 const LeaderboardTable = ({ players, loading, mode }) =>
 {
+    const { user } = useAuth();
+
     if (loading)
     {
         return (
@@ -70,13 +92,37 @@ const LeaderboardTable = ({ players, loading, mode }) =>
 
     if (players && players.length > 0)
     {
-        contentElement = players.map((player, index) => (
+        const topFifty = players.slice(0, 50);
+        const currentUserIndex = players.findIndex(p => p.username === user?.username);
+        const currentUserOutsideTopFifty = currentUserIndex >= 50;
+
+        const rows = topFifty.map((player, index) => (
             <LeaderboardFullRow 
-                key={index} 
+                key={`${player.username || player.user_id}-${index}`} 
                 player={player} 
-                index={index} 
+                index={index}
+                rank={index}
+                highlight={player.username === user?.username}
             />
         ));
+
+        if (currentUserOutsideTopFifty)
+        {
+            rows.push(<EllipsisRow key="ellipsis">...</EllipsisRow>);
+
+            const me = players[currentUserIndex];
+            rows.push(
+                <LeaderboardFullRow
+                    key={`self-${me.username || me.user_id}`}
+                    player={me}
+                    index={currentUserIndex}
+                    rank={currentUserIndex}
+                    highlight={true}
+                />
+            );
+        }
+
+        contentElement = rows;
     }
     else
     {
@@ -94,8 +140,8 @@ const LeaderboardTable = ({ players, loading, mode }) =>
                 <ColRank>Rank</ColRank>
                 <ColPlayer>Player</ColPlayer>
                 <ColWins>Wins</ColWins>
-                <ColGames>Games</ColGames>
-                <ColRate>Win Rate</ColRate>
+                <ColGames>Pts</ColGames>
+                <ColRate className="hide-on-mobile">Win Rate</ColRate>
             </HeaderRow>
 
             {contentElement}

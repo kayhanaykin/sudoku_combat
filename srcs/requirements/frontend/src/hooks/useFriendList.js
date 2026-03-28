@@ -58,6 +58,22 @@ const useFriendList = () =>
                     });
                 }
 
+                if (data.sent_requests)
+                {
+                    data.sent_requests.forEach(req =>
+                    {
+                        combinedList.push({
+                            id: req.rel_id,
+                            userId: req.id,
+                            username: req.username,
+                            displayName: req.display_name || req.username,
+                            avatar: req.avatar,
+                            status: 'sent',
+                            is_online: false
+                        });
+                    });
+                }
+
                 if (data.friends)
                 {
                     data.friends.forEach(friend =>

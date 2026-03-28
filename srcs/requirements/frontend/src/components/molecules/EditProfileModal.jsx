@@ -347,7 +347,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
                     <AvatarSection>
                         <AvatarWrapper>
                             
-                            <StyledProfileImage src={previewUrl} />
+                            <StyledProfileImage src={previewUrl} fallbackSeed={currentUserData?.username || ''} />
                             
                             <AvatarOverlay>
                                 <span>📷</span>
