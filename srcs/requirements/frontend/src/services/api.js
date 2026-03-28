@@ -441,11 +441,14 @@ export const getMatchHistory = async (username) =>
   }
 };
 
-export const getLeaderboard = async (mode = 'Total', scope = 'alltime') => 
+export const getLeaderboard = async (mode = 'Total', scope = 'alltime', limit = null) => 
 {
   try
   {
-    const url = `${API_BASE_URL}/api/stats/leaderboard/${mode}?scope=${encodeURIComponent(scope)}`;
+    let url = `${API_BASE_URL}/api/stats/leaderboard/${mode}?scope=${encodeURIComponent(scope)}`;
+    if (limit !== null && limit !== undefined)
+      url += `&limit=${encodeURIComponent(limit)}`;
+
     const response = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),

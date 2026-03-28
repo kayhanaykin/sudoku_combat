@@ -9,6 +9,7 @@ const ItemContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    min-width: 0;
     padding: 8px 10px;
     margin-bottom: 8px;
     background: #ffffff;
@@ -37,6 +38,8 @@ const UserInfo = styled.div`
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
+    flex: 1;
 `;
 
 const AvatarWrapper = styled.div`
@@ -95,23 +98,32 @@ const StatusDot = styled.div`
 const TextDetails = styled.div`
     display: flex;
     flex-direction: column;
+    min-width: 0;
 `;
 
 const DisplayName = styled.span`
     font-size: 0.95rem;
     font-weight: 600;
     color: #374151;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const UsernameText = styled.span`
     font-size: 0.75rem;
     color: #9ca3af;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const ActionsWrapper = styled.div`
     display: flex;
     gap: 6px;
     align-items: center;
+    flex-shrink: 0;
+    margin-left: 8px;
 `;
 
 const SmallActionBtn = styled(ActionBtn)`
@@ -159,9 +171,11 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     
     const isPendingStatus = (status === 'pending');
+    const isSentStatus = (status === 'sent');
+    const isRequestStatus = isPendingStatus || isSentStatus;
     let statusClass = 'offline';
 
-    if (isPendingStatus)
+    if (isRequestStatus)
         statusClass = 'pending';
     else if (isOnline)
         statusClass = 'online';
@@ -179,7 +193,7 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
 
     const handleItemClick = () =>
     {
-        if (!isPendingStatus)
+        if (!isRequestStatus)
             setIsPopupOpen(true);
     };
 
@@ -190,7 +204,7 @@ const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApp
 
     return (
         <>
-            <ItemContainer $isPending={isPendingStatus} onClick={handleItemClick}>
+            <ItemContainer $isPending={isRequestStatus} onClick={handleItemClick}>
                 
                 <UserInfo>
                     <AvatarWrapper>

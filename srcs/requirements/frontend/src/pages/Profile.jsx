@@ -271,7 +271,7 @@ const Profile = () =>
                     if (details)
                     {
                         setUserDetails(details);
-                        const statsData = await getUserStats(details.id);
+                        const statsData = await getUserStats(details.username);
                         setStats(statsData);
                         setIsOtherUser(false);
                     }

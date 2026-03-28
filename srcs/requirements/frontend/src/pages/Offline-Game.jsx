@@ -142,6 +142,7 @@ const OfflineGame = () =>
     const controlsRef = useRef(null); 
     
     const [playerName, setPlayerName] = useState('You');
+    const [playerAvatar, setPlayerAvatar] = useState(null);
 
     let logicUsername = playerName;
     if (user)
@@ -149,6 +150,22 @@ const OfflineGame = () =>
         if (user.username)
             logicUsername = user.username;
     }
+
+    useEffect(() =>
+    {
+        if (user)
+        {
+            if (user.display_name)
+                setPlayerName(user.display_name);
+            else if (user.username)
+                setPlayerName(user.username);
+
+            if (user.avatar)
+                setPlayerAvatar(user.avatar);
+            else if (user.avatar_url)
+                setPlayerAvatar(user.avatar_url);
+        }
+    }, [user]);
 
     const { 
         board, timer, difficulty, lives, selectedCell, isGameOver,
@@ -213,8 +230,15 @@ const OfflineGame = () =>
                         finalName = data.nickname;
                     else if (data.username)
                         finalName = data.username;
+
+                    let finalAvatar = null;
+                    if (data.avatar)
+                        finalAvatar = data.avatar;
+                    else if (data.avatar_url)
+                        finalAvatar = data.avatar_url;
                         
                     setPlayerName(finalName);
+                    setPlayerAvatar(finalAvatar);
                 }).catch(() => {});
             }
             else if (location.state.username)
@@ -262,6 +286,7 @@ const OfflineGame = () =>
                 <PlayerCard 
                     title={playerName} 
                     lives={lives} 
+                    avatar={playerAvatar}
                 />
 
                 <BoardWrapper ref={boardRef}>

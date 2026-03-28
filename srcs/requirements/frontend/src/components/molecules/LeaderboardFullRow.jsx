@@ -35,7 +35,8 @@ const calculateWinRate = (wins, games) =>
 // STYLED COMPONENTS
 const RowContainer = styled.div`
     display: grid;
-    grid-template-columns: 50px 2fr 1fr 1.2fr 1fr;
+    grid-template-columns: 60px minmax(180px, 2fr) minmax(90px, 1fr) minmax(90px, 1fr) minmax(90px, 1fr);
+    column-gap: 10px;
     align-items: center;
     padding: 12px 16px;
     margin-bottom: 10px;
@@ -75,6 +76,12 @@ const RowContainer = styled.div`
     
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
 
+    ${props => props.$highlight && `
+        border-color: #22c55e;
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25), 0 4px 10px rgba(34, 197, 94, 0.2);
+        background-color: #f0fdf4;
+    `}
+
     &:hover 
     {
         transform: translateY(-2px);
@@ -98,14 +105,14 @@ const RowContainer = styled.div`
 
     @media ${device.tablet}
     {
-        grid-template-columns: 40px 1.5fr 1fr 1fr 1fr;
+        grid-template-columns: 50px minmax(150px, 2fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr);
         padding: 10px 12px;
         font-size: 0.9rem;
     }
 
     @media ${device.mobileL}
     {
-        grid-template-columns: 35px 2fr 1fr 1fr; 
+        grid-template-columns: 45px minmax(130px, 2fr) minmax(75px, 1fr) minmax(75px, 1fr); 
         
         .hide-on-mobile 
         {
@@ -123,6 +130,30 @@ const RankIcon = styled.span`
     @media ${device.mobileL}
     {
         font-size: 1.2rem;
+    }
+`;
+
+const PlayerCell = styled.span`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    padding-left: 10px;
+`;
+
+const Avatar = styled.img`
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e5e7eb;
+    background: #f3f4f6;
+    flex-shrink: 0;
+
+    @media ${device.mobileL}
+    {
+        width: 30px;
+        height: 30px;
     }
 `;
 
@@ -158,13 +189,14 @@ const HighlightedStat = styled(StatText)`
 `;
 
 // COMPONENT DEFINITION
-const LeaderboardFullRow = ({ player, index }) =>
+const LeaderboardFullRow = ({ player, index, rank, highlight = false }) =>
 {
     const [isPopupOpen, setIsPopupOpen] = useState(false);
     const navigate = useNavigate();
     const { user } = useAuth();
     
-    const icon = getRankIcon(index);
+    const effectiveRank = (rank !== undefined && rank !== null) ? rank : index;
+    const icon = getRankIcon(effectiveRank);
     let name = `User #${player.user_id}`;
     
     if (player.display_name !== undefined && player.display_name !== null && player.display_name !== '')
@@ -175,6 +207,8 @@ const LeaderboardFullRow = ({ player, index }) =>
     const username = player.username;
     const wins = player.wins || 0;
     const games = player.games || 0;
+    const points = (player.score !== undefined && player.score !== null) ? player.score : wins;
+    const avatarSrc = player.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || name || 'US').slice(0, 2).toUpperCase())}`;
     
     let isCurrentUser = false;
     if (user !== undefined && user !== null && user.username === player.username)
@@ -188,35 +222,48 @@ const LeaderboardFullRow = ({ player, index }) =>
             setIsPopupOpen(true);
     };
 
+    const handleAvatarError = (e) =>
+    {
+        e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || name || 'US').slice(0, 2).toUpperCase())}`;
+    };
+
     return (
         <>
-            <RowContainer $rankIndex={index} onClick={handleRowClick}>
+            <RowContainer $rankIndex={effectiveRank} $highlight={highlight || isCurrentUser} onClick={handleRowClick}>
                 
                 <RankIcon>
                     {icon}
                 </RankIcon>
                 
-                <PlayerInfo>
-                    <DisplayName>
-                        {name}
-                    </DisplayName>
-                    {username !== undefined && username !== null && username !== '' && 
-                    (
-                        <UsernameSubtitle>
-                            @{username}
-                        </UsernameSubtitle>
-                    )}
-                </PlayerInfo>
+                <PlayerCell>
+                    <Avatar
+                        src={avatarSrc}
+                        alt={username || name}
+                        onError={handleAvatarError}
+                    />
+
+                    <PlayerInfo>
+                        <DisplayName>
+                            {name}
+                        </DisplayName>
+                        {username !== undefined && username !== null && username !== '' && 
+                        (
+                            <UsernameSubtitle>
+                                @{username}
+                            </UsernameSubtitle>
+                        )}
+                    </PlayerInfo>
+                </PlayerCell>
                 
                 <HighlightedStat>
-                    {wins} W
+                    {wins}
                 </HighlightedStat>
                 
-                <StatText className="hide-on-mobile">
-                    {games} P
+                <StatText>
+                    {points}
                 </StatText>
                 
-                <HighlightedStat>
+                <HighlightedStat className="hide-on-mobile">
                     {calculateWinRate(wins, games)}
                 </HighlightedStat>
                 

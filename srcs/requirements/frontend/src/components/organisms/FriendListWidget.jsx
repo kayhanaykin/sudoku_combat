@@ -8,7 +8,8 @@ import FriendItem from '../molecules/FriendItem';
 const WidgetContainer = styled.div`
     display: flex;
     flex-direction: column;
-    height: 450px;
+    height: 100%;
+    min-height: 0;
     width: 100%;
     background-color: transparent;
     border: none;
@@ -93,6 +94,12 @@ const SearchButton = styled.button`
     {
         background-color: #166534;
     }
+
+    &:disabled
+    {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
 `;
 
 const StatusMessage = styled.div`
@@ -109,6 +116,7 @@ const StatusMessage = styled.div`
 
 const FriendListScrollArea = styled.div`
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding-right: 5px;
     scrollbar-width: thin;
@@ -145,6 +153,8 @@ const FriendListWidget = () =>
 {
     const navigate = useNavigate();
     const [searchInput, setSearchInput] = useState('');
+    const [searchError, setSearchError] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
     
     const {
         friends,
@@ -158,16 +168,39 @@ const FriendListWidget = () =>
     } = useFriendList();
 
     const pendingRequests = friends.filter(f => f.status === 'pending');
+    const sentRequests = friends.filter(f => f.status === 'sent');
     const activeFriends = friends.filter(f => f.status === 'accepted');
 
-    const handleSearchProfile = (e) =>
+    const handleSearchProfile = async (e) =>
     {
         e.preventDefault();
+        setSearchError('');
         
-        if (searchInput.trim()) 
+        const username = searchInput.trim();
+        if (username)
         {
-            navigate(`/profile/${searchInput.trim()}`);
-            setSearchInput('');
+            try
+            {
+                setIsSearching(true);
+
+                const response = await fetch(`/api/v1/user/by-username/${encodeURIComponent(username)}/`);
+                if (!response.ok)
+                {
+                    setSearchError('User not found.');
+                    return;
+                }
+
+                navigate(`/profile/${username}`);
+                setSearchInput('');
+            }
+            catch (err)
+            {
+                setSearchError('Search failed. Please try again.');
+            }
+            finally
+            {
+                setIsSearching(false);
+            }
         }
     };
 
@@ -177,6 +210,16 @@ const FriendListWidget = () =>
         errorElement = (
             <StatusMessage $isError={true}>
                 {error}
+            </StatusMessage>
+        );
+    }
+
+    let searchErrorElement = null;
+    if (searchError !== null && searchError !== '')
+    {
+        searchErrorElement = (
+            <StatusMessage $isError={true}>
+                {searchError}
             </StatusMessage>
         );
     }
@@ -227,6 +270,29 @@ const FriendListWidget = () =>
             );
         }
 
+        let sentSection = null;
+        if (sentRequests.length > 0)
+        {
+            sentSection = (
+                <>
+                    <SectionTitle>
+                        Sent Requests ({sentRequests.length})
+                    </SectionTitle>
+                    {sentRequests.map(req => (
+                        <FriendItem
+                            key={req.id}
+                            id={req.id}
+                            username={req.username}
+                            displayName={req.displayName}
+                            avatar={req.avatar}
+                            status="sent"
+                            onRemove={removeFriend}
+                        />
+                    ))}
+                </>
+            );
+        }
+
         let friendsListContent = null;
         if (activeFriends.length === 0)
         {
@@ -255,6 +321,7 @@ const FriendListWidget = () =>
         contentElement = (
             <>
                 {pendingSection}
+                {sentSection}
                 <SectionTitle>
                     Friends ({activeFriends.length})
                 </SectionTitle>
@@ -280,13 +347,20 @@ const FriendListWidget = () =>
                         type="text"
                         placeholder="Search profile..."
                         value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
+                        onChange={(e) =>
+                        {
+                            setSearchInput(e.target.value);
+                            if (searchError)
+                                setSearchError('');
+                        }}
                     />
-                    <SearchButton type="submit">
-                        Go
+                    <SearchButton type="submit" disabled={isSearching}>
+                        {isSearching ? '...' : 'Go'}
                     </SearchButton>
                 </SearchInputWrapper>
             </SearchForm>
+
+            {searchErrorElement}
 
             <AddFriendForm onAdd={addFriend} />
 
