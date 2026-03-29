@@ -210,9 +210,16 @@ const LeaderboardFullRow = ({ player, index, rank, highlight = false }) =>
     const points = (player.score !== undefined && player.score !== null) ? player.score : wins;
     const avatarSrc = player.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || name || 'US').slice(0, 2).toUpperCase())}`;
     
+    const currentUsername = String(user?.username || '').trim().toLowerCase();
+    const playerUsername = String(player?.username || '').trim().toLowerCase();
+    const currentUserId = user?.id ?? user?.user_id;
+    const playerUserId = player?.user_id ?? player?.id;
+
     let isCurrentUser = false;
-    if (user !== undefined && user !== null && user.username === player.username)
+    if (currentUsername && playerUsername && currentUsername === playerUsername)
         isCurrentUser = true;
+    else if (currentUserId !== undefined && currentUserId !== null && playerUserId !== undefined && playerUserId !== null)
+        isCurrentUser = Number(currentUserId) === Number(playerUserId);
 
     const handleRowClick = () => 
     {

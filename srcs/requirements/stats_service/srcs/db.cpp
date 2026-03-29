@@ -1,5 +1,4 @@
 #include "db.hpp"
-
 #include <chrono>
 #include <thread>
 

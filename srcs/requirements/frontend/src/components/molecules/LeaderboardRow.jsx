@@ -43,6 +43,12 @@ const RowContainer = styled.div`
         '#f3f4f6'
     };
 
+    ${props => props.$highlight && `
+        border-color: #22c55e;
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25), 0 4px 10px rgba(34, 197, 94, 0.2);
+        background-color: #f0fdf4;
+    `}
+
     cursor: pointer;
 
     &:hover 
@@ -115,7 +121,15 @@ const LeaderboardRow = ({ player, index }) =>
     const wins = player.wins || 0;
     const avatarSrc = player.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || displayName || 'US').slice(0, 2).toUpperCase())}`;
 
-    const isCurrentUser = user && user.username === username;
+    const currentUsername = String(user?.username || '').trim().toLowerCase();
+    const playerUsername = String(username || '').trim().toLowerCase();
+    const currentUserId = user?.id ?? user?.user_id;
+    const playerUserId = player?.user_id ?? player?.id;
+
+    const isCurrentUser = (
+        (currentUsername && playerUsername && currentUsername === playerUsername) ||
+        (currentUserId !== undefined && currentUserId !== null && playerUserId !== undefined && playerUserId !== null && Number(currentUserId) === Number(playerUserId))
+    );
 
     const handleRowClick = () =>
     {
@@ -132,7 +146,7 @@ const LeaderboardRow = ({ player, index }) =>
 
     return (
         <>
-            <RowContainer $rankIndex={index} onClick={handleRowClick}>
+            <RowContainer $rankIndex={index} $highlight={isCurrentUser} onClick={handleRowClick}>
                 
                 <RankIcon>
                     {icon}

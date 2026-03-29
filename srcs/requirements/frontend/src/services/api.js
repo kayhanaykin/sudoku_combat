@@ -169,18 +169,32 @@ export const getFriends = async () =>
 
 export const removeFriend = async (friendId) => 
 {
-  const url = `${API_BASE_URL}/api/v1/user/friends/remove/`;
+  const primaryUrl = `${API_BASE_URL}/api/v1/user/friends/`;
+  const fallbackUrl = `${API_BASE_URL}/api/v1/user/friends/remove/`;
+
   try
   {
-    const response = await fetch(url, {
+    const primaryResponse = await fetch(primaryUrl, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ action: 'remove', rel_id: friendId }),
+      credentials: 'include'
+    });
+
+    if (primaryResponse.ok)
+      return await primaryResponse.json();
+
+    const fallbackResponse = await fetch(fallbackUrl, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ friend_id: friendId }),
       credentials: 'include'
     });
-    if (!response.ok)
+
+    if (!fallbackResponse.ok)
       throw new Error('Failed to remove friend');
-    return await response.json();
+
+    return await fallbackResponse.json();
   }
   catch (error)
   {

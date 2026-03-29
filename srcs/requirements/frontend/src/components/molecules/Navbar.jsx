@@ -398,7 +398,7 @@ const Navbar = () =>
                 
                 <DropdownContainer ref={friendsRef}>
                     <FriendsTriggerButton type="button" onClick={toggleFriends}>
-                        👥 Friends
+                        👥 Social Hub
                     </FriendsTriggerButton>
                     {friendsMenuElement}
                 </DropdownContainer>

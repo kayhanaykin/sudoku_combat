@@ -100,6 +100,23 @@ const LeaderboardTable = ({ players, loading, mode }) =>
 {
     const { user } = useAuth();
 
+    const isCurrentUserPlayer = (player) =>
+    {
+        const currentUsername = String(user?.username || '').trim().toLowerCase();
+        const playerUsername = String(player?.username || '').trim().toLowerCase();
+
+        if (currentUsername && playerUsername && currentUsername === playerUsername)
+            return true;
+
+        const currentUserId = user?.id ?? user?.user_id;
+        const playerUserId = player?.user_id ?? player?.id;
+
+        if (currentUserId !== undefined && currentUserId !== null && playerUserId !== undefined && playerUserId !== null)
+            return Number(currentUserId) === Number(playerUserId);
+
+        return false;
+    };
+
     if (loading)
     {
         return (
@@ -114,7 +131,7 @@ const LeaderboardTable = ({ players, loading, mode }) =>
     if (players && players.length > 0)
     {
         const topFifty = players.slice(0, 50);
-        const currentUserIndex = players.findIndex(p => p.username === user?.username);
+        const currentUserIndex = players.findIndex(isCurrentUserPlayer);
         const currentUserOutsideTopFifty = currentUserIndex >= 50;
 
         const rows = topFifty.map((player, index) => (
@@ -123,7 +140,7 @@ const LeaderboardTable = ({ players, loading, mode }) =>
                 player={player} 
                 index={index}
                 rank={index}
-                highlight={player.username === user?.username}
+                highlight={isCurrentUserPlayer(player)}
             />
         ));
 
