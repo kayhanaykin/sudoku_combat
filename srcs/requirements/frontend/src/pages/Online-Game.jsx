@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../context/AuthContext';
 import useGameLogic from '../hooks/useGameLogic';
 import GameHeader from '../components/molecules/GameHeader';
 import PlayerCard from '../components/molecules/PlayerCard';
@@ -93,6 +94,7 @@ const OnlineGame = () =>
 {
     const { roomId } = useParams();
     const location = useLocation();
+    const { user } = useAuth();
     
     const ws = useRef(null);
     const boardRef = useRef(null); 
@@ -106,8 +108,8 @@ const OnlineGame = () =>
     }
     
     const [players, setPlayers] = useState({ 
-        you: { name: 'Loading...', avatar: null }, 
-        opponent: { name: 'Waiting...', avatar: null } 
+        you: { displayName: 'Loading...', username: '', avatar: null }, 
+        opponent: { displayName: 'Waiting...', username: '', avatar: null } 
     });
 
     const getAvatarUrl = (avatarPath) => 
@@ -148,8 +150,8 @@ const OnlineGame = () =>
         gameResult, setGameResult,
         setSelectedCell
     } = useGameLogic('online', sendOnlineMove, { 
-        username: players.you.name, 
-        opponent: players.opponent.name 
+        username: players.you.username || user?.username || '', 
+        opponent: players.opponent.username || '' 
     });
 
     const [opponentLives, setOpponentLives] = useState(3);
@@ -210,6 +212,10 @@ const OnlineGame = () =>
                     else if (oData.username)
                         oName = oData.username;
 
+                    let oUsername = '';
+                    if (oData.username)
+                        oUsername = oData.username;
+
                     const oAvatar = getAvatarUrl(oData.avatar);
                     
                     let gName = 'Waiting...';
@@ -226,22 +232,42 @@ const OnlineGame = () =>
                             gName = gData.nickname;
                         else if (gData.username)
                             gName = gData.username;
+
+                        let guestUsername = '';
+                        if (gData.username)
+                            guestUsername = gData.username;
                             
                         gAvatar = getAvatarUrl(gData.avatar);
+
+                        if (isOwner)
+                        {
+                            setPlayers({ 
+                                you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
+                                opponent: { displayName: gName, username: guestUsername, avatar: gAvatar } 
+                            });
+                        }
+                        else
+                        {
+                            setPlayers({ 
+                                you: { displayName: gName, username: guestUsername, avatar: gAvatar }, 
+                                opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
+                            });
+                        }
+                        return;
                     }
 
                     if (isOwner)
                     {
                         setPlayers({ 
-                            you: { name: oName, avatar: oAvatar }, 
-                            opponent: { name: gName, avatar: gAvatar } 
+                            you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
+                            opponent: { displayName: gName, username: '', avatar: gAvatar } 
                         });
                     }
                     else
                     {
                         setPlayers({ 
-                            you: { name: gName, avatar: gAvatar }, 
-                            opponent: { name: oName, avatar: oAvatar } 
+                            you: { displayName: gName, username: '', avatar: gAvatar }, 
+                            opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
                         });
                     }
                 }
@@ -249,13 +275,13 @@ const OnlineGame = () =>
             catch(e) 
             {
                 setPlayers({ 
-                    you: { name: 'You', avatar: null }, 
-                    opponent: { name: 'Opponent', avatar: null } 
+                    you: { displayName: 'You', username: user?.username || '', avatar: null }, 
+                    opponent: { displayName: 'Opponent', username: '', avatar: null } 
                 });
             }
         };
         fetchNames();
-    }, [roomId, isOwner]);
+    }, [roomId, isOwner, user?.username]);
 
     useEffect(() => 
     {
@@ -293,13 +319,14 @@ const OnlineGame = () =>
                             {
                                 if (isOwner) 
                                 {
-                                    if (prev.opponent.name === 'Waiting...')
+                                    if (prev.opponent.displayName === 'Waiting...')
                                     {
                                         if (message.gameState.guestId)
                                         {
                                             getUserById(message.gameState.guestId).then(gData => 
                                             {
                                                 let newGuestName = gData.username;
+                                                let newGuestUsername = gData.username || '';
                                                 if (gData.display_name)
                                                     newGuestName = gData.display_name;
                                                 else if (gData.nickname)
@@ -309,7 +336,7 @@ const OnlineGame = () =>
                                                 
                                                 setPlayers(p => ({ 
                                                     ...p, 
-                                                    opponent: { name: newGuestName, avatar: newGuestAvatar } 
+                                                    opponent: { displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar } 
                                                 }));
                                             });
                                         }
@@ -426,7 +453,8 @@ const OnlineGame = () =>
             <GameMainArea>
                 
                 <PlayerCard 
-                    title={players.you.name} 
+                    title={players.you.displayName}
+                    username={players.you.username}
                     avatar={players.you.avatar} 
                     lives={lives} 
                 />
@@ -443,7 +471,8 @@ const OnlineGame = () =>
                 </BoardWrapper>
 
                 <PlayerCard 
-                    title={players.opponent.name} 
+                    title={players.opponent.displayName}
+                    username={players.opponent.username}
                     avatar={players.opponent.avatar} 
                     lives={opponentLives} 
                     align="right" 

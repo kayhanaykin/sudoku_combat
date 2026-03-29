@@ -51,6 +51,17 @@ const CardTitle = styled.div`
     color: #020d18;
 `;
 
+const UsernameText = styled.div`
+    font-size: 1.4vmin;
+    color: #4b5563;
+    line-height: 1.2;
+
+    @media (max-width: 768px)
+    {
+        font-size: 1.9vmin;
+    }
+`;
+
 const HeartsContainer = styled.div`
     display: flex;
     gap: 0.4vmin;
@@ -76,7 +87,7 @@ const HeartIcon = styled.span`
 `;
 
 // COMPONENT DEFINITION
-const PlayerCard = ({ title, lives, align, avatar }) => 
+const PlayerCard = ({ title, username, lives, align, avatar }) => 
 {
     let finalAvatarUrl = null;
     
@@ -124,6 +135,12 @@ const PlayerCard = ({ title, lives, align, avatar }) =>
             <CardTitle>
                 {title}
             </CardTitle>
+
+            {username && username !== '' && (
+                <UsernameText>
+                    @{username}
+                </UsernameText>
+            )}
             
             <HeartsContainer>
                 {renderHearts()}

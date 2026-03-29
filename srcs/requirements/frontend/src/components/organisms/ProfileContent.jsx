@@ -489,7 +489,7 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
             let addBtnText = 'Add Friend';
             if (friendAddStatus === 'loading')
                 addBtnText = 'Adding...';
-            else if (friendAddStatus === 'success')
+            else if (friendAddStatus === 'success' && relationshipStatus === 'sent')
                 addBtnText = 'Added!';
             else if (friendAddStatus === 'error')
                 addBtnText = 'Error';

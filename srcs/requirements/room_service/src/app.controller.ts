@@ -231,6 +231,7 @@ export class AppController
                 success: true,
                 ownerId: room.ownerId,
                 guestId: room.guestId,
+                difficulty: room.difficulty,
                 currBoard: room.currBoard,
                 health: room.health,
                 status: room.status

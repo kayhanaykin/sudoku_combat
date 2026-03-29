@@ -22,7 +22,6 @@ const MessageContainer = styled.div`
     {
         if (props.$isError)
             return '#dc2626';
-            
         return '#4b5563';
     }};
     
@@ -31,7 +30,6 @@ const MessageContainer = styled.div`
     {
         if (props.$isError)
             return 'center';
-            
         return 'left';
     }};
 `;
@@ -152,6 +150,20 @@ const MatchHistoryTable = ({ username }) =>
         5: 'Extreme'
     };
 
+    const formatDuration = (seconds) =>
+    {
+        const parsed = Number(seconds);
+
+        if (Number.isNaN(parsed) || parsed <= 0)
+            return '-';
+
+        const totalSeconds = Math.round(parsed);
+        const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const s = (totalSeconds % 60).toString().padStart(2, '0');
+
+        return `${m}:${s}`;
+    };
+
     useEffect(() => 
     {
         if (!username) 
@@ -233,9 +245,7 @@ const MatchHistoryTable = ({ username }) =>
                             if (difficultyMap[match.difficulty])
                                 diffText = difficultyMap[match.difficulty];
 
-                            let duration = 0;
-                            if (match.time_seconds)
-                                duration = Math.round(match.time_seconds);
+                            const duration = formatDuration(match.time_seconds);
 
                             let resultText = 'N/A';
                             let resultType = 'none';
@@ -264,7 +274,7 @@ const MatchHistoryTable = ({ username }) =>
                                         {diffText}
                                     </td>
                                     <td>
-                                        {duration}s
+                                        {duration}
                                     </td>
                                     <td>
                                         <ResultBadge $type={resultType}>

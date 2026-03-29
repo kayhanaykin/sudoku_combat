@@ -54,69 +54,78 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
     useEffect(() => 
     {
-        if (location.state) 
+        if (mode === 'offline' && location.state) 
         {
-            if (mode === 'offline') 
+            const { gameData, difficulty: diffLevel } = location.state;
+            
+            if (gameData) 
             {
-                const { gameData, difficulty: diffLevel } = location.state;
+                const rawBoard = gameData.board || gameData.current_board;
+                const id = gameData.game_id || gameData.gameId;
                 
-                if (gameData) 
-                {
-                    const rawBoard = gameData.board || gameData.current_board;
-                    const id = gameData.game_id || gameData.gameId;
-                    
-                    if (rawBoard)
-                        setBoard(formatBoardFromData(rawBoard));
-                    
-                    if (id)
-                        setGameId(id);
-                    
-                    if (gameData.lives !== undefined)
-                        setLives(gameData.lives);
-                }
+                if (rawBoard)
+                    setBoard(formatBoardFromData(rawBoard));
                 
-                if (diffLevel) 
-                {
-                    const levels = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
-                    setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
-                }
-            } 
-            else if (mode === 'online') 
-            {
-                const { difficulty: diffLevel, role } = location.state;
-                const roomId = urlRoomId; 
+                if (id)
+                    setGameId(id);
                 
-                if (roomId) 
-                {
-                    setGameId(roomId);
-                    
-                    const fetchGameState = async () => 
-                    {
-                        try 
-                        {
-                            const response = await fetch(`/api/room/game-state/${roomId}`);
-                            const data = await response.json();
-                            
-                            if (data.success && data.currBoard) 
-                            {
-                                setBoard(formatBoardFromData(data.currBoard));
-                                
-                                if (data.health)
-                                    setLives(role === 'owner' ? data.health[0] : data.health[1]);
-                            }
-                        } 
-                        catch (error) 
-                        {
-                            console.error("Error fetching online board:", error);
-                        }
-                    };
-                    
-                    fetchGameState();
-                }
-                
-                if (diffLevel)
-                    setDifficulty(diffLevel);
+                if (gameData.lives !== undefined)
+                    setLives(gameData.lives);
             }
+            
+            if (diffLevel) 
+            {
+                const levels = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
+                setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
+            }
+        }
+        else if (mode === 'online') 
+        {
+            let diffLevel = null;
+            let role = null;
+
+            if (location.state)
+            {
+                diffLevel = location.state.difficulty;
+                role = location.state.role;
+            }
+
+            const roomId = urlRoomId;
+
+            if (roomId)
+            {
+                setGameId(roomId);
+
+                const fetchGameState = async () => 
+                {
+                    try 
+                    {
+                        const response = await fetch(`/api/room/game-state/${roomId}`);
+                        const data = await response.json();
+
+                        if (data.success)
+                        {
+                            if (data.currBoard)
+                                setBoard(formatBoardFromData(data.currBoard));
+
+                            if (data.health && role)
+                                setLives(role === 'owner' ? data.health[0] : data.health[1]);
+
+                            if (data.difficulty)
+                                setDifficulty(data.difficulty);
+                        }
+                    }
+                    catch (error) 
+                    {
+                        console.error("Error fetching online board:", error);
+                    }
+                };
+
+                fetchGameState();
+            }
+
+            if (diffLevel)
+                setDifficulty(diffLevel);
         }
     }, [location, mode, urlRoomId]);
 

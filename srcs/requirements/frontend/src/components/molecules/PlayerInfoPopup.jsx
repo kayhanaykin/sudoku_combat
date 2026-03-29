@@ -104,7 +104,6 @@ const DisplayName = styled.h3`
     font-size: 1.2rem;
     color: #14532d;
     font-weight: 800;
-    text-transform: uppercase;
     letter-spacing: 0.03em;
     white-space: nowrap;
     overflow: hidden;
