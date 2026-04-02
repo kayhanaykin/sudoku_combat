@@ -173,7 +173,7 @@ const OnlineGame = () =>
                     difficulty: diffMap[difficulty] || 2,
                     mode: 'online',
                     result: 'lose',
-                    time_seconds: timer,
+                    time_seconds: seconds,
                     opponent: players.opponent.username
                 })
             });
@@ -187,7 +187,7 @@ const OnlineGame = () =>
     };
 
     const { 
-        board, timer, difficulty, lives, selectedCell, isGameOver,
+        board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
         setLives, updateBoardFromOpponent,
         setShowError, setErrorMessage,
