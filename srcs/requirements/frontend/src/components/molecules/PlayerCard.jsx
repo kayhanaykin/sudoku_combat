@@ -68,6 +68,13 @@ const HeartsContainer = styled.div`
     font-size: 2vmin;
 `;
 
+const MovesContainer = styled.div`
+    font-size: 1.6vmin;
+    color: #2c3e50;
+    font-weight: 600;
+    margin-top: 0.5vmin;
+`;
+
 const HeartIcon = styled.span`
     opacity: ${props => 
     {
@@ -87,7 +94,7 @@ const HeartIcon = styled.span`
 `;
 
 // COMPONENT DEFINITION
-const PlayerCard = ({ title, username, lives, align, avatar }) => 
+const PlayerCard = ({ title, username, lives, align, avatar, moves }) => 
 {
     let finalAvatarUrl = null;
     
@@ -145,6 +152,12 @@ const PlayerCard = ({ title, username, lives, align, avatar }) =>
             <HeartsContainer>
                 {renderHearts()}
             </HeartsContainer>
+
+            {moves !== undefined && (
+                <MovesContainer>
+                    Moves: {moves}
+                </MovesContainer>
+            )}
             
         </CardWrapper>
     );

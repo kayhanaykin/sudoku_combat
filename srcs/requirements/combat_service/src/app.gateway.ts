@@ -112,7 +112,9 @@ export class AppGateway
                     loser,
                     winner,
                     isWin,
-                    moveBy: data.role
+                    moveBy: data.role,
+                    ownerMoves: gameState.ownerMoves,
+                    guestMoves: gameState.guestMoves
                 });
                 roomClients.forEach((ws: WebSocket) =>
                 {

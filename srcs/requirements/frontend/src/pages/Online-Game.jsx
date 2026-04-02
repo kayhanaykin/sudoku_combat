@@ -202,6 +202,8 @@ const OnlineGame = () =>
     });
 
     const [opponentLives, setOpponentLives] = useState(3);
+    const [playerMoves, setPlayerMoves] = useState(0);
+    const [opponentMoves, setOpponentMoves] = useState(0);
 
     useEffect(() => {
         if (location.state && location.state.exactStartTime) {
@@ -412,11 +414,15 @@ const OnlineGame = () =>
                     {
                         setLives(message.ownerHealth);
                         setOpponentLives(message.guestHealth);
+                        setPlayerMoves(message.ownerMoves || 0);
+                        setOpponentMoves(message.guestMoves || 0);
                     }
                     else
                     {
                         setLives(message.guestHealth);
                         setOpponentLives(message.ownerHealth);
+                        setPlayerMoves(message.guestMoves || 0);
+                        setOpponentMoves(message.ownerMoves || 0);
                     }
 
                     if (message.valid === false) 
@@ -517,7 +523,8 @@ const OnlineGame = () =>
                     title={players.you.displayName}
                     username={players.you.username}
                     avatar={players.you.avatar} 
-                    lives={lives} 
+                    lives={lives}
+                    moves={playerMoves}
                 />
 
                 <BoardWrapper ref={boardRef}>
@@ -535,7 +542,8 @@ const OnlineGame = () =>
                     title={players.opponent.displayName}
                     username={players.opponent.username}
                     avatar={players.opponent.avatar} 
-                    lives={opponentLives} 
+                    lives={opponentLives}
+                    moves={opponentMoves}
                     align="right" 
                 />
                 

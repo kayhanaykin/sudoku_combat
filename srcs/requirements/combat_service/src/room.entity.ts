@@ -35,4 +35,10 @@ export class Room
 
     @Column({ type: 'timestamp', nullable: true })
     gameStartTime: Date;
+
+    @Column({ default: 0 })
+    ownerMoves: number;
+
+    @Column({ default: 0 })
+    guestMoves: number;
 }
