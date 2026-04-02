@@ -239,6 +239,41 @@ export class AppController
         }
     }
 
+    @Post('cleanup-offline-user')
+    async cleanupOfflineUser(@Body() body: { userId: string })
+    {
+        if (!body.userId)
+        {
+            return { success: false, message: 'userId is required' };
+        }
+
+        try
+        {
+            const roomsToCleanup = await this.roomRepository.find({
+                where: {
+                    ownerId: body.userId, // <--- Burası
+                    status: 'waiting'
+                }
+            });
+
+            if (roomsToCleanup.length > 0)
+            {
+                for (const room of roomsToCleanup)
+                {
+                    await this.roomRepository.delete(room.id);
+                    console.log(`🚀 Ghost Room ${room.id} deleted because owner ${body.userId} went offline.`);
+                }
+                return { success: true, message: 'Cleanup complete' };
+            }
+
+            return { success: true, message: 'No rooms to cleanup' };
+        }
+        catch (error)
+        {
+            return { success: false, error: error.message };
+        }
+    }
+
     @Get('game-state/:roomId')
     async getGameState(@Param('roomId') roomId: string)
     {
@@ -291,5 +326,34 @@ export class AppController
         {
             return ERROR.DB_ERROR(error);
         }
+    }
+
+    @Post('heartbeat/:roomId')
+    async heartbeat(@Param('roomId') roomId: string, @Body() body: { userId: string })
+    {
+        console.log(`💓 PING ALINDI! Oda: ${roomId}, Kullanıcı: ${body.userId}`);
+        try
+        {
+            const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+            
+            if (!room) {
+                console.log("❌ Hata: Oda bulunamadı!");
+                return { success: false };
+            }
+
+            if (String(room.ownerId) === String(body.userId))
+            {
+                room.lastHeartbeat = new Date();
+                await this.roomRepository.save(room);
+                console.log("✅ Başarılı: Odanın süresi uzatıldı!");
+                return { success: true };
+            }
+            else
+            {
+                console.log(`❌ Hata: ID Eşleşmedi! DB'deki: ${room.ownerId}, Gelen: ${body.userId}`);
+                return { success: false };
+            }
+        }
+        catch (error) { console.error(error); return { success: false }; }
     }
 }

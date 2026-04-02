@@ -42,6 +42,8 @@ Handle connection/disconnection gracefully.
 -Maçı oynayan 2 kişinin profil detaylarında aynı duration yazmıyor düzeltilecek.
 -Maça 2 oyuncu aynı anda başlamıyor
 -Bir oyuncu odadan çıktığında diğeri kazanmış gözüküyor ancak çıkan kişi kaybetmiş gözükmüyor
+-Hint kısıtlanacak ve hint ile oyun bitme problemi çözülecek
+-user not found yazısı search ile ekrandan çıkmıyor
 
 ---------------------
 ------COMPLETED------

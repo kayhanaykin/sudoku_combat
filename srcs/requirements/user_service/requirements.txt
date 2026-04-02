@@ -10,3 +10,4 @@ daphne
 channels
 channels-redis
 djangorestframework
+httpx==0.27.0
