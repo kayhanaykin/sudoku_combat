@@ -177,6 +177,16 @@ export class AppController
                 newBoard[body.row][body.col] = body.value;
                 room.currBoard = newBoard;
 
+                // Hamle sayacını artır
+                if (body.role === 'owner')
+                {
+                    room.ownerMoves += 1;
+                }
+                else
+                {
+                    room.guestMoves += 1;
+                }
+
                 isWin = !newBoard.some((row: number[]) => row.includes(0));
             }
             else
@@ -206,18 +216,20 @@ export class AppController
             }
             else if (isWin)
             {
-                if (room.health[0] > room.health[1])
+                // Board tamamlandığında - hamle sayısına göre kazananı belirle
+                if (room.ownerMoves > room.guestMoves)
                 {
                     winner = 'owner';
                     loser = 'guest';
                 }
-                else if (room.health[1] > room.health[0])
+                else if (room.guestMoves > room.ownerMoves)
                 {
                     winner = 'guest';
                     loser = 'owner';
                 }
                 else
                 {
+                    // Eşit ise son hamleyi yapan kazanır
                     winner = body.role;
                     loser = body.role === 'owner' ? 'guest' : 'owner';
                 }
@@ -297,7 +309,9 @@ export class AppController
                 health: room.health,
                 status: room.status,
                 difficulty: room.difficulty,
-                gameStartTime: room.gameStartTime
+                gameStartTime: room.gameStartTime,
+                ownerMoves: room.ownerMoves,
+                guestMoves: room.guestMoves
             };
         }
         catch (error)
