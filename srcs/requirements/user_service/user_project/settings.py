@@ -1,7 +1,3 @@
-"""
-Django settings for user_project project.
-"""
-
 from pathlib import Path
 import os
 from datetime import timedelta
@@ -36,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'user_app', # Senin uygulaman
+    'user_app',
 ]
 
 MIDDLEWARE = [
@@ -153,14 +149,11 @@ CURRENT_DOMAIN = os.getenv('DOMAIN_NAME', 'localhost')
 # 1. CSRF Trusted Origins
 CSRF_COOKIE_HTTPONLY = False
 CSRF_TRUSTED_ORIGINS = [
+    f"https://{CURRENT_DOMAIN}:8443",
     "https://localhost:8443",
-    "wss://localhost:8443",
     "http://localhost:8443",
-    "ws://localhost:8443",
     "https://127.0.0.1:8443",
     "http://127.0.0.1:8443",
-    f"https://{CURRENT_DOMAIN}:8443",  
-    f"wss://{CURRENT_DOMAIN}:8443",
 ]
 
 # 2. Proxy Headers

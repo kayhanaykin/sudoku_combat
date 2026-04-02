@@ -5,7 +5,7 @@ from channels.auth import AuthMiddlewareStack
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'user_project.settings')
 
-# Initialize Django ASGI application early
+# Initialize Django ASGI application early, looks into Django settings module
 django_asgi_app = get_asgi_application()
 
 # Import routing and middleware AFTER get_asgi_application()
