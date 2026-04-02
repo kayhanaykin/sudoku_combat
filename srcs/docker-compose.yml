@@ -84,8 +84,6 @@ services:
     volumes:
       - ./requirements/combat_service:/app
       - /app/node_modules 
-    ports:
-      - "8003:8003"
     depends_on:
       room_db:
         condition: service_healthy
@@ -155,8 +153,6 @@ services:
     networks:
       - transcendence_network
     restart: always
-    ports:
-      - "5173:5173"
     command: ["npm", "run", "dev", "--", "--host"]
 
 networks:

@@ -25,7 +25,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN sed -i 's/\r$//' entrypoint.sh
-# the file is located at user_project/settings.py
+# this parameter is set for daphe, because it doesnt start with manage.py
 ENV DJANGO_SETTINGS_MODULE=user_project.settings
 
 EXPOSE 8001
