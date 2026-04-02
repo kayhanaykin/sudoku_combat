@@ -47,8 +47,6 @@ services:
         condition: service_started
     restart: unless-stopped
     command: daphne -b 0.0.0.0 -p 8001 user_project.asgi:application
-    ports:
-      - "8001:8001"
     networks:
       - transcendence_network
 
@@ -86,33 +84,13 @@ services:
     volumes:
       - ./requirements/combat_service:/app
       - /app/node_modules 
-    ports:
-      - "8003:8003"
     depends_on:
       room_db:
         condition: service_healthy
-      room_service:
-        condition: service_started
     networks:
       - transcendence_network
     restart: unless-stopped
     command: ["npm", "run", "start:dev"]
-
-  room_service:
-    build: ./requirements/room_service
-    container_name: room_service
-    env_file: .env
-    volumes:
-      - ./requirements/room_service:/app
-      - /app/node_modules 
-    ports:
-      - "8002:8002"
-    depends_on:
-      room_db:
-        condition: service_healthy 
-    networks:
-      - transcendence_network
-    restart: unless-stopped
 
   room_db:
     image: postgres:15-alpine
@@ -180,8 +158,6 @@ services:
     networks:
       - transcendence_network
     restart: always
-    ports:
-      - "5173:5173"
     command: ["npm", "run", "dev", "--", "--host"]
 
 networks:

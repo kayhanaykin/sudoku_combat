@@ -301,21 +301,6 @@ export const recordGameResult = async (userId, mode, isWin) =>
   }
 };
 
-export const getUserDetails = async (userId) => 
-{
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: userId,
-        username: "User" + userId,
-        email: "user@example.com",
-        avatar: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&q=80&w=200",
-        bio: "42 Istanbul Student",
-      });
-    }, 300);
-  });
-};
-
 export const getUserStats = async (username) => 
 {
   try

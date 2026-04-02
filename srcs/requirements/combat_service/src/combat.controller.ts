@@ -32,7 +32,7 @@ export class CombatController
                 difficulty: body.difficulty,
                 currBoard: gameData.board,
                 solvedBoard: gameData.solution,
-                health: [3, 0],
+                health: [3, 3],
                 status: 'playing'
             });
 
@@ -77,7 +77,7 @@ export class CombatController
                 difficulty: body.difficulty,
                 currBoard: gameData.board,
                 solvedBoard: gameData.solution,
-                health: [3, 0],
+                health: [3, 3],
                 status: 'waiting'
             });
 

@@ -37,7 +37,8 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     const [board, setBoard] = useState(EMPTY_BOARD);
     const [gameId, setGameId] = useState(null);
     const [selectedCell, setSelectedCell] = useState(null);
-    
+
+    const [startTime, setStartTime] = useState(null);
     const [seconds, setSeconds] = useState(0);
     const [difficulty, setDifficulty] = useState("Medium");
     
@@ -108,11 +109,15 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                             if (data.currBoard)
                                 setBoard(formatBoardFromData(data.currBoard));
 
-                            if (data.health && role)
-                                setLives(role === 'owner' ? data.health[0] : data.health[1]);
+                            const currentRole = playersInfo?.role || 'guest';
+                            if (data.health)
+                                setLives(currentRole === 'owner' ? data.health[0] : data.health[1]);
 
                             if (data.difficulty)
                                 setDifficulty(data.difficulty);
+
+                            if (data.startTime)
+                                setStartTime(data.startTime);
                         }
                     }
                     catch (error) 
@@ -133,14 +138,27 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     {
         if (isGameOver)
             return;
+            
+        if (mode === 'offline' && !startTime)
+        {
+            setStartTime(Date.now());
+            return;
+        }
+
+        if (mode === 'online' && !startTime)
+            return;
         
         const interval = setInterval(() => 
         { 
-            setSeconds(prev => prev + 1); 
-        }, 1000);
+            const now = Date.now();
+            const elapsedSeconds = Math.floor((now - startTime) / 1000);
+            
+            if (elapsedSeconds >= 0)
+                setSeconds(elapsedSeconds);
+        }, 200);
         
         return () => clearInterval(interval);
-    }, [isGameOver]);
+    }, [isGameOver, startTime, mode]);
 
     const handleCellClick = (r, c) => 
     {
@@ -432,7 +450,9 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         setIsHintModalOpen, setHintData, setBoard, setLives,
         updateBoardFromOpponent, setShowError, setErrorMessage,
         gameResult, setGameResult,
-        setSelectedCell
+        setSelectedCell,
+        setStartTime,
+        setDifficulty
     };
 };
 

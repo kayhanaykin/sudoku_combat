@@ -32,24 +32,20 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 │ ├─ is_staff (BOOLEAN)                                       │
 │ ├─ date_joined (DATETIME)                                   │
 │ ├─ last_login (DATETIME, nullable)                          │
-│ │                                                            │
+│ │                                                           │
 │ ├─ [42 Intra Integration]                                   │
 │ ├─ intra_id (INTEGER, UNIQUE, nullable)                     │
 │ ├─ display_name (VARCHAR 50, UNIQUE, nullable)              │
 │ ├─ avatar (ImageField, nullable)                            │
 │ ├─ avatar_url (URL max 500 chars, nullable)                 │
-│ │                                                            │
-│ ├─ [Two-Factor Authentication]                              │
-│ ├─ is_2fa_enabled (BOOLEAN, default=False)                  │
-│ ├─ two_factor_secret (VARCHAR 32, nullable)                 │
-│ │                                                            │
+│ │                                                           │
 │ ├─ [Profile Completion]                                     │
 │ ├─ is_profile_complete (BOOLEAN, default=False)             │
-│ │                                                            │
+│ │                                                           │
 │ ├─ [Online Status & Presence]                               │
 │ ├─ last_seen (DATETIME, nullable)                           │
 │ ├─ is_online (BOOLEAN, default=False)                       │
-│ │                                                            │
+│ │                                                           │
 │ └─ [Social Relationships]                                   │
 │    └─ friends (ManyToMany to CustomUser)                    │
 │       └─ self-referential, non-symmetrical                  │
@@ -76,7 +72,7 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 │ │   └─ choices: 'pending' | 'friends'                        │
 │ └─ created_at (DATETIME, auto_now_add=True)                  │
 │                                                              │
-│ Unique Constraint: (from_user_id, to_user_id)               │
+│ Unique Constraint: (from_user_id, to_user_id)                │
 └──────────────────────────────────────────────────────────────┘
 ```
 
@@ -99,13 +95,13 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 │ ├─ ownerName (VARCHAR, default='Unknown Player')           │
 │ ├─ guestId (VARCHAR, nullable) - Second player ID          │
 │ ├─ difficulty (VARCHAR)                                    │
-│ │   └─ possible: 'easy' | 'medium' | 'hard' | 'expert'    │
+│ │   └─ possible: 'easy' | 'medium' | 'hard' | 'expert'     │
 │ ├─ currBoard (JSON) - Current puzzle state                 │
 │ ├─ solvedBoard (JSON) - Solution reference                 │
 │ ├─ health (Simple Array [INT], nullable)                   │
 │ │   └─ format: [owner_health, guest_health]                │
 │ └─ status (VARCHAR, default='waiting')                     │
-│    └─ possible: 'waiting' | 'in_progress' | 'completed'   │
+│    └─ possible: 'waiting' | 'in_progress' | 'completed'    │
 └────────────────────────────────────────────────────────────┘
 ```
 
@@ -139,7 +135,7 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 │ ├─ health (Simple Array [INT], nullable)                     │
 │ │   └─ synced in real-time via WebSocket                     │
 │ └─ status (VARCHAR, default='waiting')                       │
-│    └─ possible: 'waiting' | 'in_progress' | 'completed'     │
+│    └─ possible: 'waiting' | 'in_progress' | 'completed'      │
 │       Additional: 'abandoned' (if player disconnects)        │
 └──────────────────────────────────────────────────────────────┘
 ```
@@ -163,13 +159,13 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 │ PK: id (SERIAL)                                             │
 │ FK: user_id (INT) - Reference to user                       │
 │ ├─ mode (VARCHAR 50)                                        │
-│ │   └─ possible: 'easy' | 'medium' | 'hard' | 'expert'     │
+│ │   └─ possible: 'easy' | 'medium' | 'hard' | 'expert'      │
 │ │                | 'extreme' | 'total'                      │
 │ ├─ wins (INT, default=0)                                    │
 │ ├─ games_played (INT, default=0)                            │
 │ ├─ losses (INT, default=0)                                  │
 │ │   └─ formula: losses = games_played - wins                │
-│ │                                                            │
+│ │                                                           │
 │ Unique Constraint: (user_id, mode)                          │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -195,7 +191,7 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 │ PK: id (INTEGER, primary key)                                │
 │ ├─ user_id (INTEGER, indexed)                                │
 │ ├─ difficulty (VARCHAR)                                      │
-│ │   └─ possible: 'easy' | 'medium' | 'hard' | 'expert'      │
+│ │   └─ possible: 'easy' | 'medium' | 'hard' | 'expert'       │
 │ │                | 'extreme'                                 │
 │ ├─ is_win (BOOLEAN)                                          │
 │ └─ played_at (DATETIME with timezone)                        │
@@ -224,9 +220,9 @@ USER SERVICE (Django)
     │
     ├─ CustomUser ─────────────────┐
     │  ├─ user account info        │
-    │  ├─ 42 Intra integration      │
+    │  ├─ 42 Intra integration     │
     │  ├─ 2FA settings             │
-    │  └─ ManyToMany: friends       │
+    │  └─ ManyToMany: friends      │
     │                              │
     └─ Relationship                │
        └─ friend requests status   │
@@ -249,9 +245,9 @@ COMBAT SERVICE (NestJS + WebSocket)
        ├─ guestId                   │
        ├─ health (synced)           │
        └─ WebSocket: live updates   │
-                                   │
-                                   │ user_id reference
-                                   ▼
+                                    │
+                                    │ user_id reference
+                                    ▼
 GAME SERVICE (C++ PostgreSQL)
     │
     └─ player_stats

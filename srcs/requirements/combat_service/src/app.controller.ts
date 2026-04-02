@@ -259,7 +259,8 @@ export class AppController
                 guestId: room.guestId,
                 currBoard: room.currBoard,
                 health: room.health,
-                status: room.status
+                status: room.status,
+                difficulty: room.difficulty
             };
         }
         catch (error)

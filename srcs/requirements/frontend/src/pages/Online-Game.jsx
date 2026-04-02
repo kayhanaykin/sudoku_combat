@@ -148,10 +148,13 @@ const OnlineGame = () =>
         setLives, updateBoardFromOpponent,
         setShowError, setErrorMessage,
         gameResult, setGameResult,
-        setSelectedCell
+        setSelectedCell, 
+        setStartTime,
+        setDifficulty
     } = useGameLogic('online', sendOnlineMove, { 
         username: players.you.username || user?.username || '', 
-        opponent: players.opponent.username || '' 
+        opponent: players.opponent.username || '',
+        role: isOwner ? 'owner' : 'guest'
     });
 
     const [opponentLives, setOpponentLives] = useState(3);
@@ -302,6 +305,9 @@ const OnlineGame = () =>
         {
             const message = JSON.parse(event.data);
             
+            // DEBUG LOGU: Backend'den ne geldiğini konsolda görebilirsin.
+            console.log("DEBUG - Gelen WebSocket Mesajı:", message);
+            
             let myRole = 'guest';
             if (isOwner)
                 myRole = 'owner';
@@ -311,6 +317,17 @@ const OnlineGame = () =>
                 case 'sync_game':
                     if (message.gameState) 
                     {
+                        if (message.gameState.startTime)
+                            setStartTime(message.gameState.startTime);
+                        else
+                        {
+                            console.warn("Backend startTime göndermedi, lokal saat kullanılıyor.");
+                            setStartTime(Date.now());
+                        }
+
+                        if (message.gameState.difficulty)
+                            setDifficulty(message.gameState.difficulty);
+
                         if (message.gameState.currBoard)
                         {
                             updateBoardFromOpponent(message.gameState.currBoard);
