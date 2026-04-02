@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import useGameLogic from '../hooks/useGameLogic';
@@ -94,6 +94,7 @@ const OnlineGame = () =>
 {
     const { roomId } = useParams();
     const location = useLocation();
+    const navigate = useNavigate();
     const { user } = useAuth();
     
     const ws = useRef(null);
@@ -140,6 +141,49 @@ const OnlineGame = () =>
                 }));
             }
         }
+    };
+
+    const handleExitGame = async () => {
+        if (isGameOver || gameResult)
+        {
+            navigate('/');
+            return;
+        }
+
+        if (ws.current && ws.current.readyState === WebSocket.OPEN)
+        {
+            ws.current.send(JSON.stringify({
+                event: 'move',
+                data: { 
+                    roomId: roomId.toString(), 
+                    role: isOwner ? 'owner' : 'guest',
+                    action: 'surrender'
+                }
+            }));
+        }
+
+        try
+        {
+            const diffMap = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Expert': 4, 'Extreme': 5 };
+            await fetch('/api/stats/report', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: players.you.username || user?.username,
+                    difficulty: diffMap[difficulty] || 2,
+                    mode: 'online',
+                    result: 'lose',
+                    time_seconds: timer,
+                    opponent: players.opponent.username
+                })
+            });
+        }
+        catch (error)
+        {
+            console.error("Failed to send exit stats", error);
+        }
+
+        navigate('/');
     };
 
     const { 
@@ -310,10 +354,7 @@ const OnlineGame = () =>
         ws.current.onmessage = (event) => 
         {
             const message = JSON.parse(event.data);
-            
-            // DEBUG LOGU: Backend'den ne geldiğini konsolda görebilirsin.
-            console.log("DEBUG - Gelen WebSocket Mesajı:", message);
-            
+                    
             let myRole = 'guest';
             if (isOwner)
                 myRole = 'owner';
@@ -466,7 +507,7 @@ const OnlineGame = () =>
 
             <GameOverOverlay result={gameResult} />
 
-            <BackToHomeLink />
+            <BackToHomeLink onClick={handleExitGame} />
             
             <GameHeader timer={timer} difficulty={difficulty} />
 
