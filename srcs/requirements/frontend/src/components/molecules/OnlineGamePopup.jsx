@@ -374,10 +374,12 @@ const OnlineGameModal = ({
     onClose, 
     onCreate, 
     onJoin, 
+    onCancelRoom,
     isLoading,
     createdRoomId,
     isOpponentJoined,
-    onCountdownComplete
+    onCountdownComplete,
+    currentUserId
 }) => 
 {
     const [view, setView] = useState('LOBBY'); 
@@ -443,41 +445,48 @@ const OnlineGameModal = ({
     useEffect(() => 
     {
         let pollInterval;
+        let heartbeatInterval;
         
-        if (view === 'WAITING')
+        if (view === 'WAITING' && createdRoomId)
         {
-            if (createdRoomId)
+            pollInterval = setInterval(async () => 
             {
-                pollInterval = setInterval(async () => 
+                try
                 {
-                    try
+                    const res = await fetch(`/api/room/game-state/${createdRoomId}`);
+                    const data = await res.json();
+                    
+                    if (data.success && data.status === 'playing')
                     {
-                        const res = await fetch(`/api/room/game-state/${createdRoomId}`);
-                        const data = await res.json();
-                        
-                        if (data.success)
-                        {
-                            if (data.status === 'playing')
-                            {
-                                clearInterval(pollInterval);
-                                setView('COUNTDOWN');
-                                setCountdown(3);
-                            }
-                        }
+                        clearInterval(pollInterval);
+                        clearInterval(heartbeatInterval);
+                        setView('COUNTDOWN');
+                        setCountdown(3);
                     }
-                    catch (error)
-                    {
-                        console.error("Oda durumu kontrol edilirken hata oluştu:", error);
-                    }
-                }, 2000);
-            }
+                }
+                catch (error) { console.error(error); }
+            }, 2000);
+
+            heartbeatInterval = setInterval(async () => 
+            {
+                try
+                {
+                    await fetch(`/api/room/heartbeat/${createdRoomId}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ userId: currentUserId })
+                    });
+                }
+                catch (e) { console.error("Heartbeat failed"); }
+            }, 2000);
         }
 
         return () => 
         {
             clearInterval(pollInterval);
+            clearInterval(heartbeatInterval); 
         };
-    }, [view, createdRoomId]);
+    }, [view, createdRoomId, currentUserId]);
 
     useEffect(() => 
     {
@@ -633,7 +642,10 @@ const OnlineGameModal = ({
                     <Spinner />
                     <p>Waiting for opponent to join...</p>
                 </SpinnerContainer>
-                <CancelButton onClick={onClose}>
+                <CancelButton onClick={() => {
+                    if (onCancelRoom) onCancelRoom(createdRoomId);
+                    onClose();
+                }}>
                     Cancel Room
                 </CancelButton>
             </CenteredView>

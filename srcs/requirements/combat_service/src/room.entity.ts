@@ -29,4 +29,7 @@ export class Room
 
     @Column({ default: 'waiting' })
     status: string;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    lastHeartbeat: Date;
 }

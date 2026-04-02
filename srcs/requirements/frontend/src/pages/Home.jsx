@@ -312,6 +312,53 @@ const Home = () =>
         setIsDifficultyOpen(true);
     };
 
+    const handleCancelRoom = async (roomId) =>
+    {
+        try
+        {
+            const stateRes = await fetch(`/api/room/game-state/${roomId}`);
+            const stateData = await stateRes.json();
+            
+            if (!stateData.success)
+            {
+                console.error("Room not found or already deleted.");
+                setCreatedRoomId(null);
+                return;
+            }
+
+            const dbOwnerId = stateData.ownerId;
+            
+            console.log(`DB Identity: ${dbOwnerId} | Current Identity: ${currentUserId}`);
+
+            const response = await fetch(`/api/room/leave/${roomId}`,
+            {
+                method: 'DELETE',
+                headers: 
+                { 
+                    'Content-Type': 'application/json' 
+                },
+                body: JSON.stringify(
+                { 
+                    userId: dbOwnerId 
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success)
+            {
+                console.log("Room successfully deleted from database!");
+                setCreatedRoomId(null);
+            }
+            else
+                console.error("Backend rejected the deletion:", data.message);
+        }
+        catch (error)
+        {
+            console.error("Network error while deleting the room:", error);
+        }
+    };
+
     const handleJoinRoom = async (roomIdInput) =>
     {
         if (!roomIdInput)
@@ -485,10 +532,12 @@ const Home = () =>
                 onClose={() => setIsOnlineModalOpen(false)}
                 onCreate={handleOnlineCreateClick}
                 onJoin={handleJoinRoom}
+                onCancelRoom={handleCancelRoom}
                 isLoading={loading}
                 createdRoomId={createdRoomId}
                 isOpponentJoined={isOpponentJoined}
                 onCountdownComplete={handleCountdownComplete}
+                currentUserId={currentUserId}
             />
             
         </>

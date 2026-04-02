@@ -45,6 +45,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [lives, setLives] = useState(3);
+    const [hintsRemaining, setHintsRemaining] = useState(3);
     const [isGameOver, setIsGameOver] = useState(false);
     
     const [isHintModalOpen, setIsHintModalOpen] = useState(false);
@@ -305,6 +306,14 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         if (isGameOver)
             return;
 
+        if (hintsRemaining <= 0)
+        {
+            setErrorMessage("No hints remaining!");
+            setShowError(true);
+            setTimeout(() => setShowError(false), 3000);
+            return;
+        }
+
         try
         {
             const simpleGrid = board.map(row => row.map(cell => cell.value));
@@ -330,6 +339,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                 setHintData(data);
                 setIsHintModalOpen(true);
                 setSelectedCell({ r: data.row, c: data.col });
+                setHintsRemaining(prev => prev - 1);
             }
             else
             {
@@ -444,7 +454,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     }, [gameResult, playersInfo?.username, playersInfo?.opponent, difficulty, mode, seconds]);
 
     return {
-        board, timer: formatTime(seconds), difficulty, lives, selectedCell, isGameOver,
+        board, timer: formatTime(seconds), difficulty, lives, hintsRemaining, selectedCell, isGameOver,
         showError, errorMessage, isHintModalOpen, hintData,
         handleCellClick, handleInput, handleHint, applyHint,
         setIsHintModalOpen, setHintData, setBoard, setLives,
