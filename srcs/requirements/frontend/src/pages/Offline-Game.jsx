@@ -172,8 +172,16 @@ const OfflineGame = () =>
         handleCellClick, handleInput, showError, errorMessage,
         isHintModalOpen, hintData, handleHint, applyHint,
         gameResult,
-        setSelectedCell
+        setSelectedCell,
+        setStartTime
     } = useGameLogic('offline', null, { username: logicUsername });
+
+    useEffect(() => {
+        if (location.state && location.state.exactStartTime)
+            setStartTime(location.state.exactStartTime);
+        else
+            setStartTime(Date.now());
+    }, [location.state, setStartTime]);
 
     useEffect(() => 
     {

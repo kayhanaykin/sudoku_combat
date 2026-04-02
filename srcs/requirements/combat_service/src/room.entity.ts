@@ -32,4 +32,7 @@ export class Room
 
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
     lastHeartbeat: Date;
+
+    @Column({ type: 'timestamp', nullable: true })
+    gameStartTime: Date;
 }

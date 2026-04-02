@@ -91,6 +91,7 @@ export class AppController
             
             room.guestId = body.userId;
             room.status = 'playing';
+            room.gameStartTime = new Date(Date.now() + 5000); 
             await this.roomRepository.save(room);
             return { success: true, roomId: room.id };
         }
@@ -251,7 +252,7 @@ export class AppController
         {
             const roomsToCleanup = await this.roomRepository.find({
                 where: {
-                    ownerId: body.userId, // <--- Burası
+                    ownerId: body.userId,
                     status: 'waiting'
                 }
             });
@@ -295,7 +296,8 @@ export class AppController
                 currBoard: room.currBoard,
                 health: room.health,
                 status: room.status,
-                difficulty: room.difficulty
+                difficulty: room.difficulty,
+                gameStartTime: room.gameStartTime
             };
         }
         catch (error)

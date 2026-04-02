@@ -398,6 +398,8 @@ const Home = () =>
         }
     };
 
+    const [startTime, setStartTime] = useState(null);
+
     const handleDifficultySelect = async (difficulty) =>
     {
         setIsDifficultyOpen(false);
@@ -420,8 +422,10 @@ const Home = () =>
             if (difficultyContext === 'OFFLINE')
             {
                 const gameData = await startGame('offline', difficulty);
-                navigate('/offline-game', { state: { gameData, difficulty } });
-            } 
+                const now = Date.now();
+                setStartTime(now);
+                navigate('/offline-game', { state: { gameData, difficulty, exactStartTime: now } });
+            }
             else if (difficultyContext === 'ONLINE')
             {
                 if (!currentUserId)
@@ -464,13 +468,17 @@ const Home = () =>
         }
     };
 
-    const handleCountdownComplete = () =>
-    {
+   const handleCountdownComplete = (exactStartTime) => {
         setIsOnlineModalOpen(false);
+
+        const finalStartTime = exactStartTime || Date.now();
+        
+        setStartTime(finalStartTime);
+        
         navigate(`/online-game/${createdRoomId}`, { 
             state: { 
-                role: playerRole,
-                difficulty: roomDifficulty
+                role: playerRole, 
+                exactStartTime: finalStartTime
             } 
         });
     };

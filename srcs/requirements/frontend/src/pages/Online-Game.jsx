@@ -159,6 +159,12 @@ const OnlineGame = () =>
 
     const [opponentLives, setOpponentLives] = useState(3);
 
+    useEffect(() => {
+        if (location.state && location.state.exactStartTime) {
+            setStartTime(location.state.exactStartTime);
+        }
+    }, [location.state, setStartTime]);
+
     useEffect(() => 
     {
         const handleClickOutside = (event) => 
@@ -318,12 +324,9 @@ const OnlineGame = () =>
                     if (message.gameState) 
                     {
                         if (message.gameState.startTime)
-                            setStartTime(message.gameState.startTime);
+                            setStartTime(new Date(message.gameState.startTime).getTime());
                         else
-                        {
-                            console.warn("Backend startTime göndermedi, lokal saat kullanılıyor.");
-                            setStartTime(Date.now());
-                        }
+                            setStartTime(location.state.exactStartTime);
 
                         if (message.gameState.difficulty)
                             setDifficulty(message.gameState.difficulty);

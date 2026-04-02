@@ -386,6 +386,7 @@ const OnlineGameModal = ({
     const [countdown, setCountdown] = useState(3);
     const [availableRooms, setAvailableRooms] = useState([]);
     const [isFetchingRooms, setIsFetchingRooms] = useState(false);
+    const [targetTimestamp, setTargetTimestamp] = useState(null);
 
     useEffect(() => 
     {
@@ -436,9 +437,7 @@ const OnlineGameModal = ({
         if (createdRoomId)
         {
             if (!isOpponentJoined)
-            {
                 setView('WAITING');
-            }
         }
     }, [createdRoomId, isOpponentJoined]);
 
@@ -460,8 +459,10 @@ const OnlineGameModal = ({
                     {
                         clearInterval(pollInterval);
                         clearInterval(heartbeatInterval);
+                        
+                        if (data.gameStartTime)
+                            setTargetTimestamp(new Date(data.gameStartTime).getTime());
                         setView('COUNTDOWN');
-                        setCountdown(3);
                     }
                 }
                 catch (error) { console.error(error); }
@@ -488,39 +489,45 @@ const OnlineGameModal = ({
         };
     }, [view, createdRoomId, currentUserId]);
 
-    useEffect(() => 
-    {
-        if (isOpponentJoined)
-        {
-            setView('COUNTDOWN');
-            setCountdown(3);
+    useEffect(() => {
+        if (isOpponentJoined && createdRoomId && view !== 'COUNTDOWN') {
+            fetch(`/api/room/game-state/${createdRoomId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.gameStartTime)
+                    {
+                        setTargetTimestamp(new Date(data.gameStartTime).getTime());
+                        setView('COUNTDOWN');
+                    }
+                })
+                .catch(err => console.error(err));
         }
-    }, [isOpponentJoined]);
+    }, [isOpponentJoined, createdRoomId, view]);
 
     useEffect(() => 
     {
         let timer;
         
-        if (view === 'COUNTDOWN')
+        if (view === 'COUNTDOWN' && targetTimestamp)
         {
-            if (countdown > 0)
-            {
-                timer = setTimeout(() => setCountdown((c) => c - 1), 1000);
-            }
-            else if (countdown === 0)
-            {
-                if (onCountdownComplete)
+            timer = setInterval(() => {
+                const now = Date.now();
+                const diffMs = targetTimestamp - now;
+                
+                if (diffMs <= 0)
                 {
-                    onCountdownComplete();
+                    setCountdown(0);
+                    clearInterval(timer);
+                    if (onCountdownComplete)
+                        onCountdownComplete();
                 }
-            }
+                else
+                    setCountdown(Math.ceil(diffMs / 1000));
+            }, 100); 
         }
         
-        return () => 
-        {
-            clearTimeout(timer);
-        };
-    }, [view, countdown, onCountdownComplete]);
+        return () => clearInterval(timer);
+    }, [view, targetTimestamp, onCountdownComplete]);
 
     useEffect(() => 
     {
@@ -528,6 +535,7 @@ const OnlineGameModal = ({
         {
             setView('LOBBY');
             setCountdown(3);
+            setTargetTimestamp(null);
         }
     }, [isOpen]);
 
