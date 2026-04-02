@@ -1,10 +1,10 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { device } from '../../utils/device';
 
 // STYLED COMPONENTS
-const StyledLink = styled(Link)`
+const StyledButton = styled.button`
     position: absolute;
     top: 20px;
     left: 30px;
@@ -14,13 +14,14 @@ const StyledLink = styled(Link)`
     align-items: center;
     gap: 10px;
     padding: 12px 24px;
-    background: linear-gradient(90deg, #4ade80 0%, #22c55e 10%);
+    background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
     color: white;
     border-radius: 50px;
     box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
     text-decoration: none;
     border: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
 
     &:hover
     {
@@ -73,10 +74,19 @@ const TextWrapper = styled.span`
 `;
 
 // COMPONENT DEFINITION
-const BackToHomeLink = () => 
+const BackToHomeLink = ({ onClick }) => 
 {
+    const navigate = useNavigate();
+
+    const handleClick = (e) => {
+        if (onClick)
+            onClick(e);
+        else
+            navigate('/');
+    };
+
     return (
-        <StyledLink to="/">
+        <StyledButton onClick={handleClick}>
             
             <IconWrapper>
                 🏠
@@ -86,7 +96,7 @@ const BackToHomeLink = () =>
                 Go to Homepage
             </TextWrapper>
 
-        </StyledLink>
+        </StyledButton>
     );
 };
 
