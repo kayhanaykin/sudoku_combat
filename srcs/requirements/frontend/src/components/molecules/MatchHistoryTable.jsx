@@ -155,7 +155,7 @@ const MatchHistoryTable = ({ username }) =>
         const parsed = Number(seconds);
 
         if (Number.isNaN(parsed) || parsed <= 0)
-            return 'Left';
+            return '-';
 
         const totalSeconds = Math.round(parsed);
         const m = Math.floor(totalSeconds / 60).toString().padStart(2, '0');

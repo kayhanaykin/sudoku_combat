@@ -443,7 +443,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     }, [gameResult, playersInfo?.username, playersInfo?.opponent, difficulty, mode, seconds]);
 
     return {
-        board, timer: formatTime(seconds), difficulty, lives, hintsRemaining, selectedCell, isGameOver,
+        board, timer: formatTime(seconds), seconds, difficulty, lives, hintsRemaining, selectedCell, isGameOver,
         showError, errorMessage, isHintModalOpen, hintData,
         handleCellClick, handleInput, handleHint, applyHint,
         setIsHintModalOpen, setHintData, setBoard, setLives,
