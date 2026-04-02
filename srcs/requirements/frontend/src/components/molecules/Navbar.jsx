@@ -7,6 +7,8 @@ import { getUserDetails } from '../../services/userService';
 import FriendListWidget from '../organisms/FriendListWidget';
 import Login from './Login';
 import SignUp from './Signup';
+// HOW TO PLAY MODALINI IMPORT EDİYORUZ
+import HowToPlayModal from '../organisms/HowToPlayModal'; 
 
 // STYLED COMPONENTS
 const NavContainer = styled.nav`
@@ -37,12 +39,11 @@ const LogoContainer = styled.div`
     align-items: center;
 `;
 
-/* Ana Logo Yazı Stili */
 const LogoTextBase = styled.span`
     font-size: 32px;
     font-weight: 900;
     letter-spacing: -1px;
-    user-select: none; /* Metnin seçilmesini engeller */
+    user-select: none;
 
     @media (max-width: 768px)
     {
@@ -102,6 +103,36 @@ const TriggerButton = styled.button`
     @media (max-width: 768px)
     {
         padding: 10px 20px;
+    }
+`;
+
+const HowToPlayNavButton = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 30px;
+    border-radius: 35px;
+    font-size: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #338437 60%, #37e831 100%);
+    color: #fff;
+    border: 2px solid #29972d;
+    box-shadow: 0 4px 12px rgba(51, 132, 55, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
+
+    &:hover
+    {
+        background: linear-gradient(135deg, #29972d 60%, #37e831 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(51, 132, 55, 0.22);
+    }
+
+    @media (max-width: 768px)
+    {
+        padding: 10px 20px;
+        display: none; 
     }
 `;
 
@@ -242,8 +273,12 @@ const Navbar = () =>
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const [dbUser, setDbUser] = useState(null);
+    
+    // MODAL STATE'LERİ
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+    const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false); // YENİ EKLENDİ
+    
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isFriendsOpen, setIsFriendsOpen] = useState(false);
     
@@ -461,12 +496,21 @@ const Navbar = () =>
                 </LogoContainer>
                 
                 <AuthButtons>
+                    <HowToPlayNavButton onClick={() => setIsHowToPlayOpen(true)}>
+                        <span role="img" aria-label="help">❓</span> How to Play
+                    </HowToPlayNavButton>
+
                     {authSectionElement}
                 </AuthButtons>
                 
             </NavContainer>
 
             {modalsElement}
+            
+            <HowToPlayModal 
+                isOpen={isHowToPlayOpen} 
+                onClose={() => setIsHowToPlayOpen(false)} 
+            />
         </>
     );
 };
