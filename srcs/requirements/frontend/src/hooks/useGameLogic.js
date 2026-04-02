@@ -137,29 +137,18 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
     useEffect(() => 
     {
-        if (isGameOver)
+        if (!startTime || isGameOver)
             return;
-            
-        if (mode === 'offline' && !startTime)
-        {
-            setStartTime(Date.now());
-            return;
-        }
 
-        if (mode === 'online' && !startTime)
-            return;
-        
-        const interval = setInterval(() => 
-        { 
-            const now = Date.now();
-            const elapsedSeconds = Math.floor((now - startTime) / 1000);
-            
-            if (elapsedSeconds >= 0)
-                setSeconds(elapsedSeconds);
-        }, 200);
+        setSeconds(0);
+
+        const interval = setInterval(() => {
+            setSeconds(prev => prev + 1);
+        }, 1000);
         
         return () => clearInterval(interval);
-    }, [isGameOver, startTime, mode]);
+
+    }, [startTime, isGameOver]);
 
     const handleCellClick = (r, c) => 
     {
