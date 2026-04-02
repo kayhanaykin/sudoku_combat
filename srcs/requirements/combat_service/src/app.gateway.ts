@@ -12,21 +12,71 @@ export class AppGateway
 {
     @WebSocketServer()
     server: Server;
-    
+
     private rooms = new Map<string, Set<WebSocket>>();
+    
+    private roomStartTimes = new Map<string, number>(); 
+    
     private spectator: WebSocket | null = null;
 
     @SubscribeMessage('join_room')
-    handleJoinRoom(@MessageBody() data: { roomId: string }, @ConnectedSocket() client: WebSocket) 
+    async handleJoinRoom(@MessageBody() data: { roomId: string }, @ConnectedSocket() client: WebSocket) 
     {
         if (!this.rooms.has(data.roomId))
-        {
             this.rooms.set(data.roomId, new Set());
-        }
-
-        this.rooms.get(data.roomId)!.add(client);
-        
+            
+        const roomClients = this.rooms.get(data.roomId)!;
+        roomClients.add(client);
         (client as any).roomId = data.roomId;
+
+        if (roomClients.size === 2 && !this.roomStartTimes.has(data.roomId))
+		{
+            const startTime = Date.now() + 3000;
+            this.roomStartTimes.set(data.roomId, startTime);
+
+            try
+			{
+                const currBoardRes = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
+                const gameState = await currBoardRes.json();
+                
+                gameState.startTime = startTime;
+
+                const payload = JSON.stringify({ 
+                    event: 'sync_game', 
+                    gameState: gameState,
+                    ownerHealth: gameState.health ? gameState.health[0] : 3,
+                    guestHealth: gameState.health ? gameState.health[1] : 3
+                });
+
+                roomClients.forEach((ws: WebSocket) => {
+                    if (ws.readyState === ws.OPEN)
+                        ws.send(payload);
+                });
+            }
+			catch (error)
+			{
+                console.error("Başlangıç senkronizasyon hatası:", error);
+            }
+        }
+        else if (roomClients.size <= 2 && this.roomStartTimes.has(data.roomId))
+		{
+             try
+			{
+                const currBoardRes = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
+                const gameState = await currBoardRes.json();
+                
+                gameState.startTime = this.roomStartTimes.get(data.roomId);
+
+                client.send(JSON.stringify({ 
+                    event: 'sync_game', 
+                    gameState: gameState,
+                    ownerHealth: gameState.health ? gameState.health[0] : 3,
+                    guestHealth: gameState.health ? gameState.health[1] : 3
+                }));
+            } catch (error) {
+                console.error("Yeniden bağlanma senkronizasyon hatası:", error);
+            }
+        }
     }
 
     @SubscribeMessage('move')
@@ -36,22 +86,22 @@ export class AppGateway
     {
         try
         {
-            const res = await fetch(`http://room_service:8002/api/room/validate-move/${data.roomId}`,
+            const res = await fetch(`http://localhost:8003/api/room/validate-move/${data.roomId}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
             const { valid, ownerHealth, guestHealth, loser, winner, isWin } = await res.json();
-            
             const roomClients = this.rooms.get(data.roomId);
-
             if (roomClients)
             {
-                const currBoardRes = await fetch(`http://room_service:8002/api/room/game-state/${data.roomId}`);
+                const currBoardRes = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
                 const gameState = await currBoardRes.json();
                 
+                if (this.roomStartTimes.has(data.roomId))
+                    gameState.startTime = this.roomStartTimes.get(data.roomId);
+
                 const payload = JSON.stringify(
                 { 
                     event: 'sync_game', 
@@ -64,19 +114,13 @@ export class AppGateway
                     isWin,
                     moveBy: data.role
                 });
-
                 roomClients.forEach((ws: WebSocket) =>
                 {
                     if (ws.readyState === ws.OPEN)
-                    {
                         ws.send(payload);
-                    }
                 });
-                
                 if (this.spectator && this.spectator.readyState === this.spectator.OPEN)
-                {
                     this.spectator.send(payload);
-                }
             }
         }
         catch (error)
@@ -93,8 +137,12 @@ export class AppGateway
         try
         {
             this.spectator = client;
-            const res = await fetch(`http://room_service:8002/api/room/game-state/${data.roomId}`);
+            const res = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
             const gameState = await res.json();
+            
+            if (this.roomStartTimes.has(data.roomId))
+                gameState.startTime = this.roomStartTimes.get(data.roomId);
+
             client.send(JSON.stringify({ event: 'game_state', gameState }));
         }
         catch (error)
@@ -103,63 +151,28 @@ export class AppGateway
         }
     }
 
-    @SubscribeMessage('game_finished')
-    async handleGameFinished(
-        @MessageBody() data: { gameResult: string, difficulty: number, mode: string },
-        @ConnectedSocket() client: WebSocket )
-    {
-        const roomId = (client as any).roomId;
-        
-        if (roomId)
-        {
-            const roomClients = this.rooms.get(roomId);
-            
-            if (roomClients)
-            {
-                // Broadcast to opponent
-                roomClients.forEach((ws: WebSocket) =>
-                {
-                    if (ws !== client && ws.readyState === ws.OPEN)
-                    {
-                        ws.send(JSON.stringify({
-                            event: 'game_finished',
-                            gameResult: data.gameResult
-                        }));
-                    }
-                });
-            }
-        }
-    }
     async handleDisconnect(@ConnectedSocket() client: WebSocket)
     {
         const roomId = (client as any).roomId;
-
         if (roomId)
         {
             const roomClients = this.rooms.get(roomId);
-            
             if (roomClients)
             {
                 roomClients.delete(client);
-
                 roomClients.forEach((ws: WebSocket) =>
                 {
                     if (ws.readyState === ws.OPEN)
-                    {
                         ws.send(JSON.stringify({ event: 'player_left' }));
-                    }
                 });
-
                 if (roomClients.size === 0)
-                {
+				{
                     this.rooms.delete(roomId);
+                    this.roomStartTimes.delete(roomId);
                 }
             }
         }
-
         if (this.spectator === client)
-        {
             this.spectator = null;
-        }
     }
 }

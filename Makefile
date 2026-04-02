@@ -8,13 +8,13 @@ COMPOSE = docker compose -f srcs/docker-compose.yml
 all: build list
 
 up:
-	@echo "🔍 Sistemin IP adresi taranıyor..."
+	@echo "Sistemin IP adresi taranıyor..."
 	@IP=$$(hostname -I | awk '{print $$1}' 2>/dev/null || ipconfig getifaddr en0 2>/dev/null || echo 127.0.0.1); \
 	if [ -z "$$IP" ]; then IP="127.0.0.1"; fi; \
-	echo "🌐 Bulunan IP: $$IP"; \
+	echo "Bulunan IP: $$IP"; \
 	sed -i "s/^DOMAIN_NAME=.*/DOMAIN_NAME=$$IP/" srcs/.env; \
 	sed -i "s|^FT_REDIRECT_URI=.*|FT_REDIRECT_URI=https://$$IP:8443/api/user/auth/callback/|" srcs/.env; \
-	echo "✅ srcs/.env dosyası dinamik olarak güncellendi!"
+	echo "srcs/.env dosyası dinamik olarak güncellendi!"
 	@$(COMPOSE) up -d --build
 
 down:

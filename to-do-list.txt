@@ -39,6 +39,9 @@ Handle connection/disconnection gracefully.
 -Progressive Web App (PWA) with offline support and installability.(Yapılabilir?)
 -Support for additional browsers.(Yapılabilir?)
 -Birisinin profiline gidip sonra go to homepage yapınca çevrimdışı gözüküyor ve hesap bulunamadı oluyor(Hata!!!)
+-Maçı oynayan 2 kişinin profil detaylarında aynı duration yazmıyor düzeltilecek.
+-Maça 2 oyuncu aynı anda başlamıyor
+-Bir oyuncu odadan çıktığında diğeri kazanmış gözüküyor ancak çıkan kişi kaybetmiş gözükmüyor
 
 ---------------------
 ------COMPLETED------

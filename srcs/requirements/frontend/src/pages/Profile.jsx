@@ -5,7 +5,8 @@ import { useAuth } from '../context/AuthContext';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 import ProfileContent from '../components/organisms/ProfileContent';
 import ConfirmationModal from '../components/molecules/ConfirmationModal';
-import { getUserDetails, getUserStats, logoutUser, deleteUserAccount } from '../services/api';
+import { getUserStats, logoutUser, deleteUserAccount } from '../services/api';
+import { getUserDetails} from '../services/userService';
 
 // STYLED COMPONENTS
 const PageContainer = styled.div`

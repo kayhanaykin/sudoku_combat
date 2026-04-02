@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import useOnlineStatus from './useOnlineStatus';
+import { useWebSocket } from '../context/WebSocketContext';
 
 function getCookie(name)
 {
@@ -27,7 +27,7 @@ const useFriendList = () =>
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
 
-    const onlineUserIds = useOnlineStatus();
+    const onlineUserIds = useWebSocket() || new Set();
     const API_URL = '/api/v1/user/friends/';
 
     const fetchFriends = useCallback(async () =>
