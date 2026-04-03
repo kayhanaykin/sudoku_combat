@@ -91,6 +91,7 @@ export class AppController
             
             room.guestId = body.userId;
             room.status = 'playing';
+            room.gameStartTime = new Date(Date.now() + 5000); 
             await this.roomRepository.save(room);
             return { success: true, roomId: room.id };
         }
@@ -176,6 +177,16 @@ export class AppController
                 newBoard[body.row][body.col] = body.value;
                 room.currBoard = newBoard;
 
+                // Hamle sayacını artır
+                if (body.role === 'owner')
+                {
+                    room.ownerMoves += 1;
+                }
+                else
+                {
+                    room.guestMoves += 1;
+                }
+
                 isWin = !newBoard.some((row: number[]) => row.includes(0));
             }
             else
@@ -205,18 +216,20 @@ export class AppController
             }
             else if (isWin)
             {
-                if (room.health[0] > room.health[1])
+                // Board tamamlandığında - hamle sayısına göre kazananı belirle
+                if (room.ownerMoves > room.guestMoves)
                 {
                     winner = 'owner';
                     loser = 'guest';
                 }
-                else if (room.health[1] > room.health[0])
+                else if (room.guestMoves > room.ownerMoves)
                 {
                     winner = 'guest';
                     loser = 'owner';
                 }
                 else
                 {
+                    // Eşit ise son hamleyi yapan kazanır
                     winner = body.role;
                     loser = body.role === 'owner' ? 'guest' : 'owner';
                 }
@@ -236,6 +249,41 @@ export class AppController
         catch (error)
         {
             return ERROR.DB_ERROR(error);
+        }
+    }
+
+    @Post('cleanup-offline-user')
+    async cleanupOfflineUser(@Body() body: { userId: string })
+    {
+        if (!body.userId)
+        {
+            return { success: false, message: 'userId is required' };
+        }
+
+        try
+        {
+            const roomsToCleanup = await this.roomRepository.find({
+                where: {
+                    ownerId: body.userId,
+                    status: 'waiting'
+                }
+            });
+
+            if (roomsToCleanup.length > 0)
+            {
+                for (const room of roomsToCleanup)
+                {
+                    await this.roomRepository.delete(room.id);
+                    console.log(`🚀 Ghost Room ${room.id} deleted because owner ${body.userId} went offline.`);
+                }
+                return { success: true, message: 'Cleanup complete' };
+            }
+
+            return { success: true, message: 'No rooms to cleanup' };
+        }
+        catch (error)
+        {
+            return { success: false, error: error.message };
         }
     }
 
@@ -259,7 +307,11 @@ export class AppController
                 guestId: room.guestId,
                 currBoard: room.currBoard,
                 health: room.health,
-                status: room.status
+                status: room.status,
+                difficulty: room.difficulty,
+                gameStartTime: room.gameStartTime,
+                ownerMoves: room.ownerMoves,
+                guestMoves: room.guestMoves
             };
         }
         catch (error)
@@ -290,5 +342,34 @@ export class AppController
         {
             return ERROR.DB_ERROR(error);
         }
+    }
+
+    @Post('heartbeat/:roomId')
+    async heartbeat(@Param('roomId') roomId: string, @Body() body: { userId: string })
+    {
+        console.log(`💓 PING ALINDI! Oda: ${roomId}, Kullanıcı: ${body.userId}`);
+        try
+        {
+            const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+            
+            if (!room) {
+                console.log("❌ Hata: Oda bulunamadı!");
+                return { success: false };
+            }
+
+            if (String(room.ownerId) === String(body.userId))
+            {
+                room.lastHeartbeat = new Date();
+                await this.roomRepository.save(room);
+                console.log("✅ Başarılı: Odanın süresi uzatıldı!");
+                return { success: true };
+            }
+            else
+            {
+                console.log(`❌ Hata: ID Eşleşmedi! DB'deki: ${room.ownerId}, Gelen: ${body.userId}`);
+                return { success: false };
+            }
+        }
+        catch (error) { console.error(error); return { success: false }; }
     }
 }

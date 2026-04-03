@@ -29,4 +29,16 @@ export class Room
 
     @Column({ default: 'waiting' })
     status: string;
+
+    @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+    lastHeartbeat: Date;
+
+    @Column({ type: 'timestamp', nullable: true })
+    gameStartTime: Date;
+
+    @Column({ default: 0 })
+    ownerMoves: number;
+
+    @Column({ default: 0 })
+    guestMoves: number;
 }

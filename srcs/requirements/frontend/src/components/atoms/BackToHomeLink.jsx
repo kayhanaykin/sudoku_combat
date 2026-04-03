@@ -1,0 +1,103 @@
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { device } from '../../utils/device';
+
+// STYLED COMPONENTS
+const StyledButton = styled.button`
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    z-index: 9999 !important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background: linear-gradient(90deg, #4ade80 0%, #22c55e 100%);
+    color: white;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+    text-decoration: none;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: inherit;
+
+    &:hover
+    {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(34, 197, 94, 0.6);
+        background: linear-gradient(90deg, #5ce590 0%, #2bd46d 100%);
+    }
+
+    &:active
+    {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 10px rgba(34, 197, 94, 0.4);
+    }
+
+    @media ${device.tablet}
+    {
+        position: static;
+        margin: 20px auto;
+        width: fit-content;
+    }
+
+    @media ${device.mobileL}
+    {
+        padding: 10px 18px;
+        gap: 8px;
+    }
+`;
+
+const IconWrapper = styled.span`
+    font-size: 1.7rem;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+
+    @media ${device.mobileL}
+    {
+        font-size: 1.4rem;
+    }
+`;
+
+const TextWrapper = styled.span`
+    font-weight: 700;
+    font-size: 1.5rem;
+    font-family: 'Segoe UI', sans-serif;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+
+    @media ${device.mobileL}
+    {
+        font-size: 1.2rem;
+    }
+`;
+
+// COMPONENT DEFINITION
+const BackToHomeLink = ({ onClick }) => 
+{
+    const navigate = useNavigate();
+
+    const handleClick = (e) => {
+        if (onClick)
+            onClick(e);
+        else
+            navigate('/');
+    };
+
+    return (
+        <StyledButton onClick={handleClick}>
+            
+            <IconWrapper>
+                🏠
+            </IconWrapper>
+            
+            <TextWrapper>
+                Go to Homepage
+            </TextWrapper>
+
+        </StyledButton>
+    );
+};
+
+export default BackToHomeLink;

@@ -18,6 +18,23 @@ static bool valid_diff(int d)
     return (d >= 1 && d <= 5);
 }
 
+static std::optional<int> mode_to_diff(const std::string &mode)
+{
+    if (mode == "Total")
+        return std::nullopt;
+    if (mode == "Easy")
+        return 1;
+    if (mode == "Medium")
+        return 2;
+    if (mode == "Hard")
+        return 3;
+    if (mode == "Expert")
+        return 4;
+    if (mode == "Extreme")
+        return 5;
+    return std::nullopt;
+}
+
 int main()
 {
     if (!stats::init_db(10, 2000))
@@ -90,6 +107,73 @@ int main()
 
         auto entries = stats::get_match_history(username, 20);
         return crow::response(200, stats::history_to_json(username, entries));
+    });
+
+    CROW_ROUTE(app, "/api/stats/leaderboard/<string>")
+    ([](const crow::request &req, const std::string &mode)
+    {
+        if (mode != "Total" && mode != "Easy" && mode != "Medium"
+            && mode != "Hard" && mode != "Expert" && mode != "Extreme")
+            return stats::make_error(400, "mode must be Total/Easy/Medium/Hard/Expert/Extreme");
+
+        std::string scope = "alltime";
+        if (req.url_params.get("scope"))
+            scope = req.url_params.get("scope");
+
+        if (scope != "alltime" && scope != "weekly")
+            return stats::make_error(400, "scope must be alltime/weekly");
+
+        bool weekly = (scope == "weekly");
+
+        int limit = 100;
+        if (req.url_params.get("limit"))
+        {
+            std::string limit_str = req.url_params.get("limit");
+            try
+            {
+                limit = std::stoi(limit_str);
+            }
+            catch (...)
+            {
+                return stats::make_error(400, "limit must be a number");
+            }
+
+            if (limit < 0)
+                return stats::make_error(400, "limit must be >= 0");
+        }
+
+        std::optional<int> diff = mode_to_diff(mode);
+        auto entries = stats::get_leaderboard(diff, limit, weekly);
+
+        crow::json::wvalue out;
+        out["mode"] = mode;
+        out["scope"] = scope;
+        out["count"] = static_cast<int>(entries.size());
+
+        if (weekly)
+        {
+            stats::WeeklyResetInfo info = stats::get_weekly_reset_info();
+            out["period_start"] = info.period_start;
+            out["next_reset_at"] = info.next_reset_at;
+        }
+
+        std::vector<crow::json::wvalue> arr;
+        arr.reserve(entries.size());
+        for (const auto &e : entries)
+        {
+            crow::json::wvalue row;
+            row["username"] = e.username;
+            row["display_name"] = e.username; // TODO: Fetch from user service or database
+            row["wins"] = e.wins;
+            row["losses"] = e.losses;
+            row["games"] = e.games;
+            row["winrate"] = e.winrate;
+            row["score"] = e.score;
+            arr.push_back(std::move(row));
+        }
+
+        out["data"] = std::move(arr);
+        return crow::response(200, out);
     });
 
     CROW_ROUTE(app, "/api/stats/<string>/<int>")

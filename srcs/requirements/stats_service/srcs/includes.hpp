@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdlib>
+#include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <optional>
 #include <string>

@@ -18,7 +18,14 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 DEBUG = True
 
 # Allowed Hosts: Nginx'ten gelen istekleri ve internal servis çağrılarını kabul et
-ALLOWED_HOSTS = ['*']
+# Accept all hosts - internal docker communication and external requests
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', '*']
+
+# Use X-Forwarded-Host header for internal service-to-service communication
+USE_X_FORWARDED_HOST = True
+
+# Trust X-Forwarded-For headers from internal services
+USE_X_FORWARDED_FOR = True
 
 
 # Application definition
@@ -37,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'user_app.custom_middleware.SkipHostValidationMiddleware',  # Custom middleware for internal APIs
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -109,6 +117,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Production için gerekli
 # Media Files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# File Upload Settings
+DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
+FILE_UPLOAD_PERMISSIONS = 0o644
 
 # Klasör yoksa oluştur
 if not os.path.exists(MEDIA_ROOT):

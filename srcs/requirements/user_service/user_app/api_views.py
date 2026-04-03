@@ -20,7 +20,7 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 # Modeller ve Serializerlar
-from .models import CustomUser, Relationship
+from .models import CustomUser, Relationship, Achievement, ACHIEVEMENT_TYPES
 from .serializers import CustomUserSerializer, RegisterSerializer
 
 # --- YARDIMCI FONKSİYONLAR (JWT & COOKIE) ---
@@ -219,8 +219,8 @@ def login_api(request):
                 "id": user.id, 
                 "username": user.username,
                 "display_name": getattr(user, 'display_name', user.username),
-                "avatar": user.avatar.url if user.avatar else None,
-                "is_superuser": user.is_superuser
+                "is_superuser": user.is_superuser,
+                "avatar": user.avatar_url or (user.avatar.url if user.avatar else None)
             }
         }, status=200)
         
@@ -274,7 +274,11 @@ def logout_api(request):
 @permission_classes([IsAuthenticated])
 def friend_action_api(request):
     if request.method == 'GET':
-        pending = Relationship.objects.filter(to_user=request.user, status='pending')
+        # Incoming pending requests (to_user=me)
+        pending_incoming = Relationship.objects.filter(to_user=request.user, status='pending')
+        
+        # Outgoing pending requests (from_user=me)
+        pending_outgoing = Relationship.objects.filter(from_user=request.user, status='pending')
         
         friends_rel = Relationship.objects.filter(
             Q(status='friends') & (Q(from_user=request.user) | Q(to_user=request.user))
@@ -290,27 +294,43 @@ def friend_action_api(request):
                 "id": friend_user.id,
                 "username": friend_user.username,
                 "display_name": d_name,
-                "avatar": friend_user.avatar.url if friend_user.avatar else None,
+                "avatar": friend_user.avatar_url or (friend_user.avatar.url if friend_user.avatar else None),
                 "is_online": getattr(friend_user, 'is_online', False),
                 "rel_id": rel.id
             })
 
-        pending_data = []
-        for r in pending:
+        # Incoming pending requests
+        pending_incoming_data = []
+        for r in pending_incoming:
             p_d_name = getattr(r.from_user, 'display_name', None) or r.from_user.username
 
-            pending_data.append({
+            pending_incoming_data.append({
                 "id": r.from_user.id,
                 "username": r.from_user.username,
                 "display_name": p_d_name,
-                "avatar": r.from_user.avatar.url if r.from_user.avatar else None,
+                "avatar": r.from_user.avatar_url or (r.from_user.avatar.url if r.from_user.avatar else None),
                 "rel_id": r.id,
                 "type": "incoming"
             })
 
+        # Outgoing pending requests
+        pending_outgoing_data = []
+        for r in pending_outgoing:
+            p_d_name = getattr(r.to_user, 'display_name', None) or r.to_user.username
+
+            pending_outgoing_data.append({
+                "id": r.to_user.id,
+                "username": r.to_user.username,
+                "display_name": p_d_name,
+                "avatar": r.to_user.avatar_url or (r.to_user.avatar.url if r.to_user.avatar else None),
+                "rel_id": r.id,
+                "type": "outgoing"
+            })
+
         return Response({
             "friends": friends_data, 
-            "pending_requests": pending_data
+            "pending_requests": pending_incoming_data,
+            "sent_requests": pending_outgoing_data
         })
 
     # --- POST: Aksiyonlar (Send, Approve, Remove) ---
@@ -385,7 +405,7 @@ def edit_api(request):
                 "username": user.username,
                 "display_name": getattr(user, 'display_name', user.username),
                 "email": user.email,
-                "avatar": user.avatar.url if user.avatar else None
+                "avatar": user.avatar_url or (user.avatar.url if user.avatar else None)
             }
         }, status=200)
     except Exception as e:
@@ -405,7 +425,7 @@ def user_info_api(request, user_id):
             "id": user.id,
             "username": user.username,
             "display_name": d_name,
-            "avatar": user.avatar.url if user.avatar else None
+            "avatar": user.avatar_url or (user.avatar.url if user.avatar else None)
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -428,3 +448,205 @@ def delete_account_api(request):
     user = request.user
     user.delete()
     return Response({"message": "Account successfully deleted"}, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def user_by_username_api(request, username):
+    """Verilen username'e göre kullanıcının temel bilgilerini döner"""
+    try:
+        user = CustomUser.objects.get(username=username)
+        d_name = getattr(user, 'display_name', None) or user.username
+        
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "display_name": d_name,
+            "email": user.email,
+            "avatar": user.avatar_url or (user.avatar.url if user.avatar else None),
+            "online_status": user.status
+        }, status=status.HTTP_200_OK)
+    except CustomUser.DoesNotExist:
+        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def check_friend_status_api(request, username):
+    """Verilen username ile olan friend status'unu döner (friends/pending/none)"""
+    try:
+        target_user = CustomUser.objects.get(username=username)
+    except CustomUser.DoesNotExist:
+        return Response({"status": "none"}, status=status.HTTP_200_OK)
+
+    if target_user == request.user:
+        return Response({"status": "self"}, status=status.HTTP_200_OK)
+
+    # Check if already friends
+    is_friends = Relationship.objects.filter(
+        Q(status='friends') & (Q(from_user=request.user, to_user=target_user) | Q(from_user=target_user, to_user=request.user))
+    ).exists()
+    
+    if is_friends:
+        return Response({"status": "friends"}, status=status.HTTP_200_OK)
+
+    # Check if pending request (sent by me)
+    is_pending_sent = Relationship.objects.filter(
+        from_user=request.user,
+        to_user=target_user,
+        status='pending'
+    ).exists()
+    
+    if is_pending_sent:
+        return Response({"status": "pending"}, status=status.HTTP_200_OK)
+
+    return Response({"status": "none"}, status=status.HTTP_200_OK)
+
+
+# --- ACHIEVEMENTS ---
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def unlock_achievement(request):
+    """Stats service bu endpoint'i çağırır ve achievement açar."""
+    username = request.data.get('username')
+    achievement_type = request.data.get('achievement_type')
+
+    if not username or not achievement_type:
+        return Response(
+            {"error": "username and achievement_type required"}, 
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        user = CustomUser.objects.get(username=username)
+    except CustomUser.DoesNotExist:
+        return Response(
+            {"error": f"User {username} not found"}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # 1) Achievement metadata'sını hazırla
+    # Eğer type sözlükte yoksa güvenli varsayılanlar kullan
+    achievement_meta = ACHIEVEMENT_TYPES.get(achievement_type, {})
+
+    if 'name' in achievement_meta:
+        achievement_name = achievement_meta['name']
+    else:
+        achievement_name = achievement_type.replace('_', ' ').title()
+
+    if 'icon' in achievement_meta:
+        achievement_icon = achievement_meta['icon']
+    else:
+        achievement_icon = '🏆'
+
+    achievement_description = f"Unlocked achievement: {achievement_name}"
+
+    # 2) Achievement kaydını getir ya da oluştur
+    # unique_together sayesinde duplicate oluşmaz
+    achievement, created = Achievement.objects.get_or_create(
+        user=user,
+        achievement_type=achievement_type,
+        defaults={
+            "name": achievement_name,
+            "icon": achievement_icon,
+            "description": achievement_description,
+        },
+    )
+
+    # 3) Eski kayıtlarda boş alan varsa tamamla
+    if not created:
+        needs_save = False
+        if not achievement.name:
+            achievement.name = achievement_name
+            needs_save = True
+        if not achievement.icon:
+            achievement.icon = achievement_icon
+            needs_save = True
+        if not achievement.description:
+            achievement.description = achievement_description
+            needs_save = True
+
+        if needs_save:
+            achievement.save()
+
+    # 4) Response dön
+    if created:
+        return Response(
+            {
+                "message": f"Achievement {achievement_type} unlocked!",
+                "achievement": {
+                    "id": achievement.id,
+                    "type": achievement.achievement_type,
+                    "name": achievement.name,
+                    "earned_at": achievement.earned_at
+                }
+            },
+            status=status.HTTP_201_CREATED
+        )
+    else:
+        # Already unlocked
+        return Response(
+            {
+                "message": f"Achievement {achievement_type} already unlocked",
+                "achievement": {
+                    "id": achievement.id,
+                    "type": achievement.achievement_type,
+                    "name": achievement.name,
+                    "earned_at": achievement.earned_at
+                }
+            },
+            status=status.HTTP_200_OK
+        )
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_user_achievements(request, username):
+    """Kullanıcının tüm açtığı achievement kayıtlarını döner."""
+    try:
+        user = CustomUser.objects.get(username=username)
+    except CustomUser.DoesNotExist:
+        return Response(
+            {"error": f"User {username} not found"}, 
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    achievements = Achievement.objects.filter(user=user).order_by('-earned_at')
+
+    achievement_list = []
+    for ach in achievements:
+        # DB'deki kayıtta name/icon boşsa fallback kullan
+        achievement_meta = ACHIEVEMENT_TYPES.get(ach.achievement_type, {})
+
+        if ach.name:
+            ach_name = ach.name
+        else:
+            ach_name = achievement_meta.get('name', ach.achievement_type)
+
+        if ach.icon:
+            ach_icon = ach.icon
+        else:
+            ach_icon = achievement_meta.get('icon', '🏆')
+
+        if ach.description:
+            ach_description = ach.description
+        else:
+            ach_description = f"Unlocked achievement: {ach_name}"
+
+        achievement_list.append({
+            "id": ach.id,
+            "type": ach.achievement_type,
+            "name": ach_name,
+            "icon": ach_icon,
+            "description": ach_description,
+            "earned_at": ach.earned_at,
+        })
+
+    return Response(
+        {
+            "username": username,
+            "achievements": achievement_list,
+            "total": achievements.count()
+        },
+        status=status.HTTP_200_OK
+    )
