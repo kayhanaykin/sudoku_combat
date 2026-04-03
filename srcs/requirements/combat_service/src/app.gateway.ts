@@ -36,7 +36,7 @@ export class AppGateway
 
             try
 			{
-                const currBoardRes = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
+                const currBoardRes = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
                 const gameState = await currBoardRes.json();
                 
                 gameState.startTime = startTime;
@@ -62,7 +62,7 @@ export class AppGateway
 		{
              try
 			{
-                const currBoardRes = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
+                const currBoardRes = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
                 const gameState = await currBoardRes.json();
                 
                 gameState.startTime = this.roomStartTimes.get(data.roomId);
@@ -86,7 +86,7 @@ export class AppGateway
     {
         try
         {
-            const res = await fetch(`http://localhost:8003/api/room/validate-move/${data.roomId}`,
+            const res = await fetch(`http://127.0.0.1:8003/api/room/validate-move/${data.roomId}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -96,7 +96,7 @@ export class AppGateway
             const roomClients = this.rooms.get(data.roomId);
             if (roomClients)
             {
-                const currBoardRes = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
+                const currBoardRes = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
                 const gameState = await currBoardRes.json();
                 
                 if (this.roomStartTimes.has(data.roomId))
@@ -139,7 +139,7 @@ export class AppGateway
         try
         {
             this.spectator = client;
-            const res = await fetch(`http://localhost:8003/api/room/game-state/${data.roomId}`);
+            const res = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
             const gameState = await res.json();
             
             if (this.roomStartTimes.has(data.roomId))
