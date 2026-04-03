@@ -8,6 +8,7 @@ urlpatterns = [
     path('signup/', api_views.signup_api, name='api-signup'),
     path('login/', api_views.login_api, name='api_login'),
     path('profile/edit/', api_views.edit_api, name='epi_edit'),
+    path('profile/delete/', api_views.delete_account_api, name='delete_account_api'),
     path('csrf/', api_views.get_csrf_token, name='get_csrf_token'),
     path('logout/', api_views.logout_api, name='api_logout'),
     path('info/<int:user_id>/', api_views.user_info_api, name='user_info_api'),
