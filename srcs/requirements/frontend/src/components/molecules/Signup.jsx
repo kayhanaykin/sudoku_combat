@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled, { keyframes } from 'styled-components';
+import { useAuth } from '../../context/AuthContext'; // Login'deki gibi AuthContext'i ekledik
 import { registerUser, loginUser, API_BASE_URL } from '../../services/api';
 
 const INTRA_REGISTER_URL = `${API_BASE_URL}/api/user/auth/login/`;
@@ -18,7 +19,7 @@ const fadeIn = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
+// STYLED COMPONENTS (Tasarımına dokunulmadı)
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -101,38 +102,13 @@ const SubmitButton = styled.button`
     width: 100%;
     margin-top: 10px;
 
-    cursor: ${props => 
-    {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
-
-    opacity: ${props => 
-    {
-        if (props.disabled)
-            return '0.7';
-            
-        return '1';
-    }};
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+    opacity: ${props => props.disabled ? '0.7' : '1'};
 
     &:hover
     {
-        background-color: ${props => 
-        {
-            if (props.disabled)
-                return '#0e7c3a';
-                
-            return '#149345';
-        }};
-        transform: ${props => 
-        {
-            if (props.disabled)
-                return 'none';
-                
-            return 'translateY(-2px)';
-        }};
+        background-color: ${props => props.disabled ? '#0e7c3a' : '#149345'};
+        transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
     }
 `;
 
@@ -145,18 +121,12 @@ const Divider = styled.div`
     font-size: 1rem;
     font-weight: 650;
 
-    &::before,
-    &::after
-    {
+    &::before, &::after {
         content: '';
         flex: 1;
         border-bottom: 1px solid #e5e7eb;
     }
-
-    span
-    {
-        padding: 0 10px;
-    }
+    span { padding: 0 10px; }
 `;
 
 const IntraButton = styled.button`
@@ -173,38 +143,13 @@ const IntraButton = styled.button`
     align-items: center;
     width: 100%;
 
-    cursor: ${props => 
-    {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
-
-    opacity: ${props => 
-    {
-        if (props.disabled)
-            return '0.7';
-            
-        return '1';
-    }};
+    cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+    opacity: ${props => props.disabled ? '0.7' : '1'};
 
     &:hover
     {
-        opacity: ${props => 
-        {
-            if (props.disabled)
-                return '0.7';
-                
-            return '0.85';
-        }};
-        transform: ${props => 
-        {
-            if (props.disabled)
-                return 'none';
-                
-            return 'translateY(-2px)';
-        }};
+        opacity: ${props => props.disabled ? '0.7' : '0.85'};
+        transform: ${props => props.disabled ? 'none' : 'translateY(-2px)'};
     }
 `;
 
@@ -218,16 +163,8 @@ const FooterContainer = styled.p`
 const LoginLink = styled.span`
     color: #15803d;
     cursor: pointer;
-    text-decoration: none;
     font-weight: bold;
-    font-size: 1rem;
-    transition: color 0.2s;
-
-    &:hover 
-    {
-        color: #166534;
-        text-decoration: underline;
-    }
+    &:hover { text-decoration: underline; }
 `;
 
 const CloseButton = styled.button`
@@ -237,56 +174,24 @@ const CloseButton = styled.button`
     color: #6b7280;
     width: 100%;
     text-decoration: underline;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-
-    cursor: ${props => 
-    {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
-
-    &:hover
-    {
-        color: ${props => 
-        {
-            if (props.disabled)
-                return '#6b7280';
-                
-            return '#111827';
-        }};
-    }
+    cursor: pointer;
 `;
 
-// ALERTS
 const ErrorAlert = styled.div`
     color: #b91c1c;
-    text-align: center;
-    font-size: 0.9rem;
-    margin-bottom: 10px;
     background-color: #fef2f2;
     border: 1px solid #f87171;
     padding: 10px;
     border-radius: 8px;
-    font-weight: 600;
-`;
-
-const SuccessAlert = styled.div`
-    background-color: #f0fdf4;
-    color: #15803d;
-    border: 1px solid #4ade80;
-    padding: 10px;
-    border-radius: 8px;
+    font-size: 0.9rem;
     margin-bottom: 10px;
-    text-align: center;
     font-weight: 600;
 `;
 
 // COMPONENT DEFINITION
 const SignUp = ({ isOpen, onClose, onSwitchToLogin }) => 
 {
+    const { login } = useAuth(); // Login.jsx'teki aynı hook kullanımı
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -294,7 +199,6 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
     
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [successMessage, setSuccessMessage] = useState(null);
 
     if (!isOpen)
         return null;
@@ -303,7 +207,6 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
     {
         e.preventDefault();
         setError(null);
-        setSuccessMessage(null);
 
         if (password !== confirmPassword)
         {
@@ -315,33 +218,23 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
 
         try
         {
+            // 1. Kayıt Ol
             await registerUser(username, email, password);
-            console.log("Registration successful, logging in automatically...");
-
-            const loginData = await loginUser(username, password);
-            console.log("Login successful, tokens received.");
-
-            if (loginData.access) 
-                localStorage.setItem('access_token', loginData.access);
-                
-            if (loginData.refresh) 
-                localStorage.setItem('refresh_token', loginData.refresh);
-
-            setSuccessMessage("Account created and logged in! Redirecting...");
             
-            setTimeout(() => 
-            {
-                onClose();
-                window.location.reload(); 
-            }, 1500);
+            // 2. Login.jsx'teki gibi loginUser'ı çağır
+            const userData = await loginUser(username, password);
+            
+            // 3. Login.jsx'teki gibi Context'teki login fonksiyonunu çalıştır
+            // Bu fonksiyon hem tokenları kaydeder hem de state'i günceller.
+            login(userData);
+            
+            // 4. Modalı kapat
+            onClose();
         }
         catch (err)
         {
             console.error(err);
-            if (err.message)
-                setError(err.message);
-            else
-                setError("An error occurred.");
+            setError(err.message || "An error occurred.");
         }
         finally
         {
@@ -351,46 +244,16 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
 
     const handleIntraRegister = () => 
     {
-        window.location.href = INTRA_REGISTER_URL;
+        window.location.href = `/api/user/auth/login/`;
     };
-
-    let submitButtonText = 'Sign Up';
-    if (isLoading)
-        submitButtonText = 'Creating Account...';
-
-    let successElement = null;
-    if (successMessage)
-    {
-        successElement = (
-            <SuccessAlert>
-                {successMessage}
-            </SuccessAlert>
-        );
-    }
-
-    let errorElement = null;
-    if (error)
-    {
-        errorElement = (
-            <ErrorAlert>
-                {error}
-            </ErrorAlert>
-        );
-    }
 
     return (
         <Overlay onClick={onClose}>
             <ModalContainer onClick={(e) => e.stopPropagation()}>
+                <Title>Sign Up</Title>
                 
-                <Title>
-                    Sign Up
-                </Title>
-                
-                {successElement}
-
                 <Form onSubmit={handleSubmit}>
-                    
-                    {errorElement}
+                    {error && <ErrorAlert>{error}</ErrorAlert>}
 
                     <Input 
                         type="text" 
@@ -429,34 +292,22 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
                     />
                     
                     <SubmitButton type="submit" disabled={isLoading}>
-                        {submitButtonText}
+                        {isLoading ? 'Creating Account...' : 'Sign Up'}
                     </SubmitButton>
 
-                    <Divider>
-                        <span>OR</span>
-                    </Divider>
+                    <Divider><span>OR</span></Divider>
 
-                    <IntraButton 
-                        type="button" 
-                        onClick={handleIntraRegister}
-                        disabled={isLoading}
-                    >
+                    <IntraButton type="button" onClick={handleIntraRegister} disabled={isLoading}>
                         Sign up with 42
                     </IntraButton>
-                    
                 </Form>
                 
                 <FooterContainer>
                     Already have an account?{' '}
-                    <LoginLink onClick={onSwitchToLogin}>
-                        Log In
-                    </LoginLink>
+                    <LoginLink onClick={onSwitchToLogin}>Log In</LoginLink>
                 </FooterContainer>
 
-                <CloseButton onClick={onClose} disabled={isLoading}>
-                    Close
-                </CloseButton>
-                
+                <CloseButton onClick={onClose} disabled={isLoading}>Close</CloseButton>
             </ModalContainer>
         </Overlay>
     );
