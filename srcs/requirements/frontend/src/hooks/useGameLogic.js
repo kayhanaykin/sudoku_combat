@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { makeMove } from '../../services/api';
+import { makeMove } from '../services/api';
 
 const EMPTY_BOARD = Array(9).fill(null).map(() => Array(9).fill(
 {
@@ -37,13 +37,15 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     const [board, setBoard] = useState(EMPTY_BOARD);
     const [gameId, setGameId] = useState(null);
     const [selectedCell, setSelectedCell] = useState(null);
-    
+
+    const [startTime, setStartTime] = useState(null);
     const [seconds, setSeconds] = useState(0);
     const [difficulty, setDifficulty] = useState("Medium");
     
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [lives, setLives] = useState(3);
+    const [hintsRemaining, setHintsRemaining] = useState(3);
     const [isGameOver, setIsGameOver] = useState(false);
     
     const [isHintModalOpen, setIsHintModalOpen] = useState(false);
@@ -54,84 +56,99 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
     useEffect(() => 
     {
-        if (location.state) 
+        if (mode === 'offline' && location.state) 
         {
-            if (mode === 'offline') 
+            const { gameData, difficulty: diffLevel } = location.state;
+            
+            if (gameData) 
             {
-                const { gameData, difficulty: diffLevel } = location.state;
+                const rawBoard = gameData.board || gameData.current_board;
+                const id = gameData.game_id || gameData.gameId;
                 
-                if (gameData) 
-                {
-                    const rawBoard = gameData.board || gameData.current_board;
-                    const id = gameData.game_id || gameData.gameId;
-                    
-                    if (rawBoard)
-                        setBoard(formatBoardFromData(rawBoard));
-                    
-                    if (id)
-                        setGameId(id);
-                    
-                    if (gameData.lives !== undefined)
-                        setLives(gameData.lives);
-                }
+                if (rawBoard)
+                    setBoard(formatBoardFromData(rawBoard));
                 
-                if (diffLevel) 
-                {
-                    const levels = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
-                    setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
-                }
-            } 
-            else if (mode === 'online') 
-            {
-                const { difficulty: diffLevel, role } = location.state;
-                const roomId = urlRoomId; 
+                if (id)
+                    setGameId(id);
                 
-                if (roomId) 
-                {
-                    setGameId(roomId);
-                    
-                    const fetchGameState = async () => 
-                    {
-                        try 
-                        {
-                            const response = await fetch(`/api/room/game-state/${roomId}`);
-                            const data = await response.json();
-                            
-                            if (data.success && data.currBoard) 
-                            {
-                                setBoard(formatBoardFromData(data.currBoard));
-                                
-                                if (data.health)
-                                    setLives(role === 'owner' ? data.health[0] : data.health[1]);
-                            }
-                        } 
-                        catch (error) 
-                        {
-                            console.error("Error fetching online board:", error);
-                        }
-                    };
-                    
-                    fetchGameState();
-                }
-                
-                if (diffLevel)
-                    setDifficulty(diffLevel);
+                if (gameData.lives !== undefined)
+                    setLives(gameData.lives);
             }
+            
+            if (diffLevel) 
+            {
+                const levels = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
+                setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
+            }
+        }
+        else if (mode === 'online') 
+        {
+            let diffLevel = null;
+            let role = null;
+
+            if (location.state)
+            {
+                diffLevel = location.state.difficulty;
+                role = location.state.role;
+            }
+
+            const roomId = urlRoomId;
+
+            if (roomId)
+            {
+                setGameId(roomId);
+
+                const fetchGameState = async () => 
+                {
+                    try 
+                    {
+                        const response = await fetch(`/api/room/game-state/${roomId}`);
+                        const data = await response.json();
+
+                        if (data.success)
+                        {
+                            if (data.currBoard)
+                                setBoard(formatBoardFromData(data.currBoard));
+
+                            const currentRole = playersInfo?.role || 'guest';
+                            if (data.health)
+                                setLives(currentRole === 'owner' ? data.health[0] : data.health[1]);
+
+                            if (data.difficulty)
+                                setDifficulty(data.difficulty);
+
+                            if (data.startTime)
+                                setStartTime(data.startTime);
+                        }
+                    }
+                    catch (error) 
+                    {
+                        console.error("Error fetching online board:", error);
+                    }
+                };
+
+                fetchGameState();
+            }
+
+            if (diffLevel)
+                setDifficulty(diffLevel);
         }
     }, [location, mode, urlRoomId]);
 
     useEffect(() => 
     {
-        if (isGameOver)
+        if (!startTime || isGameOver)
             return;
-        
-        const interval = setInterval(() => 
-        { 
-            setSeconds(prev => prev + 1); 
+
+        setSeconds(0);
+
+        const interval = setInterval(() => {
+            setSeconds(prev => prev + 1);
         }, 1000);
         
         return () => clearInterval(interval);
-    }, [isGameOver]);
+
+    }, [startTime, isGameOver]);
 
     const handleCellClick = (r, c) => 
     {
@@ -278,6 +295,14 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         if (isGameOver)
             return;
 
+        if (hintsRemaining <= 0)
+        {
+            setErrorMessage("No hints remaining!");
+            setShowError(true);
+            setTimeout(() => setShowError(false), 3000);
+            return;
+        }
+
         try
         {
             const simpleGrid = board.map(row => row.map(cell => cell.value));
@@ -303,6 +328,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                 setHintData(data);
                 setIsHintModalOpen(true);
                 setSelectedCell({ r: data.row, c: data.col });
+                setHintsRemaining(prev => prev - 1);
             }
             else
             {
@@ -379,13 +405,14 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
             const reportStats = async () => 
             {
                 const diffMap = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Expert': 4, 'Extreme': 5 };
-                const diffInt = diffMap[difficulty] || 2; 
+                const diffInt = diffMap[difficulty] || 2;
+                const modeStr = mode === 'online' ? 'online' : 'offline';
 
                 const payload = 
                 {
                     username: playersInfo.username,
                     difficulty: diffInt,
-                    mode: mode,
+                    mode: modeStr,
                     result: gameResult,
                     time_seconds: seconds
                 };
@@ -416,13 +443,15 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     }, [gameResult, playersInfo?.username, playersInfo?.opponent, difficulty, mode, seconds]);
 
     return {
-        board, timer: formatTime(seconds), difficulty, lives, selectedCell, isGameOver,
+        board, timer: formatTime(seconds), seconds, difficulty, lives, hintsRemaining, selectedCell, isGameOver,
         showError, errorMessage, isHintModalOpen, hintData,
         handleCellClick, handleInput, handleHint, applyHint,
         setIsHintModalOpen, setHintData, setBoard, setLives,
         updateBoardFromOpponent, setShowError, setErrorMessage,
         gameResult, setGameResult,
-        setSelectedCell
+        setSelectedCell,
+        setStartTime,
+        setDifficulty
     };
 };
 

@@ -10,11 +10,21 @@ CXXFLAGS += -DASIO_STANDALONE
 LDFLAGS = -lpthread
 LDFLAGS += -lpqxx
 LDFLAGS += -lpq
+LDFLAGS += -lsoci_core
+LDFLAGS += -lsoci_postgresql
+LDFLAGS += -lcurl
 
-SRCS = $(wildcard srcs/*.cpp)
+SRCS = $(filter-out srcs/repository_orm.cpp, $(wildcard srcs/*.cpp))
 OBJS = $(SRCS:.cpp=.o)
 
+# ORM version
+SRCS_ORM = srcs/main.cpp srcs/repository_orm.cpp
+OBJS_ORM = $(SRCS_ORM:.cpp=.o)
+NAME_ORM = stats_server_orm
+
 all: $(NAME)
+
+orm: $(NAME_ORM)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
@@ -22,11 +32,14 @@ $(NAME): $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+$(NAME_ORM): $(OBJS_ORM)
+	$(CXX) $(CXXFLAGS) $(OBJS_ORM) -o $(NAME_ORM) $(LDFLAGS)
+
 clean:
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(OBJS_ORM)
 
 fclean: clean
-	rm -f $(NAME)
+	rm -f $(NAME) $(NAME_ORM)
 
 re: fclean all
 

@@ -4,7 +4,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm config set registry https://registry.npmjs.org/ && \
+    rm -f package-lock.json && \
+    npm install
 
 COPY . .
 

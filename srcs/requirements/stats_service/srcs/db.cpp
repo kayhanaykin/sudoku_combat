@@ -1,5 +1,4 @@
 #include "db.hpp"
-
 #include <chrono>
 #include <thread>
 
@@ -70,6 +69,53 @@ namespace stats
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_mh_username "
             "ON match_history(username)"
+        );
+
+        tx.exec(
+            "CREATE TABLE IF NOT EXISTS weekly_player_stats ("
+            "  id              BIGSERIAL PRIMARY KEY,"
+            "  username        TEXT NOT NULL,"
+            "  difficulty      INT  NOT NULL,"
+            "  mode            TEXT NOT NULL,"
+            "  wins            INT  NOT NULL DEFAULT 0,"
+            "  losses          INT  NOT NULL DEFAULT 0,"
+            "  updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),"
+            "  UNIQUE(username, difficulty, mode)"
+            ")"
+        );
+
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_wps_mode_diff "
+            "ON weekly_player_stats(mode, difficulty)"
+        );
+
+        tx.exec(
+            "CREATE TABLE IF NOT EXISTS leaderboard_reset_meta ("
+            "  id            INT PRIMARY KEY,"
+            "  period_start  TIMESTAMPTZ NOT NULL,"
+            "  next_reset_at TIMESTAMPTZ NOT NULL"
+            ")"
+        );
+
+        tx.exec(
+            "INSERT INTO leaderboard_reset_meta (id, period_start, next_reset_at) "
+            "VALUES (1, date_trunc('week', NOW()), date_trunc('week', NOW()) + INTERVAL '7 days') "
+            "ON CONFLICT (id) DO NOTHING"
+        );
+
+        tx.exec(
+            "UPDATE player_stats ps "
+            "SET best_time_seconds = src.min_time "
+            "FROM ("
+            "  SELECT username, difficulty, mode, MIN(time_seconds) AS min_time "
+            "  FROM match_history "
+            "  WHERE result = 'win' AND time_seconds IS NOT NULL "
+            "  GROUP BY username, difficulty, mode"
+            ") src "
+            "WHERE ps.username = src.username "
+            "  AND ps.difficulty = src.difficulty "
+            "  AND ps.mode = src.mode "
+            "  AND (ps.best_time_seconds IS NULL OR src.min_time < ps.best_time_seconds)"
         );
 
         tx.commit();

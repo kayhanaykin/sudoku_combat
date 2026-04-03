@@ -3,9 +3,14 @@ FROM debian:bookworm AS builder
 RUN apt-get update && apt-get install -y \
     build-essential \
     wget \
+    unzip \
     ca-certificates \
     libpq-dev \
     libpqxx-dev \
+    libsoci-dev \
+    libboost-all-dev \
+    libcurl4-openssl-dev \
+    nlohmann-json3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -30,6 +35,7 @@ RUN apt-get update && apt-get install -y \
     libstdc++6 \
     libpq5 \
     libpqxx-dev \
+    libcurl4 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

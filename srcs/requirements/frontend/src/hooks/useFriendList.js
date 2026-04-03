@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import useOnlineStatus from './useOnlineStatus';
+import { useWebSocket } from '../context/WebSocketContext';
 
 function getCookie(name)
 {
@@ -27,7 +27,7 @@ const useFriendList = () =>
     const [error, setError] = useState(null);
     const [successMsg, setSuccessMsg] = useState(null);
 
-    const onlineUserIds = useOnlineStatus();
+    const onlineUserIds = useWebSocket() || new Set();
     const API_URL = '/api/v1/user/friends/';
 
     const fetchFriends = useCallback(async () =>
@@ -53,6 +53,22 @@ const useFriendList = () =>
                             displayName: req.display_name || req.username,
                             avatar: req.avatar,
                             status: 'pending',
+                            is_online: false
+                        });
+                    });
+                }
+
+                if (data.sent_requests)
+                {
+                    data.sent_requests.forEach(req =>
+                    {
+                        combinedList.push({
+                            id: req.rel_id,
+                            userId: req.id,
+                            username: req.username,
+                            displayName: req.display_name || req.username,
+                            avatar: req.avatar,
+                            status: 'sent',
                             is_online: false
                         });
                     });
