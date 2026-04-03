@@ -10,6 +10,8 @@ import Numpad from '../components/molecules/Numpad';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 import GameOverOverlay from '../components/organisms/GameOverOverlay';
 import { getUserById } from '../services/userService'; 
+import ExitConfirmModal from '../components/molecules/ExitConfirmModal';
+import useGameExit from '../hooks/useGameExit';
 
 const BASE_URL = '';
 
@@ -89,6 +91,78 @@ const ControlsWrapper = styled.div`
     margin-top: 1.5vmin;
 `;
 
+const ExitModalOverlay = styled.div`
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+`;
+
+const ExitModalBox = styled.div`
+    background: white;
+    padding: 4vmin;
+    border-radius: 2vmin;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    animation: fadeIn 0.2s ease-out;
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: scale(0.9); }
+        to { opacity: 1; transform: scale(1); }
+    }
+`;
+
+const ExitModalTitle = styled.h2`
+    color: #e74c3c;
+    margin-top: 0;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+`;
+
+const ExitModalText = styled.p`
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    line-height: 1.5;
+`;
+
+const ExitBtnGroup = styled.div`
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+`;
+
+const CancelBtn = styled.button`
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: #95a5a6;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #7f8c8d; }
+`;
+
+const SurrenderBtn = styled.button`
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: #e74c3c;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s;
+    &:hover { background: #c0392b; }
+`;
+
 // COMPONENT DEFINITION
 const OnlineGame = () => 
 {
@@ -143,49 +217,6 @@ const OnlineGame = () =>
         }
     };
 
-    const handleExitGame = async () => {
-        if (isGameOver || gameResult)
-        {
-            navigate('/');
-            return;
-        }
-
-        if (ws.current && ws.current.readyState === WebSocket.OPEN)
-        {
-            ws.current.send(JSON.stringify({
-                event: 'move',
-                data: { 
-                    roomId: roomId.toString(), 
-                    role: isOwner ? 'owner' : 'guest',
-                    action: 'surrender'
-                }
-            }));
-        }
-
-        try
-        {
-            const diffMap = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Expert': 4, 'Extreme': 5 };
-            await fetch('/api/stats/report', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: players.you.username || user?.username,
-                    difficulty: diffMap[difficulty] || 2,
-                    mode: 'online',
-                    result: 'lose',
-                    time_seconds: seconds,
-                    opponent: players.opponent.username
-                })
-            });
-        }
-        catch (error)
-        {
-            console.error("Failed to send exit stats", error);
-        }
-
-        navigate('/');
-    };
-
     const { 
         board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
@@ -199,6 +230,19 @@ const OnlineGame = () =>
         username: players.you.username || user?.username || '', 
         opponent: players.opponent.username || '',
         role: isOwner ? 'owner' : 'guest'
+    });
+
+    const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
+        isGameOver,
+        gameResult,
+        mode: 'online',
+        difficulty,
+        seconds,
+        username: players.you.username || user?.username,
+        opponentUsername: players.opponent.username,
+        wsRef: ws,
+        roomId,
+        isOwner
     });
 
     const [opponentLives, setOpponentLives] = useState(3);
@@ -506,19 +550,21 @@ const OnlineGame = () =>
 
     return (
         <GameContainer>
-            
+            <ExitConfirmModal 
+                isOpen={isExitModalOpen} 
+                onClose={cancelExit}
+                onConfirm={confirmExitGame} 
+            />
+
             <CenterToast $isVisible={showError}>
                 {errorMessage}
             </CenterToast>
 
             <GameOverOverlay result={gameResult} />
-
-            <BackToHomeLink onClick={handleExitGame} />
-            
+            <BackToHomeLink onClick={handleBackClick} />
             <GameHeader timer={timer} difficulty={difficulty} />
-
+            
             <GameMainArea>
-                
                 <PlayerCard 
                     title={players.you.displayName}
                     username={players.you.username}
@@ -546,7 +592,6 @@ const OnlineGame = () =>
                     moves={opponentMoves}
                     align="right" 
                 />
-                
             </GameMainArea>
 
             <ControlsWrapper ref={controlsRef}>
