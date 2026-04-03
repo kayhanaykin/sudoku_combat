@@ -12,6 +12,8 @@ import ActionBtn from '../components/atoms/ActionBtn';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 import GameOverOverlay from '../components/organisms/GameOverOverlay';
 import { getUserById } from '../services/userService';
+import ExitConfirmModal from '../components/molecules/ExitConfirmModal';
+import useGameExit from '../hooks/useGameExit';
 
 // STYLED COMPONENTS
 const GameContainer = styled.div`
@@ -168,13 +170,23 @@ const OfflineGame = () =>
     }, [user]);
 
     const { 
-        board, timer, difficulty, lives, selectedCell, isGameOver,
+        board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
         isHintModalOpen, hintData, handleHint, applyHint,
         gameResult,
         setSelectedCell,
         setStartTime
     } = useGameLogic('offline', null, { username: logicUsername });
+
+    const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
+        isGameOver,
+        gameResult,
+        mode: 'offline',
+        difficulty,
+        seconds,
+        username: logicUsername,
+        opponentUsername: 'Computer'
+    });
 
     useEffect(() => {
         if (location.state && location.state.exactStartTime)
@@ -271,6 +283,11 @@ const OfflineGame = () =>
 
     return (
         <GameContainer>
+            <ExitConfirmModal 
+                isOpen={isExitModalOpen} 
+                onClose={cancelExit}
+                onConfirm={confirmExitGame} 
+            />
             
             <CenterToast $isVisible={showError}>
                 {errorMessage}
@@ -282,7 +299,7 @@ const OfflineGame = () =>
                 loserName={loserName} 
             />
 
-            <BackToHomeLink />
+            <BackToHomeLink onClick={handleBackClick} />
             
             <GameHeader 
                 timer={timer} 
