@@ -15,7 +15,7 @@ import useGameExit from '../hooks/useGameExit';
 
 const BASE_URL = '';
 
-// STYLED COMPONENTS
+// --- STYLED COMPONENTS ---
 const GameContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -49,6 +49,124 @@ const BoardWrapper = styled.div`
     position: relative;
 `;
 
+const DualProgressContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 50vmin;
+    margin-bottom: 2vmin;
+
+    @media (max-width: 768px) {
+        max-width: 90vw;
+        margin-bottom: 3vmin;
+    }
+`;
+
+const StatsRow = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    font-size: 1.8vmin;
+    font-weight: bold;
+    margin-bottom: 1vmin;
+
+    @media (max-width: 768px) {
+        font-size: 3vmin;
+    }
+`;
+
+const CenterStat = styled.span`
+    color: #303b4a;
+    font-size: 1.8vmin;
+    background: #e5e7eb;
+    padding: 0.5vmin 1.5vmin;
+    border-radius: 1vmin;
+    text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 2.5vmin;
+    }
+`;
+
+const P2Stat = styled.span`
+    color: #3498db;
+    background: rgba(52, 152, 219, 0.1);
+    padding: 0.5vmin 1vmin;
+    border-radius: 0.8vmin;
+`;
+
+const BarBackground = styled.div`
+    position: relative;
+    width: 100%;
+    height: 2.5vmin; 
+    background-color: #d1d5db; 
+    border-radius: 2vmin;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+
+    @media (max-width: 768px) {
+        height: 3.5vmin;
+    }
+`;
+
+const BarTextLeft = styled.span`
+    position: absolute;
+    left: 1.5vmin;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 1.6vmin;
+    font-weight: 900;
+    z-index: 10;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
+    
+    @media (max-width: 768px) {
+        font-size: 2.5vmin;
+        left: 2.5vmin;
+    }
+`;
+
+const BarTextRight = styled.span`
+    position: absolute;
+    right: 1.5vmin;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    font-size: 1.6vmin;
+    font-weight: 900;
+    z-index: 10;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+
+    @media (max-width: 768px) {
+        font-size: 2.5vmin;
+        right: 2.5vmin;
+    }
+`;
+
+const P1Fill = styled.div`
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #c0392b, #e74c3c);
+    width: ${props => props.$pct}%;
+    transition: width 0.4s ease-out;
+    border-radius: 2vmin 0 0 2vmin;
+`;
+
+const P2Fill = styled.div`
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    width: ${props => props.$pct}%;
+    transition: width 0.4s ease-out;
+    border-radius: 0 2vmin 2vmin 0;
+`;
+
 const CenterToast = styled.div`
     position: absolute;
     top: 50%;
@@ -66,21 +184,8 @@ const CenterToast = styled.div`
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     text-align: center;
 
-    opacity: ${props => 
-    {
-        if (props.$isVisible)
-            return '1';
-            
-        return '0';
-    }};
-
-    visibility: ${props => 
-    {
-        if (props.$isVisible)
-            return 'visible';
-            
-        return 'hidden';
-    }};
+    opacity: ${props => props.$isVisible ? '1' : '0'};
+    visibility: ${props => props.$isVisible ? 'visible' : 'hidden'};
 `;
 
 const ControlsWrapper = styled.div`
@@ -89,78 +194,6 @@ const ControlsWrapper = styled.div`
     align-items: center;
     width: 100%;
     margin-top: 1.5vmin;
-`;
-
-const ExitModalOverlay = styled.div`
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 10000;
-    backdrop-filter: blur(5px);
-`;
-
-const ExitModalBox = styled.div`
-    background: white;
-    padding: 4vmin;
-    border-radius: 2vmin;
-    text-align: center;
-    max-width: 400px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-    animation: fadeIn 0.2s ease-out;
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: scale(0.9); }
-        to { opacity: 1; transform: scale(1); }
-    }
-`;
-
-const ExitModalTitle = styled.h2`
-    color: #e74c3c;
-    margin-top: 0;
-    font-size: 2.5rem;
-    margin-bottom: 15px;
-`;
-
-const ExitModalText = styled.p`
-    font-size: 1.2rem;
-    color: #2c3e50;
-    margin-bottom: 30px;
-    line-height: 1.5;
-`;
-
-const ExitBtnGroup = styled.div`
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-`;
-
-const CancelBtn = styled.button`
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    background: #95a5a6;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-    &:hover { background: #7f8c8d; }
-`;
-
-const SurrenderBtn = styled.button`
-    padding: 12px 24px;
-    border: none;
-    border-radius: 8px;
-    background: #e74c3c;
-    color: white;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.2s;
-    &:hover { background: #c0392b; }
 `;
 
 // COMPONENT DEFINITION
@@ -176,11 +209,8 @@ const OnlineGame = () =>
     const controlsRef = useRef(null);
 
     let isOwner = false;
-    if (location.state)
-    {
-        if (location.state.role === 'owner')
-            isOwner = true;
-    }
+    if (location.state && location.state.role === 'owner')
+        isOwner = true;
     
     const [players, setPlayers] = useState({ 
         you: { displayName: 'Loading...', username: '', avatar: null }, 
@@ -191,29 +221,20 @@ const OnlineGame = () =>
     {
         if (!avatarPath)
             return null;
-
         if (avatarPath.startsWith('http'))
             return avatarPath;
-
         return `${BASE_URL}${avatarPath}`;
     };
 
     const sendOnlineMove = (row, col, value) => 
     {
-        if (ws.current)
+        if (ws.current && ws.current.readyState === WebSocket.OPEN) 
         {
-            if (ws.current.readyState === WebSocket.OPEN) 
-            {
-                let currentRole = 'guest';
-                if (isOwner)
-                    currentRole = 'owner';
-
-                ws.current.send(JSON.stringify(
-                {
-                    event: 'move',
-                    data: { roomId: roomId.toString(), role: currentRole, row, col, value }
-                }));
-            }
+            let currentRole = isOwner ? 'owner' : 'guest';
+            ws.current.send(JSON.stringify({
+                event: 'move',
+                data: { roomId: roomId.toString(), role: currentRole, row, col, value }
+            }));
         }
     };
 
@@ -232,27 +253,55 @@ const OnlineGame = () =>
         role: isOwner ? 'owner' : 'guest'
     });
 
-    const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
-        isGameOver,
-        gameResult,
-        mode: 'online',
-        difficulty,
-        seconds,
-        username: players.you.username || user?.username,
-        opponentUsername: players.opponent.username,
-        wsRef: ws,
-        roomId,
-        isOwner
-    });
-
     const [opponentLives, setOpponentLives] = useState(3);
     const [playerMoves, setPlayerMoves] = useState(0);
     const [opponentMoves, setOpponentMoves] = useState(0);
 
+    const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
+        isGameOver, gameResult, mode: 'online', difficulty, seconds,
+        username: players.you.username || user?.username,
+        opponentUsername: players.opponent.username,
+        wsRef: ws, roomId, isOwner
+    });
+
+    const totalCells = 81;
+
+    let filledCells = 0;
+    if (board && Array.isArray(board))
+    {
+        board.forEach(item => {
+            if (Array.isArray(item))
+            {
+                item.forEach(cell => {
+                    const val = typeof cell === 'object' ? cell?.value : cell;
+                    if (val !== 0 && val !== null && val !== '')
+                        filledCells++;
+                });
+            }
+            else
+            {
+                const val = typeof item === 'object' ? item?.value : item;
+                if (val !== 0 && val !== null && val !== '')
+                    filledCells++;
+            }
+        });
+    }
+    
+    const remainingCells = Math.max(0, totalCells - filledCells);
+    const totalPlayableCells = playerMoves + opponentMoves + remainingCells;
+
+    let p1Percentage = 0;
+    let p2Percentage = 0;
+
+    if (totalPlayableCells > 0)
+    {
+        p1Percentage = Math.min((playerMoves / totalPlayableCells) * 100, 100);
+        p2Percentage = Math.min((opponentMoves / totalPlayableCells) * 100, 100);
+    }
+
     useEffect(() => {
-        if (location.state && location.state.exactStartTime) {
+        if (location.state && location.state.exactStartTime)
             setStartTime(location.state.exactStartTime);
-        }
     }, [location.state, setStartTime]);
 
     useEffect(() => 
@@ -262,28 +311,11 @@ const OnlineGame = () =>
             if (isGameOver)
                 return;
 
-            let clickedOnBoard = false;
-            if (boardRef.current)
-            {
-                if (boardRef.current.contains(event.target))
-                    clickedOnBoard = true;
-            }
+            let clickedOnBoard = boardRef.current && boardRef.current.contains(event.target);
+            let clickedOnControls = controlsRef.current && controlsRef.current.contains(event.target);
 
-            let clickedOnControls = false;
-            if (controlsRef.current)
-            {
-                if (controlsRef.current.contains(event.target))
-                    clickedOnControls = true;
-            }
-
-            if (!clickedOnBoard)
-            {
-                if (!clickedOnControls)
-                {
-                    if (setSelectedCell)
-                        setSelectedCell(null);
-                }
-            }
+            if (!clickedOnBoard && !clickedOnControls && setSelectedCell)
+                setSelectedCell(null);
         };
 
         document.addEventListener('mousedown', handleClickOutside);
@@ -303,53 +335,53 @@ const OnlineGame = () =>
                 {
                     const oData = await getUserById(data.ownerId);
                     
-                    let oName = "Player 1";
-                    if (oData.display_name)
-                        oName = oData.display_name;
-                    else if (oData.nickname)
-                        oName = oData.nickname;
-                    else if (oData.username)
-                        oName = oData.username;
-
-                    let oUsername = '';
-                    if (oData.username)
-                        oUsername = oData.username;
-
+                    let oName = oData.display_name || oData.nickname || oData.username || "Player 1";
+                    let oUsername = oData.username || '';
                     const oAvatar = getAvatarUrl(oData.avatar);
                     
                     let gName = 'Waiting...';
                     let gAvatar = null;
+                    let guestUsername = '';
                     
                     if (data.guestId) 
                     {
                         const gData = await getUserById(data.guestId);
-                        
-                        gName = "Player 2";
-                        if (gData.display_name)
-                            gName = gData.display_name;
-                        else if (gData.nickname)
-                            gName = gData.nickname;
-                        else if (gData.username)
-                            gName = gData.username;
-
-                        let guestUsername = '';
-                        if (gData.username)
-                            guestUsername = gData.username;
-                            
+                        gName = gData.display_name || gData.nickname || gData.username || "Player 2";
+                        guestUsername = gData.username || '';
                         gAvatar = getAvatarUrl(gData.avatar);
 
                         if (isOwner)
                         {
                             setPlayers({ 
-                                you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
-                                opponent: { displayName: gName, username: guestUsername, avatar: gAvatar } 
+                                you:
+                                {
+                                    displayName: oName,
+                                    username: oUsername,
+                                    avatar: oAvatar
+                                }, 
+                                opponent:
+                                {
+                                    displayName: gName,
+                                    username: guestUsername,
+                                    avatar: gAvatar
+                                } 
                             });
                         }
                         else
                         {
                             setPlayers({ 
-                                you: { displayName: gName, username: guestUsername, avatar: gAvatar }, 
-                                opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
+                                you:
+                                {
+                                    displayName: gName,
+                                    username: guestUsername,
+                                    avatar: gAvatar
+                                }, 
+                                opponent:
+                                {
+                                    displayName: oName,
+                                    username: oUsername,
+                                    avatar: oAvatar
+                                } 
                             });
                         }
                         return;
@@ -358,15 +390,35 @@ const OnlineGame = () =>
                     if (isOwner)
                     {
                         setPlayers({ 
-                            you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
-                            opponent: { displayName: gName, username: '', avatar: gAvatar } 
+                            you:
+                            {
+                                displayName: oName,
+                                username: oUsername,
+                                avatar: oAvatar
+                            }, 
+                            opponent:
+                            {
+                                displayName: gName,
+                                username: '',
+                                avatar: gAvatar
+                            } 
                         });
                     }
                     else
                     {
                         setPlayers({ 
-                            you: { displayName: gName, username: '', avatar: gAvatar }, 
-                            opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
+                            you:
+                            {
+                                displayName: gName,
+                                username: '',
+                                avatar: gAvatar
+                            }, 
+                            opponent:
+                            {
+                                displayName: oName,
+                                username: oUsername,
+                                avatar: oAvatar
+                            } 
                         });
                     }
                 }
@@ -374,8 +426,18 @@ const OnlineGame = () =>
             catch(e) 
             {
                 setPlayers({ 
-                    you: { displayName: 'You', username: user?.username || '', avatar: null }, 
-                    opponent: { displayName: 'Opponent', username: '', avatar: null } 
+                    you:
+                    {
+                        displayName: 'You',
+                        username: user?.username || '',
+                        avatar: null
+                    }, 
+                    opponent:
+                    {
+                        displayName: 'Opponent',
+                        username: '',
+                        avatar: null
+                    } 
                 });
             }
         };
@@ -389,21 +451,14 @@ const OnlineGame = () =>
             
         ws.current = new WebSocket(`wss://${window.location.host}/api/play`);
 
-        ws.current.onopen = () => 
-        {
-            ws.current.send(JSON.stringify({ 
-                event: 'join_room', 
-                data: { roomId: roomId.toString() } 
-            }));
+        ws.current.onopen = () => {
+            ws.current.send(JSON.stringify({ event: 'join_room', data: { roomId: roomId.toString() } }));
         };
 
         ws.current.onmessage = (event) => 
         {
             const message = JSON.parse(event.data);
-                    
-            let myRole = 'guest';
-            if (isOwner)
-                myRole = 'owner';
+            let myRole = isOwner ? 'owner' : 'guest';
 
             switch (message.event) 
             {
@@ -424,30 +479,19 @@ const OnlineGame = () =>
                             
                             setPlayers(prev => 
                             {
-                                if (isOwner) 
+                                if (isOwner && prev.opponent.displayName === 'Waiting...' && message.gameState.guestId) 
                                 {
-                                    if (prev.opponent.displayName === 'Waiting...')
+                                    getUserById(message.gameState.guestId).then(gData => 
                                     {
-                                        if (message.gameState.guestId)
-                                        {
-                                            getUserById(message.gameState.guestId).then(gData => 
-                                            {
-                                                let newGuestName = gData.username;
-                                                let newGuestUsername = gData.username || '';
-                                                if (gData.display_name)
-                                                    newGuestName = gData.display_name;
-                                                else if (gData.nickname)
-                                                    newGuestName = gData.nickname;
-
-                                                const newGuestAvatar = getAvatarUrl(gData.avatar);
-                                                
-                                                setPlayers(p => ({ 
-                                                    ...p, 
-                                                    opponent: { displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar } 
-                                                }));
-                                            });
-                                        }
-                                    }
+                                        let newGuestName = gData.display_name || gData.nickname || gData.username;
+                                        let newGuestUsername = gData.username || '';
+                                        const newGuestAvatar = getAvatarUrl(gData.avatar);
+                                        
+                                        setPlayers(p => ({ 
+                                            ...p, 
+                                            opponent: { displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar } 
+                                        }));
+                                    });
                                 }
                                 return prev;
                             });
@@ -469,20 +513,16 @@ const OnlineGame = () =>
                         setOpponentMoves(message.ownerMoves || 0);
                     }
 
-                    if (message.valid === false) 
+                    if (message.valid === false && message.moveBy === myRole)
                     {
-                        if (message.moveBy === myRole)
-                        {
-                            setErrorMessage("Wrong Move!");
-                            setShowError(true);
-                            setTimeout(() => setShowError(false), 1500);
-                        }
+                        setErrorMessage("Wrong Move!");
+                        setShowError(true);
+                        setTimeout(() => setShowError(false), 1500);
                     }
 
                     if (message.winner || message.loser) 
                     {
                         let isMeWinner = false;
-                        
                         if (message.winner)
                         {
                             if (message.winner === myRole)
@@ -494,36 +534,17 @@ const OnlineGame = () =>
                                 isMeWinner = true;
                         }
 
-                        let delay = 0;
-                        if (message.valid === false)
-                        {
-                            if (message.moveBy === myRole)
-                                delay = 1500;
-                        }
+                        let delay = (message.valid === false && message.moveBy === myRole) ? 1500 : 0;
+                        let finalRes = isMeWinner ? 'win' : 'lose';
 
-                        let finalRes = 'lose';
-                        if (isMeWinner)
-                            finalRes = 'win';
-
-                        setTimeout(() => 
-                        {
-                            setGameResult(prev => 
-                            {
-                                if (prev)
-                                    return prev;
-                                return finalRes;
-                            });
+                        setTimeout(() => {
+                            setGameResult(prev => prev ? prev : finalRes);
                         }, delay);
                     }
                     break;
                 
                 case 'player_left':
-                    setGameResult(prev => 
-                    {
-                        if (prev)
-                            return prev;
-                        return 'win';
-                    });
+                    setGameResult(prev => prev ? prev : 'win');
                     break;
                 
                 case 'error':
@@ -535,18 +556,14 @@ const OnlineGame = () =>
             }
         };
 
-        return () => 
-        { 
-            if (ws.current) 
-                ws.current.close(); 
+        return () =>
+        {
+            if (ws.current)
+                ws.current.close();
         };
     }, [roomId, isOwner]);
 
-    let isGameDisabled = false;
-    if (isGameOver)
-        isGameDisabled = true;
-    else if (gameResult !== null)
-        isGameDisabled = true;
+    let isGameDisabled = isGameOver || (gameResult !== null);
 
     return (
         <GameContainer>
@@ -562,15 +579,28 @@ const OnlineGame = () =>
 
             <GameOverOverlay result={gameResult} />
             <BackToHomeLink onClick={handleBackClick} />
+            
             <GameHeader timer={timer} difficulty={difficulty} />
             
+            <DualProgressContainer>
+                <StatsRow>
+                    <CenterStat>{remainingCells} Empty</CenterStat>
+                </StatsRow>
+                <BarBackground>
+                    <BarTextLeft>{playerMoves} </BarTextLeft>
+                    <P1Fill $pct={p1Percentage} />
+                    
+                    <P2Fill $pct={p2Percentage} />
+                    <BarTextRight>{opponentMoves} </BarTextRight>
+                </BarBackground>
+            </DualProgressContainer>
+
             <GameMainArea>
                 <PlayerCard 
                     title={players.you.displayName}
                     username={players.you.username}
                     avatar={players.you.avatar} 
                     lives={lives}
-                    moves={playerMoves}
                 />
 
                 <BoardWrapper ref={boardRef}>
@@ -589,7 +619,6 @@ const OnlineGame = () =>
                     username={players.opponent.username}
                     avatar={players.opponent.avatar} 
                     lives={opponentLives}
-                    moves={opponentMoves}
                     align="right" 
                 />
             </GameMainArea>
