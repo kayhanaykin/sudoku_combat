@@ -9,28 +9,33 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        // KRİTİK DEĞİŞİKLİK: localStorage kontrolünü sildik. 
-        // 42'den dönünce çerezler buradadır ama localStorage boştur.
-        
+      try
+      {
         const response = await fetch(`/api/v1/user/me/`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
-          credentials: 'include', // Çerezleri (sessionid, token) backend'e iletir
+          credentials: 'include',
         });
 
-        if (response.ok) {
+        if (response.ok)
+        {
           const userData = await response.json();
           setUser(userData);
           localStorage.setItem('user', JSON.stringify(userData));
-        } else {
+        }
+        else
+        {
           setUser(null);
           localStorage.removeItem('user');
         }
-      } catch (error) {
+      }
+      catch (error)
+      {
         console.error("Auth check failed:", error);
         setUser(null);
-      } finally {
+      }
+      finally
+      {
         setLoading(false);
       }
     };
@@ -39,21 +44,24 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    // Normalizasyon: login_api 'user' içinde dönerken me/ direkt döner.
     const userToStore = userData.user || userData;
     setUser(userToStore);
     localStorage.setItem('user', JSON.stringify(userToStore));
   };
 
   const logout = async () => {
-    try {
+    try
+    {
       const getCookie = (name) => {
         let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
+        if (document.cookie && document.cookie !== '')
+        {
           const cookies = document.cookie.split(';');
-          for (let i = 0; i < cookies.length; i++) {
+          for (let i = 0; i < cookies.length; i++)
+          {
             const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            if (cookie.substring(0, name.length + 1) === (name + '='))
+            {
               cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
               break;
             }
@@ -72,9 +80,13 @@ export const AuthProvider = ({ children }) => {
         },
         credentials: 'include',
       });
-    } catch (error) {
+    }
+    catch (error)
+    {
       console.error("Logout error:", error);
-    } finally {
+    }
+    finally
+    {
       localStorage.removeItem('user');
       setUser(null);
       window.location.href = '/';
