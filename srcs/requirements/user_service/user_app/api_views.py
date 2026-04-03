@@ -220,7 +220,7 @@ def login_api(request):
                 "username": user.username,
                 "display_name": getattr(user, 'display_name', user.username),
                 "is_superuser": user.is_superuser,
-                "avatar": user.avatar_url or (user.avatar.url if user.avatar else None)
+                "avatar": user.avatar.url if user.avatar else None
             }
         }, status=200)
         
@@ -294,7 +294,7 @@ def friend_action_api(request):
                 "id": friend_user.id,
                 "username": friend_user.username,
                 "display_name": d_name,
-                "avatar": friend_user.avatar_url or (friend_user.avatar.url if friend_user.avatar else None),
+                "avatar": friend_user.avatar.url if friend_user.avatar else None,
                 "is_online": getattr(friend_user, 'is_online', False),
                 "rel_id": rel.id
             })
@@ -308,7 +308,7 @@ def friend_action_api(request):
                 "id": r.from_user.id,
                 "username": r.from_user.username,
                 "display_name": p_d_name,
-                "avatar": r.from_user.avatar_url or (r.from_user.avatar.url if r.from_user.avatar else None),
+                "avatar": r.from_user.avatar.url if r.from_user.avatar else None,
                 "rel_id": r.id,
                 "type": "incoming"
             })
@@ -322,7 +322,7 @@ def friend_action_api(request):
                 "id": r.to_user.id,
                 "username": r.to_user.username,
                 "display_name": p_d_name,
-                "avatar": r.to_user.avatar_url or (r.to_user.avatar.url if r.to_user.avatar else None),
+                "avatar": r.to_user.avatar.url if r.to_user.avatar else None,
                 "rel_id": r.id,
                 "type": "outgoing"
             })
@@ -405,7 +405,7 @@ def edit_api(request):
                 "username": user.username,
                 "display_name": getattr(user, 'display_name', user.username),
                 "email": user.email,
-                "avatar": user.avatar_url or (user.avatar.url if user.avatar else None)
+                "avatar": user.avatar.url if user.avatar else None
             }
         }, status=200)
     except Exception as e:
@@ -425,7 +425,7 @@ def user_info_api(request, user_id):
             "id": user.id,
             "username": user.username,
             "display_name": d_name,
-            "avatar": user.avatar_url or (user.avatar.url if user.avatar else None)
+            "avatar": user.avatar.url if user.avatar else None
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
@@ -462,7 +462,7 @@ def user_by_username_api(request, username):
             "username": user.username,
             "display_name": d_name,
             "email": user.email,
-            "avatar": user.avatar_url or (user.avatar.url if user.avatar else None),
+            "avatar": user.avatar.url if user.avatar else None,
             "online_status": user.status
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
