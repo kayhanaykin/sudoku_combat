@@ -147,10 +147,15 @@ class FortyTwoCallbackView(APIView):
             user = CustomUser.objects.create(
                 intra_id=intra_id,
                 username=username,
+                display_name=username,
                 email=user_info.get('email'),
                 is_active=True
             )
             created = True
+
+        if not user.display_name:
+            user.display_name = user.username
+            user.save()
 
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         request.session.modified = True
@@ -441,13 +446,30 @@ def debug_user_list_api(request):
     serializer = CustomUserSerializer(users, many=True)
     return Response(serializer.data)
 
-@api_view(['DELETE'])
+@api_view(['DELETE', 'POST'])
 @permission_classes([IsAuthenticated])
 def delete_account_api(request):
     """API endpoint to delete the current user's account."""
     user = request.user
+    
+    # 1. WS Disconnect (Opsiyonel ama iyi olur)
+    # user.is_online = False
+    # user.save()
+    
+    # 2. Sil
     user.delete()
-    return Response({"message": "Account successfully deleted"}, status=status.HTTP_200_OK)
+    
+    # 3. Oturumu Kapat ve Çerezleri Sil
+    from django.contrib.auth import logout
+    logout(request)
+    
+    response = Response({"message": "Account successfully deleted"}, status=status.HTTP_200_OK)
+    response.delete_cookie('sessionid')
+    response.delete_cookie('csrftoken')
+    response.delete_cookie('access_token')
+    response.delete_cookie('refresh_token')
+    
+    return response
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

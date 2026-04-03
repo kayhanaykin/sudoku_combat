@@ -39,9 +39,10 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = (userData) => {
-    setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
-    // Eğer Login modali kullanıyorsan yönlendirmeyi burada yapabilirsin
+    // Normalizasyon: login_api 'user' içinde dönerken me/ direkt döner.
+    const userToStore = userData.user || userData;
+    setUser(userToStore);
+    localStorage.setItem('user', JSON.stringify(userToStore));
   };
 
   const logout = async () => {
