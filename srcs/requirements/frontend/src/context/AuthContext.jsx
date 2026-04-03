@@ -1,3 +1,4 @@
+// AuthContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const AuthContext = createContext(null);
@@ -6,31 +7,23 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 1. Sayfa Yüklendiğinde Kimlik Kontrolü (Check Auth)
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Backend'e "Benim geçerli bir çerezim var mı?" diye soruyoruz
-		const storedUser = localStorage.getItem('user');
-		if (!storedUser) {
-			setLoading(false);
-			return ;
-		}
+        // KRİTİK DEĞİŞİKLİK: localStorage kontrolünü sildik. 
+        // 42'den dönünce çerezler buradadır ama localStorage boştur.
+        
         const response = await fetch(`/api/v1/user/me/`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // ÖNEMLİ: Çerezleri (sessionid, token) gönderir
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include', // Çerezleri (sessionid, token) backend'e iletir
         });
 
         if (response.ok) {
           const userData = await response.json();
           setUser(userData);
-          // İsteğe bağlı: Yedek olarak localStorage'a da koyabilirsin
           localStorage.setItem('user', JSON.stringify(userData));
         } else {
-          // Çerez geçersizse veya yoksa temizle
           setUser(null);
           localStorage.removeItem('user');
         }
@@ -48,11 +41,11 @@ export const AuthProvider = ({ children }) => {
   const login = (userData) => {
     setUser(userData);
     localStorage.setItem('user', JSON.stringify(userData));
+    // Eğer Login modali kullanıyorsan yönlendirmeyi burada yapabilirsin
   };
 
-const logout = async () => {
+  const logout = async () => {
     try {
-      // 1. Çerezlerden csrftoken'ı bulma fonksiyonu
       const getCookie = (name) => {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -70,19 +63,17 @@ const logout = async () => {
 
       const csrfToken = getCookie('csrftoken');
 
-      // 2. Logout isteği
       await fetch(`/api/v1/user/logout/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'X-CSRFToken': csrfToken, // Django'nun beklediği güvenlik anahtarı
+          'X-CSRFToken': csrfToken,
         },
-        credentials: 'include', // Çerezleri (sessionid) backend'e iletir
+        credentials: 'include',
       });
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // 3. Backend ne derse desin frontend'i temizle ve ana sayfaya at
       localStorage.removeItem('user');
       setUser(null);
       window.location.href = '/';
