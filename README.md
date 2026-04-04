@@ -216,96 +216,117 @@ We chose React because its virtual DOM and component-based structure allow for t
 We chose JWT to provide a secure, stateless authentication method that allows our microservices to independently verify user identities without relying on a central session store.
 
 # Database Schema
+
 ## Overview
-
 The Sudoku Combat application uses a microservices architecture with multiple databases:
-
 - **Game Service**: No database
 - **User Service**: PostgreSQL (Django ORM) - User accounts, authentication, profiles, friends
-- **Combat Service**: Combat Service: PostgreSQL (TypeORM) - Multiplayer game rooms, real-time player interactions, game state, board data, match tracking
+- **Combat Service**: PostgreSQL (TypeORM) - Multiplayer game rooms, real-time player interactions, game state, board data, match tracking
 - **Stats Service**: PostgreSQL (libpqxx/Raw SQL) - Player statistics, match history, difficulty-based win/loss tracking, weekly leaderboard data, performance metrics
 
-**Game Service - CustomUser Model:**
-- intra_id (IntegerField) - 42 Intra OAuth ID
-- display_name (CharField) - Custom display name
-- avatar (ImageField) - User profile picture
-- last_seen (DateTimeField) - Last activity timestamp
-- is_online (BooleanField) - Online status flag
-- friends (ManyToManyField) - Self-referencing friend relationships
+### User Service Database
+**CustomUser Model**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `intra_id` | IntegerField | 42 Intra OAuth ID |
+| `display_name` | CharField | Custom display name |
+| `avatar` | ImageField | User profile picture |
+| `last_seen` | DateTimeField | Last activity timestamp |
+| `is_online` | BooleanField | Online status flag |
+| `friends` | ManyToManyField | Self-referencing friend relationships |
 
-**Game Service - Relationship Model:**
-- id (PK)
-- from_user (ForeignKey) - Friend request sender
-- to_user (ForeignKey) - Friend request recipient
-- status (CharField) - Request status (pending/friends)
-- created_at (DateTimeField) - Request creation date
+**Relationship Model**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | PK | Primary Key |
+| `from_user` | ForeignKey | Friend request sender |
+| `to_user` | ForeignKey | Friend request recipient |
+| `status` | CharField | Request status (pending/friends) |
+| `created_at` | DateTimeField | Request creation date |
 
-**Game Service - Achievement Model:**
-- id (PK)
-- user (ForeignKey) - Achievement owner
-- achievement_type (CharField) - Achievement type identifier
-- name (CharField) - Achievement name
-- icon (CharField) - Achievement emoji/icon
-- description (TextField) - Achievement description
-- earned_at (DateTimeField) - When earned
-- progress (IntegerField) - Current progress
-- target (IntegerField) - Target to achieve
+**Achievement Model**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | PK | Primary Key |
+| `user` | ForeignKey | Achievement owner |
+| `achievement_type` | CharField | Achievement type identifier |
+| `name` | CharField | Achievement name |
+| `icon` | CharField | Achievement emoji/icon |
+| `description` | TextField | Achievement description |
+| `earned_at` | DateTimeField | When earned |
+| `progress` | IntegerField | Current progress |
+| `target` | IntegerField | Target to achieve |
 
-**Game Service - LeaderboardResetSchedule Model:**
-- id (PK)
-- difficulty (CharField) - Difficulty level (easy/medium/hard/expert/extreme)
-- last_reset (DateTimeField) - Last reset timestamp
-- next_reset (DateTimeField) - Next scheduled reset
-- previous_champion (ForeignKey) - Previous week's top player
+**LeaderboardResetSchedule Model**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | PK | Primary Key |
+| `difficulty` | CharField | Difficulty level (easy/medium/hard/expert/extreme) |
+| `last_reset` | DateTimeField | Last reset timestamp |
+| `next_reset` | DateTimeField | Next scheduled reset |
+| `previous_champion` | ForeignKey | Previous week's top player |
 
-**Combat Service - Room Entity:**
-- id (PK)
-- ownerId (VARCHAR) - Room creator user ID
-- ownerName (VARCHAR) - Room creator display name 
-- guestId (VARCHAR) - Opponent user ID
-- difficulty (VARCHAR) - Game difficulty level
-- currBoard (JSON) - Current game board state
-- solvedBoard (JSON) - Solved board reference
-- health (NUMERIC ARRAY) - Player health tracking [owner, guest]
-- status (VARCHAR) - Room status (waiting/playing/finished)
-- lastHeartbeat (TIMESTAMP) - Last heartbeat for auto-cleanup
-- gameStartTime (TIMESTAMP) - When game started
-- ownerMoves (INT) - Owner total moves
-- guestMoves (INT) - Guest total moves
+### Combat Service Database
+**Room Entity**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | PK | Primary Key |
+| `ownerId` | VARCHAR | Room creator user ID |
+| `ownerName` | VARCHAR | Room creator display name |
+| `guestId` | VARCHAR | Opponent user ID |
+| `difficulty` | VARCHAR | Game difficulty level |
+| `currBoard` | JSON | Current game board state |
+| `solvedBoard` | JSON | Solved board reference |
+| `health` | NUMERIC ARRAY | Player health tracking [owner, guest] |
+| `status` | VARCHAR | Room status (waiting/playing/finished) |
+| `lastHeartbeat` | TIMESTAMP | Last heartbeat for auto-cleanup |
+| `gameStartTime` | TIMESTAMP | When game started |
+| `ownerMoves` | INT | Owner total moves |
+| `guestMoves` | INT | Guest total moves |
 
-**Stats Service - player_stats Table:**
-- id (BIGSERIAL PK) - Primary key
-- username (TEXT) - Player username
-- difficulty (INT) - Difficulty level (1-5)
-- mode (TEXT) - Game mode (online/offline)
-- wins (INT) - Total wins
-- losses (INT) - Total losses
-- best_time_seconds (INT) - Best completion time
-- updated_at (TIMESTAMPTZ) - Last update timestamp
+### Stats Service Database
+**player_stats Table**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BIGSERIAL PK | Primary key |
+| `username` | TEXT | Player username |
+| `difficulty` | INT | Difficulty level (1-5) |
+| `mode` | TEXT | Game mode (online/offline) |
+| `wins` | INT | Total wins |
+| `losses` | INT | Total losses |
+| `best_time_seconds` | INT | Best completion time |
+| `updated_at` | TIMESTAMPTZ | Last update timestamp |
 
-**Stats Service - match_history Table:**
-- id (BIGSERIAL PK) - Primary key
-- username (TEXT) - Player username
-- opponent (TEXT) - Opponent username
-- difficulty (INT) - Difficulty level (1-5)
-- mode (TEXT) - Game mode (online/offline)
-- result (TEXT) - Result (win/lose)
-- time_seconds (INT) - Completion time in seconds
-- played_at (TIMESTAMPTZ) - Match timestamp
+**match_history Table**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BIGSERIAL PK | Primary key |
+| `username` | TEXT | Player username |
+| `opponent` | TEXT | Opponent username |
+| `difficulty` | INT | Difficulty level (1-5) |
+| `mode` | TEXT | Game mode (online/offline) |
+| `result` | TEXT | Result (win/lose) |
+| `time_seconds` | INT | Completion time in seconds |
+| `played_at` | TIMESTAMPTZ | Match timestamp |
 
-**Stats Service - weekly_player_stats Table:**
-- id (BIGSERIAL PK) - Primary key
-- username (TEXT) - Player username
-- difficulty (INT) - Difficulty level (1-5)
-- mode (TEXT) - Game mode (online/offline)
-- wins (INT) - Weekly wins
-- losses (INT) - Weekly losses
-- updated_at (TIMESTAMPTZ) - Last update timestamp
+**weekly_player_stats Table**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BIGSERIAL PK | Primary key |
+| `username` | TEXT | Player username |
+| `difficulty` | INT | Difficulty level (1-5) |
+| `mode` | TEXT | Game mode (online/offline) |
+| `wins` | INT | Weekly wins |
+| `losses` | INT | Weekly losses |
+| `updated_at` | TIMESTAMPTZ | Last update timestamp |
 
-**Stats Service - leaderboard_reset_meta Table:**
-- id (INT PK) - Primary key
-- period_start (TIMESTAMPTZ) - Period start timestamp
-- next_reset_at (TIMESTAMPTZ) - Next reset scheduled time
+**leaderboard_reset_meta Table**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | INT PK | Primary key |
+| `period_start` | TIMESTAMPTZ | Period start timestamp |
+| `next_reset_at` | TIMESTAMPTZ | Next reset scheduled time |
+
 
 
 # Installation of the Project
