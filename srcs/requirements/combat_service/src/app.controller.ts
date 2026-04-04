@@ -102,28 +102,11 @@ export class AppController
 				return ERROR.ROOM_NOT_FOUND;
 			if (room.ownerId === body.userId)
 			{
-				if (room.guestId)
-				{
-					room.ownerId = room.guestId;
-					room.guestId = null;
-					room.status = 'waiting';
-				}
-				else
-				{
-					await this.roomRepository.delete(room.id);
-					return { success: true, message: 'Room deleted' };
-				}
-			}
-			else if (room.guestId === body.userId)
-			{
-				room.guestId = null;
-				room.health = [room.health[0], 0];
-				room.status = 'waiting';
+				await this.roomRepository.delete(room.id);
+				return { success: true, message: 'Room deleted' };
 			}
 			else
 				return ERROR.USER_NOT_IN_ROOM;
-			await this.roomRepository.save(room);
-			return { success: true, message: 'Left room' };
 		}
 		catch (error)
 		{
