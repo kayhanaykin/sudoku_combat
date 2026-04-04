@@ -4,13 +4,14 @@ import {
 	WebSocketServer,
 	SubscribeMessage,
 	ConnectedSocket,
-	MessageBody
+	MessageBody,
+	OnGatewayDisconnect
 } from '@nestjs/websockets';
 
 const ROOM_LINK = 'http://127.0.0.1:8003/api/room/';
 
 @WebSocketGateway({ path: '/api/play' })
-export class AppGateway
+export class AppGateway implements OnGatewayDisconnect
 {
 	@WebSocketServer()
 	server: Server;
@@ -93,6 +94,8 @@ export class AppGateway
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify(data)
 			});
+			if (!res.ok)
+				return client.send(JSON.stringify({ event: 'error', message: 'Room service communication error' }));
 			const { valid, ownerHealth, guestHealth, loser, winner, isWin } = await res.json();
 			const roomClients = this.rooms.get(data.roomId);
 			if (roomClients)
@@ -126,13 +129,15 @@ export class AppGateway
 	async	handleDisconnect(@ConnectedSocket() client: WebSocket)
 	{
 		const roomId = (client as any).roomId;
+		console.log('Client disconnected, roomId:', roomId);
 		if (roomId)
 		{
 			const roomClients = this.rooms.get(roomId);
 			if (roomClients)
 			{
 				roomClients.delete(client);
-				this.broadcast(roomClients, JSON.stringify({ event: 'player left' }));
+				console.log('remaining clients:', roomClients.size);
+				this.broadcast(roomClients, JSON.stringify({ event: 'player_left' }));
 				if (!roomClients.size)
 				{
 					this.rooms.delete(roomId);

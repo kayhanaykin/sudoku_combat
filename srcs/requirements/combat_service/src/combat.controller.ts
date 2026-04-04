@@ -23,6 +23,8 @@ export class CombatController
 	@Post('start/offline')
 	async	startOffline(@Body() body: { difficulty: string })
 	{
+		if (!body.difficulty)
+			return ERROR.DIFFICULTY_REQUIRED;
 		try
 		{
 			const response = await fetch(`http://game_service:8080/generate?difficulty=${body.difficulty}`);
@@ -41,7 +43,7 @@ export class CombatController
 			const savedRoom = await this.roomRepository.save(newRoom);
 			return {
 				success: true,
-				roomId: savedRoom.id,
+				gameId: savedRoom.id,
 				board: gameData.board,
 				lives: 3
 			};
@@ -85,11 +87,11 @@ export class CombatController
 	}
 
 	@Post('move')
-	async	handleOfflineMove(@Body() body: { roomId: number, row: number, col: number, value: number })
+	async	handleOfflineMove(@Body() body: { gameId: number, row: number, col: number, value: number })
 	{
-		if (!body.roomId)
+		if (!body.gameId)
 			return ERROR.ROOM_ID_REQUIRED;
-		const room = await this.roomRepository.findOne({ where: { id: body.roomId } });
+		const room = await this.roomRepository.findOne({ where: { id: body.gameId } });
 		if (!room)
 			return ERROR.ROOM_NOT_FOUND;
 		const isCorrect = room.solvedBoard[body.row][body.col] === body.value;
