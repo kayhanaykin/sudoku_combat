@@ -46,29 +46,9 @@ const ModeButton = styled.button`
     cursor: pointer;
     transition: all 0.2s;
 
-    background: ${props => 
-    {
-        if (props.$isActive)
-            return '#14532d';
-            
-        return '#fff';
-    }};
-
-    color: ${props => 
-    {
-        if (props.$isActive)
-            return '#fff';
-            
-        return '#374151';
-    }};
-
-    border-color: ${props => 
-    {
-        if (props.$isActive)
-            return '#14532d';
-            
-        return '#d1d5db';
-    }};
+    background: ${props => props.$isActive ? '#14532d' : '#fff'};
+    color: ${props => props.$isActive ? '#fff' : '#374151'};
+    border-color: ${props => props.$isActive ? '#14532d' : '#d1d5db'};
 `;
 
 const TableWrapper = styled.div`
@@ -93,18 +73,23 @@ const Table = styled.table`
 `;
 
 const DiffCell = styled.td`
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    border-bottom: none !important;
     font-weight: 600;
+`;
+
+const DiffInner = styled.div`
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    width: 95px;
+    gap: 10px;
 `;
 
 const DiffDot = styled.span`
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    flex-shrink: 0;
     
     background-color: ${props => 
     {
@@ -304,8 +289,10 @@ const PerformanceStats = ({ username }) =>
                         {detailedStats.map((row) => (
                             <tr key={row.name}>
                                 <DiffCell>
-                                    <DiffDot $diffName={row.name} />
-                                    {row.name}
+                                    <DiffInner>
+                                        <DiffDot $diffName={row.name} />
+                                        {row.name}
+                                    </DiffInner>
                                 </DiffCell>
                                 <td>
                                     {row.played}

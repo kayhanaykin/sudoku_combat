@@ -59,4 +59,9 @@ seed:
 logs-%:
 	@$(COMPOSE) logs $* --tail 10
 
+# Eg. make restart-combat_service
+restart-%:
+	@echo "$(GREEN)Restarting service: $*...$(RESET)"
+	@$(COMPOSE) restart $*
+
 .PHONY: all clean fclean re build list down migrate logs up seed
