@@ -4,17 +4,43 @@ import {
 	WebSocketServer,
 	SubscribeMessage,
 	ConnectedSocket,
-	MessageBody
+	MessageBody,
+	OnGatewayDisconnect
 } from '@nestjs/websockets';
 
 @WebSocketGateway({ path: '/api/play' })
-export class AppGateway
+export class AppGateway implements OnGatewayDisconnect
 {
 	@WebSocketServer()
 	server: Server;
 
 	private rooms = new Map<string, Set<WebSocket>>();
 	private roomStartTimes = new Map<string, number>(); 
+
+	private async	fetchGameState(roomId: string): Promise<any>
+	{
+		const res = await fetch(`http://127.0.0.1/8003/api/room/game-state/${roomId}`);
+		return res.json();
+	}
+
+	private	buildSyncPayload(gameState: any, startTime: number, extra: object = {}): string
+	{
+		return JSON.stringify({
+			event: 'sync_game',
+			gameState: gameState,
+			ownerHealth: gameState.health ? gameState.health[0] : 3,
+			guestHealth: gameState.health ? gameState.health[1] : 3,
+			...extra
+		});
+	}
+
+	private	broadcast(roomClients: Set<WebSocket>, payload: string): void
+	{
+		roomClients.forEach((ws: WebSocket) => {
+			if (ws.readyState === ws.OPEN)
+				ws.send(payload);
+		});
+	}
 
 	@SubscribeMessage('join_room')
 	async handleJoinRoom(@MessageBody() data: { roomId: string }, @ConnectedSocket() client: WebSocket) 
@@ -30,19 +56,9 @@ export class AppGateway
 			this.roomStartTimes.set(data.roomId, startTime);
 			try
 			{
-				const currBoardRes = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
-				const gameState = await currBoardRes.json();
+				const gameState = await this.fetchGameState(data.roomId);
 				gameState.startTime = startTime;
-				const payload = JSON.stringify({ 
-					event: 'sync_game', 
-					gameState: gameState,
-					ownerHealth: gameState.health ? gameState.health[0] : 3,
-					guestHealth: gameState.health ? gameState.health[1] : 3
-				});
-				roomClients.forEach((ws: WebSocket) => {
-					if (ws.readyState === ws.OPEN)
-						ws.send(payload);
-				});
+				this.broadcast(roomClients, this.buildSyncPayload(gameState, startTime));
 			}
 			catch (error)
 			{
@@ -53,15 +69,10 @@ export class AppGateway
 		{
 			 try
 			{
-				const currBoardRes = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
-				const gameState = await currBoardRes.json();
-				gameState.startTime = this.roomStartTimes.get(data.roomId);
-				client.send(JSON.stringify({ 
-					event: 'sync_game', 
-					gameState: gameState,
-					ownerHealth: gameState.health ? gameState.health[0] : 3,
-					guestHealth: gameState.health ? gameState.health[1] : 3
-				}));
+				const startTime = this.roomStartTimes.get(data.roomId)!;
+				const gameState = await this.fetchGameState(data.roomId);
+				gameState.startTime = startTime;
+				client.send(this.buildSyncPayload(gameState, startTime));
 			}
 			catch (error)
 			{
@@ -71,8 +82,7 @@ export class AppGateway
 	}
 
 	@SubscribeMessage('move')
-	async handleMove(
-		@MessageBody() data: { roomId: string, role: string, row: number; col: number; value: number; },
+	async handleMove( @MessageBody() data: { roomId: string, role: string, row: number; col: number; value: number; },
 		@ConnectedSocket() client: WebSocket )
 	{
 		try
@@ -87,17 +97,13 @@ export class AppGateway
 			const roomClients = this.rooms.get(data.roomId);
 			if (roomClients)
 			{
-				const currBoardRes = await fetch(`http://127.0.0.1:8003/api/room/game-state/${data.roomId}`);
-				const gameState = await currBoardRes.json();
-				if (this.roomStartTimes.has(data.roomId))
+				const startTime = this.roomStartTimes.get(data.roomId);
+				const gameState = await this.fetchGameState(data.roomId);
+				if (startTime !== undefined)
+					gameState.startTime = startTime;
 					gameState.startTime = this.roomStartTimes.get(data.roomId);
-				const payload = JSON.stringify(
-				{ 
-					event: 'sync_game', 
-					gameState: gameState, 
-					ownerHealth, 
-					guestHealth, 
-					valid, 
+				const payload = this.buildSyncPayload(gameState, startTime!, {
+					valid,
 					loser,
 					winner,
 					isWin,
@@ -105,11 +111,7 @@ export class AppGateway
 					ownerMoves: gameState.ownerMoves,
 					guestMoves: gameState.guestMoves
 				});
-				roomClients.forEach((ws: WebSocket) =>
-				{
-					if (ws.readyState === ws.OPEN)
-						ws.send(payload);
-				});
+				this.broadcast(roomClients, payload);
 			}
 		}
 		catch (error)
@@ -127,12 +129,8 @@ export class AppGateway
 			if (roomClients)
 			{
 				roomClients.delete(client);
-				roomClients.forEach((ws: WebSocket) =>
-				{
-					if (ws.readyState === ws.OPEN)
-						ws.send(JSON.stringify({ event: 'player_left' }));
-				});
-				if (roomClients.size === 0)
+				this.broadcast(roomClients, JSON.stringify({ event: 'player left' }));
+				if (!roomClients.size)
 				{
 					this.rooms.delete(roomId);
 					this.roomStartTimes.delete(roomId);
