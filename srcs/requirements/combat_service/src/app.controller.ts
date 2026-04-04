@@ -158,12 +158,12 @@ export class AppController
 			}
 			let loser: string | null = null;
 			let winner: string | null = null;
-			if (room.health[0] <= 0)
+			if (!room.health[0])
 			{
 				loser = 'owner';
 				winner = 'guest';
 			}
-			else if (room.health[1] <= 0)
+			else if (!room.health[1])
 			{
 				loser = 'guest';
 				winner = 'owner';
@@ -261,7 +261,7 @@ export class AppController
 		try
 		{
 			const rooms = await this.roomRepository.find();
-			const safeRooms = rooms.map(room => (
+			const safeRooms = rooms.map((room: Room) => (
 			{
 				id: room.id,
 				difficulty: room.difficulty,
@@ -287,7 +287,7 @@ export class AppController
 			const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
-			if (String(room.ownerId) === String(body.userId))
+			if (room.ownerId === body.userId)
 			{
 				room.lastHeartbeat = new Date();
 				await this.roomRepository.save(room);
@@ -298,8 +298,7 @@ export class AppController
 		}
 		catch (error)
 		{
-			console.error(error);
-			return { success: false };
+			return ERROR.DB_ERROR(error);
 		}
 	}
 }
