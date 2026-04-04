@@ -1,4 +1,17 @@
-# Logs
+node_modules/
+
+dist/
+dist-ssr/
+build/
+
+.vite/
+.eslintcache
+
+.env
+.env.*
+!.env.example
+*.local
+
 logs
 *.log
 npm-debug.log*
@@ -7,16 +20,18 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj

@@ -14,9 +14,11 @@ export default defineConfig({
 			clientPort: 8443,
 			host: "localhost",
 			protocol: "wss",
+		},
+		fs: {
+		strict: false,
 		}
 	},
-    // BU KISIM ÖNEMLİ: Bağımlılıkların (react-dom gibi) source map üretmesini engeller
 	optimizeDeps: {
 		esbuildOptions: {
 			sourcemap: false
