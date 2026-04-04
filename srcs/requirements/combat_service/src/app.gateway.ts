@@ -17,7 +17,7 @@ export class AppGateway implements OnGatewayDisconnect
 	server: Server;
 
 	private rooms = new Map<string, Set<WebSocket>>();
-	private roomStartTimes = new Map<string, number>(); 
+	private roomStartTimes = new Map<string, number>();
 
 	private async	fetchGameState(roomId: string)
 	{
@@ -68,8 +68,8 @@ export class AppGateway implements OnGatewayDisconnect
 			{
 				const gameState = await this.fetchGameState(data.roomId);
 				gameState.startTime = this.roomStartTimes.get(data.roomId);
-				client.send(JSON.stringify({ 
-					event: 'sync_game', 
+				client.send(JSON.stringify({
+					event: 'sync_game',
 					gameState: gameState,
 					ownerHealth: gameState.health ? gameState.health[0] : 3,
 					guestHealth: gameState.health ? gameState.health[1] : 3
@@ -104,12 +104,12 @@ export class AppGateway implements OnGatewayDisconnect
 				if (this.roomStartTimes.has(data.roomId))
 					gameState.startTime = this.roomStartTimes.get(data.roomId);
 				const payload = JSON.stringify(
-				{ 
-					event: 'sync_game', 
-					gameState: gameState, 
-					ownerHealth, 
-					guestHealth, 
-					valid, 
+				{
+					event: 'sync_game',
+					gameState: gameState,
+					ownerHealth,
+					guestHealth,
+					valid,
 					loser,
 					winner,
 					isWin,
@@ -129,7 +129,6 @@ export class AppGateway implements OnGatewayDisconnect
 	async	handleDisconnect(@ConnectedSocket() client: WebSocket)
 	{
 		const roomId = (client as any).roomId;
-		console.log('Client disconnected, roomId:', roomId);
 		if (roomId)
 		{
 			const roomClients = this.rooms.get(roomId);
