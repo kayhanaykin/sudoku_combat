@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useFriendList from '../../hooks/useFriendList';
@@ -156,6 +156,8 @@ const FriendListWidget = () =>
     const [searchError, setSearchError] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     
+    const errorTimeoutRef = useRef(null);
+    
     const {
         friends,
         loading,
@@ -171,10 +173,37 @@ const FriendListWidget = () =>
     const sentRequests = friends.filter(f => f.status === 'sent');
     const activeFriends = friends.filter(f => f.status === 'accepted');
 
+    useEffect(() => 
+    {
+        return () => 
+        {
+            if (errorTimeoutRef.current) 
+            {
+                clearTimeout(errorTimeoutRef.current);
+            }
+        };
+    }, []);
+
+    const displaySearchError = (message) => 
+    {
+        setSearchError(message);
+        
+        if (errorTimeoutRef.current) 
+            clearTimeout(errorTimeoutRef.current);
+        
+        errorTimeoutRef.current = setTimeout(() => 
+        {
+            setSearchError('');
+        }, 3000);
+    };
+
     const handleSearchProfile = async (e) =>
     {
         e.preventDefault();
         setSearchError('');
+        
+        if (errorTimeoutRef.current) 
+            clearTimeout(errorTimeoutRef.current);
         
         const username = searchInput.trim();
         if (username)
@@ -186,7 +215,7 @@ const FriendListWidget = () =>
                 const response = await fetch(`/api/v1/user/by-username/${encodeURIComponent(username)}/`);
                 if (!response.ok)
                 {
-                    setSearchError('User not found.');
+                    displaySearchError('User not found.');
                     return;
                 }
 
@@ -195,7 +224,7 @@ const FriendListWidget = () =>
             }
             catch (err)
             {
-                setSearchError('Search failed. Please try again.');
+                displaySearchError('Search failed. Please try again.');
             }
             finally
             {
@@ -350,8 +379,11 @@ const FriendListWidget = () =>
                         onChange={(e) =>
                         {
                             setSearchInput(e.target.value);
-                            if (searchError)
+                            if (searchError) 
+                            {
                                 setSearchError('');
+                                if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+                            }
                         }}
                     />
                     <SearchButton type="submit" disabled={isSearching}>
