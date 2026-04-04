@@ -12,7 +12,7 @@ const ERROR =
 	OWNER_CANNOT_JOIN: { success: false, message: 'Owner cannot join as guest' },
 	USER_NOT_IN_ROOM: { success: false, message: 'User is not in this room' },
 	DIFFICULTY_REQUIRED: { success: false, message: 'Difficulty is required' },
-	DB_ERROR: (error: any) => ({ success: false, message: 'Database error', error: error.message })
+	DB_ERROR: (error: any) => ({ success: false, message: 'Database error: ', error: error.message })
 };
 
 @Controller('api/room')
@@ -22,8 +22,13 @@ export class AppController
 		private roomRepository: Repository<Room> )
 	{}
 
+	private async	findRoom(roomId: string)
+	{
+		return this.roomRepository.findOne({ where: { id: Number(roomId) } });
+	}
+
 	@Post('create')
-	async roomCreate(@Body() body: { userId: string, level: string, ownerName: string })
+	async	roomCreate(@Body() body: { userId: string, level: string, ownerName: string })
 	{
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
@@ -39,7 +44,7 @@ export class AppController
 			const gameData = await res.json();
 			const room = this.roomRepository.create({
 				ownerId: body.userId,
-				ownerName: body.ownerName || 'Unknown Player',
+				ownerName: body.ownerName,
 				difficulty: body.level,
 				solvedBoard: gameData.solution,
 				currBoard: gameData.board,
@@ -56,7 +61,7 @@ export class AppController
 	}
 
 	@Post('join/:roomId')
-	async roomJoin(@Param('roomId') roomId: string, @Body() body: { userId: string })
+	async	roomJoin(@Param('roomId') roomId: string, @Body() body: { userId: string })
 	{
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
@@ -64,7 +69,7 @@ export class AppController
 			return ERROR.ROOM_ID_REQUIRED;
 		try
 		{
-			const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
 			if (room.guestId)
@@ -73,7 +78,7 @@ export class AppController
 				return ERROR.OWNER_CANNOT_JOIN;
 			room.guestId = body.userId;
 			room.status = 'playing';
-			room.gameStartTime = new Date(Date.now() + 5000); 
+			room.gameStartTime = new Date(Date.now() + 5000);
 			await this.roomRepository.save(room);
 			return { success: true, roomId: room.id };
 		}
@@ -84,7 +89,7 @@ export class AppController
 	}
 
 	@Delete('leave/:roomId')
-	async roomLeave(@Param('roomId') roomId: string, @Body() body: { userId: string })
+	async	roomLeave(@Param('roomId') roomId: string, @Body() body: { userId: string })
 	{
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
@@ -92,7 +97,7 @@ export class AppController
 			return ERROR.ROOM_ID_REQUIRED;
 		try
 		{
-			const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
 			if (room.ownerId === body.userId)
@@ -127,13 +132,13 @@ export class AppController
 	}
 
 	@Post('validate-move/:roomId')
-	async validateMove(@Param('roomId') roomId: string, @Body() body: { row: number, col: number, value: number, role: string })
+	async	validateMove(@Param('roomId') roomId: string, @Body() body: { row: number, col: number, value: number, role: string })
 	{
 		if (!roomId)
 			return ERROR.ROOM_ID_REQUIRED;
 		try
 		{
-			const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
 			const isValid = (body.value === room.solvedBoard[body.row][body.col]);
@@ -203,7 +208,7 @@ export class AppController
 	}
 
 	@Post('cleanup-offline-user')
-	async cleanupOfflineUser(@Body() body: { userId: string })
+	async	cleanupOfflineUser(@Body() body: { userId: string })
 	{
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
@@ -222,18 +227,18 @@ export class AppController
 		}
 		catch (error)
 		{
-			return { success: false, error: error.message };
+			return ERROR.DB_ERROR(error);
 		}
 	}
 
 	@Get('game-state/:roomId')
-	async getGameState(@Param('roomId') roomId: string)
+	async	getGameState(@Param('roomId') roomId: string)
 	{
 		if (!roomId)
 			return ERROR.ROOM_ID_REQUIRED;
 		try
 		{
-			const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
 			return {
@@ -256,7 +261,7 @@ export class AppController
 	}
 
 	@Get('list')
-	async getRoomList()
+	async	getRoomList()
 	{
 		try
 		{
@@ -280,11 +285,11 @@ export class AppController
 	}
 
 	@Post('heartbeat/:roomId')
-	async heartbeat(@Param('roomId') roomId: string, @Body() body: { userId: string })
+	async	heartbeat(@Param('roomId') roomId: string, @Body() body: { userId: string })
 	{
 		try
 		{
-			const room = await this.roomRepository.findOne({ where: { id: Number(roomId) } });
+			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
 			if (room.ownerId === body.userId)

@@ -21,7 +21,7 @@ export class CombatController
 	{}
 
 	@Post('start/offline')
-	async startOffline(@Body() body: { difficulty: string })
+	async	startOffline(@Body() body: { difficulty: string })
 	{
 		try
 		{
@@ -29,8 +29,7 @@ export class CombatController
 			if (!response.ok)
 				return ERROR.GAME_ENGINE_ERROR;
 			const gameData = await response.json();
-			const newRoom = this.roomRepository.create(
-			{
+			const newRoom = this.roomRepository.create({
 				ownerId: 'offline',
 				ownerName: 'Offline Player',
 				difficulty: body.difficulty,
@@ -54,7 +53,7 @@ export class CombatController
 	}
 
 	@Post('start/online')
-	async startOnline(@Body() body: { userId: string, difficulty: string, ownerName: string })
+	async	startOnline(@Body() body: { userId: string, difficulty: string, ownerName: string })
 	{
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
@@ -69,7 +68,7 @@ export class CombatController
 			const newRoom = this.roomRepository.create(
 			{
 				ownerId: body.userId,
-				ownerName: body.ownerName || 'Unknown Player',
+				ownerName: body.ownerName,
 				difficulty: body.difficulty,
 				currBoard: gameData.board,
 				solvedBoard: gameData.solution,
@@ -77,10 +76,7 @@ export class CombatController
 				status: 'waiting'
 			});
 			const savedRoom = await this.roomRepository.save(newRoom);
-			return {
-				success: true,
-				roomId: savedRoom.id
-			};
+			return { success: true, roomId: savedRoom.id };
 		}
 		catch (error)
 		{
@@ -89,7 +85,7 @@ export class CombatController
 	}
 
 	@Post('move')
-	async handleOfflineMove(@Body() body: { roomId: number, row: number, col: number, value: number })
+	async	handleOfflineMove(@Body() body: { roomId: number, row: number, col: number, value: number })
 	{
 		if (!body.roomId)
 			return ERROR.ROOM_ID_REQUIRED;
@@ -104,10 +100,7 @@ export class CombatController
 			room.currBoard = newBoard;
 			const isWin = !newBoard.some((row: number[]) => row.includes(0));
 			await this.roomRepository.save(room);
-			return {
-				result: isWin ? 'WIN' : 'CORRECT',
-				lives: room.health[0]
-			};
+			return { result: isWin ? 'WIN' : 'CORRECT', lives: room.health[0] };
 		}
 		else
 		{
