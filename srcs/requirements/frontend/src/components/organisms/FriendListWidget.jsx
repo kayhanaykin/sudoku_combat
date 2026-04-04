@@ -178,9 +178,7 @@ const FriendListWidget = () =>
         return () => 
         {
             if (errorTimeoutRef.current) 
-            {
                 clearTimeout(errorTimeoutRef.current);
-            }
         };
     }, []);
 
