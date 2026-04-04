@@ -17,7 +17,10 @@ export class RoomCleanupService
 	{
 		const fiveSecondsAgo = new Date(Date.now() - 5000);
 		const ghostRooms = await this.roomRepository.find({
-			where: { status: 'waiting', lastHeartbeat: LessThan(fiveSecondsAgo) }
+			where: {
+				status: 'waiting',
+				lastHeartbeat: LessThan(fiveSecondsAgo)
+			}
 		});
 		if (ghostRooms.length > 0)
 		{

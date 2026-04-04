@@ -10,9 +10,9 @@ const ERROR =
 	ROOM_NOT_FOUND: { success: false, message: 'Room not found' },
 	ROOM_FULL: { success: false, message: 'Room is full' },
 	OWNER_CANNOT_JOIN: { success: false, message: 'Owner cannot join as guest' },
+	DB_ERROR: (error: any) => ({ success: false, message: 'Database error', error: error.message }),
 	USER_NOT_IN_ROOM: { success: false, message: 'User is not in this room' },
-	DIFFICULTY_REQUIRED: { success: false, message: 'Difficulty is required' },
-	DB_ERROR: (error: any) => ({ success: false, message: 'Database error', error: error.message })
+	LEVEL_REQUIRED: { success: false, message: 'level is required' }
 };
 
 @Controller('api/room')
@@ -28,7 +28,7 @@ export class AppController
 		if (!body.userId)
 			return ERROR.USER_ID_REQUIRED;
 		if (!body.level)
-			return ERROR.DIFFICULTY_REQUIRED;
+			return ERROR.LEVEL_REQUIRED;
 		try
 		{
 			const res = await fetch(`http://game_service:8080/generate?level=${body.level}`,
