@@ -90,16 +90,23 @@ Implement features and modules.
 ## Use an ORM for the Database (1pt)
 
 <ul>
-<li>Developed by Kayhan Aykın, Ali Eren Palaz</li>
-<li>Combat & User microservices have its own database with ORM. </li>
+<li>Developed by Kayhan Aykın, Ali Eren Palaz, Yunus Emre Özdemir</li>
+<li>Combat & User microservices have their own database with ORM. </li>
+<li>Statistics microservice has its own database with raw SQL. </li>
 </ul>
 
-## Reusable components ??
+## Reusable components (1pt)
+<ul>
+<li>Developed by Ege Karaurgan</li>
+<li>Custom design system built with styled-components featuring a consistent color palette (primary green #4ade80, dark green #14532d), typography (Inter font family), and CSS variables for shadows and borders.</li>
+<li>25+ reusable components organized using atomic design principles with 6 atoms (ActionBtn, ProfileButton, SudokuCell, etc.), 10+ molecules (LeaderboardRow, FriendItem, GameHeader, etc.), and 8+ organisms (SudokuBoard, ProfileContent, LeaderboardWidget, etc.).</li>
+<li>Reusable modal patterns for consistent user interactions across the application including HintModal, ExitConfirmModal, EditProfileModal, AvatarUploadModal, DifficultyModal, and HowToPlayModal.</li>
+</ul>
 
 ## Support for Additional Browsers (1pt)
 
 <ul>
-<li>4Web application is checked with Google Chrome and Firefox. </li>
+<li>Web application is checked with Google Chrome and Firefox. </li>
 </ul>
 
 ## Standart User Management and Authentication (2pts)
@@ -169,11 +176,11 @@ Implement features and modules.
 # Features List
 
 <ul>
-<li>Frontend, Ege Karaurgan</li>
-<li>Game Service, Kayhan Aykın</li>
-<li>User Service, Kayhan Aykın</li>
-<li>Combat Service, Ali Eren Palaz</li>
-<li>Statistics Service, Yunus Emre Özdemir</li>
+<li>Frontend, Ege Karaurgan - React-based web interface providing real-time multiplayer gameplay, user profiles, and leaderboards.</li>
+<li>Game Service, Kayhan Aykın - C++ microservice handling Sudoku puzzle generation, validation, and hint logic with optimal performance.</li>
+<li>User Service, Kayhan Aykın - Django microservice managing user authentication, profiles, friend lists, and achievements.</li>
+<li>Combat Service, Ali Eren Palaz - NestJS WebSocket service orchestrating real-time multiplayer game rooms and synchronized gameplay.</li>
+<li>Statistics Service, Yunus Emre Özdemir - C++ microservice tracking player statistics, match history, and computing leaderboard rankings.</li>
 </ul>
 
 
@@ -215,9 +222,91 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 
 - **Game Service**: No database
 - **User Service**: PostgreSQL (Django ORM) - User accounts, authentication, profiles, friends
-- **Room Service**: TypeORM with PostgreSQL - Game rooms and multiplayer sessions
-- **Combat Service**: No database
-- **Stats Service**: TypeORM with PostgreSQL - game stats and badges data, leaderboard
+- **Combat Service**: Combat Service: PostgreSQL (TypeORM) - Multiplayer game rooms, real-time player interactions, game state, board data, match tracking
+- **Stats Service**: PostgreSQL (libpqxx/Raw SQL) - Player statistics, match history, difficulty-based win/loss tracking, weekly leaderboard data, performance metrics
+
+**Game Service - CustomUser Model:**
+- intra_id (IntegerField) - 42 Intra OAuth ID
+- display_name (CharField) - Custom display name
+- avatar (ImageField) - User profile picture
+- last_seen (DateTimeField) - Last activity timestamp
+- is_online (BooleanField) - Online status flag
+- friends (ManyToManyField) - Self-referencing friend relationships
+
+**Game Service - Relationship Model:**
+- id (PK)
+- from_user (ForeignKey) - Friend request sender
+- to_user (ForeignKey) - Friend request recipient
+- status (CharField) - Request status (pending/friends)
+- created_at (DateTimeField) - Request creation date
+
+**Game Service - Achievement Model:**
+- id (PK)
+- user (ForeignKey) - Achievement owner
+- achievement_type (CharField) - Achievement type identifier
+- name (CharField) - Achievement name
+- icon (CharField) - Achievement emoji/icon
+- description (TextField) - Achievement description
+- earned_at (DateTimeField) - When earned
+- progress (IntegerField) - Current progress
+- target (IntegerField) - Target to achieve
+
+**Game Service - LeaderboardResetSchedule Model:**
+- id (PK)
+- difficulty (CharField) - Difficulty level (easy/medium/hard/expert/extreme)
+- last_reset (DateTimeField) - Last reset timestamp
+- next_reset (DateTimeField) - Next scheduled reset
+- previous_champion (ForeignKey) - Previous week's top player
+
+**Combat Service - Room Entity:**
+- id (PK)
+- ownerId (VARCHAR) - Room creator user ID
+- ownerName (VARCHAR) - Room creator display name 
+- guestId (VARCHAR) - Opponent user ID
+- difficulty (VARCHAR) - Game difficulty level
+- currBoard (JSON) - Current game board state
+- solvedBoard (JSON) - Solved board reference
+- health (NUMERIC ARRAY) - Player health tracking [owner, guest]
+- status (VARCHAR) - Room status (waiting/playing/finished)
+- lastHeartbeat (TIMESTAMP) - Last heartbeat for auto-cleanup
+- gameStartTime (TIMESTAMP) - When game started
+- ownerMoves (INT) - Owner total moves
+- guestMoves (INT) - Guest total moves
+
+**Stats Service - player_stats Table:**
+- id (BIGSERIAL PK) - Primary key
+- username (TEXT) - Player username
+- difficulty (INT) - Difficulty level (1-5)
+- mode (TEXT) - Game mode (online/offline)
+- wins (INT) - Total wins
+- losses (INT) - Total losses
+- best_time_seconds (INT) - Best completion time
+- updated_at (TIMESTAMPTZ) - Last update timestamp
+
+**Stats Service - match_history Table:**
+- id (BIGSERIAL PK) - Primary key
+- username (TEXT) - Player username
+- opponent (TEXT) - Opponent username
+- difficulty (INT) - Difficulty level (1-5)
+- mode (TEXT) - Game mode (online/offline)
+- result (TEXT) - Result (win/lose)
+- time_seconds (INT) - Completion time in seconds
+- played_at (TIMESTAMPTZ) - Match timestamp
+
+**Stats Service - weekly_player_stats Table:**
+- id (BIGSERIAL PK) - Primary key
+- username (TEXT) - Player username
+- difficulty (INT) - Difficulty level (1-5)
+- mode (TEXT) - Game mode (online/offline)
+- wins (INT) - Weekly wins
+- losses (INT) - Weekly losses
+- updated_at (TIMESTAMPTZ) - Last update timestamp
+
+**Stats Service - leaderboard_reset_meta Table:**
+- id (INT PK) - Primary key
+- period_start (TIMESTAMPTZ) - Period start timestamp
+- next_reset_at (TIMESTAMPTZ) - Next reset scheduled time
+
 
 # Installation of the Project
 ## 1<sup>st</sup> Step - Docker Engine
@@ -265,11 +354,6 @@ Everything is ready, reach site from Chorme or Firefox, using, [https://localhos
 - Streamlined the implementation of the JWT-based authentication flow.
 - Assisted in designing the PostgreSQL schema for user profiles and friend relationships.
 - Helped configure Django Channels for handling real-time status updates.
-
-#### Room Service (NestJS)
-- Assisted in setting up the TypeORM entities for managing multiplayer room states.
-- Provided templates for implementing the room creation and joining logic.
-- Helped structure the WebSocket gateways for synchronized room events.
 
 #### Combat Service (NestJS)
 - Assisted in designing the real-time event system for high-concurrency game sessions.
