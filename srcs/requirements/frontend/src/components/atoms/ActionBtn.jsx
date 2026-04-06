@@ -1,83 +1,61 @@
 import React from 'react';
 import styled from 'styled-components';
-import { device } from '../../utils/device';
 
-// STYLED COMPONENTS
 const StyledButton = styled.button`
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.8vmin;
-    padding: 0.3vmin 1.3vmin;
-    font-size: 2vmin;
-    font-weight: bold;
+    gap: 6px;
+    padding: clamp(7px, 1.2vmin, 10px) clamp(14px, 3vmin, 24px);
+    font-size: clamp(0.7rem, 1.6vmin, 0.95rem);
+    font-weight: 700;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #ffffff;
     background: linear-gradient(135deg, #2c3e50, #34495e);
     border: none;
-    border-radius: 1.5vmin;
-    box-shadow: 0 0.6vmin 0 #1a252f, 0 1vmin 1.5vmin rgba(0,0,0,0.2);
+    border-radius: clamp(8px, 1.5vmin, 12px);
+    box-shadow: 0 4px 0 #1a252f, 0 6px 10px rgba(0,0,0,0.2);
     cursor: pointer;
-    transition: all 0.1s ease;
+    transition: all 0.15s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
     outline: none;
+    user-select: none;
+    white-space: nowrap;
 
-    &:hover:not(:disabled)
-    {
-        transform: translateY(-0.2vmin);
-        box-shadow: 0 0.8vmin 0 #1a252f, 0 1.2vmin 2vmin rgba(0,0,0,0.3);
+    &:hover:not(:disabled) {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 0 #1a252f, 0 8px 15px rgba(0,0,0,0.3);
     }
 
-    &:active:not(:disabled)
-    {
-        transform: translateY(0.6vmin); 
-        box-shadow: 0 0 0 #1a252f, 0 0.2vmin 0.5vmin rgba(0,0,0,0.2);
+    &:active:not(:disabled) {
+        transform: translateY(4px);
+        box-shadow: 0 0 0 #1a252f, 0 2px 4px rgba(0,0,0,0.2);
     }
 
-    &:disabled
-    {
+    &:disabled {
         background: #95a5a6;
-        box-shadow: 0 0.6vmin 0 #7f8c8d;
+        box-shadow: 0 4px 0 #7f8c8d;
         color: #ecf0f1;
         cursor: not-allowed;
         opacity: 0.7;
-    }
-
-    @media ${device.tablet}
-    {
-        padding: 2vmin 4vmin;
-        font-size: 2.5vmin;
-        border-radius: 2vmin;
-    }
-
-    @media ${device.mobileL}
-    {
-        padding: 12px 20px;
-        font-size: 14px;
-        border-radius: 8px;
-        gap: 6px;
+        transform: none;
     }
 `;
 
 const IconWrapper = styled.span`
-    font-size: 1.7vmin;
-
-    @media ${device.tablet}
-    {
-        font-size: 2.2vmin;
-    }
-
-    @media ${device.mobileL}
-    {
-        font-size: 16px;
-    }
+    font-size: clamp(0.8rem, 1.6vmin, 1.1rem);
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
 `;
 
 const TextWrapper = styled.span`
-    /* Text inherits styles from the button by default */
+    display: flex;
+    align-items: center;
+    font-size: clamp(0.7rem, 1.6vmin, 0.95rem);
 `;
 
-// COMPONENT DEFINITION
 const ActionBtn = ({ className = '', children, ...props }) => 
 {
     let icon = '';
@@ -93,18 +71,10 @@ const ActionBtn = ({ className = '', children, ...props }) =>
 
     return (
         <StyledButton className={className} {...props}>
-            
-            {icon !== '' && 
-            (
-                <IconWrapper>
-                    {icon}
-                </IconWrapper>
+            {icon !== '' && (
+                <IconWrapper>{icon}</IconWrapper>
             )}
-            
-            <TextWrapper>
-                {children}
-            </TextWrapper>
-
+            <TextWrapper>{children}</TextWrapper>
         </StyledButton>
     );
 };

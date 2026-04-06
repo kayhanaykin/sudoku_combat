@@ -1,43 +1,82 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
+import Footer from '../components/atoms/Footer';
 
 // --- STYLED COMPONENTS ---
 
-const PageContainer = styled.div`
-    padding: 2rem;
+const PageWrapper = styled.div`
+    min-height: 100vh;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+`;
+
+const ContentContainer = styled.div`
     max-width: 1200px;
     margin: 0 auto;
-    font-family: inherit;
-    color: var(--text-dark);
+    padding: 40px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 `;
 
 const Header = styled.header`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 2rem;
-    border-bottom: 2px solid var(--primary);
-    padding-bottom: 1rem;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 15px;
+
+    @media (max-width: 480px)
+    {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
 `;
 
 const Title = styled.h1`
     font-size: 2rem;
-    color: var(--primary);
+    color: #111827;
     margin: 0;
+    font-weight: bold;
 `;
 
 const LogoutButton = styled.button`
-    padding: 0.6rem 1.5rem;
-    font-size: 1rem;
+    padding: 10px 20px;
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+
+    &:hover
+    {
+        background-color: #c0392b;
+        transform: translateY(-2px);
+    }
+
+    &:active
+    {
+        transform: translateY(1px);
+    }
 `;
 
 const TableWrapper = styled.div`
-    background: var(--secondary);
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow-x: auto;
+    margin-bottom: 40px;
 `;
 
 const Table = styled.table`
@@ -47,24 +86,35 @@ const Table = styled.table`
 `;
 
 const Th = styled.th`
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #eee;
+    padding: 18px 20px;
+    border-bottom: 2px solid #f3f4f6;
     background-color: #f8f9fa;
     font-weight: 700;
-    color: var(--primary);
+    color: #4b5563;
     text-transform: uppercase;
     font-size: 0.85rem;
     letter-spacing: 0.5px;
+    white-space: nowrap;
 `;
 
 const Td = styled.td`
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid #eee;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    font-size: 0.95rem;
 `;
 
 const TableRow = styled.tr`
-    &:hover {
-        background-color: #fcfcfc;
+    transition: background-color 0.2s ease;
+
+    &:hover 
+    {
+        background-color: #f9fafb;
+    }
+    
+    &:last-child ${Td}
+    {
+        border-bottom: none;
     }
 `;
 
@@ -75,29 +125,26 @@ const MessageContainer = styled.div`
     height: 100vh;
     font-size: 1.25rem;
     font-weight: 600;
-    color: ${props => props.$isError ? '#dc2626' : 'inherit'};
-`;
-
-const StatusBadge = styled.span`
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    background-color: ${props => props.$isOnline ? '#e6ffec' : '#fee2e2'};
-    color: ${props => props.$isOnline ? '#059669' : '#dc2626'};
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: ${props => props.$isError ? '#e74c3c' : '#4b5563'};
+    background-color: #f9fafb;
 `;
 
 // --- COMPONENT DEFINITION ---
 
-const DebugUsersPage = () => {
+const DebugUsersPage = () => 
+{
     const { user, logout, loading: authLoading } = useAuth();
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    useEffect(() => {
+    useEffect(() => 
+    {
         if (authLoading)
+        {
             return;
+        }
 
         if (!user || !user.is_superuser)
         {
@@ -105,7 +152,8 @@ const DebugUsersPage = () => {
             return;
         }
 
-        const fetchUsers = async () => {
+        const fetchUsers = async () => 
+        {
             try
             {
                 const response = await fetch('/api/v1/user/debug-users/', {
@@ -122,7 +170,9 @@ const DebugUsersPage = () => {
                     setUsers(data);
                 }
                 else
+                {
                     setError('Failed to fetch users');
+                }
             }
             catch (err)
             {
@@ -138,49 +188,59 @@ const DebugUsersPage = () => {
         fetchUsers();
     }, [authLoading, user]);
 
-    const handleLogout = () => {
+    const handleLogout = () => 
+    {
         logout();
     };
 
     if (loading)
+    {
         return <MessageContainer>Loading users...</MessageContainer>;
+    }
 
     if (error)
+    {
         return <MessageContainer $isError>{error}</MessageContainer>;
+    }
 
     return (
-        <PageContainer>
-            <Header>
-                <Title>Debug Users</Title>
-                <LogoutButton className="btn btn-primary" onClick={handleLogout}>
-                    Logout
-                </LogoutButton>
-            </Header>
-            <main>
-                <TableWrapper>
-                    <Table>
-                        <thead>
-                            <tr>
-                                <Th>ID</Th>
-                                <Th>Username</Th>
-                                <Th>Display Name</Th>
-                                <Th>Email</Th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {users.map((userData) => (
-                                <TableRow key={userData.id}>
-                                    <Td>{userData.id}</Td>
-                                    <Td>{userData.username}</Td>
-                                    <Td>{userData.display_name || '-'}</Td>
-                                    <Td>{userData.email || 'N/A'}</Td>
-                                </TableRow>
-                            ))}
-                        </tbody>
-                    </Table>
-                </TableWrapper>
-            </main>
-        </PageContainer>
+        <PageWrapper>
+            <ContentContainer>
+                <Header>
+                    <Title>Debug Users</Title>
+                    <LogoutButton onClick={handleLogout}>
+                        Logout
+                    </LogoutButton>
+                </Header>
+                
+                <main style={{ flex: 1 }}>
+                    <TableWrapper>
+                        <Table>
+                            <thead>
+                                <tr>
+                                    <Th>ID</Th>
+                                    <Th>Username</Th>
+                                    <Th>Display Name</Th>
+                                    <Th>Email</Th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.map((userData) => (
+                                    <TableRow key={userData.id}>
+                                        <Td>{userData.id}</Td>
+                                        <Td><strong>{userData.username}</strong></Td>
+                                        <Td>{userData.display_name || '-'}</Td>
+                                        <Td>{userData.email || 'N/A'}</Td>
+                                    </TableRow>
+                                ))}
+                            </tbody>
+                        </Table>
+                    </TableWrapper>
+                </main>
+            </ContentContainer>
+            
+            <Footer />
+        </PageWrapper>
     );
 };
 

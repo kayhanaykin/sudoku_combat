@@ -5,84 +5,90 @@ import styled from 'styled-components';
 const NumpadGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(9, 1fr);
-    gap: 0.8vmin;
-    margin-top: 1.2vmin;
-    width: 45vmin;
+    gap: 6px; 
+    margin-top: 12px;
+    width: 100%;
+    max-width: 320px; 
 
     @media (max-width: 768px)
     {
-        width: 80vmin;
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 120px; 
+        gap: 6px;
     }
 `;
 
 const NumKey = styled.button`
-    padding: 1vmin;
-    font-size: 2vmin;
-    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+    
+    width: 100%; 
+    font-size: 1.1rem; 
+    font-weight: 700;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #ffffff;
+    background-color: #34495e;
+    
     border: none;
-    border-radius: 0.6vmin;
-    transition: transform 0.1s, background-color 0.2s, opacity 0.2s;
+    border-radius: 6px; 
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    outline: none;
 
-    background-color: ${props => 
-    {
-        if (props.disabled)
-            return '#7f8c8d';
-            
-        return '#34495e';
-    }};
+    box-shadow: 0 3px 0 #1a252f;
 
-    cursor: ${props => 
+    &:hover:not(:disabled)
     {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
+        background-color: #2c3e50;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 0 #1a252f;
+    }
 
-    opacity: ${props => 
+    &:active:not(:disabled)
     {
-        if (props.disabled)
-            return '0.5';
-            
-        return '1';
-    }};
+        transform: translateY(2px);
+        box-shadow: 0 1px 0 #cbd1d6;
+    }
 
-    &:active 
+    &:disabled
     {
-        transform: ${props => 
-        {
-            if (props.disabled)
-                return 'none';
-                
-            return 'scale(0.95)';
-        }};
+        background-color: #9ca3af;
+        box-shadow: 0 3px 0 #6b7280;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    @media (max-width: 768px)
+    {
+        font-size: 1rem; 
+        border-radius: 6px;
     }
 `;
 
-// COMPONENT DEFINITION
+// COMPONENT DEFINITION (Aynı kalıyor)
 const Numpad = ({ onNumberClick, disabled }) => 
 {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
     return (
         <NumpadGrid>
-            
             {numbers.map((num) => (
                 <NumKey 
                     key={num} 
+                    disabled={disabled}
                     onClick={(e) => 
                     {
                         e.stopPropagation(); 
                         onNumberClick(num);
                     }}
                     onMouseDown={(e) => e.preventDefault()}
-                    disabled={disabled}
                 >
                     {num}
                 </NumKey>
             ))}
-            
         </NumpadGrid>
     );
 };

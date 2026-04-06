@@ -12,6 +12,7 @@ import GameOverOverlay from '../components/organisms/GameOverOverlay';
 import { getUserById } from '../services/userService'; 
 import ExitConfirmModal from '../components/molecules/ExitConfirmModal';
 import useGameExit from '../hooks/useGameExit';
+import Footer from '../components/atoms/Footer';
 
 const BASE_URL = '';
 
@@ -22,45 +23,77 @@ const GameContainer = styled.div`
     align-items: center;
     justify-content: flex-start;
     width: 100vw;
-    height: 100vh;
-    padding-top: 5vmin;
-    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-top: 40px;
+    background-color: #f9fafb;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const GameMainArea = styled.div`
     display: flex;
-    align-items: flex-start; 
     justify-content: center;
-    gap: 2vmin;
+    align-items: flex-start; 
+    gap: 32px;
     width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
 
-    @media (max-width: 768px)
+    @media (max-width: 950px)
     {
         flex-direction: column; 
-        gap: 1.5vmin;
         align-items: center;
+        gap: 24px;
+    }
+`;
+
+const PlayerColumn = styled.div`
+    flex: 0 0 180px; 
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    display: flex;
+    justify-content: center;
+
+    @media (max-width: 950px)
+    {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: auto;
+        max-width: 450px;
     }
 `;
 
 const BoardWrapper = styled.div`
+    flex: 0 0 auto;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: min(90vw, 450px); 
+    aspect-ratio: 1 / 1; 
+
+    & > * {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
 `;
 
 const DualProgressContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    max-width: 50vmin;
-    margin-bottom: 2vmin;
-
-    @media (max-width: 768px) {
-        max-width: 90vw;
-        margin-bottom: 3vmin;
-    }
+    width: min(90vw, 450px);
+    margin: 0 auto 24px auto;
 `;
 
 const StatsRow = styled.div`
@@ -68,80 +101,62 @@ const StatsRow = styled.div`
     justify-content: center;
     align-items: center;
     width: 100%;
-    font-size: 1.8vmin;
-    font-weight: bold;
-    margin-bottom: 1vmin;
-
-    @media (max-width: 768px) {
-        font-size: 3vmin;
-    }
+    margin-bottom: 8px;
 `;
 
 const CenterStat = styled.span`
-    color: #303b4a;
-    font-size: 1.8vmin;
+    color: #374151;
+    font-size: 0.9rem;
+    font-weight: bold;
     background: #e5e7eb;
-    padding: 0.5vmin 1.5vmin;
-    border-radius: 1vmin;
+    padding: 6px 16px;
+    border-radius: 12px;
     text-align: center;
-
-    @media (max-width: 768px) {
-        font-size: 2.5vmin;
-    }
-`;
-
-const P2Stat = styled.span`
-    color: #3498db;
-    background: rgba(52, 152, 219, 0.1);
-    padding: 0.5vmin 1vmin;
-    border-radius: 0.8vmin;
 `;
 
 const BarBackground = styled.div`
     position: relative;
     width: 100%;
-    height: 2.5vmin; 
+    height: 24px; 
     background-color: #d1d5db; 
-    border-radius: 2vmin;
+    border-radius: 12px;
     overflow: hidden;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 
     @media (max-width: 768px) {
-        height: 3.5vmin;
+        height: 28px;
     }
 `;
 
 const BarTextLeft = styled.span`
     position: absolute;
-    left: 1.5vmin;
+    left: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: white;
-    font-size: 1.6vmin;
+    font-size: 0.85rem;
     font-weight: 900;
     z-index: 10;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.8); 
     
     @media (max-width: 768px) {
-        font-size: 2.5vmin;
-        left: 2.5vmin;
+        font-size: 1rem;
     }
 `;
 
 const BarTextRight = styled.span`
     position: absolute;
-    right: 1.5vmin;
+    right: 12px;
     top: 50%;
     transform: translateY(-50%);
     color: white;
-    font-size: 1.6vmin;
+    font-size: 0.85rem;
     font-weight: 900;
     z-index: 10;
     text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
 
     @media (max-width: 768px) {
-        font-size: 2.5vmin;
-        right: 2.5vmin;
+        font-size: 1rem;
     }
 `;
 
@@ -150,10 +165,10 @@ const P1Fill = styled.div`
     left: 0;
     top: 0;
     bottom: 0;
-    background: linear-gradient(90deg, #c0392b, #e74c3c);
+    background: linear-gradient(90deg, #e74c3c, #c0392b);
     width: ${props => props.$pct}%;
     transition: width 0.4s ease-out;
-    border-radius: 2vmin 0 0 2vmin;
+    border-radius: 12px 0 0 12px;
 `;
 
 const P2Fill = styled.div`
@@ -164,7 +179,7 @@ const P2Fill = styled.div`
     background: linear-gradient(90deg, #3498db, #2980b9);
     width: ${props => props.$pct}%;
     transition: width 0.4s ease-out;
-    border-radius: 0 2vmin 2vmin 0;
+    border-radius: 0 12px 12px 0;
 `;
 
 const CenterToast = styled.div`
@@ -174,9 +189,9 @@ const CenterToast = styled.div`
     transform: translate(-50%, -50%);
     background-color: rgba(231, 76, 60, 0.95);
     color: white;
-    padding: 15px 35px;
+    padding: 16px 32px;
     border-radius: 12px;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     font-weight: bold;
     z-index: 9999;
     transition: all 0.3s ease-in-out;
@@ -192,8 +207,8 @@ const ControlsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    margin-top: 1.5vmin;
+    width: min(90vw, 500px);
+    margin: 24px auto 40px auto;
 `;
 
 // COMPONENT DEFINITION
@@ -353,35 +368,15 @@ const OnlineGame = () =>
                         if (isOwner)
                         {
                             setPlayers({ 
-                                you:
-                                {
-                                    displayName: oName,
-                                    username: oUsername,
-                                    avatar: oAvatar
-                                }, 
-                                opponent:
-                                {
-                                    displayName: gName,
-                                    username: guestUsername,
-                                    avatar: gAvatar
-                                } 
+                                you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
+                                opponent: { displayName: gName, username: guestUsername, avatar: gAvatar } 
                             });
                         }
                         else
                         {
                             setPlayers({ 
-                                you:
-                                {
-                                    displayName: gName,
-                                    username: guestUsername,
-                                    avatar: gAvatar
-                                }, 
-                                opponent:
-                                {
-                                    displayName: oName,
-                                    username: oUsername,
-                                    avatar: oAvatar
-                                } 
+                                you: { displayName: gName, username: guestUsername, avatar: gAvatar }, 
+                                opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
                             });
                         }
                         return;
@@ -390,35 +385,15 @@ const OnlineGame = () =>
                     if (isOwner)
                     {
                         setPlayers({ 
-                            you:
-                            {
-                                displayName: oName,
-                                username: oUsername,
-                                avatar: oAvatar
-                            }, 
-                            opponent:
-                            {
-                                displayName: gName,
-                                username: '',
-                                avatar: gAvatar
-                            } 
+                            you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
+                            opponent: { displayName: gName, username: '', avatar: gAvatar } 
                         });
                     }
                     else
                     {
                         setPlayers({ 
-                            you:
-                            {
-                                displayName: gName,
-                                username: '',
-                                avatar: gAvatar
-                            }, 
-                            opponent:
-                            {
-                                displayName: oName,
-                                username: oUsername,
-                                avatar: oAvatar
-                            } 
+                            you: { displayName: gName, username: '', avatar: gAvatar }, 
+                            opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
                         });
                     }
                 }
@@ -426,18 +401,8 @@ const OnlineGame = () =>
             catch(e) 
             {
                 setPlayers({ 
-                    you:
-                    {
-                        displayName: 'You',
-                        username: user?.username || '',
-                        avatar: null
-                    }, 
-                    opponent:
-                    {
-                        displayName: 'Opponent',
-                        username: '',
-                        avatar: null
-                    } 
+                    you: { displayName: 'You', username: user?.username || '', avatar: null }, 
+                    opponent: { displayName: 'Opponent', username: '', avatar: null } 
                 });
             }
         };
@@ -596,12 +561,14 @@ const OnlineGame = () =>
             </DualProgressContainer>
 
             <GameMainArea>
-                <PlayerCard 
-                    title={players.you.displayName}
-                    username={players.you.username}
-                    avatar={players.you.avatar} 
-                    lives={lives}
-                />
+                <PlayerColumn>
+                    <PlayerCard 
+                        title={players.you.displayName}
+                        username={players.you.username}
+                        avatar={players.you.avatar} 
+                        lives={lives}
+                    />
+                </PlayerColumn>
 
                 <BoardWrapper ref={boardRef}>
                     <SudokuBoard 
@@ -614,13 +581,15 @@ const OnlineGame = () =>
                     />
                 </BoardWrapper>
 
-                <PlayerCard 
-                    title={players.opponent.displayName}
-                    username={players.opponent.username}
-                    avatar={players.opponent.avatar} 
-                    lives={opponentLives}
-                    align="right" 
-                />
+                <PlayerColumn>
+                    <PlayerCard 
+                        title={players.opponent.displayName}
+                        username={players.opponent.username}
+                        avatar={players.opponent.avatar} 
+                        lives={opponentLives}
+                        align="right" 
+                    />
+                </PlayerColumn>
             </GameMainArea>
 
             <ControlsWrapper ref={controlsRef}>
@@ -629,6 +598,8 @@ const OnlineGame = () =>
                     disabled={isGameDisabled} 
                 />
             </ControlsWrapper>
+
+            <Footer />
 
         </GameContainer>
     );

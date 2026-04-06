@@ -7,7 +7,6 @@ import { getUserDetails } from '../../services/userService';
 import FriendListWidget from '../organisms/FriendListWidget';
 import Login from './Login';
 import SignUp from './Signup';
-// HOW TO PLAY MODALINI IMPORT EDİYORUZ
 import HowToPlayModal from '../organisms/HowToPlayModal'; 
 
 // STYLED COMPONENTS
@@ -28,8 +27,8 @@ const NavContainer = styled.nav`
 
     @media (max-width: 768px)
     {
-        padding: 0 20px;
-        height: 90px;
+        padding: 0 15px; /* Mobilde biraz daha kenarlara yanaştık */
+        height: 80px;
     }
 `;
 
@@ -47,7 +46,7 @@ const LogoTextBase = styled.span`
 
     @media (max-width: 768px)
     {
-        font-size: 28px;
+        font-size: 24px; /* Mobilde logoyu biraz daha küçülttük ki butonlara yer kalsın */
     }
 `;
 
@@ -64,18 +63,36 @@ const AuthButtons = styled.div`
     display: flex;
     gap: 20px;
     align-items: center;
+
+    @media (max-width: 768px)
+    {
+        gap: 10px; /* Mobilde butonların arasını biraz daralttık */
+    }
 `;
 
 const ActionContainer = styled.div`
     display: flex;
     gap: 20px;
     align-items: center;
+
+    @media (max-width: 768px)
+    {
+        gap: 10px;
+    }
 `;
 
 const DropdownContainer = styled.div`
     position: relative;
     display: flex;
     align-items: center;
+`;
+
+/* YENİ ZIRH: Ekran küçüldüğünde buton içindeki YAZILARI gizler, ikonları bırakır */
+const ButtonText = styled.span`
+    @media (max-width: 768px)
+    {
+        display: none;
+    }
 `;
 
 const TriggerButton = styled.button`
@@ -102,7 +119,9 @@ const TriggerButton = styled.button`
 
     @media (max-width: 768px)
     {
-        padding: 10px 20px;
+        /* Profil butonu mobilde sadece avatarı gösterecek şekilde küçülür */
+        padding: 6px 12px;
+        gap: 0;
     }
 `;
 
@@ -131,15 +150,18 @@ const HowToPlayNavButton = styled.button`
 
     @media (max-width: 768px)
     {
-        padding: 10px 20px;
-        display: none; 
+        /* ÇÖZÜM BURADA: display: none SİLİNDİ! Yerine padding kısıldı */
+        padding: 10px 14px; 
+        font-size: 1.2rem;
     }
 `;
 
 const FriendsTriggerButton = styled(TriggerButton)`
     @media (max-width: 768px)
     {
-        display: none;
+        /* ÇÖZÜM BURADA: display: none SİLİNDİ! Yerine padding kısıldı */
+        padding: 10px 14px;
+        font-size: 1.2rem;
     }
 `;
 
@@ -149,6 +171,12 @@ const AvatarImage = styled.img`
     border-radius: 50%;
     object-fit: cover;
     border: 2px solid white;
+
+    @media (max-width: 768px)
+    {
+        width: 38px;
+        height: 38px;
+    }
 `;
 
 const DisplayName = styled.span`
@@ -178,6 +206,13 @@ const ProfileDropdownMenu = styled(BaseDropdownMenu)`
 const FriendsDropdownMenu = styled(BaseDropdownMenu)`
     width: 400px;
     padding: 20px;
+
+    @media (max-width: 768px)
+    {
+        /* Mobilde arkadaşlar paneli ekrandan taşmasın diye daraltıldı */
+        width: 300px;
+        right: -60px; /* Ekranda ortalanması için sağdan kaydırıldı */
+    }
 `;
 
 const WidgetWrapper = styled.div`
@@ -243,6 +278,12 @@ const BasicButton = styled.button`
     font-size: 1rem;
     transition: all 0.2s;
     border: none;
+
+    @media (max-width: 768px)
+    {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
 `;
 
 const PrimaryButton = styled(BasicButton)`
@@ -277,7 +318,7 @@ const Navbar = () =>
     // MODAL STATE'LERİ
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-    const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false); // YENİ EKLENDİ
+    const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false); 
     
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isFriendsOpen, setIsFriendsOpen] = useState(false);
@@ -433,7 +474,8 @@ const Navbar = () =>
                 
                 <DropdownContainer ref={friendsRef}>
                     <FriendsTriggerButton type="button" onClick={toggleFriends}>
-                        👥 Social Hub
+                        <span role="img" aria-label="social">👥</span>
+                        <ButtonText>Social Hub</ButtonText>
                     </FriendsTriggerButton>
                     {friendsMenuElement}
                 </DropdownContainer>
@@ -497,7 +539,8 @@ const Navbar = () =>
                 
                 <AuthButtons>
                     <HowToPlayNavButton onClick={() => setIsHowToPlayOpen(true)}>
-                        <span role="img" aria-label="help">❓</span> How to Play
+                        <span role="img" aria-label="help">❓</span>
+                        <ButtonText>How to Play</ButtonText>
                     </HowToPlayNavButton>
 
                     {authSectionElement}

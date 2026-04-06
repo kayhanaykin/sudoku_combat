@@ -6,20 +6,29 @@ import Leaderboard from '../components/organisms/LeaderboardWidget';
 import DifficultyModal from '../components/molecules/DifficultyModal';
 import OnlineGameModal from '../components/molecules/OnlineGamePopup';
 import SudokuBoard from '../components/organisms/SudokuBoard';
+import Footer from '../components/atoms/Footer';
 import { useAuth } from '../context/AuthContext'; 
 import { startGame, createCombatRoom, joinRoom } from '../services/api';
 
 // ANIMATIONS
+const PageContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f9fafb;
+`;
+
+// Scale yerine Translate ile çok daha temiz bir animasyon
 const fadeInBoard = keyframes`
     from 
     { 
         opacity: 0; 
-        transform: scale(0.65) translateY(20px); 
+        transform: translateY(30px); 
     }
     to 
     { 
         opacity: 0.9; 
-        transform: scale(0.75) translateY(0); 
+        transform: translateY(0); 
     }
 `;
 
@@ -31,35 +40,42 @@ const HeroSection = styled.main`
     justify-content: flex-start;
     min-height: 100vh;
     background-color: #f8f9fa;
-    padding: 20px 30px;
-    padding-top: 50px;
+    
+    padding-top: clamp(100px, 12vh, 140px);
+    padding-bottom: clamp(40px, 6vh, 80px);
+    padding-left: 20px;
+    padding-right: 20px;
+    
     position: relative;
     overflow: hidden;
+    
+    box-sizing: border-box; 
 `;
 
 const DecorativeBoardWrapper = styled.div`
-    margin-bottom: -20px;
-    transform: scale(0.75);
+    width: 100%;
+    max-width: 400px; 
+    margin: 0 auto 30px auto;
     opacity: 0.9;
-    animation: ${fadeInBoard} 1.2s ease-out forwards;
+    animation: ${fadeInBoard} 1s ease-out forwards;
 
-    @media (max-width: 1024px)
+    @media (max-width: 768px)
     {
-        transform: scale(0.6);
-        margin-bottom: -40px;
+        max-width: 280px;
+        margin-bottom: 24px;
     }
 `;
 
 const DashboardContainer = styled.div`
     display: flex;
-    gap: 30px;
+    gap: clamp(20px, 3vw, 40px);
     width: 100%;
-    max-width: 1300px;
+    max-width: 1200px;
     z-index: 2;
     align-items: stretch;
     justify-content: center;
 
-    @media (max-width: 1024px)
+    @media (max-width: 950px)
     {
         flex-direction: column;
         align-items: center;
@@ -71,17 +87,19 @@ const ActionsColumn = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
+    width: 100%;
+    max-width: 600px; 
 `;
 
 const ModeCard = styled.div`
-    width: 900px;
+    width: 100%; 
     background: #ffffff;
-    border-radius: 24px;
-    padding: 50px 40px;
+    border-radius: 20px;
+    padding: clamp(24px, 4vw, 40px); 
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: clamp(16px, 3vw, 30px);
     box-shadow: 0 10px 25px rgba(0,0,0,0.05);
     border: 3px solid transparent;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -89,15 +107,14 @@ const ModeCard = styled.div`
 
     &:hover
     {
-        transform: translateY(-8px);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
         border-color: #29972d;
     }
 
-    @media (max-width: 1024px)
+    @media (max-width: 480px)
     {
-        padding: 35px;
-        width: 100%;
+        padding: 20px 16px;
     }
 `;
 
@@ -116,10 +133,12 @@ const OfflineCard = styled(ModeCard)`
 `;
 
 const IconWrapper = styled.div`
-    font-size: 4rem; 
+    font-size: clamp(2.5rem, 4vw, 4rem); 
     background-color: #f0fdf4;
-    width: 100px;
-    height: 100px;
+    
+    width: clamp(70px, 8vw, 100px);
+    height: clamp(70px, 8vw, 100px);
+    
     display: flex;
     align-items: center;
     justify-content: center;
@@ -129,19 +148,24 @@ const IconWrapper = styled.div`
 `;
 
 const CardContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     h2
     {
         margin: 0;
-        font-size: 2.2rem; 
+        font-size: clamp(1.4rem, 3vw, 2.2rem); 
         color: #1a2e1b;
         font-weight: 800;
+        line-height: 1.2;
     }
 
     p
     {
-        margin: 8px 0 0;
+        margin: 6px 0 0;
         color: #4b5563;
-        font-size: 1.2rem; 
+        font-size: clamp(0.9rem, 1.5vw, 1.2rem); 
     }
 `;
 
@@ -149,6 +173,8 @@ const LeaderboardWrapper = styled.div`
     flex: 0.8;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 600px;
 `;
 
 // COMPONENT DEFINITION
@@ -484,7 +510,8 @@ const Home = () =>
     };
 
     return (
-        <>
+        <PageContainer>
+            
             <Navbar />
             
             <HeroSection>
@@ -528,6 +555,8 @@ const Home = () =>
                 
             </HeroSection>
 
+            <Footer />
+
             <DifficultyModal 
                 isOpen={isDifficultyOpen} 
                 onClose={() => setIsDifficultyOpen(false)}
@@ -540,7 +569,7 @@ const Home = () =>
                 onClose={() => setIsOnlineModalOpen(false)}
                 onCreate={handleOnlineCreateClick}
                 onJoin={handleJoinRoom}
-                onCancelRoom={handleCancelRoom}
+                onCancel={handleCancelRoom}
                 isLoading={loading}
                 createdRoomId={createdRoomId}
                 isOpponentJoined={isOpponentJoined}
@@ -548,7 +577,7 @@ const Home = () =>
                 currentUserId={currentUserId}
             />
             
-        </>
+        </PageContainer>
     );
 };
 

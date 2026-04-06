@@ -6,27 +6,38 @@ import { checkIsHighlighted } from '../../utils/sudokuUtils';
 // STYLED COMPONENTS
 const BoardContainer = styled.div`
     display: grid;
-    width: 45vmin;
-    height: 45vmin;
+    width: 100%;
+    height: auto; 
+    
+    aspect-ratio: 1 / 1; 
+    
     grid-template-columns: repeat(9, 1fr);
     grid-template-rows: repeat(9, 1fr);
-    border: 0.3vmin solid #2c3e50;
-    border-radius: 1vmin;
+    
+    border: 4px solid #2c3e50;
+    border-radius: 8px;
     background-color: #fff;
     position: relative;
-    overflow: hidden; 
-    box-shadow: 0 1vmin 2vmin rgba(0,0,0,0.15);
-    box-sizing: content-box;
+        
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    box-sizing: border-box;
 
     @media (max-width: 768px)
     {
-        width: 80vmin;
-        height: 80vmin;
+        width: 100%;
+        height: auto;
+        border-width: 4px;
+        border-radius: 8px;
     }
 `;
 
 const LoadingText = styled.div`
-    font-size: 2vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    font-size: 1.5rem;
     color: #2c3e50;
     font-weight: bold;
 `;
@@ -78,6 +89,9 @@ const SudokuBoard = ({ board, selectedCell, onCellClick }) =>
                             }
                         }
 
+                        const isThickRight = (cIndex === 2 || cIndex === 5);
+                        const isThickBottom = (rIndex === 2 || rIndex === 5);
+
                         return (
                             <SudokuCell
                                 key={`${rIndex}-${cIndex}`}
@@ -88,6 +102,8 @@ const SudokuBoard = ({ board, selectedCell, onCellClick }) =>
                                 isHighlighted={isHighlighted}
                                 isSameNumber={isSameNumber}
                                 onClick={() => onCellClick(rIndex, cIndex)}
+                                $isThickRight={isThickRight}
+                                $isThickBottom={isThickBottom}
                             />
                         );
                     })}
