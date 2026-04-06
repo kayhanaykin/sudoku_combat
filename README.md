@@ -62,7 +62,7 @@ Implement features and modules.
 <li>Document their work.</li>
 </ul> 
 
-# Chosen Modules
+# Chosen Modules (Total 17pts)
 ## Use a Frontend Framework (React, 1pt)
 <ul>
 <li>Developed by Ege Karaurgan</li>
@@ -93,14 +93,6 @@ Implement features and modules.
 <li>Developed by Kayhan Aykın, Ali Eren Palaz, Yunus Emre Özdemir</li>
 <li>Combat & User microservices have their own database with ORM. </li>
 <li>Statistics microservice has its own database with raw SQL. </li>
-</ul>
-
-## Reusable components (1pt)
-<ul>
-<li>Developed by Ege Karaurgan</li>
-<li>Custom design system built with styled-components featuring a consistent color palette (primary green #4ade80, dark green #14532d), typography (Inter font family), and CSS variables for shadows and borders.</li>
-<li>25+ reusable components organized using atomic design principles with 6 atoms (ActionBtn, ProfileButton, SudokuCell, etc.), 10+ molecules (LeaderboardRow, FriendItem, GameHeader, etc.), and 8+ organisms (SudokuBoard, ProfileContent, LeaderboardWidget, etc.).</li>
-<li>Reusable modal patterns for consistent user interactions across the application including HintModal, ExitConfirmModal, EditProfileModal, AvatarUploadModal, DifficultyModal, and HowToPlayModal.</li>
 </ul>
 
 ## Support for Additional Browsers (1pt)

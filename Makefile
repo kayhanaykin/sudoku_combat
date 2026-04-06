@@ -21,12 +21,12 @@ down:
 	@echo "$(GREEN)Stopping services...$(RESET)"
 	@$(COMPOSE) down
 
-# Projeyi, ağları ve VOLUMELERİ (Veritabanı kalıntılarını) tamamen siler!
+# Clean Project, network and volumes(database)
 clean:
 	@echo "$(GREEN)Force removing containers and VOLUMES...$(RESET)"
 	@$(COMPOSE) down -v --remove-orphans
 
-# Sistemi tamamen temizler (Docker içindeki her şeyi)
+# Including old installations cleans everything
 fclean: clean
 	@echo "$(GREEN)Deep cleaning the system...$(RESET)"
 	@docker system prune -af
@@ -34,7 +34,7 @@ fclean: clean
 
 re: clean all
 
-# Yeniden build edip ayağa kaldırır
+# Rebuild and start containers
 build:
 	@echo "$(GREEN)Building and starting containers...$(RESET)"
 	@$(COMPOSE) up -d --build
