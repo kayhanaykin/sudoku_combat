@@ -171,6 +171,17 @@ const HintText = styled.span`
     font-weight: 500;
 `;
 
+const ErrorText = styled.div`
+    color: #ef4444;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    background: #fef2f2;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #fee2e2;
+`;
+
 const FormGroup = styled.div`
     display: flex;
     flex-direction: column;
@@ -276,6 +287,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
     const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('');
 
     useEffect(() =>
     {
@@ -305,6 +317,15 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
         const file = e.target.files[0];
         if (file)
         {
+            // 10MB Limit Validation
+            const maxSize = 10 * 1024 * 1024;
+            if (file.size > maxSize)
+            {
+                setError('File size exceeds 10MB. Please choose a smaller image.');
+                return;
+            }
+
+            setError('');
             setSelectedFile(file);
             setPreviewUrl(URL.createObjectURL(file));
         }
@@ -367,6 +388,8 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
                         </HintText>
                     </AvatarSection>
 
+                    {error && <ErrorText>{error}</ErrorText>}
+
                     <FormGroup>
                         <Label>Display Name</Label>
                         <InputField 
@@ -393,7 +416,10 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
                     <CancelButton onClick={onClose} disabled={isLoading}>
                         Cancel
                     </CancelButton>
-                    <SaveButton onClick={handleSubmit} disabled={isLoading}>
+                    <SaveButton 
+                        onClick={handleSubmit} 
+                        disabled={isLoading || !!error}
+                    >
                         {saveButtonText}
                     </SaveButton>
                 </Footer>

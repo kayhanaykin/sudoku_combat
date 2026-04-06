@@ -40,6 +40,9 @@ export const updateUserProfile = async (formData) => {
 	});
 
 	if (!response.ok) {
+		if (response.status === 413) {
+			throw new Error('File is too large. Maximum size allowed is 10MB.');
+		}
 		const errorText = await response.text();
 		try {
 			const jsonError = JSON.parse(errorText);
