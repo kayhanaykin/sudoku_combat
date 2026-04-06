@@ -14,6 +14,7 @@ import GameOverOverlay from '../components/organisms/GameOverOverlay';
 import { getUserById } from '../services/userService';
 import ExitConfirmModal from '../components/molecules/ExitConfirmModal';
 import useGameExit from '../hooks/useGameExit';
+import Footer from '../components/atoms/Footer';
 
 // STYLED COMPONENTS
 const GameContainer = styled.div`
@@ -22,31 +23,136 @@ const GameContainer = styled.div`
     align-items: center;
     justify-content: flex-start;
     width: 100vw;
-    height: 100vh;
-    padding-top: 5vmin;
-    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding-top: 40px;
+    background-color: #f9fafb;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
     box-sizing: border-box;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const GameMainArea = styled.div`
     display: flex;
-    align-items: flex-start; 
     justify-content: center;
-    gap: 2vmin;
+    align-items: flex-start; 
+    gap: 32px;
     width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
 
-    @media (max-width: 768px)
+    @media (max-width: 950px)
     {
         flex-direction: column; 
-        gap: 1.5vmin;
         align-items: center;
+        gap: 24px;
+    }
+`;
+
+const SideColumn = styled.div`
+    flex: 0 0 180px; 
+    width: 180px;
+    min-width: 180px;
+    max-width: 180px;
+    display: flex;
+    justify-content: center;
+    padding-top: 10px;
+
+    @media (max-width: 950px)
+    {
+        flex: 0 0 auto;
+        width: 100%;
+        min-width: auto;
+        max-width: 450px;
     }
 `;
 
 const BoardWrapper = styled.div`
+    flex: 0 0 auto;
     position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    width: min(90vw, 450px); 
+    aspect-ratio: 1 / 1; 
+
+    & > * {
+        width: 100% !important;
+        height: 100% !important;
+        max-width: 100% !important;
+        max-height: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
+`;
+
+const ControlsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 450px;
+    margin: 24px auto 40px auto;
+`;
+
+const ControlsArea = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+`;
+
+const ModeCardWrapper = styled.div`
+    background-color: #f3f7ff;
+    padding: 12%; 
+    border-radius: 16px;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+
+    @media (max-width: 950px)
+    {
+        aspect-ratio: auto;
+        width: 100%;
+        height: auto;
+        flex-direction: row; 
+        justify-content: flex-start; 
+        padding: 12px 20px;
+        gap: 16px;
+        border-radius: 12px;
+    }
+`;
+
+const ModeCardTitle = styled.div`
+    font-weight: bold;
+    font-size: 1.15rem;
+    color: #111827;
+
+    @media (max-width: 950px)
+    {
+        font-size: 1.1rem;
+    }
+`;
+
+const ModeText = styled.div`
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #6b7280;
+
+    @media (max-width: 950px)
+    {
+        font-size: 0.85rem;
+    }
 `;
 
 const CenterToast = styled.div`
@@ -56,9 +162,9 @@ const CenterToast = styled.div`
     transform: translate(-50%, -50%);
     background-color: rgba(231, 76, 60, 0.95);
     color: white;
-    padding: 15px 35px;
+    padding: 16px 32px;
     border-radius: 12px;
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     font-weight: bold;
     z-index: 9999;
     transition: all 0.3s ease-in-out;
@@ -66,72 +172,8 @@ const CenterToast = styled.div`
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     text-align: center;
 
-    opacity: ${props => 
-    {
-        if (props.$isVisible)
-            return '1';
-            
-        return '0';
-    }};
-
-    visibility: ${props => 
-    {
-        if (props.$isVisible)
-            return 'visible';
-            
-        return 'hidden';
-    }};
-`;
-
-const ControlsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-`;
-
-const ControlsArea = styled.div`
-    margin-top: 1.5vmin;
-    display: flex;
-    gap: 1.5vmin;
-    justify-content: center;
-`;
-
-const ModeCardWrapper = styled.div`
-    background-color: #f3f7ff;
-    padding: 2vmin;
-    border-radius: 1.5vmin;
-    text-align: center;
-    width: 18vmin;
-    min-height: 21vmin;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1vmin;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    opacity: 0.8;
-
-    @media (max-width: 768px)
-    {
-        width: 25vmin; 
-        min-height: auto; 
-        flex-direction: row; 
-        justify-content: space-between; 
-        padding: 1vmin 2vmin;
-    }
-`;
-
-const ModeCardTitle = styled.div`
-    font-weight: bold;
-    font-size: 2.3vmin;
-    color: #020d18;
-`;
-
-const ModeText = styled.div`
-    font-size: 1.8vmin;
-    font-weight: bold;
-    color: #9a9b9b;
+    opacity: ${props => props.$isVisible ? '1' : '0'};
+    visibility: ${props => props.$isVisible ? 'visible' : 'hidden'};
 `;
 
 // COMPONENT DEFINITION
@@ -202,36 +244,15 @@ const OfflineGame = () =>
             if (isGameOver)
                 return;
 
-            let clickedOnBoard = false;
-            if (boardRef.current)
-            {
-                if (boardRef.current.contains(event.target))
-                    clickedOnBoard = true;
-            }
+            let clickedOnBoard = boardRef.current && boardRef.current.contains(event.target);
+            let clickedOnControls = controlsRef.current && controlsRef.current.contains(event.target);
 
-            let clickedOnControls = false;
-            if (controlsRef.current)
-            {
-                if (controlsRef.current.contains(event.target))
-                    clickedOnControls = true;
-            }
-
-            if (!clickedOnBoard)
-            {
-                if (!clickedOnControls)
-                {
-                    if (setSelectedCell)
-                        setSelectedCell(null);
-                }
-            }
+            if (!clickedOnBoard && !clickedOnControls && setSelectedCell)
+                setSelectedCell(null);
         };
 
         document.addEventListener('mousedown', handleClickOutside);
-        
-        return () => 
-        {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [setSelectedCell, isGameOver]);
 
     useEffect(() => 
@@ -308,11 +329,13 @@ const OfflineGame = () =>
 
             <GameMainArea>
 
-                <PlayerCard 
-                    title={playerName} 
-                    lives={lives} 
-                    avatar={playerAvatar}
-                />
+                <SideColumn>
+                    <PlayerCard 
+                        title={playerName} 
+                        lives={lives} 
+                        avatar={playerAvatar}
+                    />
+                </SideColumn>
 
                 <BoardWrapper ref={boardRef}>
                     <SudokuBoard 
@@ -325,10 +348,12 @@ const OfflineGame = () =>
                     />
                 </BoardWrapper>
 
-                <ModeCardWrapper>
-                    <ModeCardTitle>Mode</ModeCardTitle>
-                    <ModeText>Offline</ModeText>
-                </ModeCardWrapper>
+                <SideColumn>
+                    <ModeCardWrapper>
+                        <ModeCardTitle>Mode</ModeCardTitle>
+                        <ModeText>Offline</ModeText>
+                    </ModeCardWrapper>
+                </SideColumn>
                 
             </GameMainArea>
 
@@ -337,9 +362,8 @@ const OfflineGame = () =>
                     <ActionBtn onClick={handleHint} disabled={isGameDisabled}>
                         Hint
                     </ActionBtn>
+                    <Numpad onNumberClick={handleInput} disabled={isGameDisabled} />
                 </ControlsArea>
-
-                <Numpad onNumberClick={handleInput} disabled={isGameDisabled} />
             </ControlsWrapper>
 
             <HintModal 
@@ -347,6 +371,8 @@ const OfflineGame = () =>
                 data={hintData} 
                 onApply={applyHint} 
             />
+
+            <Footer />
 
         </GameContainer>
     );

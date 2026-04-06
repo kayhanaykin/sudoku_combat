@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -44,35 +44,80 @@ const PopupContainer = styled.div`
         text-align: center;
         gap: 15px;
         border-radius: 20px;
+        padding: 16px 20px;
     }
 `;
 
 const TextContent = styled.div`
-    font-size: 1.15rem;
+    font-size: 0.95rem;
     color: #4b5563;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const PolicyLink = styled(Link)`
-    color: #15803d;
+    color: #27ae60;
     text-decoration: none;
-    font-weight: 800;
-    transition: color 0.2s;
+    font-weight: 700;
+    transition: color 0.2s ease;
 
     &:hover
     {
-        color: #166534;
+        color: #1e8449;
         text-decoration: underline;
+    }
+`;
+
+const AcceptButton = styled.button`
+    padding: 8px 16px;
+    background-color: #27ae60;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    white-space: nowrap;
+
+    &:hover
+    {
+        background-color: #1e8449;
+    }
+
+    &:active
+    {
+        transform: scale(0.95);
     }
 `;
 
 // --- COMPONENT DEFINITION ---
 
-const PolicyPopup = () => {
-    const [isVisible, setIsVisible] = useState(true);
+const PolicyPopup = () => 
+{
+    const [isVisible, setIsVisible] = useState(false);
 
-    if (!isVisible)
+    useEffect(() => 
+    {
+        // Kullanıcı daha önce onayladıysa popup'ı gösterme
+        const hasAccepted = localStorage.getItem('policy_accepted');
+        if (!hasAccepted) 
+        {
+            setIsVisible(true);
+        }
+    }, []);
+
+    const handleAccept = () => 
+    {
+        // Onaylandığını tarayıcıya kaydet ve popup'ı kapat
+        localStorage.setItem('policy_accepted', 'true');
+        setIsVisible(false);
+    };
+
+    if (!isVisible) 
+    {
         return null;
+    }
 
     return (
         <PopupContainer>
@@ -81,6 +126,10 @@ const PolicyPopup = () => {
                 <PolicyLink to="/terms-of-service">Terms</PolicyLink> and{' '}
                 <PolicyLink to="/privacy-policy">Privacy Policy</PolicyLink>.
             </TextContent>
+            
+            <AcceptButton onClick={handleAccept}>
+                I Understand
+            </AcceptButton>
         </PopupContainer>
     );
 };

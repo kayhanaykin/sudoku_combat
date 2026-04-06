@@ -1,5 +1,5 @@
 # sudo ku Privacy Policy
-  
+
 ## 1. Introduction
 When you use our website and the game services we provide, you trust us with your information.  
 We understand that this is a significant responsibility, so we work to protect your information

@@ -240,6 +240,7 @@ def signup_api(request):
     serializer = RegisterSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
+        user.backend = 'django.contrib.auth.backends.ModelBackend'
         login(request, user)
         
         response = Response({

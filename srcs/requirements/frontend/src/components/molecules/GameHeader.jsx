@@ -3,45 +3,51 @@ import styled from 'styled-components';
 
 // STYLED COMPONENTS
 const HeaderContainer = styled.div`
+    padding-top: 50px;
     display: flex;
-    gap: 1.5vmin;
-    margin-bottom: 1.5vmin;
-    width: 45vmin;
     justify-content: space-between;
-
+    gap: clamp(10px, 2vw, 16px);
+    margin-bottom: clamp(16px, 3vw, 24px);
+    
+    width: 100%;
+    max-width: 450px; 
+    
     @media (max-width: 768px)
     {
-        width: 80vmin;
+        max-width: 90vw;
     }
 `;
 
 const BaseBadge = styled.div`
-    padding: 0.8vmin 0;
-    border-radius: 0.8vmin;
-    font-size: 2vmin;
+    padding: clamp(8px, 2vw, 12px) 0;
+    border-radius: 8px;
+    
+    font-size: clamp(1rem, 4vw, 1.25rem);
     font-weight: bold;
     width: 48%;
     text-align: center;
-    box-shadow: 0 0.2vmin 0.5vmin rgba(0,0,0,0.1);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 6px;
+    
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const TimerBadge = styled(BaseBadge)`
     background-color: #ecf0f1; 
-    border: 0.2vmin solid #bdc3c7;
+    border: 2px solid #bdc3c7;
     color: #2c3e50;
 `;
 
 const DifficultyBadge = styled(BaseBadge)`
     color: #ffffff;
-    font-size: 1.8vmin;
+    font-size: clamp(0.9rem, 3.5vw, 1.15rem);
     transition: background-color 0.3s ease, border-color 0.3s ease;
     
     background-color: ${props => props.$bg};
-    border: 0.2vmin solid ${props => props.$border};
+    border: 2px solid ${props => props.$border};
 `;
 
 // COMPONENT DEFINITION

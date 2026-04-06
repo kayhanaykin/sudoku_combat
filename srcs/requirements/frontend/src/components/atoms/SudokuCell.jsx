@@ -10,11 +10,13 @@ const CellContainer = styled.div`
     justify-content: center;
     border-right: 0.1vmin solid #8c8d8f;
     border-bottom: 0.1vmin solid #8c8d8f;
-    font-size: 2.2vmin;
+    font-size: 2.8vmin;
     font-weight: bold;
     cursor: pointer;
     user-select: none;
     transition: background-color 0.1s;
+    border-right: ${props => props.$isThickRight ? '3px solid #091420' : '1px solid #ccc'};
+    border-bottom: ${props => props.$isThickBottom ? '3px solid #091420' : '1px solid #ccc'};
     
     &:nth-child(3n) 
     {
@@ -78,6 +80,11 @@ const CellContainer = styled.div`
                 
             return '#e3f2fd';
         }};
+    }
+    
+    @media (max-width: 768px)
+    {
+        font-size: 3.5vmin;
     }
 `;
 
