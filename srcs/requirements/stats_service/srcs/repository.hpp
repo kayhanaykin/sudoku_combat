@@ -45,6 +45,16 @@ namespace stats
         std::string next_reset_at;
     };
 
+    struct AchievementEntry
+    {
+        long long    id;
+        std::string  type;
+        std::string  name;
+        std::string  icon;
+        std::string  description;
+        std::string  earned_at;
+    };
+
     Bucket record_result(const std::string &username,
                          int difficulty,
                          const std::string &mode,
@@ -57,4 +67,5 @@ namespace stats
     std::vector<MatchEntry> get_match_history(const std::string &username, int limit);
     std::vector<LeaderboardEntry> get_leaderboard(std::optional<int> difficulty, int limit, bool weekly = false);
     WeeklyResetInfo get_weekly_reset_info();
+    std::vector<AchievementEntry> get_user_achievements(const std::string &username);
 }

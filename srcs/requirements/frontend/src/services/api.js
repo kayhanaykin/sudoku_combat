@@ -474,7 +474,7 @@ export const getUserAchievements = async (username) =>
 {
   try 
   {
-    const response = await fetch(`${API_BASE_URL}/api/v1/user/achievements/${username}/`, {
+    const response = await fetch(`${API_BASE_URL}/api/stats/achievements/${username}`, {
       method: 'GET',
       headers: getHeaders(),
       credentials: 'include'

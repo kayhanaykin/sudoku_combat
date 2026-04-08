@@ -1,9 +1,5 @@
 #include "repository.hpp"
 #include "achievements.hpp"
-#include <curl/curl.h>
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
 
 namespace stats
 {
@@ -31,58 +27,59 @@ namespace stats
         return lower_bound;
     }
 
-    // Helper: Send achievement unlock to User Service
-    static void unlock_achievement(const std::string &username, const std::string &achievement_type)
+    struct AchievementMeta
+    {
+        std::string name;
+        std::string icon;
+    };
+
+    static AchievementMeta get_achievement_meta(const std::string &achievement_type)
+    {
+        if (achievement_type == "first_win_online") return {"First Win", "🥇"};
+        if (achievement_type == "speedster_easy") return {"Speedster - Easy", "⚡"};
+        if (achievement_type == "speedster_medium") return {"Speedster - Medium", "⚡"};
+        if (achievement_type == "speedster_hard") return {"Speedster - Hard", "⚡"};
+        if (achievement_type == "speedster_expert") return {"Speedster - Expert", "⚡"};
+        if (achievement_type == "speedster_extreme") return {"Speedster - Extreme", "⚡"};
+        if (achievement_type == "on_fire_5x") return {"On Fire - 5x", "🔥"};
+        if (achievement_type == "on_fire_10x") return {"On Fire - 10x", "🔥"};
+        if (achievement_type == "on_fire_25x") return {"On Fire - 25x", "🔥"};
+        if (achievement_type == "graduate_offline") return {"Graduate - Offline", "🎓"};
+        if (achievement_type == "graduate_online") return {"Graduate - Online", "🎓"};
+        if (achievement_type == "star") return {"Star", "⭐"};
+        if (achievement_type == "king_easy") return {"King - Easy", "👑"};
+        if (achievement_type == "king_medium") return {"King - Medium", "👑"};
+        if (achievement_type == "king_hard") return {"King - Hard", "👑"};
+        if (achievement_type == "king_expert") return {"King - Expert", "👑"};
+        if (achievement_type == "king_extreme") return {"King - Extreme", "👑"};
+        return {achievement_type, "🏆"};
+    }
+
+    static bool unlock_achievement(const std::string &username, const std::string &achievement_type)
     {
         try
         {
-            CURL *curl = curl_easy_init();
-            if (!curl) return;
+            AchievementMeta meta = get_achievement_meta(achievement_type);
+            std::string description = "Unlocked achievement: " + meta.name;
 
-            std::string url = "http://user_service:8001/api/v1/user/achievements/";
-            json payload;
-            payload["username"] = username;
-            payload["achievement_type"] = achievement_type;
+            pqxx::connection conn(get_conn_string());
+            pqxx::work tx(conn);
 
-            std::string post_data = payload.dump();
+            pqxx::result res = tx.exec_params(
+                "INSERT INTO user_achievements"
+                "  (username, achievement_type, name, icon, description)"
+                "  VALUES ($1,$2,$3,$4,$5)"
+                "  ON CONFLICT(username, achievement_type) DO NOTHING"
+                "  RETURNING id",
+                username, achievement_type, meta.name, meta.icon, description);
 
-            curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-            curl_easy_setopt(curl, CURLOPT_POSTFIELDS, post_data.c_str());
-            curl_easy_setopt(curl, CURLOPT_TIMEOUT, 5L);
-
-            struct curl_slist *headers = nullptr;
-            headers = curl_slist_append(headers, "Content-Type: application/json");
-            headers = curl_slist_append(headers, "Host: localhost");
-            curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
-
-            long http_code = 0;
-            curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, +[](void*, size_t size, size_t nmemb, void*) {
-                return size * nmemb;
-            });
-
-            CURLcode res = curl_easy_perform(curl);
-            curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
-
-            if (res != CURLE_OK)
-            {
-                std::cerr << "Achievement unlock failed: " << curl_easy_strerror(res) << std::endl;
-            }
-            else if (http_code != 201 && http_code != 200)
-            {
-                std::cerr << "Achievement unlock failed with HTTP " << http_code << " for " << username 
-                          << " - " << achievement_type << std::endl;
-            }
-            else
-            {
-                std::cout << "✓ Achievement unlocked: " << achievement_type << " for " << username << std::endl;
-            }
-
-            curl_slist_free_all(headers);
-            curl_easy_cleanup(curl);
+            tx.commit();
+            return !res.empty();
         }
         catch (const std::exception &e)
         {
             std::cerr << "Error unlocking achievement: " << e.what() << std::endl;
+            return false;
         }
     }
 
@@ -237,13 +234,13 @@ namespace stats
                 AchievementChecker checker(checker_conn);
                 auto achievements = checker.check_achievements(username, difficulty, mode, result, time_sec);
 
-                // Send each unlocked achievement to User Service
+                // Persist each unlocked achievement in stats_service DB
                 for (const auto &ach : achievements)
                 {
                     if (ach.unlocked)
                     {
-                        unlock_achievement(ach.username, ach.achievement_type);
-                        std::cout << "Achievement unlocked: " << ach.achievement_type << " for " << username << std::endl;
+                        if (unlock_achievement(ach.username, ach.achievement_type))
+                            std::cout << "Achievement unlocked: " << ach.achievement_type << " for " << username << std::endl;
                     }
                 }
             }
@@ -447,5 +444,40 @@ namespace stats
         }
 
         return info;
+    }
+
+    std::vector<AchievementEntry> get_user_achievements(const std::string &username)
+    {
+        pqxx::connection conn(get_conn_string());
+        pqxx::work tx(conn);
+
+        pqxx::result res = tx.exec_params(
+            "SELECT "
+            "  id, achievement_type, name, icon, description, "
+            "  to_char(earned_at, 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') "
+            "FROM user_achievements "
+            "WHERE username=$1 "
+            "ORDER BY earned_at DESC",
+            username
+        );
+
+        tx.commit();
+
+        std::vector<AchievementEntry> entries;
+        entries.reserve(res.size());
+
+        for (const auto &row : res)
+        {
+            AchievementEntry e;
+            e.id = row[0].as<long long>();
+            e.type = row[1].as<std::string>();
+            e.name = row[2].as<std::string>();
+            e.icon = row[3].as<std::string>();
+            e.description = row[4].as<std::string>();
+            e.earned_at = row[5].as<std::string>();
+            entries.push_back(e);
+        }
+
+        return entries;
     }
 }
