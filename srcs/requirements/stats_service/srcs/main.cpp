@@ -176,6 +176,36 @@ int main()
         return crow::response(200, out);
     });
 
+    CROW_ROUTE(app, "/api/stats/achievements/<string>")
+    ([](const std::string &username)
+    {
+        if (username.empty())
+            return stats::make_error(400, "username empty");
+
+        auto achievements = stats::get_user_achievements(username);
+
+        crow::json::wvalue out;
+        out["username"] = username;
+        out["total"] = static_cast<int>(achievements.size());
+
+        std::vector<crow::json::wvalue> arr;
+        arr.reserve(achievements.size());
+        for (const auto &a : achievements)
+        {
+            crow::json::wvalue row;
+            row["id"] = a.id;
+            row["type"] = a.type;
+            row["name"] = a.name;
+            row["icon"] = a.icon;
+            row["description"] = a.description;
+            row["earned_at"] = a.earned_at;
+            arr.push_back(std::move(row));
+        }
+
+        out["achievements"] = std::move(arr);
+        return crow::response(200, out);
+    });
+
     CROW_ROUTE(app, "/api/stats/<string>/<int>")
     ([](const std::string &username, int diff)
     {

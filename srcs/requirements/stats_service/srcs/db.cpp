@@ -98,6 +98,24 @@ namespace stats
         );
 
         tx.exec(
+            "CREATE TABLE IF NOT EXISTS user_achievements ("
+            "  id                BIGSERIAL PRIMARY KEY,"
+            "  username          TEXT NOT NULL,"
+            "  achievement_type  TEXT NOT NULL,"
+            "  name              TEXT NOT NULL,"
+            "  icon              TEXT NOT NULL,"
+            "  description       TEXT NOT NULL,"
+            "  earned_at         TIMESTAMPTZ NOT NULL DEFAULT NOW(),"
+            "  UNIQUE(username, achievement_type)"
+            ")"
+        );
+
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_ua_username_earned_at "
+            "ON user_achievements(username, earned_at DESC)"
+        );
+
+        tx.exec(
             "INSERT INTO leaderboard_reset_meta (id, period_start, next_reset_at) "
             "VALUES (1, date_trunc('week', NOW()), date_trunc('week', NOW()) + INTERVAL '7 days') "
             "ON CONFLICT (id) DO NOTHING"

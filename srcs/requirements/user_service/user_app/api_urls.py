@@ -16,8 +16,4 @@ urlpatterns = [
     path('auth/login/', api_views.FortyTwoLoginView.as_view(), name='api-fortytwo-login'),
     path('auth/callback/', api_views.FortyTwoCallbackView.as_view(), name='api-fortytwo-callback'),
     path('by-username/<str:username>/', api_views.user_by_username_api, name='user_by_username_api'),
-    
-    # Achievement endpoints
-    path('achievements/', api_views.unlock_achievement, name='unlock_achievement'),
-    path('achievements/<str:username>/', api_views.get_user_achievements, name='get_user_achievements'),
 ]
