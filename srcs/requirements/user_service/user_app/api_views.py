@@ -436,16 +436,7 @@ def user_info_api(request, user_id):
     except CustomUser.DoesNotExist:
         return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def debug_user_list_api(request):
-    """API endpoint to list all users for debug purposes. Restricted to superusers."""
-    if not request.user.is_superuser:
-        return Response({"error": "Unauthorized. Superuser access required."}, status=status.HTTP_403_FORBIDDEN)
-    
-    users = CustomUser.objects.all().order_by('-id')
-    serializer = CustomUserSerializer(users, many=True)
-    return Response(serializer.data)
+
 
 @api_view(['DELETE', 'POST'])
 @permission_classes([IsAuthenticated])

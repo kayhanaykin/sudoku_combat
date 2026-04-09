@@ -12,7 +12,6 @@ urlpatterns = [
     path('csrf/', api_views.get_csrf_token, name='get_csrf_token'),
     path('logout/', api_views.logout_api, name='api_logout'),
     path('info/<int:user_id>/', api_views.user_info_api, name='user_info_api'),
-    path('debug-users/', api_views.debug_user_list_api, name='api-debug-users'),
     path('auth/login/', api_views.FortyTwoLoginView.as_view(), name='api-fortytwo-login'),
     path('auth/callback/', api_views.FortyTwoCallbackView.as_view(), name='api-fortytwo-callback'),
     path('by-username/<str:username>/', api_views.user_by_username_api, name='user_by_username_api'),
