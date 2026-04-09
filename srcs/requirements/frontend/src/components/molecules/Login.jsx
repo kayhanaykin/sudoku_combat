@@ -298,12 +298,7 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
             const userData = await loginUser(username, password);
             login(userData);
             
-            // SUPERUSER YÖNLENDİRMESİ: Normalizasyon AuthContext'te yapıldıysa userData.user'a bakabiliriz.
-            const userObj = userData.user || userData;
-            if (userObj.is_superuser)
-            {
-                navigate('/debug-users');
-            }
+
             
             onClose();
         }
