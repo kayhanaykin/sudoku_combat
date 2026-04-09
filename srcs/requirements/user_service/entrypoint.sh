@@ -35,6 +35,9 @@ END
 echo "Applying migrations..."
 python manage.py migrate --noinput
 
+echo "Collecting static files..."
+python manage.py collectstatic --noinput
+
 # --- AUTOMATED SUPERUSER CREATION ---
 echo "Checking for superuser..."
 python manage.py shell << END

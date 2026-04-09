@@ -8,6 +8,7 @@ urlpatterns = [
     path('api/v1/user/', include('user_app.api_urls')),
 ]
 
-# Add this to serve media files in development
+# Add this to serve media and static files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
