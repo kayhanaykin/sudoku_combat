@@ -26,6 +26,7 @@ __pycache__/
 # Django specific
 db.sqlite3
 db.sqlite3-journal
+staticfiles/
 
 # Docker
 .docker-compose.un~

@@ -33,7 +33,7 @@ INSTALLED_APPS = [
     'daphne', # ASGI server (En üstte olmalı)
     'channels', # WebSockets
     'django.contrib.admin',
-    'django.contrib.auth',
+    'django.contrib.auth', # Core auth. framework
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -177,4 +177,4 @@ CSRF_TRUSTED_ORIGINS = [
 # 2. Proxy Headers
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 USE_X_FORWARDED_HOST = True
-USE_X_FORWARDED_PORT = True
+USE_X_FORWARDED_PORT = False
