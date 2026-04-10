@@ -275,7 +275,7 @@ export class AppController
 			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
-			if (room.ownerId === body.userId)
+			if (String(room.ownerId) === String(body.userId))
 			{
 				room.lastHeartbeat = new Date();
 				await this.roomRepository.save(room);

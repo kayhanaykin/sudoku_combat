@@ -12,7 +12,7 @@ export class RoomCleanupService
 		private roomRepository: Repository<Room> )
 	{}
 
-	@Interval(2000) 
+	@Interval(2000)
 	async	cleanupGhostRooms()
 	{
 		const fiveSecondsAgo = new Date(Date.now() - 5000);
