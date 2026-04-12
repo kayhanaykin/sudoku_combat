@@ -8,8 +8,8 @@ import termsContent from './docs/terms_of_services.md?raw';
 import privacyContent from './docs/privacy_policy.md?raw';
 
 import Home from './pages/Home';
-import OnlineGame from './pages/Online-Game';
-import OfflineGame from './pages/Offline-Game';
+import OnlineGame from './pages/OnlineGame';
+import OfflineGame from './pages/OfflineGame';
 import LeaderboardPage from './pages/LeaderboardPage';
 import Profile from './pages/Profile';
 import DebugUsersPage from './pages/DebugUsersPage';

@@ -20,8 +20,8 @@ const fadeIn = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
-const Overlay = styled.div`
+// SHARED STYLED COMPONENTS (also used by Signup)
+export const Overlay = styled.div`
     position: fixed;
     top: 0;
     left: 0;
@@ -36,7 +36,7 @@ const Overlay = styled.div`
     font-family: inherit;
 `;
 
-const ModalContainer = styled.div`
+export const ModalContainer = styled.div`
     background-color: #ffffff;
     padding: 2.5rem 1.8rem;
     border-radius: 16px;
@@ -48,7 +48,7 @@ const ModalContainer = styled.div`
     box-sizing: border-box;
 `;
 
-const Title = styled.h2`
+export const Title = styled.h2`
     margin-bottom: 1.5rem;
     text-align: center;
     color: #15c65c;
@@ -57,13 +57,13 @@ const Title = styled.h2`
     font-weight: 800;
 `;
 
-const Form = styled.form`
+export const Form = styled.form`
     display: flex;
     flex-direction: column;
     gap: 1rem;
 `;
 
-const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div`
     color: #b91c1c;
     text-align: center;
     font-size: 0.9rem;
@@ -75,7 +75,7 @@ const ErrorMessage = styled.div`
     font-weight: 600;
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
     padding: 14px;
     border-radius: 8px;
     border: 2px solid #d1d5db;
@@ -102,7 +102,7 @@ const Input = styled.input`
     }
 `;
 
-const SubmitButton = styled.button`
+export const SubmitButton = styled.button`
     padding: 14px;
     background-color: #15c65c;
     color: white;
@@ -150,7 +150,7 @@ const SubmitButton = styled.button`
     }
 `;
 
-const Divider = styled.div`
+export const Divider = styled.div`
     display: flex;
     align-items: center;
     text-align: center;
@@ -173,7 +173,7 @@ const Divider = styled.div`
     }
 `;
 
-const IntraButton = styled.button`
+export const IntraButton = styled.button`
     padding: 14px;
     background-color: #000000;
     color: #ffffff;
@@ -222,7 +222,7 @@ const IntraButton = styled.button`
     }
 `;
 
-const FooterContainer = styled.p`
+export const FooterContainer = styled.p`
     margin-top: 1.5rem;
     text-align: center;
     font-size: 0.95rem;
@@ -244,7 +244,7 @@ const SignupButton = styled.span`
     }
 `;
 
-const CloseButton = styled.button`
+export const CloseButton = styled.button`
     margin-top: 1rem;
     background: none;
     border: none;

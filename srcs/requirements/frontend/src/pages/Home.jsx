@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
-import Navbar from '../components/molecules/Navbar';
+import Navbar from '../components/organisms/Navbar';
 import Leaderboard from '../components/organisms/LeaderboardWidget';
 import DifficultyModal from '../components/molecules/DifficultyModal';
-import OnlineGameModal from '../components/molecules/OnlineGamePopup';
+import OnlineGameModal from '../components/organisms/OnlineGamePopup';
 import SudokuBoard from '../components/organisms/SudokuBoard';
 import Footer from '../components/atoms/Footer';
 import { useAuth } from '../context/AuthContext'; 

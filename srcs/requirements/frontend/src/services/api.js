@@ -125,27 +125,6 @@ export const registerUser = async (username, email, password) =>
   }
 };
 
-export const checkFriendStatus = async (username) => 
-{
-  const url = `${API_BASE_URL}/api/v1/user/friends/status/${username}/`;
-  try
-  {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: getHeaders(),
-      credentials: 'include'
-    });
-    if (response.ok)
-      return await response.json();
-    return { status: 'none' };
-  }
-  catch (error)
-  {
-    console.error("API Error:", error);
-    return { status: 'none' };
-  }
-};
-
 export const getFriends = async () => 
 {
   const url = `${API_BASE_URL}/api/v1/user/friends/`;
@@ -283,24 +262,6 @@ export const makeMove = async (gameId, row, col, value) =>
   return await response.json();
 };
 
-export const recordGameResult = async (userId, mode, isWin) => 
-{
-  const url = `${API_BASE_URL}/api/game/record-game`;
-  try
-  {
-    await fetch(url, {
-      method: 'POST',
-      headers: getHeaders(),
-      body: JSON.stringify({ userId, mode, result: isWin ? "win" : "lose" }),
-      credentials: 'include'
-    });
-  }
-  catch (error)
-  {
-    console.error("Score recording failed:", error);
-  }
-};
-
 export const getUserStats = async (username) => 
 {
   try
@@ -358,20 +319,6 @@ export const logoutUser = async () =>
   {
     console.error("Logout request failed:", error);
   }
-};
-
-export const createRoom = async (userId) => 
-{
-  const url = `${API_BASE_URL}/api/room/create`;
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: getHeaders(),
-    body: JSON.stringify({ userId }),
-    credentials: 'include'
-  });
-  if (!response.ok)
-    throw new Error('Failed to create room');
-  return await response.json();
 };
 
 export const joinRoom = async (roomId, userId) => 
