@@ -116,6 +116,14 @@ namespace stats
         );
 
         tx.exec(
+            "CREATE TABLE IF NOT EXISTS online_win_streaks ("
+            "  username       TEXT PRIMARY KEY,"
+            "  current_streak INT NOT NULL DEFAULT 0,"
+            "  updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()"
+            ")"
+        );
+
+        tx.exec(
             "INSERT INTO leaderboard_reset_meta (id, period_start, next_reset_at) "
             "VALUES (1, date_trunc('week', NOW()), date_trunc('week', NOW()) + INTERVAL '7 days') "
             "ON CONFLICT (id) DO NOTHING"
@@ -134,6 +142,31 @@ namespace stats
             "  AND ps.difficulty = src.difficulty "
             "  AND ps.mode = src.mode "
             "  AND (ps.best_time_seconds IS NULL OR src.min_time < ps.best_time_seconds)"
+        );
+
+        tx.exec(
+            "INSERT INTO online_win_streaks (username, current_streak, updated_at) "
+            "WITH ordered AS ("
+            "  SELECT username, result, "
+            "         ROW_NUMBER() OVER (PARTITION BY username ORDER BY played_at DESC, id DESC) AS rn "
+            "  FROM match_history "
+            "  WHERE mode='online'"
+            "), first_non_win AS ("
+            "  SELECT username, "
+            "         COALESCE(MIN(rn) FILTER (WHERE result <> 'win'), 2147483647) AS stop_rn "
+            "  FROM ordered "
+            "  GROUP BY username"
+            "), current_streaks AS ("
+            "  SELECT o.username, COUNT(*) AS streak "
+            "  FROM ordered o "
+            "  JOIN first_non_win f ON f.username = o.username "
+            "  WHERE o.result = 'win' AND o.rn < f.stop_rn "
+            "  GROUP BY o.username"
+            ")"
+            "SELECT username, streak, NOW() FROM current_streaks "
+            "ON CONFLICT (username) DO UPDATE SET "
+            "  current_streak = EXCLUDED.current_streak, "
+            "  updated_at = NOW()"
         );
 
         tx.commit();

@@ -203,13 +203,22 @@ namespace stats
         try
         {
             pqxx::work tx(conn);
+
+            pqxx::result streak_res = tx.exec_params(
+                "SELECT current_streak FROM online_win_streaks WHERE username=$1",
+                username);
+
+            if (!streak_res.empty() && !streak_res[0][0].is_null())
+            {
+                int streak = streak_res[0][0].as<int>();
+                tx.commit();
+                return streak;
+            }
             
-            // Get last 100 games, count consecutive wins from most recent
             pqxx::result res = tx.exec_params(
                 "SELECT result FROM match_history "
                 "WHERE username=$1 AND mode='online' "
-                "ORDER BY played_at DESC "
-                "LIMIT 100",
+                "ORDER BY played_at DESC, id DESC",
                 username);
             
             tx.commit();

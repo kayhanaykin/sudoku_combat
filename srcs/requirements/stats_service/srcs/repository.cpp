@@ -221,6 +221,16 @@ namespace stats
         if (mode == "online")
         {
             upsert_weekly_stats(tx, username, difficulty, mode, win_add, lose_add);
+            tx.exec_params(
+                "INSERT INTO online_win_streaks (username, current_streak) "
+                "VALUES ($1, CASE WHEN $2='win' THEN 1 ELSE 0 END) "
+                "ON CONFLICT (username) DO UPDATE SET "
+                "  current_streak = CASE "
+                "    WHEN $2='win' THEN online_win_streaks.current_streak + 1 "
+                "    ELSE 0 "
+                "  END, "
+                "  updated_at = NOW()",
+                username, result);
         }
 
         tx.commit();
@@ -475,6 +485,8 @@ namespace stats
             e.icon = row[3].as<std::string>();
             e.description = row[4].as<std::string>();
             e.earned_at = row[5].as<std::string>();
+            e.progress = 100; // Earned achievements have 100% progress
+            e.target = 100;
             entries.push_back(e);
         }
 
