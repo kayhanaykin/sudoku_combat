@@ -55,7 +55,6 @@ const Overlay = styled.div`
     align-items: center;
     z-index: 1000;
     font-family: inherit;
-    backdrop-filter: blur(2px);
 `;
 
 const Modal = styled.div`
@@ -66,7 +65,6 @@ const Modal = styled.div`
     max-width: 95vw;
     box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     position: relative;
-    animation: ${fadeIn} 0.3s ease-out;
     box-sizing: border-box;
 `;
 

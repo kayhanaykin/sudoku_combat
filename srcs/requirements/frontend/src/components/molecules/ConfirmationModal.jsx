@@ -27,7 +27,6 @@ const Overlay = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    backdrop-filter: blur(4px);
 `;
 
 const ModalContainer = styled.div`
