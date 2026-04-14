@@ -177,7 +177,8 @@ const BadgeWidget = ({ username }) => {
 
   useEffect(() => {
     const fetchAchievements = async () => {
-      if (username) {
+      if (username)
+      {
         const data = await getUserAchievements(username);
         setAchievements(data);
       }

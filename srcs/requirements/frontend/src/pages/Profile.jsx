@@ -127,13 +127,15 @@ const PageContainer = styled.div`
 `;
 
 const ErrorMessage = styled.div`
-    padding: 20px;
+    padding: 40px 20px;
+    height: 100px;
+    width: 250px;
     background-color: #fee2e2;
     color: #7f1d1d;
     border-radius: 8px;
     margin: 20px;
     text-align: center;
-    font-weight: 500;
+    font-weight: 700;
 `;
 
 const LoadingText = styled.div`
