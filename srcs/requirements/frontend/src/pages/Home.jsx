@@ -7,6 +7,9 @@ import DifficultyModal from '../components/molecules/DifficultyModal';
 import OnlineGameModal from '../components/organisms/OnlineGamePopup';
 import SudokuBoard from '../components/organisms/SudokuBoard';
 import Footer from '../components/atoms/Footer';
+import AuthRequiredModal from '../components/molecules/AuthRequiredModal';
+import Login from '../components/organisms/Login';
+import SignUp from '../components/organisms/Signup';
 import { useAuth } from '../context/AuthContext'; 
 import { startGame, createCombatRoom, joinRoom } from '../services/api';
 
@@ -195,6 +198,10 @@ const Home = () =>
     const [roomDifficulty, setRoomDifficulty] = useState("Medium");
 
     const [selectedCell, setSelectedCell] = useState(null);
+
+    const [isAuthRequiredOpen, setIsAuthRequiredOpen] = useState(false);
+    const [isLoginOpen, setIsLoginOpen] = useState(false);
+    const [isSignUpOpen, setIsSignUpOpen] = useState(false);
     
     const [boardData, setBoardData] = useState(() =>
     {
@@ -322,6 +329,12 @@ const Home = () =>
 
     const handlePlayClick = (mode) =>
     {
+        if (!user) 
+        {
+            setIsAuthRequiredOpen(true);
+            return;
+        }
+
         if (mode === 'online')
             setIsOnlineModalOpen(true);
         else
@@ -575,6 +588,25 @@ const Home = () =>
                 isOpponentJoined={isOpponentJoined}
                 onCountdownComplete={handleCountdownComplete}
                 currentUserId={currentUserId}
+            />
+
+            <AuthRequiredModal 
+                isOpen={isAuthRequiredOpen}
+                onClose={() => setIsAuthRequiredOpen(false)}
+                onOpenLogin={() => { setIsAuthRequiredOpen(false); setIsLoginOpen(true); }}
+                onOpenSignUp={() => { setIsAuthRequiredOpen(false); setIsSignUpOpen(true); }}
+            />
+
+            <Login 
+                isOpen={isLoginOpen} 
+                onClose={() => setIsLoginOpen(false)} 
+                onSwitchToSignup={() => { setIsLoginOpen(false); setIsSignUpOpen(true); }}
+            />
+            
+            <SignUp 
+                isOpen={isSignUpOpen} 
+                onClose={() => setIsSignUpOpen(false)}
+                onSwitchToLogin={() => { setIsSignUpOpen(false); setIsLoginOpen(true); }}
             />
             
         </PageContainer>
