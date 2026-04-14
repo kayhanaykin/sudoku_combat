@@ -53,6 +53,8 @@ namespace stats
         std::string  icon;
         std::string  description;
         std::string  earned_at;
+        int          progress;
+        int          target;
     };
 
     Bucket record_result(const std::string &username,
