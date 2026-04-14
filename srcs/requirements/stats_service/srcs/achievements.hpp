@@ -11,6 +11,7 @@ namespace stats
     {
         std::string achievement_type;
         bool unlocked;
+        long long user_id;
         std::string username;
     };
 
@@ -41,6 +42,7 @@ namespace stats
          * Check all achievements for a user after a game result
          */
         std::vector<AchievementCheck> check_achievements(
+            long long user_id,
             const std::string &username,
             int difficulty,
             const std::string &mode,
@@ -50,13 +52,13 @@ namespace stats
 
     private:
         // Helper functions
-        bool check_first_win_online(const std::string &username);
+        bool check_first_win_online(long long user_id);
         bool check_speedster(int difficulty, std::optional<int> time_sec);
-        bool check_graduate(const std::string &username, const std::string &mode);
-        bool check_star_leaderboard(const std::string &username);
-        bool check_king(const std::string &username, int difficulty);
+        bool check_graduate(long long user_id, const std::string &mode);
+        bool check_star_leaderboard(long long user_id);
+        bool check_king(long long user_id, int difficulty);
 
         // Utility
-        int get_current_streak(const std::string &username);
+        int get_current_streak(long long user_id);
     };
 }

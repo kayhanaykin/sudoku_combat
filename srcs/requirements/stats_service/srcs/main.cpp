@@ -89,15 +89,18 @@ int main()
         if (!body)
             return stats::make_error(400, "invalid json");
 
-        if (!body.has("username") || !body.has("difficulty")
+        if (!body.has("user_id") || !body.has("username") || !body.has("difficulty")
             || !body.has("mode") || !body.has("result"))
             return stats::make_error(400, "missing fields");
 
+        long long   user_id  = body["user_id"].i();
         std::string username = body["username"].s();
         int         diff     = body["difficulty"].i();
         std::string mode     = body["mode"].s();
         std::string result   = body["result"].s();
 
+        if (user_id <= 0)
+            return stats::make_error(400, "user_id must be > 0");
         if (username.empty())
             return stats::make_error(400, "username empty");
         if (!valid_diff(diff))
@@ -118,9 +121,10 @@ int main()
         if (body.has("opponent"))
             opponent = body["opponent"].s();
 
-        stats::Bucket b = stats::record_result(username, diff, mode, result, time_sec, opponent);
+        stats::Bucket b = stats::record_result(user_id, username, diff, mode, result, time_sec, opponent);
 
         crow::json::wvalue out;
+        out["user_id"]    = static_cast<int>(user_id);
         out["username"]   = username;
         out["difficulty"] = diff;
         out["mode"]       = mode;
@@ -191,6 +195,7 @@ int main()
         for (const auto &e : entries)
         {
             crow::json::wvalue row;
+            row["user_id"] = static_cast<int>(e.user_id);
             row["username"] = e.username;
             row["display_name"] = e.username;
             row["wins"] = e.wins;
@@ -203,6 +208,176 @@ int main()
 
         out["data"] = std::move(arr);
         return crow::response(200, out);
+    });
+
+    CROW_ROUTE(app, "/api/stats/id/<int>/history")
+    ([](int user_id)
+    {
+        if (user_id <= 0)
+            return stats::make_error(400, "user_id must be > 0");
+
+        auto entries = stats::get_match_history_by_id(user_id, 20);
+        return crow::response(200, stats::history_to_json(std::to_string(user_id), entries));
+    });
+
+    CROW_ROUTE(app, "/api/stats/achievements/id/<int>")
+    ([](int user_id)
+    {
+        if (user_id <= 0)
+            return stats::make_error(400, "user_id must be > 0");
+
+        try {
+            auto earned = stats::get_user_achievements_by_id(user_id);
+            std::map<std::string, stats::AchievementEntry> earned_map;
+            for (const auto& a : earned) {
+                earned_map.emplace(a.type, a);
+            }
+
+            pqxx::connection conn(stats::get_conn_string());
+            pqxx::work tx(conn);
+
+            crow::json::wvalue out;
+            out["user_id"] = user_id;
+            
+            std::vector<crow::json::wvalue> arr;
+            int earned_count = 0;
+
+            for (const auto& meta : ALL_ACHIEVEMENTS) {
+                int progress = 0;
+                int target = meta.target;
+
+                if (earned_map.find(meta.type) == earned_map.end()) {
+                    try {
+                        if (meta.type == "first_win_online") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT SUM(wins) FROM player_stats WHERE user_id=$1 AND mode='online'",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 1);
+                        }
+                        else if (meta.type == "speedster_easy") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(*) FROM match_history WHERE user_id=$1 AND difficulty=1 AND time_seconds < 120 AND result='win'",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 1);
+                        }
+                        else if (meta.type == "speedster_medium") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(*) FROM match_history WHERE user_id=$1 AND difficulty=2 AND time_seconds < 240 AND result='win'",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 1);
+                        }
+                        else if (meta.type == "speedster_hard") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(*) FROM match_history WHERE user_id=$1 AND difficulty=3 AND time_seconds < 360 AND result='win'",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 1);
+                        }
+                        else if (meta.type == "speedster_expert") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(*) FROM match_history WHERE user_id=$1 AND difficulty=4 AND time_seconds < 480 AND result='win'",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 1);
+                        }
+                        else if (meta.type == "speedster_extreme") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(*) FROM match_history WHERE user_id=$1 AND difficulty=5 AND time_seconds < 600 AND result='win'",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 1);
+                        }
+                        else if (meta.type == "on_fire_5x" || meta.type == "on_fire_10x" || meta.type == "on_fire_25x") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COALESCE(current_streak, 0) FROM online_win_streaks WHERE user_id=$1",
+                                user_id);
+                            int current_streak = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            if (meta.type == "on_fire_5x") progress = std::min(current_streak, 5);
+                            else if (meta.type == "on_fire_10x") progress = std::min(current_streak, 10);
+                            else if (meta.type == "on_fire_25x") progress = std::min(current_streak, 25);
+                        }
+                        else if (meta.type == "graduate_offline") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(DISTINCT difficulty) FROM player_stats WHERE user_id=$1 AND mode='offline' AND wins >= 20",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 5);
+                        }
+                        else if (meta.type == "graduate_online") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(DISTINCT difficulty) FROM player_stats WHERE user_id=$1 AND mode='online' AND wins >= 20",
+                                user_id);
+                            progress = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() : 0;
+                            progress = std::min(progress, 5);
+                        }
+                        else if (meta.type == "star") {
+                            pqxx::result res = tx.exec_params(
+                                "SELECT COUNT(*) FROM weekly_player_stats WHERE mode='online' AND wins > (SELECT COALESCE(MAX(wins),0) FROM weekly_player_stats WHERE user_id=$1 AND mode='online')",
+                                user_id);
+                            int rank = (!res.empty() && !res[0][0].is_null()) ? res[0][0].as<int>() + 1 : 1000;
+                            progress = std::max(0, 51 - rank);
+                            progress = std::min(progress, 50);
+                        }
+                    } catch (const std::exception& e) {
+                        std::cerr << "Error calculating progress for " << meta.type << ": " << e.what() << std::endl;
+                        progress = 0;
+                    }
+                }
+                
+                crow::json::wvalue row;
+                row["type"] = meta.type;
+                row["name"] = meta.name;
+                row["icon"] = meta.icon;
+                row["description"] = meta.description;
+                row["progress"] = progress;
+                row["target"] = target;
+
+                if (earned_map.find(meta.type) != earned_map.end()) {
+                    const auto& e = earned_map[meta.type];
+                    row["id"] = e.id;
+                    row["earned_at"] = e.earned_at;
+                    row["progress"] = 100;
+                    row["target"] = 100;
+                    earned_count++;
+                }
+
+                arr.push_back(std::move(row));
+            }
+
+            tx.commit();
+
+            out["total"] = static_cast<int>(ALL_ACHIEVEMENTS.size());
+            out["earned"] = earned_count;
+            out["achievements"] = std::move(arr);
+            return crow::response(200, out);
+        } catch (const std::exception& e) {
+            return stats::make_error(500, std::string("Error fetching achievements: ") + e.what());
+        }
+    });
+
+    CROW_ROUTE(app, "/api/stats/id/<int>/<int>")
+    ([](int user_id, int diff)
+    {
+        if (user_id <= 0)
+            return stats::make_error(400, "user_id must be > 0");
+        if (!valid_diff(diff))
+            return stats::make_error(400, "difficulty must be 1..5");
+
+        auto rows = stats::get_user_diff_stats_by_id(user_id, diff);
+        return crow::response(200, stats::stats_to_json(std::to_string(user_id), rows));
+    });
+
+    CROW_ROUTE(app, "/api/stats/id/<int>")
+    ([](int user_id)
+    {
+        if (user_id <= 0)
+            return stats::make_error(400, "user_id must be > 0");
+
+        auto rows = stats::get_user_stats_by_id(user_id);
+        return crow::response(200, stats::stats_to_json(std::to_string(user_id), rows));
     });
 
     CROW_ROUTE(app, "/api/stats/achievements/<string>")

@@ -262,11 +262,13 @@ export const makeMove = async (gameId, row, col, value) =>
   return await response.json();
 };
 
-export const getUserStats = async (username) => 
+export const getUserStats = async (username, userId = null) => 
 {
   try
   {
-    const url = `${API_BASE_URL}/api/stats/${username}`;
+    const url = (userId !== null && userId !== undefined)
+      ? `${API_BASE_URL}/api/stats/id/${encodeURIComponent(userId)}`
+      : `${API_BASE_URL}/api/stats/${username}`;
     const response = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),
@@ -360,11 +362,13 @@ export const deleteUserAccount = async () =>
   }
 };
 
-export const getMatchHistory = async (username) => 
+export const getMatchHistory = async (username, userId = null) => 
 {
   try
   {
-    const url = `${API_BASE_URL}/api/stats/${username}/history`;
+    const url = (userId !== null && userId !== undefined)
+      ? `${API_BASE_URL}/api/stats/id/${encodeURIComponent(userId)}/history`
+      : `${API_BASE_URL}/api/stats/${username}/history`;
     const response = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),
@@ -417,11 +421,15 @@ export const getLeaderboard = async (mode = 'Total', scope = 'alltime', limit = 
   }
 };
 
-export const getUserAchievements = async (username) => 
+export const getUserAchievements = async (username, userId = null) => 
 {
   try 
   {
-    const response = await fetch(`${API_BASE_URL}/api/stats/achievements/${username}`, {
+    const url = (userId !== null && userId !== undefined)
+      ? `${API_BASE_URL}/api/stats/achievements/id/${encodeURIComponent(userId)}`
+      : `${API_BASE_URL}/api/stats/achievements/${username}`;
+
+    const response = await fetch(url, {
       method: 'GET',
       headers: getHeaders(),
       credentials: 'include'

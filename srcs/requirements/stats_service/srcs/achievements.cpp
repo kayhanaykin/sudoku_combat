@@ -4,6 +4,7 @@
 namespace stats
 {
     std::vector<AchievementCheck> AchievementChecker::check_achievements(
+        long long user_id,
         const std::string &username,
         int difficulty,
         const std::string &mode,
@@ -19,10 +20,10 @@ namespace stats
         // 1) First Win (sadece online)
         if (mode == "online")
         {
-            bool is_first_online_win = check_first_win_online(username);
+            bool is_first_online_win = check_first_win_online(user_id);
             if (is_first_online_win)
             {
-                achievements.push_back({"first_win_online", true, username});
+                achievements.push_back({"first_win_online", true, user_id, username});
             }
         }
 
@@ -33,82 +34,82 @@ namespace stats
             if (is_speedster)
             {
                 if (difficulty == 1)
-                    achievements.push_back({"speedster_easy", true, username});
+                    achievements.push_back({"speedster_easy", true, user_id, username});
                 else if (difficulty == 2)
-                    achievements.push_back({"speedster_medium", true, username});
+                    achievements.push_back({"speedster_medium", true, user_id, username});
                 else if (difficulty == 3)
-                    achievements.push_back({"speedster_hard", true, username});
+                    achievements.push_back({"speedster_hard", true, user_id, username});
                 else if (difficulty == 4)
-                    achievements.push_back({"speedster_expert", true, username});
+                    achievements.push_back({"speedster_expert", true, user_id, username});
                 else if (difficulty == 5)
-                    achievements.push_back({"speedster_extreme", true, username});
+                    achievements.push_back({"speedster_extreme", true, user_id, username});
             }
         }
 
         // 3) On Fire serisi (sadece online)
         if (mode == "online")
         {
-            int current_streak = get_current_streak(username);
+            int current_streak = get_current_streak(user_id);
             
             if (current_streak >= ON_FIRE_25X)
-                achievements.push_back({"on_fire_25x", true, username});
+                achievements.push_back({"on_fire_25x", true, user_id, username});
             else if (current_streak >= ON_FIRE_10X)
-                achievements.push_back({"on_fire_10x", true, username});
+                achievements.push_back({"on_fire_10x", true, user_id, username});
             else if (current_streak >= ON_FIRE_5X)
-                achievements.push_back({"on_fire_5x", true, username});
+                achievements.push_back({"on_fire_5x", true, user_id, username});
         }
 
         // 4) Graduate (tüm zorluklarda 20+ win)
         if (mode == "offline")
         {
-            bool offline_graduate = check_graduate(username, "offline");
+            bool offline_graduate = check_graduate(user_id, "offline");
             if (offline_graduate)
             {
-                achievements.push_back({"graduate_offline", true, username});
+                achievements.push_back({"graduate_offline", true, user_id, username});
             }
         }
 
         if (mode == "online")
         {
-            bool online_graduate = check_graduate(username, "online");
+            bool online_graduate = check_graduate(user_id, "online");
             if (online_graduate)
             {
-                achievements.push_back({"graduate_online", true, username});
+                achievements.push_back({"graduate_online", true, user_id, username});
             }
         }
 
         // 5) Star (ilk 50'ye girdiyse)
-        bool is_star = check_star_leaderboard(username);
+        bool is_star = check_star_leaderboard(user_id);
         if (is_star)
-            achievements.push_back({"star", true, username});
+            achievements.push_back({"star", true, user_id, username});
 
         // 6) King (o zorlukta #1)
-        bool is_king = check_king(username, difficulty);
+        bool is_king = check_king(user_id, difficulty);
         if (is_king)
         {
             if (difficulty == 1)
-                achievements.push_back({"king_easy", true, username});
+                achievements.push_back({"king_easy", true, user_id, username});
             else if (difficulty == 2)
-                achievements.push_back({"king_medium", true, username});
+                achievements.push_back({"king_medium", true, user_id, username});
             else if (difficulty == 3)
-                achievements.push_back({"king_hard", true, username});
+                achievements.push_back({"king_hard", true, user_id, username});
             else if (difficulty == 4)
-                achievements.push_back({"king_expert", true, username});
+                achievements.push_back({"king_expert", true, user_id, username});
             else if (difficulty == 5)
-                achievements.push_back({"king_extreme", true, username});
+                achievements.push_back({"king_extreme", true, user_id, username});
         }
 
         return achievements;
     }
 
-    bool AchievementChecker::check_first_win_online(const std::string &username)
+    bool AchievementChecker::check_first_win_online(long long user_id)
     {
         try
         {
             pqxx::work tx(conn);
             pqxx::result res = tx.exec_params(
-                "SELECT SUM(wins) FROM player_stats WHERE username=$1 AND mode='online'",
-                username);
+                "SELECT SUM(wins) FROM player_stats WHERE user_id=$1 AND mode='online'",
+                user_id);
             tx.commit();
 
             if (!res.empty() && !res[0][0].is_null())
@@ -146,7 +147,7 @@ namespace stats
         return false;
     }
 
-    bool AchievementChecker::check_graduate(const std::string &username, const std::string &mode)
+    bool AchievementChecker::check_graduate(long long user_id, const std::string &mode)
     {
         try
         {
@@ -156,9 +157,9 @@ namespace stats
             pqxx::result res = tx.exec_params(
                 "SELECT difficulty, SUM(wins) as total_wins "
                 "FROM player_stats "
-                "WHERE username=$1 AND mode=$2 "
+                "WHERE user_id=$1 AND mode=$2 "
                 "GROUP BY difficulty",
-                username, mode);
+                user_id, mode);
             
             tx.commit();
 
@@ -198,15 +199,15 @@ namespace stats
         }
     }
 
-    int AchievementChecker::get_current_streak(const std::string &username)
+    int AchievementChecker::get_current_streak(long long user_id)
     {
         try
         {
             pqxx::work tx(conn);
 
             pqxx::result streak_res = tx.exec_params(
-                "SELECT current_streak FROM online_win_streaks WHERE username=$1",
-                username);
+                "SELECT current_streak FROM online_win_streaks WHERE user_id=$1",
+                user_id);
 
             if (!streak_res.empty() && !streak_res[0][0].is_null())
             {
@@ -217,9 +218,9 @@ namespace stats
             
             pqxx::result res = tx.exec_params(
                 "SELECT result FROM match_history "
-                "WHERE username=$1 AND mode='online' "
+                "WHERE user_id=$1 AND mode='online' "
                 "ORDER BY played_at DESC, id DESC",
-                username);
+                user_id);
             
             tx.commit();
 
@@ -242,7 +243,7 @@ namespace stats
         }
     }
 
-    bool AchievementChecker::check_star_leaderboard(const std::string &username)
+    bool AchievementChecker::check_star_leaderboard(long long user_id)
     {
         try
         {
@@ -251,11 +252,11 @@ namespace stats
             // Check if user appears in top 50 of global online leaderboard
             pqxx::result res = tx.exec_params(
                 "SELECT COUNT(*) FROM ("
-                "  SELECT username, SUM(wins) as total_wins FROM player_stats "
-                "  WHERE mode='online' GROUP BY username "
+                "  SELECT user_id, SUM(wins) as total_wins FROM player_stats "
+                "  WHERE mode='online' GROUP BY user_id "
                 "  ORDER BY total_wins DESC LIMIT 50"
-                ") AS top_50 WHERE username=$1",
-                username);
+                ") AS top_50 WHERE user_id=$1",
+                user_id);
             
             tx.commit();
 
@@ -268,7 +269,7 @@ namespace stats
         }
     }
 
-    bool AchievementChecker::check_king(const std::string &username, int difficulty)
+    bool AchievementChecker::check_king(long long user_id, int difficulty)
     {
         try
         {
@@ -276,12 +277,12 @@ namespace stats
             
             // Check if user is rank #1 in this difficulty
             pqxx::result res = tx.exec_params(
-                "SELECT username FROM ("
-                "  SELECT username, SUM(wins) as total_wins FROM player_stats "
+                "SELECT user_id FROM ("
+                "  SELECT user_id, SUM(wins) as total_wins FROM player_stats "
                 "  WHERE difficulty=$1 AND mode='online' "
-                "  GROUP BY username ORDER BY total_wins DESC LIMIT 1"
-                ") AS top_player WHERE username=$2",
-                difficulty, username);
+                "  GROUP BY user_id ORDER BY total_wins DESC LIMIT 1"
+                ") AS top_player WHERE user_id=$2",
+                difficulty, user_id);
             
             tx.commit();
 

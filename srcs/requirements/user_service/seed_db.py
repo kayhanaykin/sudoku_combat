@@ -37,9 +37,10 @@ from django.db.models import Q
 
 STATS_SERVICE_URL = "http://stats_service:8090/api/stats/report"
 
-def record_stats(username, diff, mode, result, time_sec=None, opponent=None):
+def record_stats(user_id, username, diff, mode, result, time_sec=None, opponent=None):
     """Helper to record game results in stats_service"""
     payload = {
+        "user_id": user_id,
         "username": username,
         "difficulty": diff,
         "mode": mode,
@@ -55,7 +56,7 @@ def record_stats(username, diff, mode, result, time_sec=None, opponent=None):
         if res.status_code == 200:
             print(f"  [Stats] Recorded {result} for {username} (mode: {mode}, diff: {diff})")
         else:
-            print(f"  [Stats Errror] {res.status_code}: {res.text}")
+            print(f"  [Stats Error] {res.status_code}: {res.text}")
     except Exception as e:
         print(f"  [Stats Exception] {e}")
 
@@ -69,6 +70,7 @@ def seed_data():
     CustomUser.objects.filter(is_superuser=False).delete()
     
     users = []
+    user_ids = {}
     turkish_names = ["Caner", "Melis", "Mert", "Selin", "Batuhan"]
     print("--- 5 Yeni Yerel Kullanıcı Oluşturuluyor ---")
     for i in range(1, 6):
@@ -94,6 +96,7 @@ def seed_data():
             intra_id=None
         )
         users.append(user)
+        user_ids[user.username] = user.id
         print(f"Eklendi: {u_name}")
 
     # 1. Add Friendships
@@ -116,9 +119,9 @@ def seed_data():
         print(f"Processing solo games for {u.username}...")
         # 3 Wins, 2 Losses
         for d in [1, 2, 3]: # Easy, Medium, Hard
-            record_stats(u.username, d, "offline", "win", time_sec=random.randint(120, 600))
+            record_stats(u.id, u.username, d, "offline", "win", time_sec=random.randint(120, 600))
         for d in [2, 4]: # Medium, Expert
-            record_stats(u.username, d, "offline", "lose")
+            record_stats(u.id, u.username, d, "offline", "lose")
 
     # Online Games (Combat)
     print("\nProcessing combat matches with diverse outcomes...")
@@ -148,8 +151,12 @@ def seed_data():
     ]
     
     for winner, loser, diff in matches:
-        record_stats(winner, diff, "online", "win", opponent=loser)
-        record_stats(loser, diff, "online", "lose", opponent=winner)
+        winner_id = user_ids.get(winner)
+        loser_id = user_ids.get(loser)
+        if winner_id is not None:
+            record_stats(winner_id, winner, diff, "online", "win", opponent=loser)
+        if loser_id is not None:
+            record_stats(loser_id, loser, diff, "online", "lose", opponent=winner)
 
 if __name__ == "__main__":
     seed_data()

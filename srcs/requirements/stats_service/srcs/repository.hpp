@@ -31,6 +31,7 @@ namespace stats
 
     struct LeaderboardEntry
     {
+        long long   user_id;
         std::string username;
         int         wins;
         int         losses;
@@ -57,12 +58,18 @@ namespace stats
         int          target;
     };
 
-    Bucket record_result(const std::string &username,
+    Bucket record_result(long long user_id,
+                         const std::string &username,
                          int difficulty,
                          const std::string &mode,
                          const std::string &result,
                          std::optional<int> time_sec,
                          const std::string &opponent);
+
+    std::vector<StatsRow>   get_user_stats_by_id(long long user_id);
+    std::vector<StatsRow>   get_user_diff_stats_by_id(long long user_id, int difficulty);
+    std::vector<MatchEntry> get_match_history_by_id(long long user_id, int limit);
+    std::vector<AchievementEntry> get_user_achievements_by_id(long long user_id);
 
     std::vector<StatsRow>   get_user_stats(const std::string &username);
     std::vector<StatsRow>   get_user_diff_stats(const std::string &username, int difficulty);

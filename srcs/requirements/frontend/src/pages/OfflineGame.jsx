@@ -211,6 +211,8 @@ const OfflineGame = () =>
         }
     }, [user]);
 
+    const logicUserId = user?.id ?? user?.user_id ?? null;
+
     const { 
         board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
@@ -218,7 +220,7 @@ const OfflineGame = () =>
         gameResult,
         setSelectedCell,
         setStartTime
-    } = useGameLogic('offline', null, { username: logicUsername });
+    } = useGameLogic('offline', null, { username: logicUsername, userId: logicUserId });
 
     const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
         isGameOver,
@@ -227,6 +229,7 @@ const OfflineGame = () =>
         difficulty,
         seconds,
         username: logicUsername,
+        userId: logicUserId,
         opponentUsername: 'Computer'
     });
 

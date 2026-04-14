@@ -215,48 +215,30 @@ const Profile = () =>
             {
                 try 
                 {
-                    const statsResponse = await fetch(`/api/stats/${paramUsername}`);
-                    if (statsResponse.ok) 
-                    {
-                        const statsData = await statsResponse.json();
-                        
-                        if (statsData.difficulties === null) 
-                        {
-                            setError(`User "${paramUsername}" not found`);
-                            setLoading(false);
-                            return;
-                        }
-                        
-                        let tempUserDetails = { username: paramUsername };
-                        try 
-                        {
-                            const userResponse = await fetch(`/api/v1/user/by-username/${paramUsername}/`);
-                            if (userResponse.ok) 
-                                tempUserDetails = await userResponse.json();
-                        } 
-                        catch (err) 
-                        {
-                            console.error("Could not fetch detailed user info:", err);
-                        }
-                        
-                        setUserDetails(tempUserDetails);
-                        setStats(statsData);
-                        
-                        let isCurrentUser = false;
-                        if (user)
-                        {
-                            if (user.username === paramUsername)
-                                isCurrentUser = true;
-                        }
-                        
-                        setIsOtherUser(!isCurrentUser);
-                    } 
-                    else 
+                    let tempUserDetails = null;
+                    const userResponse = await fetch(`/api/v1/user/by-username/${paramUsername}/`);
+                    if (userResponse.ok)
+                        tempUserDetails = await userResponse.json();
+
+                    if (!tempUserDetails || !tempUserDetails.id)
                     {
                         setError(`User "${paramUsername}" not found`);
                         setLoading(false);
                         return;
                     }
+
+                    const statsData = await getUserStats(tempUserDetails.username, tempUserDetails.id);
+                    setUserDetails(tempUserDetails);
+                    setStats(statsData);
+
+                    let isCurrentUser = false;
+                    if (user)
+                    {
+                        if (user.username === paramUsername)
+                            isCurrentUser = true;
+                    }
+
+                    setIsOtherUser(!isCurrentUser);
                 } 
                 catch (error) 
                 {
@@ -274,7 +256,7 @@ const Profile = () =>
                     if (details)
                     {
                         setUserDetails(details);
-                        const statsData = await getUserStats(details.username);
+                        const statsData = await getUserStats(details.username, details.id);
                         setStats(statsData);
                         setIsOtherUser(false);
                     }
