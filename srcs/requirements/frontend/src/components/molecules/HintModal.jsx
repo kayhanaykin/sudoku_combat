@@ -13,7 +13,6 @@ const Overlay = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    backdrop-filter: blur(1px);
 `;
 
 const ModalContent = styled.div`

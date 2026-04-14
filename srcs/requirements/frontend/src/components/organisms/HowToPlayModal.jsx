@@ -45,7 +45,6 @@ const ModalOverlay = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    backdrop-filter: blur(3px);
 `;
 
 const ModalContent = styled.div`
