@@ -7,6 +7,7 @@ const useGameExit = ({
     mode,
     difficulty,
     seconds,
+    userId,
     username,
     opponentUsername,
     wsRef = null,
@@ -47,6 +48,7 @@ const useGameExit = ({
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    user_id: userId || 0,
                     username: username || "Player",
                     difficulty: diffMap[difficulty] || 2,
                     mode: mode,

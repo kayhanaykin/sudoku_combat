@@ -263,6 +263,7 @@ const OnlineGame = () =>
         setStartTime,
         setDifficulty
     } = useGameLogic('online', sendOnlineMove, { 
+        userId: user?.id ?? user?.user_id ?? null,
         username: players.you.username || user?.username || '', 
         opponent: players.opponent.username || '',
         role: isOwner ? 'owner' : 'guest'
@@ -274,6 +275,7 @@ const OnlineGame = () =>
 
     const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
         isGameOver, gameResult, mode: 'online', difficulty, seconds,
+        userId: user?.id ?? user?.user_id ?? null,
         username: players.you.username || user?.username,
         opponentUsername: players.opponent.username,
         wsRef: ws, roomId, isOwner

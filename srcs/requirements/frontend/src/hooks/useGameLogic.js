@@ -397,7 +397,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     {
         if (gameResult && !hasReportedStats.current) 
         {
-            if (!playersInfo || !playersInfo.username)
+            if (!playersInfo || !playersInfo.username || !playersInfo.userId)
                 return;
 
             hasReportedStats.current = true; 
@@ -410,6 +410,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
                 const payload = 
                 {
+                    user_id: playersInfo.userId,
                     username: playersInfo.username,
                     difficulty: diffInt,
                     mode: modeStr,
@@ -440,7 +441,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
             reportStats();
         }
-    }, [gameResult, playersInfo?.username, playersInfo?.opponent, difficulty, mode, seconds]);
+    }, [gameResult, playersInfo?.username, playersInfo?.userId, playersInfo?.opponent, difficulty, mode, seconds]);
 
     return {
         board, timer: formatTime(seconds), seconds, difficulty, lives, hintsRemaining, selectedCell, isGameOver,

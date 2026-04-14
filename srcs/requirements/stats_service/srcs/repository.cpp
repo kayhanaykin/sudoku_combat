@@ -55,7 +55,9 @@ namespace stats
         return {achievement_type, "🏆"};
     }
 
-    static bool unlock_achievement(const std::string &username, const std::string &achievement_type)
+    static bool unlock_achievement(long long user_id,
+                                   const std::string &username,
+                                   const std::string &achievement_type)
     {
         try
         {
@@ -67,11 +69,11 @@ namespace stats
 
             pqxx::result res = tx.exec_params(
                 "INSERT INTO user_achievements"
-                "  (username, achievement_type, name, icon, description)"
-                "  VALUES ($1,$2,$3,$4,$5)"
-                "  ON CONFLICT(username, achievement_type) DO NOTHING"
+                "  (user_id, username, achievement_type, name, icon, description)"
+                "  VALUES ($1,$2,$3,$4,$5,$6)"
+                "  ON CONFLICT(user_id, achievement_type) DO NOTHING"
                 "  RETURNING id",
-                username, achievement_type, meta.name, meta.icon, description);
+                user_id, username, achievement_type, meta.name, meta.icon, description);
 
             tx.commit();
             return !res.empty();
@@ -121,6 +123,7 @@ namespace stats
     }
 
     static void upsert_weekly_stats(pqxx::work &tx,
+                                    long long user_id,
                                     const std::string &username,
                                     int difficulty,
                                     const std::string &mode,
@@ -129,16 +132,17 @@ namespace stats
     {
         tx.exec_params(
             "INSERT INTO weekly_player_stats"
-            "  (username, difficulty, mode, wins, losses)"
-            "  VALUES ($1,$2,$3,$4,$5)"
-            "  ON CONFLICT(username, difficulty, mode) DO UPDATE SET"
+                "  (user_id, username, difficulty, mode, wins, losses)"
+                "  VALUES ($1,$2,$3,$4,$5,$6)"
+                "  ON CONFLICT(user_id, difficulty, mode) DO UPDATE SET"
             "    wins   = weekly_player_stats.wins   + EXCLUDED.wins,"
             "    losses = weekly_player_stats.losses + EXCLUDED.losses,"
             "    updated_at = NOW()",
-            username, difficulty, mode, win_add, lose_add);
+                user_id, username, difficulty, mode, win_add, lose_add);
     }
 
-    Bucket record_result(const std::string &username,
+            Bucket record_result(long long user_id,
+                     const std::string &username,
                          int difficulty,
                          const std::string &mode,
                          const std::string &result,
@@ -160,9 +164,10 @@ namespace stats
         {
             tx.exec_params(
                 "INSERT INTO player_stats"
-                "  (username, difficulty, mode, wins, losses, best_time_seconds)"
-                "  VALUES ($1,$2,$3,$4,$5,$6)"
-                "  ON CONFLICT(username, difficulty, mode) DO UPDATE SET"
+                "  (user_id, username, difficulty, mode, wins, losses, best_time_seconds)"
+                "  VALUES ($1,$2,$3,$4,$5,$6,$7)"
+                "  ON CONFLICT(user_id, difficulty, mode) DO UPDATE SET"
+                "    username = EXCLUDED.username,"
                 "    wins   = player_stats.wins   + EXCLUDED.wins,"
                 "    losses = player_stats.losses + EXCLUDED.losses,"
                 "    best_time_seconds = CASE"
@@ -172,19 +177,20 @@ namespace stats
                 "        THEN EXCLUDED.best_time_seconds"
                 "      ELSE player_stats.best_time_seconds END,"
                 "    updated_at = NOW()",
-                username, difficulty, mode, win_add, lose_add, time_sec.value());
+                user_id, username, difficulty, mode, win_add, lose_add, time_sec.value());
         }
         else
         {
             tx.exec_params(
                 "INSERT INTO player_stats"
-                "  (username, difficulty, mode, wins, losses)"
-                "  VALUES ($1,$2,$3,$4,$5)"
-                "  ON CONFLICT(username, difficulty, mode) DO UPDATE SET"
+                "  (user_id, username, difficulty, mode, wins, losses)"
+                "  VALUES ($1,$2,$3,$4,$5,$6)"
+                "  ON CONFLICT(user_id, difficulty, mode) DO UPDATE SET"
+                "    username = EXCLUDED.username,"
                 "    wins   = player_stats.wins   + EXCLUDED.wins,"
                 "    losses = player_stats.losses + EXCLUDED.losses,"
                 "    updated_at = NOW()",
-                username, difficulty, mode, win_add, lose_add);
+                user_id, username, difficulty, mode, win_add, lose_add);
         }
 
         /* --- match_history insert --- */
@@ -192,8 +198,9 @@ namespace stats
         {
             tx.exec_params(
                 "INSERT INTO match_history"
-                "  (username, opponent, difficulty, mode, result, time_seconds)"
-                "  VALUES ($1,$2,$3,$4,$5,$6)",
+                "  (user_id, username, opponent, difficulty, mode, result, time_seconds)"
+                "  VALUES ($1,$2,$3,$4,$5,$6,$7)",
+                user_id,
                 username,
                 opponent.empty() ? std::optional<std::string>(std::nullopt)
                                  : std::optional<std::string>(opponent),
@@ -203,8 +210,9 @@ namespace stats
         {
             tx.exec_params(
                 "INSERT INTO match_history"
-                "  (username, opponent, difficulty, mode, result)"
-                "  VALUES ($1,$2,$3,$4,$5)",
+                "  (user_id, username, opponent, difficulty, mode, result)"
+                "  VALUES ($1,$2,$3,$4,$5,$6)",
+                user_id,
                 username,
                 opponent.empty() ? std::optional<std::string>(std::nullopt)
                                  : std::optional<std::string>(opponent),
@@ -215,22 +223,23 @@ namespace stats
         pqxx::result res = tx.exec_params(
             "SELECT wins, losses, best_time_seconds"
             "  FROM player_stats"
-            "  WHERE username=$1 AND difficulty=$2 AND mode=$3",
-            username, difficulty, mode);
+            "  WHERE user_id=$1 AND difficulty=$2 AND mode=$3",
+            user_id, difficulty, mode);
 
         if (mode == "online")
         {
-            upsert_weekly_stats(tx, username, difficulty, mode, win_add, lose_add);
+            upsert_weekly_stats(tx, user_id, username, difficulty, mode, win_add, lose_add);
             tx.exec_params(
-                "INSERT INTO online_win_streaks (username, current_streak) "
-                "VALUES ($1, CASE WHEN $2='win' THEN 1 ELSE 0 END) "
-                "ON CONFLICT (username) DO UPDATE SET "
+                "INSERT INTO online_win_streaks (user_id, username, current_streak) "
+                "VALUES ($1, $2, CASE WHEN $3='win' THEN 1 ELSE 0 END) "
+                "ON CONFLICT (user_id) DO UPDATE SET "
+                "  username = EXCLUDED.username, "
                 "  current_streak = CASE "
-                "    WHEN $2='win' THEN online_win_streaks.current_streak + 1 "
+                "    WHEN $3='win' THEN online_win_streaks.current_streak + 1 "
                 "    ELSE 0 "
                 "  END, "
                 "  updated_at = NOW()",
-                username, result);
+                user_id, username, result);
         }
 
         tx.commit();
@@ -242,14 +251,14 @@ namespace stats
             {
                 pqxx::connection checker_conn(get_conn_string());
                 AchievementChecker checker(checker_conn);
-                auto achievements = checker.check_achievements(username, difficulty, mode, result, time_sec);
+                auto achievements = checker.check_achievements(user_id, username, difficulty, mode, result, time_sec);
 
                 // Persist each unlocked achievement in stats_service DB
                 for (const auto &ach : achievements)
                 {
                     if (ach.unlocked)
                     {
-                        if (unlock_achievement(ach.username, ach.achievement_type))
+                        if (unlock_achievement(ach.user_id, ach.username, ach.achievement_type))
                             std::cout << "Achievement unlocked: " << ach.achievement_type << " for " << username << std::endl;
                     }
                 }
@@ -299,6 +308,88 @@ namespace stats
             rows.push_back(sr);
         }
         return rows;
+    }
+
+    static std::vector<StatsRow> run_select_by_id(const std::string &sql,
+                                                  long long user_id,
+                                                  std::optional<int> diff)
+    {
+        pqxx::connection conn(get_conn_string());
+        pqxx::work tx(conn);
+
+        pqxx::result res;
+        if (diff.has_value())
+            res = tx.exec_params(sql, user_id, diff.value());
+        else
+            res = tx.exec_params(sql, user_id);
+        tx.commit();
+
+        std::vector<StatsRow> rows;
+        for (const auto &row : res)
+        {
+            StatsRow sr;
+            sr.difficulty    = row[0].as<int>();
+            sr.mode          = row[1].as<std::string>();
+            sr.bucket.wins   = row[2].as<int>();
+            sr.bucket.losses = row[3].as<int>();
+            sr.bucket.best_time = std::nullopt;
+            if (!row[4].is_null())
+                sr.bucket.best_time = row[4].as<int>();
+            rows.push_back(sr);
+        }
+        return rows;
+    }
+
+    std::vector<StatsRow> get_user_stats_by_id(long long user_id)
+    {
+        return run_select_by_id(
+            "SELECT difficulty, mode, wins, losses, best_time_seconds"
+            "  FROM player_stats"
+            "  WHERE user_id=$1"
+            "  ORDER BY difficulty, mode",
+            user_id, std::nullopt);
+    }
+
+    std::vector<StatsRow> get_user_diff_stats_by_id(long long user_id, int difficulty)
+    {
+        return run_select_by_id(
+            "SELECT difficulty, mode, wins, losses, best_time_seconds"
+            "  FROM player_stats"
+            "  WHERE user_id=$1 AND difficulty=$2"
+            "  ORDER BY mode",
+            user_id, difficulty);
+    }
+
+    std::vector<MatchEntry> get_match_history_by_id(long long user_id, int limit)
+    {
+        pqxx::connection conn(get_conn_string());
+        pqxx::work tx(conn);
+
+        pqxx::result res = tx.exec_params(
+            "SELECT opponent, difficulty, mode, result, time_seconds,"
+            "       to_char(played_at, 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"')"
+            "  FROM match_history"
+            "  WHERE user_id=$1"
+            "  ORDER BY played_at DESC"
+            "  LIMIT $2",
+            user_id, limit);
+        tx.commit();
+
+        std::vector<MatchEntry> entries;
+        for (const auto &row : res)
+        {
+            MatchEntry me;
+            me.opponent   = row[0].is_null() ? "" : row[0].as<std::string>();
+            me.difficulty = row[1].as<int>();
+            me.mode       = row[2].as<std::string>();
+            me.result     = row[3].as<std::string>();
+            me.time_seconds = std::nullopt;
+            if (!row[4].is_null())
+                me.time_seconds = row[4].as<int>();
+            me.played_at  = row[5].as<std::string>();
+            entries.push_back(me);
+        }
+        return entries;
     }
 
     std::vector<StatsRow> get_user_stats(const std::string &username)
@@ -367,10 +458,10 @@ namespace stats
         if (difficulty.has_value())
         {
             std::string sql =
-                "SELECT username, SUM(wins) AS wins, SUM(losses) AS losses"
+                "SELECT user_id, MAX(username) AS username, SUM(wins) AS wins, SUM(losses) AS losses"
                 "  FROM " + table_name +
-                "  WHERE difficulty=$1 AND mode='online'"
-                "  GROUP BY username"
+                "  WHERE difficulty=$1 AND mode='online' AND user_id IS NOT NULL"
+                "  GROUP BY user_id"
                 "  HAVING SUM(wins + losses) > 0";
 
             res = tx.exec_params(sql, difficulty.value());
@@ -378,10 +469,10 @@ namespace stats
         else
         {
             std::string sql =
-                "SELECT username, SUM(wins) AS wins, SUM(losses) AS losses"
+                "SELECT user_id, MAX(username) AS username, SUM(wins) AS wins, SUM(losses) AS losses"
                 "  FROM " + table_name +
-                "  WHERE mode='online'"
-                "  GROUP BY username"
+                "  WHERE mode='online' AND user_id IS NOT NULL"
+                "  GROUP BY user_id"
                 "  HAVING SUM(wins + losses) > 0";
 
             res = tx.exec(sql);
@@ -394,10 +485,14 @@ namespace stats
 
         for (const auto &row : res)
         {
+            if (row[0].is_null())
+                continue;
+
             LeaderboardEntry e;
-            e.username = row[0].as<std::string>();
-            e.wins = row[1].as<int>();
-            e.losses = row[2].as<int>();
+            e.user_id = row[0].as<long long>();
+            e.username = row[1].as<std::string>();
+            e.wins = row[2].as<int>();
+            e.losses = row[3].as<int>();
             e.games = e.wins + e.losses;
 
             e.winrate = (e.games > 0)
@@ -420,7 +515,7 @@ namespace stats
                     return a.games > b.games;
                 if (a.winrate != b.winrate)
                     return a.winrate > b.winrate;
-                return a.username < b.username;
+                return a.user_id < b.user_id;
             });
 
         if (limit > 0 && static_cast<int>(entries.size()) > limit)
@@ -486,6 +581,43 @@ namespace stats
             e.description = row[4].as<std::string>();
             e.earned_at = row[5].as<std::string>();
             e.progress = 100; // Earned achievements have 100% progress
+            e.target = 100;
+            entries.push_back(e);
+        }
+
+        return entries;
+    }
+
+    std::vector<AchievementEntry> get_user_achievements_by_id(long long user_id)
+    {
+        pqxx::connection conn(get_conn_string());
+        pqxx::work tx(conn);
+
+        pqxx::result res = tx.exec_params(
+            "SELECT "
+            "  id, achievement_type, name, icon, description, "
+            "  to_char(earned_at, 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') "
+            "FROM user_achievements "
+            "WHERE user_id=$1 "
+            "ORDER BY earned_at DESC",
+            user_id
+        );
+
+        tx.commit();
+
+        std::vector<AchievementEntry> entries;
+        entries.reserve(res.size());
+
+        for (const auto &row : res)
+        {
+            AchievementEntry e;
+            e.id = row[0].as<long long>();
+            e.type = row[1].as<std::string>();
+            e.name = row[2].as<std::string>();
+            e.icon = row[3].as<std::string>();
+            e.description = row[4].as<std::string>();
+            e.earned_at = row[5].as<std::string>();
+            e.progress = 100;
             e.target = 100;
             entries.push_back(e);
         }

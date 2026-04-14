@@ -223,7 +223,7 @@ const isAchievementEarned = (achievement) => {
   return hasId || hasEarnedDate;
 };
 
-const BadgeWidget = ({ username }) => {
+const BadgeWidget = ({ username, userId = null }) => {
   const [allAchievements, setAllAchievements] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
@@ -232,7 +232,7 @@ const BadgeWidget = ({ username }) => {
     const fetchAchievements = async () => {
       if (username) {
         try {
-          const response = await getUserAchievements(username);
+          const response = await getUserAchievements(username, userId);
           const apiAchievements = Array.isArray(response) ? response : (response.achievements || []);
           const apiMap = new Map(apiAchievements.map(item => [item.type, item]));
 
@@ -278,7 +278,7 @@ const BadgeWidget = ({ username }) => {
     };
 
     fetchAchievements();
-  }, [username]);
+  }, [username, userId]);
 
   useEffect(() => {
     setCurrentPage(1);
