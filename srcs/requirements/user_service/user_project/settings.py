@@ -34,23 +34,23 @@ INSTALLED_APPS = [
     'channels', # WebSockets
     'django.contrib.admin',
     'django.contrib.auth', # Core auth. framework
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.contenttypes', #  Allows Django to track all your models
+    'django.contrib.sessions', #  cookie-based login for admin panel
+    'django.contrib.messages', # default html notifications can be deleted
+    'django.contrib.staticfiles', # CSS and JS for admin panel
     'rest_framework',
     'user_app',
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    'django.middleware.security.SecurityMiddleware', # Secures the application by adding security headers and managing cookies
     'user_app.custom_middleware.SkipHostValidationMiddleware',  # Custom middleware for internal APIs
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware', # Manages user sessions across requests
+    'django.middleware.common.CommonMiddleware', # Handles URL appends/redirects and broken links
+    'django.middleware.csrf.CsrfViewMiddleware', # Protects against Cross-Site Request Forgery
+    'django.contrib.auth.middleware.AuthenticationMiddleware', # Associates the request with a logged-in user
+    'django.contrib.messages.middleware.MessageMiddleware', # Handles temporary messages shown to the user
+    'django.middleware.clickjacking.XFrameOptionsMiddleware', # Protects against clickjacking attacks
 ]
 
 ROOT_URLCONF = 'user_project.urls'
