@@ -15,11 +15,14 @@ if not os.getenv('POSTGRES_PORT'): raise ValueError("CRITICAL ERROR: POSTGRES_PO
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Allowed Hosts: Nginx'ten gelen istekleri ve internal servis çağrılarını kabul et
 # Accept all hosts - internal docker communication and external requests
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', '*']
+
+# Hashing Algorithm: PBKDF2 + SHA256 (configured by Django's default PASSWORD_HASHERS)
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', os.getenv('DOMAIN_NAME', 'localhost')]
 
 # Use X-Forwarded-Host header for internal service-to-service communication
 USE_X_FORWARDED_HOST = True
