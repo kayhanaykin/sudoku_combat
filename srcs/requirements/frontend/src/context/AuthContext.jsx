@@ -1,17 +1,19 @@
-// AuthContext.js
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 const AuthContext = createContext(null);
 
-export const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) =>
+{
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const checkAuth = async () => {
+  useEffect(() =>
+  {
+    const checkAuth = async () =>
+    {
       try
       {
-        const response = await fetch(`/api/v1/user/me/`, {
+        const response = await fetch('/api/v1/user/me/', {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -19,9 +21,18 @@ export const AuthProvider = ({ children }) => {
 
         if (response.ok)
         {
-          const userData = await response.json();
-          setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
+          const data = await response.json();
+          
+          if (data && data.user === null)
+          {
+            setUser(null);
+            localStorage.removeItem('user');
+          }
+          else
+          {
+            setUser(data);
+            localStorage.setItem('user', JSON.stringify(data));
+          }
         }
         else
         {
@@ -33,6 +44,7 @@ export const AuthProvider = ({ children }) => {
       {
         console.error("Auth check failed:", error);
         setUser(null);
+        localStorage.removeItem('user');
       }
       finally
       {
@@ -43,16 +55,19 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = (userData) => {
+  const login = (userData) =>
+  {
     const userToStore = userData.user || userData;
     setUser(userToStore);
     localStorage.setItem('user', JSON.stringify(userToStore));
   };
 
-  const logout = async () => {
+  const logout = async () =>
+  {
     try
     {
-      const getCookie = (name) => {
+      const getCookie = (name) =>
+      {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '')
         {
@@ -72,7 +87,7 @@ export const AuthProvider = ({ children }) => {
 
       const csrfToken = getCookie('csrftoken');
 
-      await fetch(`/api/v1/user/logout/`, {
+      await fetch('/api/v1/user/logout/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

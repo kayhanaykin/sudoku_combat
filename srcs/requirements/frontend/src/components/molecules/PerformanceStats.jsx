@@ -141,7 +141,7 @@ const TotalRow = styled.tr`
 `;
 
 // COMPONENT DEFINITION
-const PerformanceStats = ({ username }) =>
+const PerformanceStats = ({ username, userId = null }) =>
 {
     const [statsData, setStatsData] = useState({});
     const [loading, setLoading] = useState(true);
@@ -167,7 +167,11 @@ const PerformanceStats = ({ username }) =>
         {
             try
             {
-                const response = await fetch(`/api/stats/${encodeURIComponent(username)}`);
+                const statsUrl = (userId !== null && userId !== undefined)
+                    ? `/api/stats/id/${encodeURIComponent(userId)}`
+                    : `/api/stats/${encodeURIComponent(username)}`;
+
+                const response = await fetch(statsUrl);
                 if (response.ok) 
                 {
                     const data = await response.json();
@@ -190,7 +194,7 @@ const PerformanceStats = ({ username }) =>
         };
 
         fetchStats();
-    }, [username]);
+    }, [username, userId]);
 
     const formatTime = (seconds) => 
     {

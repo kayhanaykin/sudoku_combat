@@ -171,11 +171,13 @@ def get_csrf_token(request):
     return JsonResponse({'csrfToken': get_token(request)})
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def current_user_api(request):
-    """Giriş yapmış kullanıcının bilgilerini döner."""
-    serializer = CustomUserSerializer(request.user)
-    return Response(serializer.data)
+    """Giriş yapmış kullanıcının bilgilerini döner, misafirse null döner."""
+    if request.user.is_authenticated:
+        serializer = CustomUserSerializer(request.user)
+        return Response(serializer.data)
+    return Response({"user": None}, status=200)
 
 # --- AUTH (GİRİŞ/KAYIT/ÇIKIŞ) ---
 

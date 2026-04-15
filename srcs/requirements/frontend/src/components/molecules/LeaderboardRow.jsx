@@ -119,6 +119,7 @@ const LeaderboardRow = ({ player, index }) =>
     const displayName = player.display_name || player.username || `User #${player.user_id}`;
     const username = player.username;
     const wins = player.wins || 0;
+    const points = (player.score !== undefined && player.score !== null) ? player.score : wins;
     const avatarSrc = player.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || displayName || 'US').slice(0, 2).toUpperCase())}`;
 
     const currentUsername = String(user?.username || '').trim().toLowerCase();
@@ -171,7 +172,7 @@ const LeaderboardRow = ({ player, index }) =>
                 </PlayerInfo>
                 
                 <PointsText>
-                    {wins} pts
+                    {points} pts
                 </PointsText>
                 
             </RowContainer>

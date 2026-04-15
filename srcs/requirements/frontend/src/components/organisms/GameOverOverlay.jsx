@@ -43,13 +43,6 @@ const OverlayWrapper = styled.div`
         return 'rgba(40, 0, 0, 0.6)';
     }};
 
-    backdrop-filter: ${props => 
-    {
-        if (props.$isWin)
-            return 'blur(5px)';
-            
-        return 'blur(5px) grayscale(0.8)';
-    }};
 `;
 
 const EffectContainer = styled.div`

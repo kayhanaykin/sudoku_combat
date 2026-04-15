@@ -187,21 +187,23 @@ const PlayerInfoPopup = ({ isOpen, onClose, username, dimBackground = true }) =>
             try 
             {
                 setLoading(true);
-                const [statsResponse, userResponse] = await Promise.all([
-                    fetch(`/api/stats/${username}`),
-                    fetch(`/api/v1/user/by-username/${username}/`)
-                ]);
-
-                if (statsResponse.ok)
-                {
-                    const data = await statsResponse.json();
-                    setPlayerInfo(data);
-                }
+                const userResponse = await fetch(`/api/v1/user/by-username/${username}/`);
 
                 if (userResponse.ok)
                 {
-                    const data = await userResponse.json();
-                    setUserInfo(data);
+                    const userData = await userResponse.json();
+                    setUserInfo(userData);
+
+                    const statsUrl = (userData?.id !== undefined && userData?.id !== null)
+                        ? `/api/stats/id/${userData.id}`
+                        : `/api/stats/${username}`;
+
+                    const statsResponse = await fetch(statsUrl);
+                    if (statsResponse.ok)
+                    {
+                        const data = await statsResponse.json();
+                        setPlayerInfo(data);
+                    }
                 }
             } 
             catch (error) 

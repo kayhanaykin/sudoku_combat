@@ -35,7 +35,6 @@ const Overlay = styled.div`
     width: 100vw;
     height: 100vh;
     background: rgba(83, 81, 81, 0.6);
-    backdrop-filter: blur(5px);
     display: flex;
     justify-content: center;
     align-items: center;

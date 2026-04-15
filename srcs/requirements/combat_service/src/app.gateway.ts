@@ -34,7 +34,7 @@ export class AppGateway implements OnGatewayDisconnect
 	}
 
 	@SubscribeMessage('join_room')
-	async	handleJoinRoom(@MessageBody() data: { roomId: string }, @ConnectedSocket() client: WebSocket) 
+	async	handleJoinRoom(@MessageBody() data: { roomId: string }, @ConnectedSocket() client: WebSocket)
 	{
 		if (!this.rooms.has(data.roomId))
 			this.rooms.set(data.roomId, new Set());
@@ -49,8 +49,8 @@ export class AppGateway implements OnGatewayDisconnect
 			{
 				const gameState = await this.fetchGameState(data.roomId);
 				gameState.startTime = startTime;
-				const payload = JSON.stringify({ 
-					event: 'sync_game', 
+				const payload = JSON.stringify({
+					event: 'sync_game',
 					gameState: gameState,
 					ownerHealth: gameState.health ? gameState.health[0] : 3,
 					guestHealth: gameState.health ? gameState.health[1] : 3
@@ -64,7 +64,7 @@ export class AppGateway implements OnGatewayDisconnect
 		}
 		else if (roomClients.size <= 2 && this.roomStartTimes.has(data.roomId))
 		{
-			 try
+			try
 			{
 				const gameState = await this.fetchGameState(data.roomId);
 				gameState.startTime = this.roomStartTimes.get(data.roomId);

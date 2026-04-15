@@ -136,7 +136,7 @@ const ModeBadge = styled.span`
 `;
 
 // COMPONENT DEFINITION
-const MatchHistoryTable = ({ username }) => 
+const MatchHistoryTable = ({ username, userId = null }) => 
 {
     const [matches, setMatches] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -177,7 +177,7 @@ const MatchHistoryTable = ({ username }) =>
             try 
             {
                 setLoading(true);
-                const data = await getMatchHistory(username);
+                const data = await getMatchHistory(username, userId);
                 
                 let fetchedMatches = [];
                 if (data && data.matches)
@@ -199,7 +199,7 @@ const MatchHistoryTable = ({ username }) =>
         };
 
         fetchMatchHistory();
-    }, [username]);
+    }, [username, userId]);
 
     if (!username) 
         return <MessageContainer>Please log in to view match history</MessageContainer>;

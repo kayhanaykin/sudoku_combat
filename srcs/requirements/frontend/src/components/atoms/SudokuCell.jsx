@@ -8,30 +8,22 @@ const CellContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border-right: 0.1vmin solid #8c8d8f;
-    border-bottom: 0.1vmin solid #8c8d8f;
-    font-size: 2.8vmin;
+    
+    box-sizing: border-box;
+
+    font-size: clamp(14px, 4.5vw, 28px);
+    
     font-weight: bold;
     cursor: pointer;
     user-select: none;
     transition: background-color 0.1s;
-    border-right: ${props => props.$isThickRight ? '3px solid #091420' : '1px solid #ccc'};
-    border-bottom: ${props => props.$isThickBottom ? '3px solid #091420' : '1px solid #ccc'};
     
-    &:nth-child(3n) 
-    {
-        border-right: 0.3vmin solid #2c3e50;
-    }
+    border-right: ${props => props.$isThickRight ? '3px solid #091420' : '1px solid #8c8d8f'};
+    border-bottom: ${props => props.$isThickBottom ? '3px solid #091420' : '1px solid #8c8d8f'};
     
     &:nth-child(9n) 
     {
         border-right: none;
-    }
-    
-    &:nth-child(n+19):nth-child(-n+27),
-    &:nth-child(n+46):nth-child(-n+54) 
-    {
-        border-bottom: 0.3vmin solid #2c3e50;
     }
     
     &:nth-child(n+73) 
@@ -84,12 +76,22 @@ const CellContainer = styled.div`
     
     @media (max-width: 768px)
     {
-        font-size: 3.5vmin;
+        font-size: clamp(16px, 6vw, 24px);
     }
 `;
 
 // COMPONENT DEFINITION
-const SudokuCell = ({ value, isFixed, isError, isSelected, isHighlighted, isSameNumber, onClick }) => 
+const SudokuCell = ({ 
+    value, 
+    isFixed, 
+    isError, 
+    isSelected, 
+    isHighlighted, 
+    isSameNumber, 
+    onClick,
+    $isThickRight,
+    $isThickBottom 
+}) => 
 {
     return (
         <CellContainer
@@ -99,6 +101,8 @@ const SudokuCell = ({ value, isFixed, isError, isSelected, isHighlighted, isSame
             $isSelected={isSelected}
             $isHighlighted={isHighlighted}
             $isSameNumber={isSameNumber}
+            $isThickRight={$isThickRight}
+            $isThickBottom={$isThickBottom}
         >
             {value !== 0 ? value : ''}
         </CellContainer>
