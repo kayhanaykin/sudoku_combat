@@ -10,14 +10,16 @@ const BoardContainer = styled.div`
     height: auto; 
     
     aspect-ratio: 1 / 1; 
-    
-    grid-template-columns: repeat(9, 1fr);
-    grid-template-rows: repeat(9, 1fr);
+
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-template-rows: repeat(9, minmax(0, 1fr));
     
     border: 4px solid #2c3e50;
     border-radius: 8px;
     background-color: #fff;
     position: relative;
+    
+    margin: 0 auto; 
         
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     box-sizing: border-box;

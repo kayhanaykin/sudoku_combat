@@ -10,7 +10,6 @@ const ExitModalOverlay = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    backdrop-filter: blur(5px);
 `;
 
 const ExitModalBox = styled.div`

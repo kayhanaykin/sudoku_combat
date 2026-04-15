@@ -43,14 +43,16 @@ const BadgeItem = styled.div`
   background: #f9fafb;
   border-radius: 12px;
   border: 1px solid #edf2f7;
-  min-height: 88px;
-  max-height: 88px;
+  min-height: 110px;
+  max-height: 110px;
   overflow: visible;
-  transition: transform 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, opacity 0.2s;
+  opacity: ${props => props.$isEarned ? 1 : 0.5};
+  filter: ${props => props.$isEarned ? 'none' : 'grayscale(50%)'};
 
   &:hover {
     transform: translateY(-2px);
-    background: #edfdf5;
+    background: ${props => props.$isEarned ? '#edfdf5' : '#f0fdf4'};
   }
 `;
 
@@ -69,6 +71,29 @@ const BadgeName = styled.span`
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 4px;
+`;
+
+const ProgressBarContainer = styled.div`
+  width: 100%;
+  height: 4px;
+  background: #e5e7eb;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 2px;
+`;
+
+const ProgressBar = styled.div`
+  height: 100%;
+  background: linear-gradient(90deg, #23da63, #14532d);
+  width: ${props => `${props.$progress || 0}%`};
+  transition: width 0.3s ease;
+`;
+
+const ProgressInfo = styled.span`
+  font-size: 0.65rem;
+  color: #666;
+  font-weight: 500;
 `;
 
 const EmptyText = styled.p`
@@ -170,29 +195,98 @@ const COMPACT_NAMES = {
   king_extreme: 'King V'
 };
 
-const BadgeWidget = ({ username }) => {
-  const [achievements, setAchievements] = useState([]);
+const ALL_ACHIEVEMENTS = [
+  { type: 'first_win_online', name: 'First Win', icon: '🥇', description: TOOLTIP_DESCRIPTIONS.first_win_online, target: 1 },
+  { type: 'speedster_easy', name: 'Speedster I', icon: '⚡', description: TOOLTIP_DESCRIPTIONS.speedster_easy, target: 1 },
+  { type: 'speedster_medium', name: 'Speedster II', icon: '⚡', description: TOOLTIP_DESCRIPTIONS.speedster_medium, target: 1 },
+  { type: 'speedster_hard', name: 'Speedster III', icon: '⚡', description: TOOLTIP_DESCRIPTIONS.speedster_hard, target: 1 },
+  { type: 'speedster_expert', name: 'Speedster IV', icon: '⚡', description: TOOLTIP_DESCRIPTIONS.speedster_expert, target: 1 },
+  { type: 'speedster_extreme', name: 'Speedster V', icon: '⚡', description: TOOLTIP_DESCRIPTIONS.speedster_extreme, target: 1 },
+  { type: 'on_fire_5x', name: 'Win Streak I', icon: '🔥', description: TOOLTIP_DESCRIPTIONS.on_fire_5x, target: 5 },
+  { type: 'on_fire_10x', name: 'Win Streak II', icon: '🔥', description: TOOLTIP_DESCRIPTIONS.on_fire_10x, target: 10 },
+  { type: 'on_fire_25x', name: 'Win Streak III', icon: '🔥', description: TOOLTIP_DESCRIPTIONS.on_fire_25x, target: 25 },
+  { type: 'graduate_offline', name: 'Graduate Offline', icon: '🎓', description: TOOLTIP_DESCRIPTIONS.graduate_offline, target: 5 },
+  { type: 'graduate_online', name: 'Graduate Online', icon: '🎓', description: TOOLTIP_DESCRIPTIONS.graduate_online, target: 5 },
+  { type: 'star', name: 'Star', icon: '⭐', description: TOOLTIP_DESCRIPTIONS.star, target: 50 },
+  { type: 'king_easy', name: 'King I', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_easy, target: 1 },
+  { type: 'king_medium', name: 'King II', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_medium, target: 1 },
+  { type: 'king_hard', name: 'King III', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_hard, target: 1 },
+  { type: 'king_expert', name: 'King IV', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_expert, target: 1 },
+  { type: 'king_extreme', name: 'King V', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_extreme, target: 1 }
+];
+
+const isAchievementEarned = (achievement) => {
+  const hasId = achievement?.id !== null && achievement?.id !== undefined;
+  const hasEarnedDate = typeof achievement?.earned_at === 'string'
+    ? achievement.earned_at.trim() !== '' && achievement.earned_at.trim().toLowerCase() !== 'null'
+    : achievement?.earned_at !== null && achievement?.earned_at !== undefined;
+  return hasId || hasEarnedDate;
+};
+
+const BadgeWidget = ({ username, userId = null }) => {
+  const [allAchievements, setAllAchievements] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
 
   useEffect(() => {
     const fetchAchievements = async () => {
       if (username) {
-        const data = await getUserAchievements(username);
-        setAchievements(data);
+        try {
+          const response = await getUserAchievements(username, userId);
+          const apiAchievements = Array.isArray(response) ? response : (response.achievements || []);
+          const apiMap = new Map(apiAchievements.map(item => [item.type, item]));
+
+          const mergedAchievements = ALL_ACHIEVEMENTS.map(base => {
+            const apiItem = apiMap.get(base.type);
+            if (!apiItem) {
+              return {
+                ...base,
+                id: null,
+                earned_at: null,
+                progress: 0,
+                target: base.target
+              };
+            }
+
+            return {
+              ...base,
+              ...apiItem,
+              target: apiItem.target ?? base.target,
+              progress: apiItem.progress ?? 0
+            };
+          });
+
+          mergedAchievements.sort((a, b) => {
+            const aEarned = isAchievementEarned(a);
+            const bEarned = isAchievementEarned(b);
+            if (aEarned !== bEarned)
+              return aEarned ? -1 : 1;
+            return (a.name || '').localeCompare(b.name || '');
+          });
+
+          setAllAchievements(mergedAchievements);
+        } catch (error) {
+          console.error('Error fetching achievements:', error);
+          setAllAchievements(ALL_ACHIEVEMENTS.map(item => ({
+            ...item,
+            id: null,
+            earned_at: null,
+            progress: 0
+          })));
+        }
       }
     };
 
     fetchAchievements();
-  }, [username]);
+  }, [username, userId]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [username, achievements.length]);
+  }, [username, allAchievements.length]);
 
-  const totalPages = Math.ceil(achievements.length / itemsPerPage);
+  const totalPages = Math.ceil(allAchievements.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentBadges = achievements.slice(startIndex, startIndex + itemsPerPage);
+  const currentBadges = allAchievements.slice(startIndex, startIndex + itemsPerPage);
 
   const handleNext = () => {
     if (currentPage < totalPages)
@@ -204,36 +298,54 @@ const BadgeWidget = ({ username }) => {
       setCurrentPage(prev => prev - 1);
   };
 
+  const calculateProgressPercentage = (achievement) => {
+    if (!achievement.target || achievement.target === 0) {
+      return 0;
+    }
+    return Math.min(100, Math.max(0, Math.round((achievement.progress / achievement.target) * 100)));
+  };
+
+  const earnedCount = allAchievements.filter(isAchievementEarned).length;
+
   return (
     <Widget>
       <BadgeTitle>
         Achievements
-        <Count>({achievements.length})</Count>
+        <Count>({earnedCount}/{allAchievements.length})</Count>
       </BadgeTitle>
 
       <BadgeGrid>
         {currentBadges.length > 0 ? (
-          currentBadges.map(badge =>
-          {
-            const earnedDate = badge.earned_at ? new Date(badge.earned_at).toLocaleDateString() : '-';
+          currentBadges.map(badge => {
+            const isEarned = isAchievementEarned(badge);
+            const earnedDate = isEarned ? new Date(badge.earned_at).toLocaleDateString() : '-';
             const unlockInfo = TOOLTIP_DESCRIPTIONS[badge.type] || badge.description || 'Achievement unlocked.';
             const compactName = COMPACT_NAMES[badge.type] || badge.name;
+            const progressPercentage = calculateProgressPercentage(badge);
 
             return (
-              <BadgeItem key={badge.id}>
+              <BadgeItem key={badge.type} $isEarned={isEarned}>
                 <BadgeIcon>{badge.icon}</BadgeIcon>
                 <BadgeName>{compactName}</BadgeName>
+                {!isEarned && (
+                  <>
+                    <ProgressBarContainer>
+                      <ProgressBar $progress={progressPercentage} />
+                    </ProgressBarContainer>
+                    <ProgressInfo>{progressPercentage}%</ProgressInfo>
+                  </>
+                )}
                 <Tooltip>
                   <strong>{compactName}</strong><br />
                   {unlockInfo}<br />
-                  Earned: {earnedDate}
+                  {isEarned ? `Earned: ${earnedDate}` : `Progress: ${badge.progress}/${badge.target}`}
                 </Tooltip>
               </BadgeItem>
             );
           })
         ) : (
           <EmptyText>
-            No achievements unlocked yet
+            No achievements available
           </EmptyText>
         )}
       </BadgeGrid>

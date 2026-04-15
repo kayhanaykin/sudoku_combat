@@ -17,10 +17,6 @@ LDFLAGS += -lcurl
 SRCS = $(filter-out srcs/repository_orm.cpp, $(wildcard srcs/*.cpp))
 OBJS = $(SRCS:.cpp=.o)
 
-# ORM version
-SRCS_ORM = srcs/main.cpp srcs/repository_orm.cpp
-OBJS_ORM = $(SRCS_ORM:.cpp=.o)
-NAME_ORM = stats_server_orm
 
 all: $(NAME)
 

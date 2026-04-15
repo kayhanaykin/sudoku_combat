@@ -580,15 +580,15 @@ const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOther
                 {friendsSection}
 
                 <BaseCard>
-                    <BadgeWidget username={currentUsername} />
+                    <BadgeWidget username={currentUsername} userId={userData?.id} />
                 </BaseCard>
                 
             </ProfileGrid>
 
-            <PerformanceStats username={currentUsername} />
+            <PerformanceStats username={currentUsername} userId={userData?.id} />
             
             <BaseCard>
-                <MatchHistoryTable username={currentUsername} />
+                <MatchHistoryTable username={currentUsername} userId={userData?.id} />
             </BaseCard>
 
             {editModalSection}
