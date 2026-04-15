@@ -13,7 +13,7 @@ import OfflineGame from './pages/OfflineGame';
 import LeaderboardPage from './pages/LeaderboardPage';
 import Profile from './pages/Profile';
 import DebugUsersPage from './pages/DebugUsersPage';
-import PolicyPopup from './components/molecules/PolicyPopup';
+
 import PolicyPage from './pages/PolicyPage';
 import NotFound from './pages/NotFound';
 
@@ -34,7 +34,7 @@ const App = () => {
                         <Route path="/privacy-policy" element={<PolicyPage content={privacyContent} />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>
-                    <PolicyPopup />
+
                 </WebSocketProvider>
             </AuthProvider>
         </Router>
