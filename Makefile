@@ -64,4 +64,11 @@ restart-%:
 	@echo "$(GREEN)Restarting service: $*...$(RESET)"
 	@$(COMPOSE) restart $*
 
+test:
+	curl -X POST https://localhost:8443/api/user/signup/ \
+     -H "Content-Type: application/json" \
+     -d '{"username": "xz", "email": "test@test.com", "password": "Password123!"}' \
+     --insecure
+
+
 .PHONY: all clean fclean re build list down migrate logs up seed
