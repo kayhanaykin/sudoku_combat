@@ -216,7 +216,7 @@ export const startGame = async (mode, difficulty) =>
     {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ difficulty: levelStr })
+        body: JSON.stringify({ difficulty: String(difficulty) })
     });
     
     if (!response.ok)
