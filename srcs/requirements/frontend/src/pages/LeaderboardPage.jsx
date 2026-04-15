@@ -25,6 +25,16 @@ const ContentContainer = styled.div`
     padding: 100px 20px 40px;
     width: 100%;
     box-sizing: border-box;
+
+    @media (max-width: 768px)
+    {
+        padding: 20px 12px 30px;
+    }
+
+    @media (max-width: 320px)
+    {
+        padding: 15px 8px 20px;
+    }
 `;
 
 const CardContainer = styled.div`
@@ -41,6 +51,12 @@ const CardContainer = styled.div`
     @media (max-width: 768px)
     {
         padding: 20px;
+    }
+
+    @media (max-width: 320px)
+    {
+        padding: 12px;
+        gap: 12px;
     }
 `;
 

@@ -105,19 +105,26 @@ const RowContainer = styled.div`
 
     @media ${device.tablet}
     {
-        grid-template-columns: 50px minmax(150px, 2fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr);
+        grid-template-columns: 50px minmax(100px, 2fr) minmax(50px, 1fr) minmax(50px, 1fr) minmax(60px, 1fr);
+        column-gap: 6px;
         padding: 10px 12px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
     }
 
     @media ${device.mobileL}
     {
-        grid-template-columns: 45px minmax(130px, 2fr) minmax(75px, 1fr) minmax(75px, 1fr); 
-        
-        .hide-on-mobile 
-        {
-            display: none;
-        }
+        grid-template-columns: 36px minmax(70px, 2fr) minmax(32px, 1fr) minmax(32px, 1fr) minmax(46px, 1fr);
+        column-gap: 3px;
+        padding: 8px 6px;
+        font-size: 0.72rem;
+    }
+
+    @media ${device.mobileS}
+    {
+        grid-template-columns: 30px minmax(60px, 2fr) minmax(28px, 1fr) minmax(28px, 1fr) minmax(42px, 1fr);
+        column-gap: 2px;
+        padding: 6px 4px;
+        font-size: 0.65rem;
     }
 `;
 
@@ -129,16 +136,22 @@ const RankIcon = styled.span`
 
     @media ${device.mobileL}
     {
-        font-size: 1.2rem;
+        font-size: 1rem;
     }
 `;
 
 const PlayerCell = styled.span`
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     overflow: hidden;
     padding-left: 10px;
+
+    @media ${device.mobileL}
+    {
+        gap: 5px;
+        padding-left: 4px;
+    }
 `;
 
 const Avatar = styled.img`
@@ -152,8 +165,8 @@ const Avatar = styled.img`
 
     @media ${device.mobileL}
     {
-        width: 30px;
-        height: 30px;
+        width: 24px;
+        height: 24px;
     }
 `;
 
@@ -270,7 +283,7 @@ const LeaderboardFullRow = ({ player, index, rank, highlight = false }) =>
                     {points}
                 </StatText>
                 
-                <HighlightedStat className="hide-on-mobile">
+                <HighlightedStat>
                     {calculateWinRate(wins, games)}
                 </HighlightedStat>
                 
