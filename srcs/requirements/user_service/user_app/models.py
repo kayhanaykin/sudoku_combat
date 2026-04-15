@@ -4,6 +4,7 @@ from django.utils import timezone
 
 class CustomUser(AbstractUser):
     # 42 Intra Data
+    email = models.EmailField(unique=True)
     intra_id = models.IntegerField(unique=True, null=True, blank=True)
     display_name = models.CharField(max_length=50, null=True, blank=True)
     avatar = models.ImageField(upload_to='avatars/', null=True, blank=True)
