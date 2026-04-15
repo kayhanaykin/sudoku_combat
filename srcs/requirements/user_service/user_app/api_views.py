@@ -8,7 +8,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from django.db.models import Q
 from django.http import JsonResponse
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import ensure_csrf_cookie, csrf_exempt
 import requests
 
 from rest_framework.views import APIView
@@ -183,12 +183,6 @@ def current_user_api(request):
         return Response(serializer.data)
     return Response({"user": None}, status=200)
 
-# --- AUTH (GİRİŞ/KAYIT/ÇIKIŞ) ---
-
-# --- EN TEPEYE EKLENECEK IMPORTLAR ---
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
-
 # --- LOGIN API GÜNCELLEMESİ ---
 @api_view(['POST', 'GET'])
 @permission_classes([AllowAny])
@@ -260,10 +254,6 @@ def signup_api(request):
         set_jwt_cookies(response, user)
         return response
     return Response(serializer.errors, status=400)
-
-from django.contrib.auth import logout
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def logout_api(request):
@@ -447,8 +437,6 @@ def edit_api(request):
         return Response({"error": ve.message_dict}, status=400)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
-
-from django.shortcuts import get_object_or_404
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

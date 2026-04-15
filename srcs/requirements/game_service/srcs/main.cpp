@@ -52,13 +52,23 @@ int main()
     ([](const crow::request& req)
     {
         auto x = crow::json::load(req.body);
-        if (!x)
-            return crow::response(400);
+        if (!x || !x.has("grid") || x["grid"].size() != 9)
+            return crow::response(400, "Invalid or missing grid");
 
         std::array<std::array<int, 9>, 9> grid;
         for (int i = 0; i < 9; ++i)
+        {
+            if (x["grid"][i].size() != 9)
+                return crow::response(400, "Grid must be 9x9");
+                
             for (int j = 0; j < 9; ++j)
-                grid[i][j] = x["grid"][i][j].i();
+            {
+                int val = x["grid"][i][j].i();
+                if (val < 0 || val > 9)
+                    return crow::response(400, "Cell values must be between 0 and 9");
+                grid[i][j] = val;
+            }
+        }
 
         crow::json::wvalue result = generate_hint_wrapper(grid);
         

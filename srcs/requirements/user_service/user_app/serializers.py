@@ -10,10 +10,6 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ['id', 'username', 'display_name', 'email', 'avatar', 'status', 'is_online', 'is_superuser']
 
-class RelationshipSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Relationship
-        fields = '__all__'
 
 # CHECK THIS SECTION CAREFULLY - It must be named exactly RegisterSerializer
 class RegisterSerializer(serializers.ModelSerializer):
