@@ -3,15 +3,18 @@ import ReactMarkdown from 'react-markdown';
 import styled from 'styled-components';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 
-const PageContainer = styled.div`
-    padding: 10px 10px 40px;
+const PageWrapper = styled.div`
+    min-height: 100vh;
+    background-color: #f0fdf4;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+`;
+
+const ContentContainer = styled.div`
     max-width: 800px;
     margin: 0 auto;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    padding: 100px 20px 40px;
     color: #4b5563;
     line-height: 1.6;
-    background-color: #f9fafb;
-    min-height: 100vh;
     display: flex;
     flex-direction: column;
 
@@ -31,7 +34,7 @@ const ContentWrapper = styled.div`
     h1, h2, h3, h4, h5, h6
     {
         color: #111827;
-        margin-top: 1.5em;
+        margin-top: 0.5em;
         margin-bottom: 0.5em;
         font-weight: bold;
     }
@@ -52,7 +55,7 @@ const ContentWrapper = styled.div`
     {
         margin-bottom: 1em;
     }
-    
+
     a
     {
         color: #27ae60;
@@ -76,12 +79,12 @@ const ContentWrapper = styled.div`
     @media (max-width: 480px)
     {
         padding: 24px;
-        
+
         h1
         {
             font-size: 1.8rem;
         }
-        
+
         h2
         {
             font-size: 1.5rem;
@@ -89,15 +92,17 @@ const ContentWrapper = styled.div`
     }
 `;
 
-const PolicyPage = ({ content }) => 
+const PolicyPage = ({ content }) =>
 {
     return (
-        <PageContainer>
+        <PageWrapper>
             <BackToHomeLink />
-            <ContentWrapper>
-                <ReactMarkdown>{content}</ReactMarkdown>
-            </ContentWrapper>
-        </PageContainer>
+            <ContentContainer>
+                <ContentWrapper>
+                    <ReactMarkdown>{content}</ReactMarkdown>
+                </ContentWrapper>
+            </ContentContainer>
+        </PageWrapper>
     );
 };
 

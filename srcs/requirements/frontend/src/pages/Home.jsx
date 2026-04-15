@@ -476,7 +476,7 @@ const Home = () =>
                 if (!currentUserId)
                     throw new Error("User not authenticated");
 
-                const data = await createCombatRoom(currentUserId, levelStr, currentUserName);
+                const data = await createCombatRoom(currentUserId, String(difficulty), currentUserName);
                 
                 let roomId = null;
                 if (data.roomId)

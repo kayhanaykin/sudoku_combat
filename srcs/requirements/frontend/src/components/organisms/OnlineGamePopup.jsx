@@ -366,6 +366,9 @@ const CountdownCircle = styled.div`
     }
 `;
 
+// HELPERS
+const DIFFICULTY_LABELS = { '1': 'Easy', '2': 'Medium', '3': 'Hard', '4': 'Expert', '5': 'Extreme' };
+
 // COMPONENT DEFINITION
 const OnlineGameModal = ({ 
     isOpen, 
@@ -578,7 +581,7 @@ const OnlineGameModal = ({
 
                     let difficultyText = 'Normal';
                     if (room.difficulty)
-                        difficultyText = room.difficulty;
+                        difficultyText = DIFFICULTY_LABELS[String(room.difficulty)] || room.difficulty;
 
                     return (
                         <RoomItem key={room.id} onClick={() => onJoin(room.id)}>
