@@ -35,6 +35,18 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(list(e.messages))
         return value
 
+    def validate_avatar(self, value):
+        if value:
+            # Check file size (10MB limit)
+            if value.size > 10 * 1024 * 1024:
+                raise serializers.ValidationError("Avatar file size must be less than 10MB.")
+            
+            # Check extension
+            ext = value.name.split('.')[-1].lower()
+            if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+                raise serializers.ValidationError("Unsupported file extension. Use jpg, jpeg, png, or gif.")
+        return value
+
     def create(self, validated_data):
         user = CustomUser.objects.create_user(
             username=validated_data['username'],

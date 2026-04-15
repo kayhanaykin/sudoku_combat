@@ -416,9 +416,22 @@ def edit_api(request):
     if data.get('remove_avatar') == 'true' or data.get('remove_avatar') is True:
         user.avatar = None
     elif 'avatar' in request.FILES:
-        user.avatar = request.FILES['avatar']
+        avatar_file = request.FILES['avatar']
+        
+        # 1. Size check (10MB)
+        if avatar_file.size > 10 * 1024 * 1024:
+            return Response({"error": "Avatar file size must be less than 10MB."}, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
+        
+        # 2. Extension check
+        ext = avatar_file.name.split('.')[-1].lower()
+        if ext not in ['jpg', 'jpeg', 'png', 'gif']:
+            return Response({"error": "Unsupported file extension. Use jpg, jpeg, png, or gif."}, status=status.HTTP_400_BAD_REQUEST)
+            
+        user.avatar = avatar_file
 
     try:
+        # 3. Pillow validation (ImageField check)
+        user.full_clean()
         user.save()
         return Response({
             "message": "Profile updated successfully",
@@ -430,6 +443,8 @@ def edit_api(request):
                 "avatar": user.avatar.url if user.avatar else None
             }
         }, status=200)
+    except ValidationError as ve:
+        return Response({"error": ve.message_dict}, status=400)
     except Exception as e:
         return Response({"error": str(e)}, status=400)
 
