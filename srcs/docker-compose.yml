@@ -12,13 +12,13 @@ services:
       - ./requirements/nginx/conf/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./web_content:/var/www/html:ro
       - user_media:/var/www/media:ro
+      - user_static:/var/www/static:ro
     restart: unless-stopped
     networks:
       - transcendence_network
     depends_on:
       - game_service
       - user_service
-      # - play_service
       - combat_service
 
   # --- C++ GAME SERVICE ---
@@ -39,6 +39,7 @@ services:
     volumes:
       - ./requirements/user_service:/app
       - user_media:/app/media
+      - user_static:/app/staticfiles
       - ${HOME}/Downloads/:/mnt/downloads:ro
     depends_on:
       user_db:
@@ -162,5 +163,6 @@ networks:
 volumes:
   user_db_data:
   user_media:
+  user_static:
   statistics_db_data:
   room_db:
