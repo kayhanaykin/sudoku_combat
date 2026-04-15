@@ -2,9 +2,11 @@ import os
 import sys
 import django
 import shutil
-import requests
 import random
+import requests
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+from django.contrib.auth.hashers import make_password
 
 # 1. Mevcut dizini ( /app ) yola ekle
 BASE_DIR = Path(__file__).resolve().parent
@@ -36,27 +38,14 @@ from user_app.models import CustomUser, Relationship
 from django.db.models import Q
 
 STATS_SERVICE_URL = "http://stats_service:8090/api/stats/report"
+session = requests.Session()
 
-def record_stats(user_id, username, diff, mode, result, time_sec=None, opponent=None):
+def record_stats(payload):
     """Helper to record game results in stats_service"""
-    payload = {
-        "user_id": user_id,
-        "username": username,
-        "difficulty": diff,
-        "mode": mode,
-        "result": result
-    }
-    if time_sec:
-        payload["time_seconds"] = time_sec
-    if opponent:
-        payload["opponent"] = opponent
-    
     try:
-        res = requests.post(STATS_SERVICE_URL, json=payload, timeout=5)
-        if res.status_code == 200:
-            print(f"  [Stats] Recorded {result} for {username} (mode: {mode}, diff: {diff})")
-        else:
-            print(f"  [Stats Error] {res.status_code}: {res.text}")
+        res = session.post(STATS_SERVICE_URL, json=payload, timeout=5)
+        if res.status_code != 200:
+             print(f"  [Stats Error] {res.status_code}: {res.text}")
     except Exception as e:
         print(f"  [Stats Exception] {e}")
 
@@ -71,92 +60,92 @@ def seed_data():
     
     users = []
     user_ids = {}
-    turkish_names = ["Caner", "Melis", "Mert", "Selin", "Batuhan"]
-    print("--- 5 Yeni Yerel Kullanıcı Oluşturuluyor ---")
-    for i in range(1, 6):
+    turkish_names = ["Caner", "Melis", "Mert", "Selin", "Batuhan", "Emre", "Ayşe", "Mehmet", "Fatma", "Ali"]
+    TOTAL_USERS = 167
+    print(f"--- {TOTAL_USERS} Yeni Kullanıcı Hazırlanıyor ---")
+    
+    users_to_create = []
+    default_password = make_password("1")
+    
+    for i in range(1, TOTAL_USERS + 1):
         u_name = f"user{i}"
-        d_name = turkish_names[i-1]
-        src_file_name = f"download ({i}).jpeg"
-        src_path = DOWNLOADS_PATH / src_file_name
-        target_file_name = f"avatar_{u_name}.jpeg"
-        target_path = MEDIA_AVATARS_PATH / target_file_name
-
+        d_name = turkish_names[(i-1) % len(turkish_names)]
+        if i > 5:
+             d_name = f"{d_name}_{i}"
+        
         db_avatar_path = None
-        if src_path.exists():
-            shutil.copy(str(src_path), str(target_path))
-            db_avatar_path = f"avatars/{target_file_name}" 
-            print(f"Resim kopyalandı: {src_file_name} -> {target_file_name}")
+        if i <= 5:
+            src_file_name = f"download ({i}).jpeg"
+            src_path = DOWNLOADS_PATH / src_file_name
+            target_file_name = f"avatar_{u_name}.jpeg"
+            target_path = MEDIA_AVATARS_PATH / target_file_name
 
-        user = CustomUser.objects.create_user(
+            if src_path.exists():
+                shutil.copy(str(src_path), str(target_path))
+                db_avatar_path = f"avatars/{target_file_name}" 
+        
+        user_obj = CustomUser(
             username=u_name,
-            password="1",
+            password=default_password,
             email=f"{u_name}@example.com",
             display_name=d_name,
             avatar=db_avatar_path, 
-            intra_id=None
+            is_active=True
         )
-        users.append(user)
-        user_ids[user.username] = user.id
-        print(f"Eklendi: {u_name}")
+        users_to_create.append(user_obj)
+
+    print(f"--- {TOTAL_USERS} Kullanıcı Veritabanına Yazılıyor (Bulk) ---")
+    CustomUser.objects.bulk_create(users_to_create, ignore_conflicts=True)
+    users = list(CustomUser.objects.filter(username__startswith="user").order_by('id'))
+    user_ids = {u.username: u.id for u in users}
 
     # 1. Add Friendships
-    print("\n--- Arkadaşlık İlişkileri Kuruluyor ---")
-    # user1 is friends with user2, user3
-    # user2 is friends with user3
-    # user4 is friends with user5
-    pairs = [(0, 1), (0, 2), (1, 2), (3, 4)]
-    for p in pairs:
-        u1, u2 = users[p[0]], users[p[1]]
-        Relationship.objects.create(from_user=u1, to_user=u2, status='friends')
-        print(f"Dostluk kuruldu: {u1.username} <-> {u2.username}")
+    print("\n--- Arkadaşlık İlişkileri Hazırlanıyor (Rastgele) ---")
+    rels_to_create = []
+    for i, u1 in enumerate(users):
+        friend_count = random.randint(2, 5)
+        possible_friends = [u for j, u in enumerate(users) if i != j]
+        friends = random.sample(possible_friends, friend_count)
+        
+        for u2 in friends:
+            first, second = (u1, u2) if u1.id < u2.id else (u2, u1)
+            rels_to_create.append(Relationship(from_user=first, to_user=second, status='friends'))
+        
+    print(f"--- {len(rels_to_create)} İlişki Yazılıyor (Bulk) ---")
+    Relationship.objects.bulk_create(rels_to_create, ignore_conflicts=True)
 
     # 2. Add Match History (Stats)
-    print("\n--- Oyun Geçmişi ve İstatistikleri İşleniyor ---")
-    
-    # Offline Games (Solo)
-    modes = ["offline"]
-    for u in users:
-        print(f"Processing solo games for {u.username}...")
-        # 3 Wins, 2 Losses
-        for d in [1, 2, 3]: # Easy, Medium, Hard
-            record_stats(u.id, u.username, d, "offline", "win", time_sec=random.randint(120, 600))
-        for d in [2, 4]: # Medium, Expert
-            record_stats(u.id, u.username, d, "offline", "lose")
+    print("\n--- Oyun Geçmişi Görevleri Hazırlanıyor ---")
+    stat_payloads = []
+    for i, u in enumerate(users):
+        # Solo Games
+        win_count = random.randint(1, 3)
+        for _ in range(win_count):
+            stat_payloads.append({
+                "user_id": u.id, "username": u.username, "difficulty": random.randint(1, 5),
+                "mode": "offline", "result": "win", "time_seconds": random.randint(90, 600)
+            })
+        stat_payloads.append({
+             "user_id": u.id, "username": u.username, "difficulty": random.randint(1, 5),
+             "mode": "offline", "result": "lose"
+        })
+        
+        # Online Games
+        opponent = users[(i + 1) % len(users)] # Modulo pattern for speed
+        diff = random.randint(1, 5)
+        
+        stat_payloads.append({
+            "user_id": u.id, "username": u.username, "difficulty": diff, "mode": "online",
+            "result": "win", "time_seconds": random.randint(90, 600), "opponent": opponent.username
+        })
+        stat_payloads.append({
+            "user_id": opponent.id, "username": opponent.username, "difficulty": diff, "mode": "online",
+            "result": "lose", "opponent": u.username
+        })
 
-    # Online Games (Combat)
-    print("\nProcessing combat matches with diverse outcomes...")
-    # List of tuples (winner, loser, difficulty)
-    matches = [
-        ("user1", "user2", 1), ("user1", "user3", 2), ("user1", "user4", 3), ("user1", "user5", 4),
-        ("user1", "user2", 5), ("user1", "user3", 1), ("user1", "user4", 2), # user1 has 7 wins
-        
-        ("user2", "user1", 3), ("user2", "user3", 4), ("user2", "user4", 5), ("user2", "user5", 1),
-        ("user2", "user1", 2), ("user2", "user3", 3), ("user2", "user4", 4), # user2 has 7 wins
-        
-        ("user3", "user1", 5), ("user3", "user2", 1), ("user3", "user4", 2), ("user3", "user5", 3),
-        ("user3", "user1", 4), ("user3", "user2", 5), ("user3", "user4", 1), # user3 has 7 wins
-        
-        ("user4", "user1", 2), ("user4", "user2", 3), ("user4", "user3", 4), ("user4", "user5", 5),
-        ("user4", "user1", 1), ("user4", "user2", 2), ("user4", "user3", 3), # user4 has 7 wins
-        
-        ("user5", "user1", 4), ("user5", "user2", 5), ("user5", "user3", 1), ("user5", "user4", 2),
-        ("user5", "user1", 3), ("user5", "user2", 4), ("user5", "user3", 5), # user5 has 7 wins
-        
-        # Adding some losses for each to balance
-        ("user2", "user1", 1), ("user3", "user1", 2), ("user4", "user1", 3), # user1 gets 3 losses
-        ("user1", "user2", 4), ("user3", "user2", 5), ("user4", "user2", 1), # user2 gets 3 losses
-        ("user1", "user3", 2), ("user2", "user3", 3), ("user5", "user3", 4), # user3 gets 3 losses
-        ("user1", "user4", 5), ("user2", "user4", 1), ("user3", "user4", 2), # user4 gets 3 losses
-        ("user1", "user5", 3), ("user2", "user5", 4), ("user3", "user5", 5)  # user5 gets 3 losses
-    ]
-    
-    for winner, loser, diff in matches:
-        winner_id = user_ids.get(winner)
-        loser_id = user_ids.get(loser)
-        if winner_id is not None:
-            record_stats(winner_id, winner, diff, "online", "win", opponent=loser)
-        if loser_id is not None:
-            record_stats(loser_id, loser, diff, "online", "lose", opponent=winner)
+    print(f"--- {len(stat_payloads)} İstatistik Raporu Gönderiliyor (Parallel - 20 Threads) ---")
+    with ThreadPoolExecutor(max_workers=20) as executor:
+        list(executor.map(record_stats, stat_payloads))
 
 if __name__ == "__main__":
     seed_data()
