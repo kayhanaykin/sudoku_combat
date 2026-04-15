@@ -9,6 +9,7 @@ const TableContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+    overflow-x: hidden;
 `;
 
 const HeaderRow = styled.div`
@@ -20,31 +21,62 @@ const HeaderRow = styled.div`
     border-bottom: 2px solid #eee;
     margin-bottom: 4px;
 
-    span 
+    span
     {
         font-weight: 900;
         color: #000;
         font-size: 0.95rem;
     }
 
+    @media ${device.tablet}
+    {
+        grid-template-columns: 50px minmax(100px, 2fr) minmax(50px, 1fr) minmax(50px, 1fr) minmax(60px, 1fr);
+        column-gap: 6px;
+        padding: 10px 12px;
+
+        span
+        {
+            font-size: 0.85rem;
+        }
+    }
+
     @media ${device.mobileL}
     {
-        grid-template-columns: 45px minmax(130px, 2fr) minmax(75px, 1fr) minmax(75px, 1fr);
+        grid-template-columns: 36px minmax(70px, 2fr) minmax(32px, 1fr) minmax(32px, 1fr) minmax(46px, 1fr);
+        column-gap: 3px;
+        padding: 8px 6px;
 
-        .hide-on-mobile
+        span
         {
-            display: none;
+            font-size: 0.72rem;
+        }
+    }
+
+    @media ${device.mobileS}
+    {
+        grid-template-columns: 30px minmax(60px, 2fr) minmax(28px, 1fr) minmax(28px, 1fr) minmax(42px, 1fr);
+        column-gap: 2px;
+        padding: 6px 4px;
+
+        span
+        {
+            font-size: 0.65rem;
         }
     }
 `;
 
 const ColRank = styled.span`
-    text-align: center; 
+    text-align: center;
 `;
 
 const ColPlayer = styled.span`
-    text-align: left; 
-    padding-left: 10px; 
+    text-align: left;
+    padding-left: 10px;
+
+    @media ${device.mobileL}
+    {
+        padding-left: 4px;
+    }
 `;
 
 const ColWins = styled.span`
@@ -57,6 +89,29 @@ const ColGames = styled.span`
 
 const ColRate = styled.span`
     text-align: center;
+
+    .full-label
+    {
+        display: inline;
+    }
+
+    .short-label
+    {
+        display: none;
+    }
+
+    @media ${device.mobileL}
+    {
+        .full-label
+        {
+            display: none;
+        }
+
+        .short-label
+        {
+            display: inline;
+        }
+    }
 `;
 
 const StateMessage = styled.div`
@@ -74,14 +129,22 @@ const EllipsisRow = styled.div`
     min-height: 56px;
     margin: 8px 0 10px 0;
 
+    @media ${device.tablet}
+    {
+        grid-template-columns: 50px minmax(100px, 2fr) minmax(50px, 1fr) minmax(50px, 1fr) minmax(60px, 1fr);
+        column-gap: 6px;
+    }
+
     @media ${device.mobileL}
     {
-        grid-template-columns: 45px minmax(130px, 2fr) minmax(75px, 1fr) minmax(75px, 1fr);
+        grid-template-columns: 36px minmax(70px, 2fr) minmax(32px, 1fr) minmax(32px, 1fr) minmax(46px, 1fr);
+        column-gap: 3px;
+    }
 
-        .hide-on-mobile
-        {
-            display: none;
-        }
+    @media ${device.mobileS}
+    {
+        grid-template-columns: 30px minmax(60px, 2fr) minmax(28px, 1fr) minmax(28px, 1fr) minmax(42px, 1fr);
+        column-gap: 2px;
     }
 `;
 
@@ -152,7 +215,7 @@ const LeaderboardTable = ({ players, loading, mode }) =>
                     <EllipsisCell>⋮</EllipsisCell>
                     <EllipsisCell>⋮</EllipsisCell>
                     <EllipsisCell>⋮</EllipsisCell>
-                    <EllipsisCell className="hide-on-mobile">⋮</EllipsisCell>
+                    <EllipsisCell>⋮</EllipsisCell>
                 </EllipsisRow>
             );
 
@@ -187,7 +250,7 @@ const LeaderboardTable = ({ players, loading, mode }) =>
                 <ColPlayer>Player</ColPlayer>
                 <ColWins>Wins</ColWins>
                 <ColGames>Pts</ColGames>
-                <ColRate className="hide-on-mobile">Win Rate</ColRate>
+                <ColRate><span className="full-label">Win Rate</span><span className="short-label">Rate</span></ColRate>
             </HeaderRow>
 
             {contentElement}

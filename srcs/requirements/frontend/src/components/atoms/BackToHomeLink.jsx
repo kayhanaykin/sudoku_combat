@@ -41,7 +41,7 @@ const StyledButton = styled.button`
         position: relative;
         top: 0;
         left: 0;
-        margin: 0 auto 20px auto;
+        margin: 15px auto 10px auto;
         width: fit-content;
         padding: 10px 18px;
     }
@@ -50,6 +50,12 @@ const StyledButton = styled.button`
     {
         padding: 8px 16px;
         gap: 6px;
+    }
+
+    @media (max-width: 320px)
+    {
+        padding: 7px 14px;
+        gap: 5px;
     }
 `;
 

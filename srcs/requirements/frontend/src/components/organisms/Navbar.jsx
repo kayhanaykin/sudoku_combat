@@ -25,10 +25,16 @@ const NavContainer = styled.nav`
     border-bottom: 2px solid #e0e0e0;
     box-sizing: border-box;
 
+    @media (max-width: 900px)
+    {
+        padding: 0 20px;
+        height: 75px;
+    }
+
     @media (max-width: 768px)
     {
-        padding: 0 15px; /* Mobilde biraz daha kenarlara yanaştık */
-        height: 80px;
+        padding: 0 12px;
+        height: 60px;
     }
 `;
 
@@ -44,9 +50,14 @@ const LogoTextBase = styled.span`
     letter-spacing: -1px;
     user-select: none;
 
+    @media (max-width: 900px)
+    {
+        font-size: 26px;
+    }
+
     @media (max-width: 768px)
     {
-        font-size: 24px; /* Mobilde logoyu biraz daha küçülttük ki butonlara yer kalsın */
+        font-size: 20px;
     }
 `;
 
@@ -64,9 +75,14 @@ const AuthButtons = styled.div`
     gap: 20px;
     align-items: center;
 
+    @media (max-width: 900px)
+    {
+        gap: 12px;
+    }
+
     @media (max-width: 768px)
     {
-        gap: 10px; /* Mobilde butonların arasını biraz daralttık */
+        gap: 8px;
     }
 `;
 
@@ -75,9 +91,14 @@ const ActionContainer = styled.div`
     gap: 20px;
     align-items: center;
 
+    @media (max-width: 900px)
+    {
+        gap: 12px;
+    }
+
     @media (max-width: 768px)
     {
-        gap: 10px;
+        gap: 8px;
     }
 `;
 
@@ -103,8 +124,8 @@ const TriggerButton = styled.button`
     border-radius: 35px;
     font-size: 20px;
     font-weight: 700;
-    background-color: #29972d; 
-    color: #ffffff; 
+    background-color: #29972d;
+    color: #ffffff;
     border: 2px solid #03830b;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     cursor: pointer;
@@ -117,11 +138,25 @@ const TriggerButton = styled.button`
         box-shadow: 0 6px 15px rgba(0,0,0,0.2);
     }
 
+    @media (max-width: 900px)
+    {
+        padding: 8px 18px;
+        gap: 10px;
+        font-size: 16px;
+    }
+
     @media (max-width: 768px)
     {
-        /* Profil butonu mobilde sadece avatarı gösterecek şekilde küçülür */
-        padding: 6px 12px;
+        padding: 7px 10px;
         gap: 0;
+        font-size: 0.95rem;
+        border-width: 1.5px;
+    }
+
+    @media (max-width: 480px)
+    {
+        padding: 5px 8px;
+        font-size: 0.9rem;
     }
 `;
 
@@ -148,21 +183,29 @@ const HowToPlayNavButton = styled.button`
         box-shadow: 0 6px 16px rgba(51, 132, 55, 0.22);
     }
 
+    @media (max-width: 900px)
+    {
+        padding: 8px 18px;
+        font-size: 16px;
+        gap: 8px;
+    }
+
     @media (max-width: 768px)
     {
-        /* ÇÖZÜM BURADA: display: none SİLİNDİ! Yerine padding kısıldı */
-        padding: 10px 14px; 
-        font-size: 1.2rem;
+        padding: 7px 10px;
+        font-size: 0.95rem;
+        gap: 0;
+        border-width: 1.5px;
+    }
+
+    @media (max-width: 480px)
+    {
+        padding: 5px 8px;
+        font-size: 0.9rem;
     }
 `;
 
 const FriendsTriggerButton = styled(TriggerButton)`
-    @media (max-width: 768px)
-    {
-        /* ÇÖZÜM BURADA: display: none SİLİNDİ! Yerine padding kısıldı */
-        padding: 10px 14px;
-        font-size: 1.2rem;
-    }
 `;
 
 const AvatarImage = styled.img`
@@ -172,10 +215,16 @@ const AvatarImage = styled.img`
     object-fit: cover;
     border: 2px solid white;
 
-    @media (max-width: 768px)
+    @media (max-width: 900px)
     {
         width: 38px;
         height: 38px;
+    }
+
+    @media (max-width: 768px)
+    {
+        width: 32px;
+        height: 32px;
     }
 `;
 
@@ -207,11 +256,10 @@ const FriendsDropdownMenu = styled(BaseDropdownMenu)`
     width: 400px;
     padding: 20px;
 
-    @media (max-width: 768px)
+    @media (max-width: 900px)
     {
-        /* Mobilde arkadaşlar paneli ekrandan taşmasın diye daraltıldı */
         width: 300px;
-        right: -60px; /* Ekranda ortalanması için sağdan kaydırıldı */
+        right: -60px;
     }
 `;
 
@@ -279,10 +327,16 @@ const BasicButton = styled.button`
     transition: all 0.2s;
     border: none;
 
+    @media (max-width: 900px)
+    {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+
     @media (max-width: 768px)
     {
-        padding: 8px 12px;
-        font-size: 0.9rem;
+        padding: 7px 12px;
+        font-size: 0.85rem;
     }
 `;
 
