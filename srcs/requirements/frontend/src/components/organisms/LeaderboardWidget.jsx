@@ -23,6 +23,11 @@ const WidgetContainer = styled.div`
         transform: translateY(-5px);
         box-shadow: 0 15px 35px rgba(0,0,0,0.1);
     }
+
+    @media (max-width: 950px)
+    {
+        max-width: 100%;
+    }
 `;
 
 const WidgetHeader = styled.div`

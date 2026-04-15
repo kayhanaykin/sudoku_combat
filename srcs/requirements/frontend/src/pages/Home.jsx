@@ -178,6 +178,12 @@ const LeaderboardWrapper = styled.div`
     flex-direction: column;
     width: 100%;
     max-width: 600px;
+
+    @media (max-width: 950px)
+    {
+        max-width: 600px;
+        align-self: center;
+    }
 `;
 
 // COMPONENT DEFINITION
