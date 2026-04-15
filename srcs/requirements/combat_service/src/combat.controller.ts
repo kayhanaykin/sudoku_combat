@@ -9,6 +9,7 @@ const ERROR =
 	ROOM_ID_REQUIRED: { success: false, message: 'roomId is required' },
 	ROOM_NOT_FOUND: { success: false, message: 'Room not found' },
 	DIFFICULTY_REQUIRED: { success: false, message: 'Difficulty is required' },
+	INVALID_DIFFICULTY: { success: false, message: 'Difficulty must be between 1 and 5' },
 	GAME_ENGINE_ERROR: {success: false, message: 'Game Engine unreachable'},
 	DB_ERROR: (error: any) => ({ success: false, message: 'Database error', error: error.message })
 };
@@ -25,6 +26,9 @@ export class CombatController
 	{
 		if (!body.difficulty)
 			return ERROR.DIFFICULTY_REQUIRED;
+		
+		if (!['1', '2', '3', '4', '5'].includes(body.difficulty))
+			return ERROR.INVALID_DIFFICULTY;
 		try
 		{
 			const response = await fetch(`http://game_service:8080/generate?difficulty=${body.difficulty}`);
@@ -61,6 +65,9 @@ export class CombatController
 			return ERROR.USER_ID_REQUIRED;
 		if (!body.difficulty)
 			return ERROR.DIFFICULTY_REQUIRED;
+
+		if (!['1', '2', '3', '4', '5'].includes(body.difficulty))
+			return ERROR.INVALID_DIFFICULTY;
 		try
 		{
 			const response = await fetch(`http://game_service:8080/generate?difficulty=${body.difficulty}`);

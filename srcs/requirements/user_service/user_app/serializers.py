@@ -23,6 +23,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = ('username', 'email', 'avatar', 'password')
 
+    def validate_username(self, value):
+        if len(value) < 3:
+            raise serializers.ValidationError("Username must be at least 3 characters long.")
+        return value
+
     def validate_password(self, value):
         try:
             validate_password(value)

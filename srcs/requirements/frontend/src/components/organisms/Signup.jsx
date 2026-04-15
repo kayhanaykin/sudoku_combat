@@ -43,6 +43,25 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
         e.preventDefault();
         setError(null);
 
+        if (username.length < 3)
+        {
+            setError("Username must be at least 3 characters long.");
+            return;
+        }
+
+        const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+        if (!alphanumericRegex.test(username))
+        {
+            setError("Username can only contain alphanumeric characters.");
+            return;
+        }
+
+        if (password.length < 8)
+        {
+            setError("Password must be at least 8 characters long.");
+            return;
+        }
+
         if (password !== confirmPassword)
         {
             setError("Passwords do not match!");

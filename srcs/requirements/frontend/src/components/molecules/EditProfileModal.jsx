@@ -332,6 +332,12 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
 
     const handleSubmit = async () =>
     {
+        if (displayName.trim().length < 3)
+        {
+            setError("Display Name must be at least 3 characters long.");
+            return;
+        }
+
         setIsLoading(true);
         const formData = new FormData();
         formData.append('display_name', displayName);

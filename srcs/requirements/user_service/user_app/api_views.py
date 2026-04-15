@@ -1,5 +1,9 @@
 from django.conf import settings
 from django.shortcuts import redirect
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+import re
+
 from django.contrib.auth import authenticate, login, logout
 from django.middleware.csrf import get_token
 from django.db.models import Q
@@ -394,10 +398,20 @@ def edit_api(request):
     data = request.data
 
     if 'display_name' in data:
-        user.display_name = data['display_name']
+        display_name = data['display_name'].strip()
+        if len(display_name) < 3 or len(display_name) > 20:
+            return Response({"error": "Display name must be between 3 and 20 characters."}, status=status.HTTP_400_BAD_REQUEST)
+        if re.search(r'<[^>]*>', display_name):
+            return Response({"error": "Display name cannot contain script or HTML tags."}, status=status.HTTP_400_BAD_REQUEST)
+        user.display_name = display_name
     
     if 'email' in data:
-        user.email = data['email']
+        email = data['email']
+        try:
+            validate_email(email)
+        except ValidationError:
+            return Response({"error": "Invalid email format."}, status=status.HTTP_400_BAD_REQUEST)
+        user.email = email
 
     if data.get('remove_avatar') == 'true' or data.get('remove_avatar') is True:
         user.avatar = None
