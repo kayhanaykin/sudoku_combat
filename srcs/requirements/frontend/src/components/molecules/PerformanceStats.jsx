@@ -10,6 +10,12 @@ const CardContainer = styled.div`
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     width: 100%;
     margin-top: 20px;
+    box-sizing: border-box;
+
+    @media (max-width: 400px)
+    {
+        padding: 15px 10px;
+    }
 `;
 
 const SectionTitle = styled.h3`
@@ -30,6 +36,13 @@ const HeaderRow = styled.div`
     justify-content: space-between;
     gap: 12px;
     margin-bottom: 12px;
+
+    @media (max-width: 400px)
+    {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
 `;
 
 const ModeSwitch = styled.div`
@@ -61,7 +74,7 @@ const Table = styled.table`
     border-collapse: collapse;
     font-family: 'Inter', sans-serif;
 
-    th, td 
+    th, td
     {
         text-align: center;
         vertical-align: middle;
@@ -69,6 +82,24 @@ const Table = styled.table`
         color: #374151;
         border-bottom: 1px solid #f3f4f6;
         font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px)
+    {
+        th, td
+        {
+            padding: 10px 6px;
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-width: 360px)
+    {
+        th, td
+        {
+            padding: 8px 4px;
+            font-size: 0.72rem;
+        }
     }
 `;
 
@@ -83,6 +114,12 @@ const DiffInner = styled.div`
     text-align: left;
     width: 95px;
     gap: 10px;
+
+    @media (max-width: 400px)
+    {
+        width: auto;
+        gap: 5px;
+    }
 `;
 
 const DiffDot = styled.span`
@@ -265,13 +302,13 @@ const PerformanceStats = ({ username, userId = null }) =>
                         $isActive={selectedMode === 'online'}
                         onClick={() => setSelectedMode('online')}
                     >
-                        Online
+                        Combat
                     </ModeButton>
                     <ModeButton
                         $isActive={selectedMode === 'offline'}
                         onClick={() => setSelectedMode('offline')}
                     >
-                        Offline
+                        Single
                     </ModeButton>
                 </ModeSwitch>
             </HeaderRow>
