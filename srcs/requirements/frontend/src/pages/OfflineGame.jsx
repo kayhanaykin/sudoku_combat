@@ -354,7 +354,7 @@ const OfflineGame = () =>
                 <SideColumn>
                     <ModeCardWrapper>
                         <ModeCardTitle>Mode</ModeCardTitle>
-                        <ModeText>Offline</ModeText>
+                        <ModeText>Single</ModeText>
                     </ModeCardWrapper>
                 </SideColumn>
                 
