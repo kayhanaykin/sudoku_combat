@@ -41,6 +41,18 @@ const InputField = styled.input`
     }
 `;
 
+const ValidationMsg = styled.div`
+    color: #991b1b;
+    background-color: #fef2f2;
+    border: 1px solid #f87171;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+    margin-top: -8px;
+`;
+
 const SubmitButton = styled(ActionBtn)`
     background: #16d65d;
     align-items: normal;
@@ -68,18 +80,35 @@ const SubmitButton = styled(ActionBtn)`
 `;
 
 // COMPONENT DEFINITION
-const AddFriendForm = ({ onAdd }) => 
+const AddFriendForm = ({ onAdd }) =>
 {
     const [username, setUsername] = useState('');
+    const [validationError, setValidationError] = useState('');
 
-    const handleSubmit = (e) => 
+    const handleSubmit = (e) =>
     {
         e.preventDefault();
-        
-        if (username.trim() === '')
+        setValidationError('');
+
+        const trimmed = username.trim();
+
+        if (trimmed === '')
             return;
-        
-        onAdd(username).then((success) => 
+
+        if (trimmed.length < 3)
+        {
+            setValidationError('Username must be at least 3 characters.');
+            return;
+        }
+
+        const alphanumericRegex = /^[a-zA-Z0-9_]+$/;
+        if (!alphanumericRegex.test(trimmed))
+        {
+            setValidationError('Username can only contain letters, numbers and underscores.');
+            return;
+        }
+
+        onAdd(trimmed).then((success) =>
         {
             if (success === true)
                 setUsername('');
@@ -87,20 +116,28 @@ const AddFriendForm = ({ onAdd }) =>
     };
 
     return (
-        <FormWrapper onSubmit={handleSubmit}>
-            
-            <InputField
-                type="text"
-                placeholder="Username..."
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            
-            <SubmitButton>
-                +
-            </SubmitButton>
+        <>
+            <FormWrapper onSubmit={handleSubmit}>
 
-        </FormWrapper>
+                <InputField
+                    type="text"
+                    placeholder="Username..."
+                    value={username}
+                    onChange={(e) =>
+                    {
+                        setUsername(e.target.value);
+                        if (validationError)
+                            setValidationError('');
+                    }}
+                />
+
+                <SubmitButton>
+                    +
+                </SubmitButton>
+
+            </FormWrapper>
+            {validationError && <ValidationMsg>{validationError}</ValidationMsg>}
+        </>
     );
 };
 

@@ -62,6 +62,13 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
             return;
         }
 
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email))
+        {
+            setError("Please enter a valid email address.");
+            return;
+        }
+
         if (password !== confirmPassword)
         {
             setError("Passwords do not match!");
@@ -87,7 +94,6 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
         }
         catch (err)
         {
-            console.error(err);
             setError(err.message || "An error occurred.");
         }
         finally

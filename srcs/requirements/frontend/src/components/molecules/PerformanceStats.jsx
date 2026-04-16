@@ -114,12 +114,6 @@ const DiffInner = styled.div`
     text-align: left;
     width: 95px;
     gap: 10px;
-
-    @media (max-width: 400px)
-    {
-        width: auto;
-        gap: 5px;
-    }
 `;
 
 const DiffDot = styled.span`
@@ -127,8 +121,8 @@ const DiffDot = styled.span`
     height: 10px;
     border-radius: 50%;
     flex-shrink: 0;
-    
-    background-color: ${props => 
+
+    background-color: ${props =>
     {
         switch (props.$diffName.toLowerCase())
         {

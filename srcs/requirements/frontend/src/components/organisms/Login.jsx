@@ -33,18 +33,35 @@ export const Overlay = styled.div`
     align-items: center;
     z-index: 1000;
     font-family: inherit;
+    padding: 16px;
+    box-sizing: border-box;
 `;
 
 export const ModalContainer = styled.div`
     background-color: #ffffff;
     padding: 2.5rem 1.8rem;
     border-radius: 16px;
-    width: 380px;
+    width: 100%;
+    max-width: 380px;
     height: auto;
+    max-height: 90vh;
+    overflow-y: auto;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     position: relative;
     animation: ${fadeIn} 0.3s ease-out;
     box-sizing: border-box;
+
+    @media (max-width: 480px)
+    {
+        padding: 2rem 1.4rem;
+        border-radius: 14px;
+    }
+
+    @media (max-width: 375px)
+    {
+        padding: 1.5rem 1.1rem;
+        border-radius: 12px;
+    }
 `;
 
 export const Title = styled.h2`
@@ -286,10 +303,23 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
     if (!isOpen)
         return null;
 
-    const handleSubmit = async (e) => 
+    const handleSubmit = async (e) =>
     {
         e.preventDefault();
         setError(null);
+
+        if (username.trim().length < 3)
+        {
+            setError("Username must be at least 3 characters long.");
+            return;
+        }
+
+        if (password.length < 8)
+        {
+            setError("Password must be at least 8 characters long.");
+            return;
+        }
+
         setIsLoading(true);
 
         try

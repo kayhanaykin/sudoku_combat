@@ -211,9 +211,11 @@ const FriendListWidget = () =>
                 setIsSearching(true);
 
                 const response = await fetch(`/api/v1/user/by-username/${encodeURIComponent(username)}/`);
-                if (!response.ok)
+                const data = await response.json();
+
+                if (!response.ok || data.error)
                 {
-                    displaySearchError('User not found.');
+                    displaySearchError(data.error || 'User not found.');
                     return;
                 }
 
