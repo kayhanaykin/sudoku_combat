@@ -342,7 +342,7 @@ export const joinRoom = async (roomId, userId) =>
 
 export const deleteUserAccount = async () => 
 {
-  const url = `${API_BASE_URL}/api/user/profile/delete/`;
+  const url = `${API_BASE_URL}/api/v1/user/profile/delete/`;
   try
   {
     const response = await fetch(url, {
