@@ -5,7 +5,6 @@ of the 42 curriculum by kaykin, ekarau, apalaz, yunozdem._
 ## [Instructions - Jump to Installation](#installation-of-the-project)
 
 # Description - Final Project of 42
-![Final Grade](https://img.shields.io/badge/Grade-100%20%2F%20100-success?style=for-the-badge)
 ![Static Badge](https://img.shields.io/badge/42-Project-black?style=for-the-badge)
 
 This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called ft_transendence. It has been successfully completed by 4 teammate software developers, namely, [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), Mr. Yunus Emre Özdem.
