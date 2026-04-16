@@ -154,7 +154,7 @@ services:
     networks:
       - transcendence_network
     restart: always
-    command: ["npm", "run", "dev", "--", "--host"]
+    command: ["sh", "-c", "npm run build && npm run preview"]
 
 networks:
   transcendence_network:

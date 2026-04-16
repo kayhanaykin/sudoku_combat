@@ -40,5 +40,14 @@ export default defineConfig({
     },
     build: {
         sourcemap: false
+    },
+    preview: {
+        host: true,
+        port: 5173,
+        strictPort: true
+    },
+    esbuild: {
+        pure: ['console.log', 'console.error', 'console.warn', 'console.debug', 'console.info'],
+        drop: ['debugger']
     }
 })

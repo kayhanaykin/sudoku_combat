@@ -27,9 +27,4 @@ COPY . .
 # This instruction functions as documentation for the port mapping.
 EXPOSE 5173
 
-# Default command to run the application.
-# "npm run dev" starts the development server.
-# "-- --host" is CRITICAL in Docker:
-# By default, Vite listens on 127.0.0.1 (localhost inside container),
-# preventing access from outside. "--host" makes it listen on 0.0.0.0.
-CMD ["npm", "run", "dev", "--", "--host"]
+CMD ["sh", "-c", "npm run build && npm run preview"]
