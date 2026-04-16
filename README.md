@@ -24,7 +24,7 @@ Our team organization is given below with details.
 
 We have planned weekly cluster meeting and bi-weekly online meetings.
 
-For team communication a simple <font color="orange">**whatsapp**</font> group is used. For storing/version controlling we have used <font color="orange">__Github__</font>. 
+For team communication a simple <font color="orange">**Whatsapp**</font> group and <font color="orange">**Jitsi**</font> for online meetings are used. For storing/version controlling we have used <font color="orange">__Github__</font>, and for brainstorming and system design we utilized <font color="orange">**Excalidraw**</font>.
 
 ## Product Owner (PO), Mr. Ege Karaurgan, Mr. Ali Eren Palaz
 Defines the product vision, prioritizes features, and ensures the project meets user needs.
@@ -72,7 +72,7 @@ Implement features and modules.
 
 ## Use a Backend Framework (Django, NestJS, 1pt)
 <ul>
-<li>Developed by Ali Eren Palaz</li>
+<li>Developed by Ali Eren Palaz, Kayhan Aykın</li>
 <li> Batteries-included framework enables the rapid development of essential backend components like user authentication 
 </li>
 <li>Django Channels to provide the powerful, built-in WebSocket support</li>
@@ -212,14 +212,27 @@ We chose JWT to provide a secure, stateless authentication method that allows ou
 ## Overview
 The Sudoku Combat application uses a microservices architecture with multiple databases:
 - **Game Service**: No database
-- **User Service**: PostgreSQL (Django ORM) - User accounts, authentication, profiles, friends
-- **Combat Service**: PostgreSQL (TypeORM) - Multiplayer game rooms, real-time player interactions, game state, board data, match tracking
-- **Stats Service**: PostgreSQL (libpqxx/Raw SQL) - Player statistics, match history, difficulty-based win/loss tracking, weekly leaderboard data, performance metrics
+- **User Service**: PostgreSQL (Django ORM) | **Tables:** `CustomUser`, `Relationship` | User accounts, authentication, profiles, friends
+- **Combat Service**: PostgreSQL (TypeORM) | **Tables:** `Room` | Multiplayer game rooms, real-time player interactions, game state, board data, match tracking
+- **Stats Service**: PostgreSQL (libpqxx/Raw SQL) | **Tables:** `player_stats`, `match_history`, `weekly_player_stats`, `leaderboard_reset_meta` | Player statistics, match history, difficulty-based win/loss tracking, weekly leaderboard data, performance metrics
+
+### Global Relations Summary
+The entire microservice architecture revolves around the `CustomUser`'s `id`. Even though data is stored in different databases, foreign keys logically point back to the central User Service.
+
+| Source Table | Foreign Key Mapping |
+| :--- | :--- |
+| `Relationship` | `from_user_id` & `to_user_id` ➔ `CustomUser.id` |
+| `Achievement` | `user_id` ➔ `CustomUser.id` |
+| `Room` | `ownerId` & `guestId` ➔ `CustomUser.id` |
+| `player_stats` | `user_id` ➔ `CustomUser.id` |
+| `match_history` | `user_id` ➔ `CustomUser.id` |
+| `weekly_player_stats` | `user_id` ➔ `CustomUser.id` |
 
 ### User Service Database
 **CustomUser Model**
 | Field | Type | Description |
 | :--- | :--- | :--- |
+| `id` | PK | Primary Key |
 | `intra_id` | IntegerField | 42 Intra OAuth ID |
 | `display_name` | CharField | Custom display name |
 | `avatar` | ImageField | User profile picture |
@@ -230,39 +243,17 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 **Relationship Model**
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | PK | Primary Key |
 | `from_user` | ForeignKey | Friend request sender |
 | `to_user` | ForeignKey | Friend request recipient |
 | `status` | CharField | Request status (pending/friends) |
 | `created_at` | DateTimeField | Request creation date |
 
-**Achievement Model**
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | PK | Primary Key |
-| `user` | ForeignKey | Achievement owner |
-| `achievement_type` | CharField | Achievement type identifier |
-| `name` | CharField | Achievement name |
-| `icon` | CharField | Achievement emoji/icon |
-| `description` | TextField | Achievement description |
-| `earned_at` | DateTimeField | When earned |
-| `progress` | IntegerField | Current progress |
-| `target` | IntegerField | Target to achieve |
 
-**LeaderboardResetSchedule Model**
-| Field | Type | Description |
-| :--- | :--- | :--- |
-| `id` | PK | Primary Key |
-| `difficulty` | CharField | Difficulty level (easy/medium/hard/expert/extreme) |
-| `last_reset` | DateTimeField | Last reset timestamp |
-| `next_reset` | DateTimeField | Next scheduled reset |
-| `previous_champion` | ForeignKey | Previous week's top player |
 
 ### Combat Service Database
 **Room Entity**
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | PK | Primary Key |
 | `ownerId` | VARCHAR | Room creator user ID |
 | `ownerName` | VARCHAR | Room creator display name |
 | `guestId` | VARCHAR | Opponent user ID |
@@ -280,7 +271,6 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 **player_stats Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | BIGSERIAL PK | Primary key |
 | `username` | TEXT | Player username |
 | `difficulty` | INT | Difficulty level (1-5) |
 | `mode` | TEXT | Game mode (online/offline) |
@@ -292,7 +282,6 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 **match_history Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | BIGSERIAL PK | Primary key |
 | `username` | TEXT | Player username |
 | `opponent` | TEXT | Opponent username |
 | `difficulty` | INT | Difficulty level (1-5) |
@@ -304,7 +293,6 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 **weekly_player_stats Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | BIGSERIAL PK | Primary key |
 | `username` | TEXT | Player username |
 | `difficulty` | INT | Difficulty level (1-5) |
 | `mode` | TEXT | Game mode (online/offline) |
@@ -315,7 +303,6 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 **leaderboard_reset_meta Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
-| `id` | INT PK | Primary key |
 | `period_start` | TIMESTAMPTZ | Period start timestamp |
 | `next_reset_at` | TIMESTAMPTZ | Next reset scheduled time |
 
