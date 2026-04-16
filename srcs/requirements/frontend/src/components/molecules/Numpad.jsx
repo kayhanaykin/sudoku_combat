@@ -8,7 +8,7 @@ const NumpadGrid = styled.div`
     gap: 6px; 
     margin-top: 12px;
     width: 100%;
-    max-width: 320px; 
+    max-width: 420px; 
 
     @media (max-width: 768px)
     {
@@ -25,7 +25,7 @@ const NumKey = styled.button`
     aspect-ratio: 1 / 1;
     
     width: 100%; 
-    font-size: 1.1rem; 
+    font-size: 1.25rem; 
     font-weight: 700;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: #ffffff;
