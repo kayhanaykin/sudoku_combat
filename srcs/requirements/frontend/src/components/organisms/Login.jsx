@@ -308,18 +308,6 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
         e.preventDefault();
         setError(null);
 
-        if (username.trim().length < 3)
-        {
-            setError("Username must be at least 3 characters long.");
-            return;
-        }
-
-        if (password.length < 8)
-        {
-            setError("Password must be at least 8 characters long.");
-            return;
-        }
-
         setIsLoading(true);
 
         try
