@@ -26,11 +26,26 @@ export const HowToPlayButton = styled.button`
         box-shadow: 0 6px 16px rgba(51, 132, 55, 0.22);
     }
 
-    .how-to-play-icon {
+    .how-to-play-icon
+    {
         font-size: 1.5em;
         margin-right: 6px;
         display: flex;
         align-items: center;
+    }
+
+    @media (max-width: 768px)
+    {
+        padding: 8px 20px;
+        font-size: 16px;
+        gap: 8px;
+    }
+
+    @media (max-width: 480px)
+    {
+        padding: 7px 14px;
+        font-size: 14px;
+        gap: 6px;
     }
 `;
 
@@ -45,35 +60,62 @@ const ModalOverlay = styled.div`
     justify-content: center;
     align-items: center;
     z-index: 9999;
+    padding: 16px;
+    box-sizing: border-box;
 `;
 
 const ModalContent = styled.div`
     position: relative;
     background: #ffffff;
-    width: 90%;
+    width: 100%;
     max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 24px;
     border-radius: 16px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     animation: fadeIn 0.3s ease-out forwards;
+    box-sizing: border-box;
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    @keyframes fadeIn
+    {
+        from
+        {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to
+        {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 480px)
+    {
+        padding: 18px 14px;
+        border-radius: 12px;
+    }
+
+    @media (max-width: 375px)
+    {
+        padding: 14px 10px;
     }
 `;
 
 const CloseButton = styled.button`
     position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 38px;
-    height: 38px;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
     border-radius: 50%;
     border: none;
     background: linear-gradient(135deg, #29972d 60%, #37e831 100%);
     color: #fff;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
     font-weight: 900;
     box-shadow: 0 2px 8px rgba(51, 132, 55, 0.13);
     cursor: pointer;
@@ -82,32 +124,64 @@ const CloseButton = styled.button`
     justify-content: center;
     transition: background 0.2s, transform 0.1s;
     z-index: 10;
+    flex-shrink: 0;
 
-    &:hover {
+    &:hover
+    {
         background: linear-gradient(135deg, #338437 60%, #37e831 100%);
         transform: scale(1.05);
     }
 
-    &:active {
+    &:active
+    {
         transform: scale(0.95);
+    }
+
+    @media (max-width: 480px)
+    {
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
     }
 `;
 
 const Title = styled.h2`
     text-align: center;
     color: #29972d;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     font-weight: 900;
     font-size: 2.1rem;
     letter-spacing: -1px;
     margin-top: 8px;
+    padding-right: 40px;
+
+    @media (max-width: 480px)
+    {
+        font-size: 1.6rem;
+        margin-bottom: 16px;
+    }
+
+    @media (max-width: 375px)
+    {
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
 `;
 
 const SectionWrapper = styled.div`
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 
-    &:last-child {
+    &:last-child
+    {
         margin-bottom: 0;
+    }
+
+    @media (max-width: 480px)
+    {
+        margin-bottom: 18px;
     }
 `;
 
@@ -119,6 +193,17 @@ const SectionTitle = styled.h3`
     display: flex;
     align-items: center;
     gap: 8px;
+
+    @media (max-width: 480px)
+    {
+        font-size: 1.1rem;
+        gap: 6px;
+    }
+
+    @media (max-width: 375px)
+    {
+        font-size: 1rem;
+    }
 `;
 
 const InfoBox = styled.div`
@@ -130,9 +215,23 @@ const InfoBox = styled.div`
     border: 1.5px solid #e0e0e0;
     line-height: 1.5;
 
-    b {
+    b
+    {
         font-weight: 700;
         color: #1a6b1e;
+    }
+
+    @media (max-width: 480px)
+    {
+        padding: 10px 12px;
+        font-size: 0.95rem;
+        line-height: 1.45;
+    }
+
+    @media (max-width: 375px)
+    {
+        padding: 8px 10px;
+        font-size: 0.88rem;
     }
 `;
 

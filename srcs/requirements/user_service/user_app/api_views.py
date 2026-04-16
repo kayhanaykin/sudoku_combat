@@ -340,10 +340,13 @@ def friend_action_api(request):
     
     if action == "send":
         target_username = request.data.get("target_username") 
+        if not target_username or not target_username.strip():
+            return Response({"success": False, "error": "Username is required."}, status=200)
+
         try:
             target_user = CustomUser.objects.get(username=target_username)
         except CustomUser.DoesNotExist:
-            return Response({"error": "User not found."}, status=404)
+            return Response({"success": False, "error": "User not found."}, status=200)
 
         if target_user == request.user:
              return Response({"error": "You cannot add yourself."}, status=400)
@@ -360,17 +363,21 @@ def friend_action_api(request):
         return Response({"message": f"Request sent to {target_username}!"}, status=201)
 
     elif action == "approve":
+        rel_id = request.data.get("rel_id")
+        if not rel_id:
+            return Response({"success": False, "error": "Request ID is required."}, status=200)
         try:
-            rel_id = request.data.get("rel_id")
             rel = Relationship.objects.get(id=rel_id, to_user=request.user)
             rel.status = 'friends'
             rel.save()
             return Response({"message": "Friend request approved!"})
         except Relationship.DoesNotExist:
-            return Response({"error": "Request not found"}, status=404)
+            return Response({"success": False, "error": "Request not found."}, status=200)
 
     elif action == "remove":
         rel_id = request.data.get("rel_id")
+        if not rel_id:
+            return Response({"success": False, "error": "Relationship ID is required."}, status=200)
         Relationship.objects.filter(
             Q(id=rel_id) & (Q(from_user=request.user) | Q(to_user=request.user))
         ).delete()
@@ -453,7 +460,7 @@ def user_info_api(request, user_id):
             "avatar": user.avatar.url if user.avatar else None
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"success": False, "error": "User not found"}, status=status.HTTP_200_OK)
 
 
 
@@ -499,7 +506,7 @@ def user_by_username_api(request, username):
             "online_status": user.status
         }, status=status.HTTP_200_OK)
     except CustomUser.DoesNotExist:
-        return Response({"error": "User not found"}, status=status.HTTP_404_NOT_FOUND)
+        return Response({"success": False, "error": "User not found"}, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

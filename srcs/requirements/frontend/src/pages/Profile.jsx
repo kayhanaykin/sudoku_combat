@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
+import Footer from '../components/atoms/Footer';
 import ProfileContent from '../components/organisms/ProfileContent';
 import ConfirmationModal from '../components/molecules/ConfirmationModal';
 import { getUserStats, logoutUser, deleteUserAccount } from '../services/api';
@@ -11,20 +12,19 @@ import { getUserDetails} from '../services/userService';
 // STYLED COMPONENTS
 const PageContainer = styled.div`
     min-height: 100vh;
-    background-color: #f0fdf4; 
+    background-color: #f0fdf4;
     color: #333;
     font-family: 'Inter', system-ui, sans-serif;
     padding-top: 110px;
     padding-bottom: 30px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     position: relative;
 
     @media (max-width: 768px)
     {
         padding-top: 20px;
-        flex-direction: column;
-        justify-content: flex-start;
     }
 
     h3 {
@@ -344,11 +344,13 @@ const Profile = () =>
 
     return (
         <PageContainer>
-            
+
             <BackToHomeLink />
 
             {contentElement}
-            
+
+            <Footer />
+
         </PageContainer>
     );
 };
