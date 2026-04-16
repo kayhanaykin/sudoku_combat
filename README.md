@@ -71,19 +71,21 @@ Implement features and modules.
 
 ## Use a Backend Framework (Django, NestJS, 1pt)
 <ul>
-<li>Developed by Ali Eren Palaz, Kayhan Aykın</li>
+<li>Developed by Kayhan Aykın, Ali Eren Palaz</li>
 <li> Batteries-included framework enables the rapid development of essential backend components like user authentication 
 </li>
 <li>Django Channels to provide the powerful, built-in WebSocket support</li>
+<li>TypeScript is the primary language, providing static typing, decorators and dependency injection for safer, maintainable real time backends</li>
+<li>NestJS organizes server logic into modules, controllers and services, giving a clean architecture for game and WebSocket APIs</li>
 </ul>
 
 ## Implement Real-time features using Websockets (2pts)
 
 <ul>
-<li>Developed by Kayhan Aykın, Ege Karaurgan</li>
-<li>online status feature
+<li>Developed by Kayhan Aykın, Ege Karaurgan, Ali Eren Palaz</li>
+<li>Online status feature
 </li>
-<li>online game</li>
+<li>Online game</li>
 </ul>
 
 ## Use an ORM for the Database (1pt)
