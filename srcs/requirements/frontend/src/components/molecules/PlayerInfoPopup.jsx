@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
-// ANIMATIONS
 const slideIn = keyframes`
     from 
     {
@@ -16,7 +15,6 @@ const slideIn = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -169,7 +167,6 @@ const ViewProfileBtn = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION
 const PlayerInfoPopup = ({ isOpen, onClose, username, dimBackground = true }) => 
 {
     const navigate = useNavigate();
@@ -271,7 +268,6 @@ const PlayerInfoPopup = ({ isOpen, onClose, username, dimBackground = true }) =>
         e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
     };
 
-    // LOGIC-DRIVEN RENDERING
     let popupContent = null;
     if (loading)
         popupContent = <LoadingText>Loading...</LoadingText>;

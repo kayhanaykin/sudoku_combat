@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import ActionBtn from '../atoms/ActionBtn';
 
-// ANIMATIONS
 const fadeIn = keyframes`
     from 
     { 
@@ -42,7 +41,6 @@ const pulse = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -366,10 +364,8 @@ const CountdownCircle = styled.div`
     }
 `;
 
-// HELPERS
 const DIFFICULTY_LABELS = { '1': 'Easy', '2': 'Medium', '3': 'Hard', '4': 'Expert', '5': 'Extreme' };
 
-// COMPONENT DEFINITION
 const OnlineGameModal = ({ 
     isOpen, 
     onClose, 
@@ -425,7 +421,7 @@ const OnlineGameModal = ({
         }
         catch (error)
         {
-            console.error("Odalar çekilemedi:", error);
+            console.error("Rooms could not be fetched:", error);
         }
         finally
         {

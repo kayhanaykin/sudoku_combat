@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import ProfileImage from '../atoms/ProfileImage';
 
-// ANIMATIONS
 const epFadeIn = keyframes`
     from
     {
@@ -27,7 +26,6 @@ const epPopIn = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -279,7 +277,6 @@ const SaveButton = styled(BaseButton)`
     }
 `;
 
-// COMPONENT DEFINITION
 const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
 {
     const [displayName, setDisplayName] = useState('');
@@ -316,7 +313,6 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
         const file = e.target.files[0];
         if (file)
         {
-            // 10MB Limit Validation
             const maxSize = 10 * 1024 * 1024;
             if (file.size > maxSize)
             {
@@ -349,7 +345,6 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
         setIsLoading(false);
     };
 
-    // LOGIC-DRIVEN RENDERING
     let currentUsername = '';
     if (currentUserData && currentUserData.username)
         currentUsername = `@${currentUserData.username}`;

@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-// STYLED COMPONENTS
 const StyledButton = styled.button`
     position: absolute;
     top: 20px;
@@ -83,7 +82,6 @@ const TextWrapper = styled.span`
     }
 `;
 
-// COMPONENT DEFINITION
 const BackToHomeLink = ({ onClick }) => 
 {
     const navigate = useNavigate();

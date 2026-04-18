@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { device } from '../../utils/device';
 
-// STYLED COMPONENTS
 const TabsContainer = styled.div`
     display: flex;
     gap: ${props => props.$compact ? '6px' : '8px'};
@@ -85,7 +84,6 @@ const TabButton = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION
 const LeaderboardTabs = ({ modes, currentMode, onModeChange, compact = false, noScroll = false }) =>
 {
     return (

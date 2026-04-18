@@ -9,7 +9,6 @@ import Login from './Login';
 import SignUp from './Signup';
 import HowToPlayModal from './HowToPlayModal';
 
-// STYLED COMPONENTS
 const NavContainer = styled.nav`
     display: flex;
     justify-content: space-between;
@@ -108,7 +107,6 @@ const DropdownContainer = styled.div`
     align-items: center;
 `;
 
-/* YENİ ZIRH: Ekran küçüldüğünde buton içindeki YAZILARI gizler, ikonları bırakır */
 const ButtonText = styled.span`
     @media (max-width: 768px)
     {
@@ -362,24 +360,18 @@ const SecondaryButton = styled(BasicButton)`
     }
 `;
 
-// COMPONENT DEFINITION
 const Navbar = () =>
 {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const [dbUser, setDbUser] = useState(null);
-    
-    // MODAL STATE'LERİ
     const [isLoginOpen, setIsLoginOpen] = useState(false);
     const [isSignUpOpen, setIsSignUpOpen] = useState(false);
     const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false); 
-    
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [isFriendsOpen, setIsFriendsOpen] = useState(false);
-    
     const dropdownRef = useRef(null);
     const friendsRef = useRef(null);
-
     const BASE_URL = '';
 
     useEffect(() =>

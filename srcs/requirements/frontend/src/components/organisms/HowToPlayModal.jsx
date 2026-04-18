@@ -1,8 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// --- STYLED COMPONENTS ---
-
 export const HowToPlayButton = styled.button`
     display: flex;
     align-items: center;
@@ -235,10 +233,9 @@ const InfoBox = styled.div`
     }
 `;
 
-// --- COMPONENT ---
-
 const HowToPlayModal = ({ isOpen, onClose }) => {
-    if (!isOpen) return null;
+    if (!isOpen)
+        return null;
 
     return (
         <ModalOverlay onClick={onClose}>

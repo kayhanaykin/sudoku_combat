@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// STYLED COMPONENTS
 const HeaderContainer = styled.div`
     padding-top: 50px;
     display: flex;
@@ -50,7 +49,6 @@ const DifficultyBadge = styled(BaseBadge)`
     border: 2px solid ${props => props.$border};
 `;
 
-// COMPONENT DEFINITION
 const GameHeader = ({ timer, difficulty }) => 
 {
     let bgColor = '#95a5a6';

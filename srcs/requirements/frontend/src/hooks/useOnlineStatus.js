@@ -24,11 +24,10 @@ const useOnlineStatus = (user) => {
 			if (!checkAuthCookie() || isUnmounted)
 				return;
 
-			console.log("wsUrl: ", wsUrl);
 			const ws = new WebSocket(wsUrl);
 			socketRef.current = ws;
 
-			ws.onopen = () => console.log('✅ WS Online Status Connected');
+			ws.onopen = () => console.log('WS Online Status Connected');
 
 			ws.onmessage = (event) => {
 				try {

@@ -1,14 +1,10 @@
-import React from 'react';
 import styled from 'styled-components';
-
-// CUSTOM HOOK & COMPONENTS
 import useLeaderboardPage from '../hooks/useLeaderboardPage';
 import BackToHomeLink from '../components/atoms/BackToHomeLink';
 import LeaderboardTabs from '../components/molecules/LeaderboardTabs';
 import LeaderboardTable from '../components/organisms/LeaderboardTable';
 import Footer from '../components/atoms/Footer';
 
-// STYLED COMPONENTS
 const PageWrapper = styled.div`
     min-height: 100vh;
     background-color: #f9fafb;
@@ -73,7 +69,6 @@ const Title = styled.h1`
     }
 `;
 
-// COMPONENT DEFINITION
 const LeaderboardPage = () =>
 {
     const { mode, setMode, players, loading, modes } = useLeaderboardPage();

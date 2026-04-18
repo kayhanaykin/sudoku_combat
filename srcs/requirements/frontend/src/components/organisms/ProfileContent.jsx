@@ -10,7 +10,6 @@ import PerformanceStats from '../molecules/PerformanceStats';
 import MatchHistoryTable from '../molecules/MatchHistoryTable';
 import EditProfileModal from '../molecules/EditProfileModal';
 
-// STYLED COMPONENTS
 const DashboardContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -186,7 +185,6 @@ const PendingText = styled.p`
     margin: 0;
 `;
 
-// COMPONENT DEFINITION
 const ProfileContent = ({ userDetails, stats, onLogout, onDeleteAccount, isOtherUser }) =>
 {
     const { user } = useAuth();

@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import SudokuCell from '../atoms/SudokuCell';
 import { checkIsHighlighted } from '../../utils/sudokuUtils';
 
-// STYLED COMPONENTS
 const BoardContainer = styled.div`
     display: grid;
     width: 100%;
@@ -44,7 +43,6 @@ const LoadingText = styled.div`
     font-weight: bold;
 `;
 
-// COMPONENT DEFINITION
 const SudokuBoard = ({ board, selectedCell, onCellClick }) => 
 {
     if (!board || board.length === 0) 

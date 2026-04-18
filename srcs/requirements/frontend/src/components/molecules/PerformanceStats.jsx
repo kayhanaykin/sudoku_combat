@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
-// STYLED COMPONENTS
 const CardContainer = styled.div`
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -171,7 +170,6 @@ const TotalRow = styled.tr`
     color: #14532d;
 `;
 
-// COMPONENT DEFINITION
 const PerformanceStats = ({ username, userId = null }) =>
 {
     const [statsData, setStatsData] = useState({});

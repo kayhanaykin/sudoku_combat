@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// STYLED COMPONENTS
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -62,7 +61,6 @@ const ApplyButton = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION
 const HintModal = ({ isOpen, data, onApply }) => 
 {
     if (!isOpen)

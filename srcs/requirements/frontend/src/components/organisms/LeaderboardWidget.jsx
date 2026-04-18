@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import useLeaderboardWidget from '../../hooks/useLeaderboardWidget';
 import LeaderboardRow from '../molecules/LeaderboardRow';
 
-// STYLED COMPONENTS
 const WidgetContainer = styled.div`
     background-color: white;
     border-radius: 16px;
@@ -162,7 +161,6 @@ const formatCountdown = (nextResetAt) =>
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 };
 
-// COMPONENT DEFINITION
 const LeaderboardWidget = () =>
 {
     const navigate = useNavigate();

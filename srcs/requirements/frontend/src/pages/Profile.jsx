@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,6 @@ import ConfirmationModal from '../components/molecules/ConfirmationModal';
 import { getUserStats, logoutUser, deleteUserAccount } from '../services/api';
 import { getUserDetails} from '../services/userService';
 
-// STYLED COMPONENTS
 const PageContainer = styled.div`
     min-height: 100vh;
     background-color: #f0fdf4;
@@ -144,7 +143,6 @@ const LoadingText = styled.div`
     text-align: center;
 `;
 
-// COMPONENT DEFINITION
 const Profile = () =>
 {
     const { user, logout } = useAuth();

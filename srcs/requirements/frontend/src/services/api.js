@@ -36,7 +36,6 @@ const ensureCsrfToken = async () =>
       method: 'GET', 
       credentials: 'include' 
     });
-    console.log("CSRF cookie requested successfully");
   }
   catch (err)
   {
@@ -60,7 +59,6 @@ export const loginUser = async (username, password) =>
     });
 
     const textData = await response.text();
-    console.log("RAW SERVER RESPONSE:", textData);
 
     let data;
     try
@@ -70,7 +68,7 @@ export const loginUser = async (username, password) =>
     catch (err)
     {
       console.error("JSON Parse Error.");
-      throw new Error("Sunucu hatası: Beklenmeyen yanıt döndü.");
+      throw new Error("Server error: Invalid response format.");
     }
 
     if (!response.ok)

@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { useAuth } from '../../context/AuthContext';
 import PlayerInfoPopup from './PlayerInfoPopup';
 
-// HELPER FUNCTION
 const getRankIcon = (index) =>
 {
     switch (index)
@@ -20,7 +19,6 @@ const getRankIcon = (index) =>
     }
 };
 
-// STYLED COMPONENTS
 const RowContainer = styled.div`
     display: flex;
     align-items: center;
@@ -108,7 +106,6 @@ const PointsText = styled.span`
     white-space: nowrap;
 `;
 
-// COMPONENT DEFINITION
 const LeaderboardRow = ({ player, index }) =>
 {
     const [isPopupOpen, setIsPopupOpen] = useState(false);

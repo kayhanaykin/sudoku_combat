@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { getMatchHistory } from '../../services/api';
 
-// STYLED COMPONENTS
 const Container = styled.div`
     width: 100%;
     padding: 20px 0;
@@ -135,7 +134,6 @@ const ModeBadge = styled.span`
     }};
 `;
 
-// COMPONENT DEFINITION
 const MatchHistoryTable = ({ username, userId = null }) => 
 {
     const [matches, setMatches] = useState([]);
@@ -193,7 +191,6 @@ const MatchHistoryTable = ({ username, userId = null }) =>
             } 
             catch (err) 
             {
-                console.error('Error fetching match history:', err);
                 setError('Failed to load match history');
                 setMatches([]);
             } 

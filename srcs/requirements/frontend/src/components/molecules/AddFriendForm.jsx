@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { device } from '../../utils/device';
 import ActionBtn from '../atoms/ActionBtn';
 
-// STYLED COMPONENTS
 const FormWrapper = styled.form`
     display: flex;
     gap: 8px;
@@ -79,7 +78,6 @@ const SubmitButton = styled(ActionBtn)`
     }
 `;
 
-// COMPONENT DEFINITION
 const AddFriendForm = ({ onAdd }) =>
 {
     const [username, setUsername] = useState('');

@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 
-// ANIMATIONS
 const fadeIn = keyframes`
     from 
     { 
@@ -21,7 +20,6 @@ const fall = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const OverlayWrapper = styled.div`
     position: absolute;
     top: 0; 
@@ -142,7 +140,6 @@ const HomeButton = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION
 const GameOverOverlay = ({ result }) => 
 {
     const navigate = useNavigate();
@@ -217,7 +214,6 @@ const GameOverOverlay = ({ result }) =>
         );
     }
 
-    // TEXT LOGIC
     let titleText = '💀 DEFEAT 💀';
     if (isWin)
         titleText = '🏆 VICTORY 🏆';

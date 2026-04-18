@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-// ANIMATIONS
 const fadeIn = keyframes`
     from
     {
@@ -15,7 +14,6 @@ const fadeIn = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -91,7 +89,6 @@ const ConfirmButton = styled(BaseButton)`
     }
 `;
 
-// COMPONENT DEFINITION
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, title, message }) => 
 {
     if (!isOpen)

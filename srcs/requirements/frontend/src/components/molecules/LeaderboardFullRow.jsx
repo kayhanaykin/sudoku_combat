@@ -5,7 +5,6 @@ import { useAuth } from '../../context/AuthContext';
 import { device } from '../../utils/device';
 import PlayerInfoPopup from './PlayerInfoPopup';
 
-// HELPER FUNCTIONS
 const getRankIcon = (index) =>
 {
     switch (index)
@@ -32,7 +31,6 @@ const calculateWinRate = (wins, games) =>
     return rate.toFixed(1) + "%";
 };
 
-// STYLED COMPONENTS
 const RowContainer = styled.div`
     display: grid;
     grid-template-columns: 60px minmax(180px, 2fr) minmax(90px, 1fr) minmax(90px, 1fr) minmax(90px, 1fr);
@@ -201,7 +199,6 @@ const HighlightedStat = styled(StatText)`
     font-weight: 700;
 `;
 
-// COMPONENT DEFINITION
 const LeaderboardFullRow = ({ player, index, rank, highlight = false }) =>
 {
     const [isPopupOpen, setIsPopupOpen] = useState(false);

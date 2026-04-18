@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import Footer from '../components/atoms/Footer';
-
-// --- STYLED COMPONENTS ---
 
 const PageWrapper = styled.div`
     min-height: 100vh;
@@ -130,8 +128,6 @@ const MessageContainer = styled.div`
     background-color: #f9fafb;
 `;
 
-// --- COMPONENT DEFINITION ---
-
 const DebugUsersPage = () => 
 {
     const { user, logout, loading: authLoading } = useAuth();
@@ -142,9 +138,7 @@ const DebugUsersPage = () =>
     useEffect(() => 
     {
         if (authLoading)
-        {
             return;
-        }
 
         if (!user || !user.is_superuser)
         {
@@ -170,9 +164,7 @@ const DebugUsersPage = () =>
                     setUsers(data);
                 }
                 else
-                {
                     setError('Failed to fetch users');
-                }
             }
             catch (err)
             {
@@ -194,14 +186,10 @@ const DebugUsersPage = () =>
     };
 
     if (loading)
-    {
         return <MessageContainer>Loading users...</MessageContainer>;
-    }
 
     if (error)
-    {
         return <MessageContainer $isError>{error}</MessageContainer>;
-    }
 
     return (
         <PageWrapper>

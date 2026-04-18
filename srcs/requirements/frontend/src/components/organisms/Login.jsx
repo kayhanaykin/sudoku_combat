@@ -6,7 +6,6 @@ import { loginUser } from '../../services/api';
 
 const INTRA_AUTH_URL = "/api/user/auth/login/";
 
-// ANIMATIONS
 const fadeIn = keyframes`
     from 
     { 
@@ -20,7 +19,6 @@ const fadeIn = keyframes`
     }
 `;
 
-// SHARED STYLED COMPONENTS (also used by Signup)
 export const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -290,7 +288,6 @@ export const CloseButton = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION
 const Login = ({ isOpen, onClose, onSwitchToSignup }) => 
 {
     const navigate = useNavigate();
@@ -345,7 +342,6 @@ const Login = ({ isOpen, onClose, onSwitchToSignup }) =>
             onSwitchToSignup();
     };
 
-    // LOGIC-DRIVEN RENDERING
     let submitButtonText = 'Log In';
     if (isLoading)
         submitButtonText = 'Logging in...';

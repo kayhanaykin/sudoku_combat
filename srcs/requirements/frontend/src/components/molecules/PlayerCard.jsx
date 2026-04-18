@@ -4,7 +4,6 @@ import ProfileImage from '../atoms/ProfileImage';
 
 const BASE_URL = '';
 
-// STYLED COMPONENTS
 const CardWrapper = styled.div`
     background-color: #ffffff;
     padding: 24px 16px;
@@ -134,7 +133,6 @@ const HeartIcon = styled.span`
     transition: all 0.3s ease;
 `;
 
-// COMPONENT DEFINITION
 const PlayerCard = ({ title, username, lives, align, avatar, moves }) => 
 {
     let finalAvatarUrl = null;

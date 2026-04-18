@@ -4,7 +4,6 @@ import { device } from '../../utils/device';
 import ActionBtn from '../atoms/ActionBtn';
 import PlayerInfoPopup from './PlayerInfoPopup';
 
-// STYLED COMPONENTS
 const ItemContainer = styled.div`
     display: flex;
     align-items: center;
@@ -165,7 +164,6 @@ const RemoveButton = styled(SmallActionBtn)`
     }
 `;
 
-// COMPONENT DEFINITION
 const FriendItem = ({ id, username, displayName, avatar, status, isOnline, onApprove, onRemove }) => 
 {
     const [isPopupOpen, setIsPopupOpen] = useState(false);

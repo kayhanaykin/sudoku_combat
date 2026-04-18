@@ -16,7 +16,6 @@ const buildInitialsAvatar = (seedText) =>
     return `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(initials)}`;
 };
 
-// STYLED COMPONENTS
 const OverlayWrapper = styled.div`
     position: absolute;
     top: 0; 
@@ -77,7 +76,6 @@ const AvatarImage = styled.img`
     display: block;
 `;
 
-// COMPONENT DEFINITION
 const ProfileImage = ({ src, alt = "Avatar", className = "", style = {}, onClick, fallbackSeed = "" }) => 
 {
     const fallbackAvatar = buildInitialsAvatar(fallbackSeed || alt);

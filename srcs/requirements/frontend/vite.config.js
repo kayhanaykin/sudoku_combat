@@ -9,7 +9,7 @@ export default defineConfig({
                     [
                         'babel-plugin-styled-components',
                         {
-                            displayName: true, // Component isimlerini DOM'da gösterir (örn: GameMainArea__sc-1x2y3z)
+                            displayName: true,
                             fileName: false
                         }
                     ]

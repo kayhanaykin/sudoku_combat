@@ -1,6 +1,5 @@
 import styled, { keyframes } from 'styled-components';
 
-// STYLED COMPONENTS
 const fadeIn = keyframes`
     from { opacity: 0; }
     to { opacity: 1; }
@@ -124,9 +123,9 @@ const SecondaryButton = styled(BaseButton)`
     }
 `;
 
-// COMPONENT
 const AuthRequiredModal = ({ isOpen, onClose, onOpenLogin, onOpenSignUp }) => {
-    if (!isOpen) return null;
+    if (!isOpen)
+        return null;
 
     return (
         <Overlay onClick={onClose}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
@@ -16,7 +16,6 @@ import ExitConfirmModal from '../components/molecules/ExitConfirmModal';
 import useGameExit from '../hooks/useGameExit';
 import Footer from '../components/atoms/Footer';
 
-// STYLED COMPONENTS
 const GameContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -176,7 +175,6 @@ const CenterToast = styled.div`
     visibility: ${props => props.$isVisible ? 'visible' : 'hidden'};
 `;
 
-// COMPONENT DEFINITION
 const OfflineGame = () => 
 {
     const location = useLocation();
@@ -290,7 +288,6 @@ const OfflineGame = () =>
         }
     }, [location.state]);
 
-    // LOGIC-DRIVEN RENDERING
     let winnerName = "Computer";
     if (gameResult === 'win')
         winnerName = playerName;

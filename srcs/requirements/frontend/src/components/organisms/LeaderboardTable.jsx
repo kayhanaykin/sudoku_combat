@@ -4,7 +4,6 @@ import LeaderboardFullRow from '../molecules/LeaderboardFullRow';
 import { useAuth } from '../../context/AuthContext';
 import { device } from '../../utils/device';
 
-// STYLED COMPONENTS
 const TableContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -158,7 +157,6 @@ const EllipsisCell = styled.div`
     line-height: 1;
 `;
 
-// COMPONENT DEFINITION
 const LeaderboardTable = ({ players, loading, mode }) =>
 {
     const { user } = useAuth();

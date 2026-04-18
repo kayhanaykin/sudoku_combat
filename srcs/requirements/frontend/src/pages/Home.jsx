@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { keyframes } from 'styled-components';
 import Navbar from '../components/organisms/Navbar';
@@ -13,7 +13,6 @@ import SignUp from '../components/organisms/Signup';
 import { useAuth } from '../context/AuthContext'; 
 import { startGame, createCombatRoom, joinRoom } from '../services/api';
 
-// ANIMATIONS
 const PageContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -21,7 +20,6 @@ const PageContainer = styled.div`
     background-color: #f9fafb;
 `;
 
-// Scale yerine Translate ile çok daha temiz bir animasyon
 const fadeInBoard = keyframes`
     from 
     { 
@@ -35,7 +33,6 @@ const fadeInBoard = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const HeroSection = styled.main`
     display: flex;
     flex-direction: column;
@@ -186,7 +183,6 @@ const LeaderboardWrapper = styled.div`
     }
 `;
 
-// COMPONENT DEFINITION
 const Home = () =>
 {
     const navigate = useNavigate();
@@ -373,8 +369,6 @@ const Home = () =>
 
             const dbOwnerId = stateData.ownerId;
             
-            console.log(`DB Identity: ${dbOwnerId} | Current Identity: ${currentUserId}`);
-
             const response = await fetch(`/api/room/leave/${roomId}`,
             {
                 method: 'DELETE',
@@ -391,10 +385,7 @@ const Home = () =>
             const data = await response.json();
             
             if (data.success)
-            {
-                console.log("Room successfully deleted from database!");
                 setCreatedRoomId(null);
-            }
             else
                 console.error("Backend rejected the deletion:", data.message);
         }

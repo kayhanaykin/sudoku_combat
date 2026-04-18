@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
@@ -16,7 +16,6 @@ import Footer from '../components/atoms/Footer';
 
 const BASE_URL = '';
 
-// --- STYLED COMPONENTS ---
 const GameContainer = styled.div`
     display: flex;
     flex-direction: column;
@@ -211,7 +210,6 @@ const ControlsWrapper = styled.div`
     margin: 24px auto 40px auto;
 `;
 
-// COMPONENT DEFINITION
 const OnlineGame = () => 
 {
     const { roomId } = useParams();

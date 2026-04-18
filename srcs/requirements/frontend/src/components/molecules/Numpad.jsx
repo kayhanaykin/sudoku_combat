@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// STYLED COMPONENTS
 const NumpadGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(9, 1fr);
@@ -68,7 +67,6 @@ const NumKey = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION (Aynı kalıyor)
 const Numpad = ({ onNumberClick, disabled }) => 
 {
     const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];

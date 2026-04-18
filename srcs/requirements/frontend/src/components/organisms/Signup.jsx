@@ -23,7 +23,6 @@ const LoginLink = styled.span`
     &:hover { text-decoration: underline; }
 `;
 
-// COMPONENT DEFINITION
 const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
 {
     const { login } = useAuth();

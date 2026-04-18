@@ -1,7 +1,6 @@
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 
-// ANIMATIONS
 const fadeIn = keyframes`
     from 
     { 
@@ -15,7 +14,6 @@ const fadeIn = keyframes`
     }
 `;
 
-// STYLED COMPONENTS
 const Overlay = styled.div`
     position: fixed;
     top: 0;
@@ -93,7 +91,6 @@ const CloseButton = styled.button`
     }
 `;
 
-// COMPONENT DEFINITION
 const DifficultyModal = ({ isOpen, onClose, onSelect }) => 
 {
     if (!isOpen)
