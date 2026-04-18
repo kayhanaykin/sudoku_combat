@@ -320,9 +320,20 @@ docker --version
  If u see a version, it has been installed. If not please follow the [docker engine installation link](https://docs.docker.com/engine/install/) for installation.
 
  ## 2<sup>nd</sup> Step - Environment
- For security purposes, .env file has not been pushed to remote repo. There is a .env.example file that has some generic key values for testing purposes. Please change the name of the file to **".env"** from **".env.example"**.
+ For security purposes, `.env` file has not been pushed to remote repo. There is a `.env.example` file that has some generic key values for testing purposes. Please change the name of the file to **`.env`** from **`.env.example`**.
+ 
+ You also need to link your 42 Intra API credentials. Get your **UID** and **Secret** from your 42 Application dashboard and paste them into your `.env` file:
+ - `FT_UID=your_42_app_uid`
+ - `FT_SECRET=your_42_app_secret`
 
-## 3<sup>rd</sup> Step - Build
+## 3<sup>rd</sup> Step -  IP Configuration
+
+> [!IMPORTANT]
+> **42 API Configuration:** You must add your local IP address to your 42 API Application's 'Redirect URIs' for Intra Login to work.
+> To find your local IP manually, run `hostname -I` (Linux) in your terminal.
+> Once you find your IP, go to your 42 Intra Settings and add `https://<YOUR_LOCAL_IP>:8443/api/user/auth/callback/` to your Application.
+ 
+## 4 <sup>rd</sup> Step -  Build
  Just make from root of your repo.
 
  ```bash
@@ -330,7 +341,10 @@ make
 ```
 
 ## 4<sup>th</sup> Step - Browser
-Everything is ready, reach site from Chorme or Firefox, using, [https://localhost:8443](https://localhost:8443).
+Everything is ready, to reach site via Firefox, Chrome or Brave:
+>from your Server, using, [https://localhost:8443](https://localhost:8443)
+
+>from other Clients of LAN, using, [https://<YOUR_LOCAL_IP>:8443](https://localhost:8443)
 
 # Resources
 ## Markdown
