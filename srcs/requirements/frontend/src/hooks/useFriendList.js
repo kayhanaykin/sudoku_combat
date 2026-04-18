@@ -139,7 +139,9 @@ const useFriendList = () =>
 
             const result = await response.json();
 
-            if (response.ok || response.status === 201)
+            const isSuccess = (response.ok || response.status === 201) && result.success !== false;
+
+            if (isSuccess)
             {
                 setSuccessMsg(result.message || 'Success');
                 fetchFriends();

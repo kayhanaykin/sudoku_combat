@@ -168,6 +168,56 @@ const HintText = styled.span`
     font-weight: 500;
 `;
 
+const DefaultAvatarsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+`;
+
+const DefaultAvatarsLabel = styled.span`
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 600;
+`;
+
+const DefaultAvatarsRow = styled.div`
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+`;
+
+const DefaultAvatarOption = styled.button`
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid ${props => props.$isSelected ? '#10b981' : '#e5e7eb'};
+    padding: 0;
+    cursor: pointer;
+    background: #fff;
+    overflow: hidden;
+    transition: transform 0.15s, border-color 0.2s;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    &:hover:not(:disabled) {
+        transform: scale(1.08);
+        border-color: #10b981;
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+`;
+
 const ErrorText = styled.div`
     color: #ef4444;
     font-size: 0.85rem;
@@ -277,11 +327,20 @@ const SaveButton = styled(BaseButton)`
     }
 `;
 
+const DEFAULT_AVATARS = [
+    '/avatars/default-1.jpg',
+    '/avatars/default-2.jpg',
+    '/avatars/default-3.jpg',
+    '/avatars/default-4.jpg',
+    '/avatars/default-5.jpg'
+];
+
 const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
 {
     const [displayName, setDisplayName] = useState('');
     const [previewUrl, setPreviewUrl] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
+    const [selectedDefaultAvatar, setSelectedDefaultAvatar] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -302,6 +361,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
             setDisplayName(initialName);
             setPreviewUrl(initialAvatar);
             setSelectedFile(null);
+            setSelectedDefaultAvatar(null);
         }
     }, [isOpen, currentUserData]);
 
@@ -323,6 +383,30 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
             setError('');
             setSelectedFile(file);
             setPreviewUrl(URL.createObjectURL(file));
+            setSelectedDefaultAvatar(null);
+        }
+    };
+
+    const handleDefaultAvatarSelect = async (avatarPath) =>
+    {
+        try
+        {
+            setError('');
+            const response = await fetch(avatarPath);
+            if (!response.ok)
+                throw new Error('Could not load default avatar');
+
+            const blob = await response.blob();
+            const fileName = avatarPath.split('/').pop();
+            const file = new File([blob], fileName, { type: blob.type });
+
+            setSelectedFile(file);
+            setPreviewUrl(avatarPath);
+            setSelectedDefaultAvatar(avatarPath);
+        }
+        catch (err)
+        {
+            setError('Failed to select default avatar. Please try again.');
         }
     };
 
@@ -386,6 +470,25 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
                         <HintText>
                             Tap photo to change
                         </HintText>
+
+                        <DefaultAvatarsWrapper>
+                            <DefaultAvatarsLabel>
+                                Or pick a default avatar
+                            </DefaultAvatarsLabel>
+                            <DefaultAvatarsRow>
+                                {DEFAULT_AVATARS.map((path) => (
+                                    <DefaultAvatarOption
+                                        key={path}
+                                        type="button"
+                                        onClick={() => handleDefaultAvatarSelect(path)}
+                                        disabled={isLoading}
+                                        $isSelected={selectedDefaultAvatar === path}
+                                    >
+                                        <img src={path} alt="Default avatar option" />
+                                    </DefaultAvatarOption>
+                                ))}
+                            </DefaultAvatarsRow>
+                        </DefaultAvatarsWrapper>
                     </AvatarSection>
 
                     {error && <ErrorText>{error}</ErrorText>}
