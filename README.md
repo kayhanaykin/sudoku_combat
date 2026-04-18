@@ -1,5 +1,5 @@
 _This project has been created as part
-of the 42 curriculum by kaykin, ekarau, apalaz, yunozdem._
+of the 42 curriculum by kaykin, ekaraurg, apalaz, yunozdem._
 
 
 ## [Instructions - Jump to Installation](#installation-of-the-project)
@@ -7,11 +7,11 @@ of the 42 curriculum by kaykin, ekarau, apalaz, yunozdem._
 # Description - Final Project of 42
 ![Static Badge](https://img.shields.io/badge/42-Project-black?style=for-the-badge)
 
-This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called ft_transendence. It has been successfully completed by 4 teammate software developers, namely, [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), Mr. Yunus Emre Özdem.
+This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called ft_transendence. It has been successfully completed by 4 teammate software developers, namely, [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), Mr. Yunus Emre Özdemir.
 
 The project has been done according to ft_transendence subject document version 19 and evaluated with evaluation page that is available during evaluation. 
 
-The project has been planned to be submitted about March of 2026. It has been done by students of and at the campus of [42 Istanbul](https://42istanbul.com.tr/).
+The project has been planned to be submitted about April of 2026. It has been done by students of and at the campus of [42 Istanbul](https://42istanbul.com.tr/).
 
 In order to successfully finish the project, mandatory parts and at least 14 points of modules should be done.
 
@@ -65,7 +65,7 @@ Implement features and modules.
 ## Use a Frontend Framework (React, 1pt)
 <ul>
 <li>Developed by Ege Karaurgan</li>
-<li>DOM ensures highly efficient updates and rendering, which provides the smooth and responsive user experience necessary for a real-time multiplayer game</li>
+<li>Virtual DOM ensures highly efficient updates and rendering, which provides the smooth and responsive user experience necessary for a real-time multiplayer game</li>
 <li>React's extensive ecosystem easily integrates with Django</li>
 </ul>
 
@@ -99,6 +99,7 @@ Implement features and modules.
 ## Support for Additional Browsers (1pt)
 
 <ul>
+<li>Developed by Ege Karaurgan</li>
 <li>Web application is checked with Google Chrome and Firefox. </li>
 </ul>
 
@@ -154,7 +155,7 @@ Implement features and modules.
 <li>Achievements, badges, leaderboards are implemented </li>
 <li>Data is stored in microservice database</li>
 <li>Game progress bars implemented.</li>
-<li>Every achicement and badge have clear explaination.</li>
+<li>Every achivement and badge have clear explaination.</li>
 </ul>
 
 ## Backend as Microservices (2pts)
@@ -162,14 +163,14 @@ Implement features and modules.
 <ul>
 <li>Developed by Kayhan Aykın</li>
 <li>Web app is split into five different microservices.</li>
-<li>Microservices are commmunicating with JSON messeages</li>
+<li>Microservices are communicating with JSON messages</li>
 <li>The tasks of the web application are divided into, user service, combat service, statistics service, game service.</li>
 </ul>
 
 # Features List
 
 <ul>
-<li>Frontend, Ege Karaurgan - React-based web interface providing real-time multiplayer gameplay, user profiles, and leaderboards.</li>
+<li>Frontend, Ege Karaurgan - React-based SPA providing real-time multiplayer gameplay, user profiles, friend management, match history views, and leaderboard displays.</li>
 <li>Game Service, Kayhan Aykın - C++ microservice handling Sudoku puzzle generation, validation, and hint logic with optimal performance.</li>
 <li>User Service, Kayhan Aykın - Django microservice managing user authentication, profiles, friend lists, and achievements.</li>
 <li>Combat Service, Ali Eren Palaz - NestJS WebSocket service orchestrating real-time multiplayer game rooms and synchronized gameplay.</li>
@@ -316,10 +317,10 @@ This project works in a docker container. Therefore, docker engine has to be ins
 ```bash
 docker --version
 ```
- If u see a version, it has benn installed. If not please follow the [docker engine installation link](https://docs.docker.com/engine/install/) for installation.
+ If u see a version, it has been installed. If not please follow the [docker engine installation link](https://docs.docker.com/engine/install/) for installation.
 
  ## 2<sup>nd</sup> Step - Environment
- For security purposes, .env file has not been pushed to remote repo. There is a .env.example file that has some generic key values for testing purposes. Please change the name of the file to **".env"** from **"env.example"**.
+ For security purposes, .env file has not been pushed to remote repo. There is a .env.example file that has some generic key values for testing purposes. Please change the name of the file to **".env"** from **".env.example"**.
 
 ## 3<sup>rd</sup> Step - Build
  Just make from root of your repo.
@@ -344,6 +345,13 @@ Everything is ready, reach site from Chorme or Firefox, using, [https://localhos
   <li><i><a href="https://www.makeareadme.com/">https://www.makeareadme.com/</a></i></li>
 </ul>
 
+## Frontend
+<ul>
+  <li><i><a href="https://medium.com/@janelle.wg/atomic-design-pattern-how-to-structure-your-react-application-2bb4d9ca5f97">Atomic Design Pattern - How to structure your React application</a></i></li>
+  <li><i><a href="https://styled-components.com/docs/advanced">Styled Components - Advanced Usage</a></i></li>
+  <li><i><a href="https://react.dev/learn">React - Official Documentation</a></i></li>
+</ul>
+
 ## AI Usage
 ### AI Usage
 #### Game Service (C++)
@@ -361,13 +369,15 @@ Everything is ready, reach site from Chorme or Firefox, using, [https://localhos
 - Provided guidance on managing complex WebSocket connections during active gameplay.
 - Helped implement the logic for handling player disconnections and reconnections.
 
-#### Stats Service (NestJS)
+#### Stats Service (C++)
 - Assisted in defining the database architecture for tracking detailed match history.
 - Provided logic for calculating and updating user achievements and leaderboards.
 - Helped structure the TypeORM queries for efficient statistics retrieval.
 
 #### Frontend (React)
-- Assisted in building reusable UI components with a consistent design system.
-- Provided guidance on managing complex global states using modern React hooks.
-- Helped integrate multiple microservice APIs into a cohesive dashboard experience.
-
+- Since this was my first React project, I used AI as a learning companion to understand core concepts like hooks, context, and component lifecycle.
+- Got help with structuring the component hierarchy (atomic design) and organizing folders when I wasn't sure about the best approach.
+- Asked for guidance when stuck on specific CSS issues (layout, responsive design, styled-components syntax).
+- Used AI to debug errors and understand unfamiliar error messages, especially around state management and WebSocket connections.
+- Received suggestions on refactoring messy code and improving overall code structure.
+- Used AI to translate parts of the README and in-app texts from Turkish to English.

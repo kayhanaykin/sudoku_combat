@@ -150,6 +150,11 @@ const MatchHistoryTable = ({ username, userId = null }) =>
         5: 'Extreme'
     };
 
+    const modeMap = {
+        online: 'COMBAT',
+        offline: 'SINGLE'
+    };
+
     const formatDuration = (seconds) =>
     {
         const parsed = Number(seconds);
@@ -259,8 +264,8 @@ const MatchHistoryTable = ({ username, userId = null }) =>
                             let modeType = 'none';
                             if (match.mode)
                             {
-                                modeText = match.mode.toUpperCase();
                                 modeType = match.mode.toLowerCase();
+                                modeText = modeMap[modeType] || match.mode.toUpperCase();
                             }
 
                             const dateText = new Date(match.played_at).toLocaleDateString();
