@@ -128,108 +128,99 @@ const MessageContainer = styled.div`
     background-color: #f9fafb;
 `;
 
-const DebugUsersPage = () => 
-{
-    const { user, logout, loading: authLoading } = useAuth();
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+const DebugUsersPage = () => {
+	const { user, logout, loading: authLoading } = useAuth();
+	const [users, setUsers] = useState([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(null);
 
-    useEffect(() => 
-    {
-        if (authLoading)
-            return;
+	useEffect(() => {
+		if (authLoading)
+			return;
 
-        if (!user || !user.is_superuser)
-        {
-            window.location.href = '/';
-            return;
-        }
+		if (!user || !user.is_superuser) {
+			window.location.href = '/';
+			return;
+		}
 
-        const fetchUsers = async () => 
-        {
-            try
-            {
-                const response = await fetch('/api/v1/user/debug-users/', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
+		const fetchUsers = async () => {
+			try {
+				const response = await fetch('/api/v1/user/debug-users/', {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+				});
 
-                if (response.ok)
-                {
-                    const data = await response.json();
-                    setUsers(data);
-                }
-                else
-                    setError('Failed to fetch users');
-            }
-            catch (err)
-            {
-                setError('An error occurred while fetching users');
-                console.error(err);
-            }
-            finally
-            {
-                setLoading(false);
-            }
-        };
+				if (response.ok) {
+					const data = await response.json();
+					setUsers(data);
+				}
+				else
+					setError('Failed to fetch users');
+			}
+			catch (err) {
+				setError('An error occurred while fetching users');
+				console.error(err);
+			}
+			finally {
+				setLoading(false);
+			}
+		};
 
-        fetchUsers();
-    }, [authLoading, user]);
+		fetchUsers();
+	}, [authLoading, user]);
 
-    const handleLogout = () => 
-    {
-        logout();
-    };
+	const handleLogout = () => {
+		logout();
+	};
 
-    if (loading)
-        return <MessageContainer>Loading users...</MessageContainer>;
+	if (loading)
+		return <MessageContainer>Loading users...</MessageContainer>;
 
-    if (error)
-        return <MessageContainer $isError>{error}</MessageContainer>;
+	if (error)
+		return <MessageContainer $isError>{error}</MessageContainer>;
 
-    return (
-        <PageWrapper>
-            <ContentContainer>
-                <Header>
-                    <Title>Debug Users</Title>
-                    <LogoutButton onClick={handleLogout}>
-                        Logout
-                    </LogoutButton>
-                </Header>
-                
-                <main style={{ flex: 1 }}>
-                    <TableWrapper>
-                        <Table>
-                            <thead>
-                                <tr>
-                                    <Th>ID</Th>
-                                    <Th>Username</Th>
-                                    <Th>Display Name</Th>
-                                    <Th>Email</Th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((userData) => (
-                                    <TableRow key={userData.id}>
-                                        <Td>{userData.id}</Td>
-                                        <Td><strong>{userData.username}</strong></Td>
-                                        <Td>{userData.display_name || '-'}</Td>
-                                        <Td>{userData.email || 'N/A'}</Td>
-                                    </TableRow>
-                                ))}
-                            </tbody>
-                        </Table>
-                    </TableWrapper>
-                </main>
-            </ContentContainer>
-            
-            <Footer />
-        </PageWrapper>
-    );
+	return (
+		<PageWrapper>
+			<ContentContainer>
+				<Header>
+					<Title>Debug Users</Title>
+					<LogoutButton onClick={handleLogout}>
+						Logout
+					</LogoutButton>
+				</Header>
+
+				<main style={{ flex: 1 }}>
+					<TableWrapper>
+						<Table>
+							<thead>
+								<tr>
+									<Th>ID</Th>
+									<Th>Username</Th>
+									<Th>Display Name</Th>
+									<Th>Email</Th>
+								</tr>
+							</thead>
+							<tbody>
+								{users.map((userData) => (
+									<TableRow key={userData.id}>
+										<Td>{userData.id}</Td>
+										<Td><strong>{userData.username}</strong></Td>
+										<Td>{userData.display_name || '-'}</Td>
+										<Td>{userData.email || 'N/A'}</Td>
+									</TableRow>
+								))}
+							</tbody>
+						</Table>
+					</TableWrapper>
+				</main>
+			</ContentContainer>
+
+			<Footer />
+		</PageWrapper>
+	);
 };
 
 export default DebugUsersPage;

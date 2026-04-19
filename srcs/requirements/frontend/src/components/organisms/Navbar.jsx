@@ -360,248 +360,228 @@ const SecondaryButton = styled(BasicButton)`
     }
 `;
 
-const Navbar = () =>
-{
-    const navigate = useNavigate();
-    const { user, logout } = useAuth();
-    const [dbUser, setDbUser] = useState(null);
-    const [isLoginOpen, setIsLoginOpen] = useState(false);
-    const [isSignUpOpen, setIsSignUpOpen] = useState(false);
-    const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false); 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [isFriendsOpen, setIsFriendsOpen] = useState(false);
-    const dropdownRef = useRef(null);
-    const friendsRef = useRef(null);
-    const BASE_URL = '';
+const Navbar = () => {
+	const navigate = useNavigate();
+	const { user, logout } = useAuth();
+	const [dbUser, setDbUser] = useState(null);
+	const [isLoginOpen, setIsLoginOpen] = useState(false);
+	const [isSignUpOpen, setIsSignUpOpen] = useState(false);
+	const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+	const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+	const [isFriendsOpen, setIsFriendsOpen] = useState(false);
+	const dropdownRef = useRef(null);
+	const friendsRef = useRef(null);
+	const BASE_URL = '';
 
-    useEffect(() =>
-    {
-        const fetchLatestDetails = async () =>
-        {
-            if (user)
-            {
-                try 
-                {
-                    const data = await getUserDetails();
-                    if (data)
-                        setDbUser(data);
-                }
-                catch (error)
-                {
-                    console.error(error);
-                }
-            }
-        };
-        fetchLatestDetails();
-    }, [user]);
+	useEffect(() => {
+		const fetchLatestDetails = async () => {
+			if (user) {
+				try {
+					const data = await getUserDetails();
+					if (data)
+						setDbUser(data);
+				}
+				catch (error) {
+					console.error(error);
+				}
+			}
+		};
+		fetchLatestDetails();
+	}, [user]);
 
-    useEffect(() =>
-    {
-        const handleClickOutside = (event) =>
-        {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target))
-                setIsDropdownOpen(false);
-                
-            if (friendsRef.current && !friendsRef.current.contains(event.target))
-                setIsFriendsOpen(false);
-        };
-        
-        document.addEventListener('mousedown', handleClickOutside);
-        
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target))
+				setIsDropdownOpen(false);
 
-    const handleLogout = async () =>
-    {
-        await logout();
-        setIsDropdownOpen(false);
-        setIsFriendsOpen(false);
-        navigate('/');
-    };
+			if (friendsRef.current && !friendsRef.current.contains(event.target))
+				setIsFriendsOpen(false);
+		};
 
-    const getUserDisplayData = () =>
-    {
-        let source = user;
-        
-        if (dbUser)
-            source = dbUser;
-        else if (user && user.user)
-            source = user.user;
-        
-        if (!user)
-        {
-            return { 
-                name: 'Guest', 
-                username: 'guest',
-                avatar: "https://ui-avatars.com/api/?background=random&name=Guest" 
-            };
-        }
+		document.addEventListener('mousedown', handleClickOutside);
 
-        let currentUsername = 'user';
-        if (source && source.username)
-            currentUsername = source.username;
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
 
-        let currentDisplayName = currentUsername;
-        if (source && source.display_name)
-            currentDisplayName = source.display_name;
-        else if (source && source.nickname)
-            currentDisplayName = source.nickname;
+	const handleLogout = async () => {
+		await logout();
+		setIsDropdownOpen(false);
+		setIsFriendsOpen(false);
+		navigate('/');
+	};
 
-        let avatarSrc = "https://ui-avatars.com/api/?background=random&name=" + currentUsername;
-        
-        if (source && source.avatar)
-        {
-            if (source.avatar.startsWith('http'))
-                avatarSrc = source.avatar;
-            else
-                avatarSrc = `${BASE_URL}${source.avatar}`;
-        }
+	const getUserDisplayData = () => {
+		let source = user;
 
-        return { name: currentDisplayName, username: currentUsername, avatar: avatarSrc };
-    };
+		if (dbUser)
+			source = dbUser;
+		else if (user && user.user)
+			source = user.user;
 
-    const { name, username, avatar } = getUserDisplayData();
+		if (!user) {
+			return {
+				name: 'Guest',
+				username: 'guest',
+				avatar: "https://ui-avatars.com/api/?background=random&name=Guest"
+			};
+		}
 
-    const handleAvatarError = (e) =>
-    {
-        e.target.src = "https://ui-avatars.com/api/?background=random&name=" + username;
-    };
+		let currentUsername = 'user';
+		if (source && source.username)
+			currentUsername = source.username;
 
-    const toggleFriends = () =>
-    {
-        setIsFriendsOpen(!isFriendsOpen);
-        setIsDropdownOpen(false);
-    };
+		let currentDisplayName = currentUsername;
+		if (source && source.display_name)
+			currentDisplayName = source.display_name;
+		else if (source && source.nickname)
+			currentDisplayName = source.nickname;
 
-    const toggleProfile = () =>
-    {
-        setIsDropdownOpen(!isDropdownOpen);
-        setIsFriendsOpen(false);
-    };
+		let avatarSrc = "https://ui-avatars.com/api/?background=random&name=" + currentUsername;
 
-    let friendsMenuElement = null;
-    if (isFriendsOpen)
-    {
-        friendsMenuElement = (
-            <FriendsDropdownMenu>
-                <WidgetWrapper>
-                    <FriendListWidget />
-                </WidgetWrapper>
-            </FriendsDropdownMenu>
-        );
-    }
+		if (source && source.avatar) {
+			if (source.avatar.startsWith('http'))
+				avatarSrc = source.avatar;
+			else
+				avatarSrc = `${BASE_URL}${source.avatar}`;
+		}
 
-    let profileMenuElement = null;
-    if (isDropdownOpen)
-    {
-        profileMenuElement = (
-            <ProfileDropdownMenu>
-                <UserInfoBox>
-                    <strong>{name}</strong>
-                    <span>@{username}</span>
-                </UserInfoBox>
-                <Divider />
-                <MenuItem onClick={() => { navigate('/profile'); setIsDropdownOpen(false); }}>
-                    👤 Profile Details
-                </MenuItem>
-                <Divider />
-                <LogoutMenuItem onClick={handleLogout}>
-                    Log Out
-                </LogoutMenuItem>
-            </ProfileDropdownMenu>
-        );
-    }
+		return { name: currentDisplayName, username: currentUsername, avatar: avatarSrc };
+	};
 
-    let authSectionElement = null;
-    if (user)
-    {
-        authSectionElement = (
-            <ActionContainer>
-                
-                <DropdownContainer ref={friendsRef}>
-                    <FriendsTriggerButton type="button" onClick={toggleFriends}>
-                        <span role="img" aria-label="social">👥</span>
-                        <ButtonText>Social Hub</ButtonText>
-                    </FriendsTriggerButton>
-                    {friendsMenuElement}
-                </DropdownContainer>
+	const { name, username, avatar } = getUserDisplayData();
 
-                <DropdownContainer ref={dropdownRef}>
-                    <TriggerButton type="button" onClick={toggleProfile}>
-                        <AvatarImage 
-                            src={avatar} 
-                            alt={username} 
-                            onError={handleAvatarError} 
-                        />
-                        <DisplayName>{name}</DisplayName>
-                    </TriggerButton>
-                    {profileMenuElement}
-                </DropdownContainer>
-                
-            </ActionContainer>
-        );
-    }
-    else
-    {
-        authSectionElement = (
-            <>
-                <SecondaryButton onClick={() => setIsLoginOpen(true)}>
-                    Log In
-                </SecondaryButton>
-                <PrimaryButton onClick={() => setIsSignUpOpen(true)}>
-                    Sign Up
-                </PrimaryButton>
-            </>
-        );
-    }
+	const handleAvatarError = (e) => {
+		e.target.src = "https://ui-avatars.com/api/?background=random&name=" + username;
+	};
 
-    let modalsElement = null;
-    if (!user)
-    {
-        modalsElement = (
-            <>
-                <Login 
-                    isOpen={isLoginOpen} 
-                    onClose={() => setIsLoginOpen(false)} 
-                    onSwitchToSignup={() => { setIsLoginOpen(false); setIsSignUpOpen(true); }}
-                />
-                <SignUp 
-                    isOpen={isSignUpOpen} 
-                    onClose={() => setIsSignUpOpen(false)}
-                    onSwitchToLogin={() => { setIsSignUpOpen(false); setIsLoginOpen(true); }}
-                />
-            </>
-        );
-    }
+	const toggleFriends = () => {
+		setIsFriendsOpen(!isFriendsOpen);
+		setIsDropdownOpen(false);
+	};
 
-    return (
-        <>
-            <NavContainer>
-                
-                <LogoContainer onClick={() => navigate('/')}>
-                    <LogoTextSudo>Sudo</LogoTextSudo>
-                    <LogoTextKu>ku</LogoTextKu>
-                </LogoContainer>
-                
-                <AuthButtons>
-                    <HowToPlayNavButton onClick={() => setIsHowToPlayOpen(true)}>
-                        <span role="img" aria-label="help">❓</span>
-                        <ButtonText>How to Play</ButtonText>
-                    </HowToPlayNavButton>
+	const toggleProfile = () => {
+		setIsDropdownOpen(!isDropdownOpen);
+		setIsFriendsOpen(false);
+	};
 
-                    {authSectionElement}
-                </AuthButtons>
-                
-            </NavContainer>
+	let friendsMenuElement = null;
+	if (isFriendsOpen) {
+		friendsMenuElement = (
+			<FriendsDropdownMenu>
+				<WidgetWrapper>
+					<FriendListWidget />
+				</WidgetWrapper>
+			</FriendsDropdownMenu>
+		);
+	}
 
-            {modalsElement}
-            
-            <HowToPlayModal 
-                isOpen={isHowToPlayOpen} 
-                onClose={() => setIsHowToPlayOpen(false)} 
-            />
-        </>
-    );
+	let profileMenuElement = null;
+	if (isDropdownOpen) {
+		profileMenuElement = (
+			<ProfileDropdownMenu>
+				<UserInfoBox>
+					<strong>{name}</strong>
+					<span>@{username}</span>
+				</UserInfoBox>
+				<Divider />
+				<MenuItem onClick={() => { navigate('/profile'); setIsDropdownOpen(false); }}>
+					👤 Profile Details
+				</MenuItem>
+				<Divider />
+				<LogoutMenuItem onClick={handleLogout}>
+					Log Out
+				</LogoutMenuItem>
+			</ProfileDropdownMenu>
+		);
+	}
+
+	let authSectionElement = null;
+	if (user) {
+		authSectionElement = (
+			<ActionContainer>
+
+				<DropdownContainer ref={friendsRef}>
+					<FriendsTriggerButton type="button" onClick={toggleFriends}>
+						<span role="img" aria-label="social">👥</span>
+						<ButtonText>Social Hub</ButtonText>
+					</FriendsTriggerButton>
+					{friendsMenuElement}
+				</DropdownContainer>
+
+				<DropdownContainer ref={dropdownRef}>
+					<TriggerButton type="button" onClick={toggleProfile}>
+						<AvatarImage
+							src={avatar}
+							alt={username}
+							onError={handleAvatarError}
+						/>
+						<DisplayName>{name}</DisplayName>
+					</TriggerButton>
+					{profileMenuElement}
+				</DropdownContainer>
+
+			</ActionContainer>
+		);
+	}
+	else {
+		authSectionElement = (
+			<>
+				<SecondaryButton onClick={() => setIsLoginOpen(true)}>
+					Log In
+				</SecondaryButton>
+				<PrimaryButton onClick={() => setIsSignUpOpen(true)}>
+					Sign Up
+				</PrimaryButton>
+			</>
+		);
+	}
+
+	let modalsElement = null;
+	if (!user) {
+		modalsElement = (
+			<>
+				<Login
+					isOpen={isLoginOpen}
+					onClose={() => setIsLoginOpen(false)}
+					onSwitchToSignup={() => { setIsLoginOpen(false); setIsSignUpOpen(true); }}
+				/>
+				<SignUp
+					isOpen={isSignUpOpen}
+					onClose={() => setIsSignUpOpen(false)}
+					onSwitchToLogin={() => { setIsSignUpOpen(false); setIsLoginOpen(true); }}
+				/>
+			</>
+		);
+	}
+
+	return (
+		<>
+			<NavContainer>
+
+				<LogoContainer onClick={() => navigate('/')}>
+					<LogoTextSudo>Sudo</LogoTextSudo>
+					<LogoTextKu>ku</LogoTextKu>
+				</LogoContainer>
+
+				<AuthButtons>
+					<HowToPlayNavButton onClick={() => setIsHowToPlayOpen(true)}>
+						<span role="img" aria-label="help">❓</span>
+						<ButtonText>How to Play</ButtonText>
+					</HowToPlayNavButton>
+
+					{authSectionElement}
+				</AuthButtons>
+
+			</NavContainer>
+
+			{modalsElement}
+
+			<HowToPlayModal
+				isOpen={isHowToPlayOpen}
+				onClose={() => setIsHowToPlayOpen(false)}
+			/>
+		</>
+	);
 };
 
 export default Navbar;

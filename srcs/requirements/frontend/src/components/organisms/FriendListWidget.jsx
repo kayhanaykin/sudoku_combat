@@ -149,261 +149,239 @@ const EmptyMessage = styled.p`
     font-size: 0.9rem;
 `;
 
-const FriendListWidget = () =>
-{
-    const navigate = useNavigate();
-    const [searchInput, setSearchInput] = useState('');
-    const [searchError, setSearchError] = useState('');
-    const [isSearching, setIsSearching] = useState(false);
-    
-    const errorTimeoutRef = useRef(null);
-    
-    const {
-        friends,
-        loading,
-        error,
-        successMsg,
-        addFriend,
-        approveFriend,
-        removeFriend,
-        refresh
-    } = useFriendList();
+const FriendListWidget = () => {
+	const navigate = useNavigate();
+	const [searchInput, setSearchInput] = useState('');
+	const [searchError, setSearchError] = useState('');
+	const [isSearching, setIsSearching] = useState(false);
 
-    const pendingRequests = friends.filter(f => f.status === 'pending');
-    const sentRequests = friends.filter(f => f.status === 'sent');
-    const activeFriends = friends.filter(f => f.status === 'accepted');
+	const errorTimeoutRef = useRef(null);
 
-    useEffect(() => 
-    {
-        return () => 
-        {
-            if (errorTimeoutRef.current) 
-                clearTimeout(errorTimeoutRef.current);
-        };
-    }, []);
+	const {
+		friends,
+		loading,
+		error,
+		successMsg,
+		addFriend,
+		approveFriend,
+		removeFriend,
+		refresh
+	} = useFriendList();
 
-    const displaySearchError = (message) => 
-    {
-        setSearchError(message);
-        
-        if (errorTimeoutRef.current) 
-            clearTimeout(errorTimeoutRef.current);
-        
-        errorTimeoutRef.current = setTimeout(() => 
-        {
-            setSearchError('');
-        }, 3000);
-    };
+	const pendingRequests = friends.filter(f => f.status === 'pending');
+	const sentRequests = friends.filter(f => f.status === 'sent');
+	const activeFriends = friends.filter(f => f.status === 'accepted');
 
-    const handleSearchProfile = async (e) =>
-    {
-        e.preventDefault();
-        setSearchError('');
-        
-        if (errorTimeoutRef.current) 
-            clearTimeout(errorTimeoutRef.current);
-        
-        const username = searchInput.trim();
-        if (username)
-        {
-            try
-            {
-                setIsSearching(true);
+	useEffect(() => {
+		return () => {
+			if (errorTimeoutRef.current)
+				clearTimeout(errorTimeoutRef.current);
+		};
+	}, []);
 
-                const response = await fetch(`/api/v1/user/by-username/${encodeURIComponent(username)}/`);
-                const data = await response.json();
+	const displaySearchError = (message) => {
+		setSearchError(message);
 
-                if (!response.ok || data.error)
-                {
-                    displaySearchError(data.error || 'User not found.');
-                    return;
-                }
+		if (errorTimeoutRef.current)
+			clearTimeout(errorTimeoutRef.current);
 
-                navigate(`/profile/${username}`);
-                setSearchInput('');
-            }
-            catch (err)
-            {
-                displaySearchError('Search failed. Please try again.');
-            }
-            finally
-            {
-                setIsSearching(false);
-            }
-        }
-    };
+		errorTimeoutRef.current = setTimeout(() => {
+			setSearchError('');
+		}, 3000);
+	};
 
-    let errorElement = null;
-    if (error !== null && error !== '')
-    {
-        errorElement = (
-            <StatusMessage $isError={true}>
-                {error}
-            </StatusMessage>
-        );
-    }
+	const handleSearchProfile = async (e) => {
+		e.preventDefault();
+		setSearchError('');
 
-    let searchErrorElement = null;
-    if (searchError !== null && searchError !== '')
-    {
-        searchErrorElement = (
-            <StatusMessage $isError={true}>
-                {searchError}
-            </StatusMessage>
-        );
-    }
+		if (errorTimeoutRef.current)
+			clearTimeout(errorTimeoutRef.current);
 
-    let successElement = null;
-    if (successMsg !== null && successMsg !== '')
-    {
-        successElement = (
-            <StatusMessage $isError={false}>
-                {successMsg}
-            </StatusMessage>
-        );
-    }
+		const username = searchInput.trim();
+		if (username) {
+			try {
+				setIsSearching(true);
 
-    let contentElement = null;
-    
-    if (loading === true)
-    {
-        contentElement = (
-            <EmptyMessage>
-                Loading...
-            </EmptyMessage>
-        );
-    }
-    else
-    {
-        let pendingSection = null;
-        if (pendingRequests.length > 0)
-        {
-            pendingSection = (
-                <>
-                    <SectionTitle>
-                        Requests ({pendingRequests.length})
-                    </SectionTitle>
-                    {pendingRequests.map(req => (
-                        <FriendItem
-                            key={req.id}
-                            id={req.id}
-                            username={req.username}
-                            displayName={req.displayName}
-                            avatar={req.avatar}
-                            status="pending"
-                            onApprove={approveFriend}
-                            onRemove={removeFriend}
-                        />
-                    ))}
-                </>
-            );
-        }
+				const response = await fetch(`/api/v1/user/by-username/${encodeURIComponent(username)}/`);
+				const data = await response.json();
 
-        let sentSection = null;
-        if (sentRequests.length > 0)
-        {
-            sentSection = (
-                <>
-                    <SectionTitle>
-                        Sent Requests ({sentRequests.length})
-                    </SectionTitle>
-                    {sentRequests.map(req => (
-                        <FriendItem
-                            key={req.id}
-                            id={req.id}
-                            username={req.username}
-                            displayName={req.displayName}
-                            avatar={req.avatar}
-                            status="sent"
-                            onRemove={removeFriend}
-                        />
-                    ))}
-                </>
-            );
-        }
+				if (!response.ok || data.error) {
+					displaySearchError(data.error || 'User not found.');
+					return;
+				}
 
-        let friendsListContent = null;
-        if (activeFriends.length === 0)
-        {
-            friendsListContent = (
-                <EmptyMessage>
-                    No active friends.
-                </EmptyMessage>
-            );
-        }
-        else
-        {
-            friendsListContent = activeFriends.map(friend => (
-                <FriendItem
-                    key={friend.id}
-                    id={friend.id}
-                    username={friend.username}
-                    displayName={friend.displayName}
-                    avatar={friend.avatar}
-                    status="accepted"
-                    isOnline={friend.is_online}
-                    onRemove={removeFriend}
-                />
-            ));
-        }
+				navigate(`/profile/${username}`);
+				setSearchInput('');
+			}
+			catch (err) {
+				displaySearchError('Search failed. Please try again.');
+			}
+			finally {
+				setIsSearching(false);
+			}
+		}
+	};
 
-        contentElement = (
-            <>
-                {pendingSection}
-                {sentSection}
-                <SectionTitle>
-                    Friends ({activeFriends.length})
-                </SectionTitle>
-                {friendsListContent}
-            </>
-        );
-    }
+	let errorElement = null;
+	if (error !== null && error !== '') {
+		errorElement = (
+			<StatusMessage $isError={true}>
+				{error}
+			</StatusMessage>
+		);
+	}
 
-    return (
-        <WidgetContainer>
-            <WidgetHeader>
-                <WidgetTitle>
-                    Social Hub
-                </WidgetTitle>
-                <RefreshButton onClick={refresh} title="Refresh">
-                    ⟳
-                </RefreshButton>
-            </WidgetHeader>
+	let searchErrorElement = null;
+	if (searchError !== null && searchError !== '') {
+		searchErrorElement = (
+			<StatusMessage $isError={true}>
+				{searchError}
+			</StatusMessage>
+		);
+	}
 
-            <SearchForm onSubmit={handleSearchProfile}>
-                <SearchInputWrapper>
-                    <SearchInput
-                        type="text"
-                        placeholder="Search profile..."
-                        value={searchInput}
-                        onChange={(e) =>
-                        {
-                            setSearchInput(e.target.value);
-                            if (searchError) 
-                            {
-                                setSearchError('');
-                                if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
-                            }
-                        }}
-                    />
-                    <SearchButton type="submit" disabled={isSearching}>
-                        {isSearching ? '...' : 'Go'}
-                    </SearchButton>
-                </SearchInputWrapper>
-            </SearchForm>
+	let successElement = null;
+	if (successMsg !== null && successMsg !== '') {
+		successElement = (
+			<StatusMessage $isError={false}>
+				{successMsg}
+			</StatusMessage>
+		);
+	}
 
-            {searchErrorElement}
+	let contentElement = null;
 
-            <AddFriendForm onAdd={addFriend} />
+	if (loading === true) {
+		contentElement = (
+			<EmptyMessage>
+				Loading...
+			</EmptyMessage>
+		);
+	}
+	else {
+		let pendingSection = null;
+		if (pendingRequests.length > 0) {
+			pendingSection = (
+				<>
+					<SectionTitle>
+						Requests ({pendingRequests.length})
+					</SectionTitle>
+					{pendingRequests.map(req => (
+						<FriendItem
+							key={req.id}
+							id={req.id}
+							username={req.username}
+							displayName={req.displayName}
+							avatar={req.avatar}
+							status="pending"
+							onApprove={approveFriend}
+							onRemove={removeFriend}
+						/>
+					))}
+				</>
+			);
+		}
 
-            {errorElement}
-            {successElement}
+		let sentSection = null;
+		if (sentRequests.length > 0) {
+			sentSection = (
+				<>
+					<SectionTitle>
+						Sent Requests ({sentRequests.length})
+					</SectionTitle>
+					{sentRequests.map(req => (
+						<FriendItem
+							key={req.id}
+							id={req.id}
+							username={req.username}
+							displayName={req.displayName}
+							avatar={req.avatar}
+							status="sent"
+							onRemove={removeFriend}
+						/>
+					))}
+				</>
+			);
+		}
 
-            <FriendListScrollArea>
-                {contentElement}
-            </FriendListScrollArea>
-        </WidgetContainer>
-    );
+		let friendsListContent = null;
+		if (activeFriends.length === 0) {
+			friendsListContent = (
+				<EmptyMessage>
+					No active friends.
+				</EmptyMessage>
+			);
+		}
+		else {
+			friendsListContent = activeFriends.map(friend => (
+				<FriendItem
+					key={friend.id}
+					id={friend.id}
+					username={friend.username}
+					displayName={friend.displayName}
+					avatar={friend.avatar}
+					status="accepted"
+					isOnline={friend.is_online}
+					onRemove={removeFriend}
+				/>
+			));
+		}
+
+		contentElement = (
+			<>
+				{pendingSection}
+				{sentSection}
+				<SectionTitle>
+					Friends ({activeFriends.length})
+				</SectionTitle>
+				{friendsListContent}
+			</>
+		);
+	}
+
+	return (
+		<WidgetContainer>
+			<WidgetHeader>
+				<WidgetTitle>
+					Social Hub
+				</WidgetTitle>
+				<RefreshButton onClick={refresh} title="Refresh">
+					⟳
+				</RefreshButton>
+			</WidgetHeader>
+
+			<SearchForm onSubmit={handleSearchProfile}>
+				<SearchInputWrapper>
+					<SearchInput
+						type="text"
+						placeholder="Search profile..."
+						value={searchInput}
+						onChange={(e) => {
+							setSearchInput(e.target.value);
+							if (searchError) {
+								setSearchError('');
+								if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+							}
+						}}
+					/>
+					<SearchButton type="submit" disabled={isSearching}>
+						{isSearching ? '...' : 'Go'}
+					</SearchButton>
+				</SearchInputWrapper>
+			</SearchForm>
+
+			{searchErrorElement}
+
+			<AddFriendForm onAdd={addFriend} />
+
+			{errorElement}
+			{successElement}
+
+			<FriendListScrollArea>
+				{contentElement}
+			</FriendListScrollArea>
+		</WidgetContainer>
+	);
 };
 
 export default FriendListWidget;

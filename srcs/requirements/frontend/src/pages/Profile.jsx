@@ -7,7 +7,7 @@ import Footer from '../components/atoms/Footer';
 import ProfileContent from '../components/organisms/ProfileContent';
 import ConfirmationModal from '../components/molecules/ConfirmationModal';
 import { getUserStats, logoutUser, deleteUserAccount } from '../services/api';
-import { getUserDetails} from '../services/userService';
+import { getUserDetails } from '../services/userService';
 
 const PageContainer = styled.div`
     min-height: 100vh;
@@ -143,214 +143,188 @@ const LoadingText = styled.div`
     text-align: center;
 `;
 
-const Profile = () =>
-{
-    const { user, logout } = useAuth();
-    const navigate = useNavigate();
-    const { username: paramUsername } = useParams();
+const Profile = () => {
+	const { user, logout } = useAuth();
+	const navigate = useNavigate();
+	const { username: paramUsername } = useParams();
 
-    const [userDetails, setUserDetails] = useState(null);
-    const [stats, setStats] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [isOtherUser, setIsOtherUser] = useState(false);
-    const [error, setError] = useState(null);
+	const [userDetails, setUserDetails] = useState(null);
+	const [stats, setStats] = useState(null);
+	const [loading, setLoading] = useState(true);
+	const [isOtherUser, setIsOtherUser] = useState(false);
+	const [error, setError] = useState(null);
 
-    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-    const handleLogout = async () =>
-    {
-        document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        document.cookie = "csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+	const handleLogout = async () => {
+		document.cookie = "access_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = "refresh_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		document.cookie = "csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-        try
-        {
-            await logoutUser();
-        }
-        catch (error)
-        {
-            console.error(error);
-        }
-        finally
-        {
-            logout();
-            navigate('/');
-        }
-    };
+		try {
+			await logoutUser();
+		}
+		catch (error) {
+			console.error(error);
+		}
+		finally {
+			logout();
+			navigate('/');
+		}
+	};
 
-    const handleDeleteRequest = () =>
-    {
-        setIsDeleteModalOpen(true);
-    };
+	const handleDeleteRequest = () => {
+		setIsDeleteModalOpen(true);
+	};
 
-    const handleConfirmDelete = async () =>
-    {
-        const success = await deleteUserAccount();
+	const handleConfirmDelete = async () => {
+		const success = await deleteUserAccount();
 
-        if (success)
-        {
-            setIsDeleteModalOpen(false);
-            alert("Your account has been successfully deleted.");
-            logout();
-            navigate('/');
-        }
-        else
-        {
-            setIsDeleteModalOpen(false);
-            alert("An error occurred while deleting the account.");
-        }
-    };
+		if (success) {
+			setIsDeleteModalOpen(false);
+			alert("Your account has been successfully deleted.");
+			logout();
+			navigate('/');
+		}
+		else {
+			setIsDeleteModalOpen(false);
+			alert("An error occurred while deleting the account.");
+		}
+	};
 
-    useEffect(() =>
-    {
-        const fetchData = async () =>
-        {
-            setLoading(true);
-            setError(null);
+	useEffect(() => {
+		const fetchData = async () => {
+			setLoading(true);
+			setError(null);
 
-            if (paramUsername) 
-            {
-                try 
-                {
-                    let tempUserDetails = null;
-                    const userResponse = await fetch(`/api/v1/user/by-username/${paramUsername}/`);
-                    if (userResponse.ok)
-                        tempUserDetails = await userResponse.json();
+			if (paramUsername) {
+				try {
+					let tempUserDetails = null;
+					const userResponse = await fetch(`/api/v1/user/by-username/${paramUsername}/`);
+					if (userResponse.ok)
+						tempUserDetails = await userResponse.json();
 
-                    if (!tempUserDetails || !tempUserDetails.id)
-                    {
-                        setError(`User "${paramUsername}" not found`);
-                        setLoading(false);
-                        return;
-                    }
+					if (!tempUserDetails || !tempUserDetails.id) {
+						setError(`User "${paramUsername}" not found`);
+						setLoading(false);
+						return;
+					}
 
-                    const statsData = await getUserStats(tempUserDetails.username, tempUserDetails.id);
-                    setUserDetails(tempUserDetails);
-                    setStats(statsData);
+					const statsData = await getUserStats(tempUserDetails.username, tempUserDetails.id);
+					setUserDetails(tempUserDetails);
+					setStats(statsData);
 
-                    let isCurrentUser = false;
-                    if (user)
-                    {
-                        if (user.username === paramUsername)
-                            isCurrentUser = true;
-                    }
+					let isCurrentUser = false;
+					if (user) {
+						if (user.username === paramUsername)
+							isCurrentUser = true;
+					}
 
-                    setIsOtherUser(!isCurrentUser);
-                } 
-                catch (error) 
-                {
-                    console.error("Error fetching user profile:", error);
-                    setError(`User "${paramUsername}" not found`);
-                    setLoading(false);
-                    return;
-                }
-            }
-            else if (user)
-            {
-                try 
-                {
-                    const details = await getUserDetails();
-                    if (details)
-                    {
-                        setUserDetails(details);
-                        const statsData = await getUserStats(details.username, details.id);
-                        setStats(statsData);
-                        setIsOtherUser(false);
-                    }
-                } 
-                catch (err) 
-                {
-                    console.error("Error fetching profile:", err);
-                    setError("Failed to load profile");
-                }
-            }
-            else
-            {
-                navigate('/');
-                return;
-            }
+					setIsOtherUser(!isCurrentUser);
+				}
+				catch (error) {
+					console.error("Error fetching user profile:", error);
+					setError(`User "${paramUsername}" not found`);
+					setLoading(false);
+					return;
+				}
+			}
+			else if (user) {
+				try {
+					const details = await getUserDetails();
+					if (details) {
+						setUserDetails(details);
+						const statsData = await getUserStats(details.username, details.id);
+						setStats(statsData);
+						setIsOtherUser(false);
+					}
+				}
+				catch (err) {
+					console.error("Error fetching profile:", err);
+					setError("Failed to load profile");
+				}
+			}
+			else {
+				navigate('/');
+				return;
+			}
 
-            setLoading(false);
-        };
+			setLoading(false);
+		};
 
-        fetchData();
-    }, [user, paramUsername, navigate]);
+		fetchData();
+	}, [user, paramUsername, navigate]);
 
-    if (!user)
-    {
-        if (!paramUsername)
-            return null;
-    }
+	if (!user) {
+		if (!paramUsername)
+			return null;
+	}
 
-    let contentElement = null;
+	let contentElement = null;
 
-    if (error)
-    {
-        contentElement = (
-            <ErrorMessage>
-                {error}
-            </ErrorMessage>
-        );
-    }
-    else if (loading)
-    {
-        contentElement = (
-            <LoadingText>
-                Loading Profile...
-            </LoadingText>
-        );
-    }
-    else
-    {
-        let logoutFunc = null;
-        if (!isOtherUser)
-            logoutFunc = handleLogout;
+	if (error) {
+		contentElement = (
+			<ErrorMessage>
+				{error}
+			</ErrorMessage>
+		);
+	}
+	else if (loading) {
+		contentElement = (
+			<LoadingText>
+				Loading Profile...
+			</LoadingText>
+		);
+	}
+	else {
+		let logoutFunc = null;
+		if (!isOtherUser)
+			logoutFunc = handleLogout;
 
-        let deleteFunc = null;
-        if (!isOtherUser)
-            deleteFunc = handleDeleteRequest;
+		let deleteFunc = null;
+		if (!isOtherUser)
+			deleteFunc = handleDeleteRequest;
 
-        let confirmationModalElement = null;
-        if (!isOtherUser)
-        {
-            confirmationModalElement = (
-                <ConfirmationModal
-                    isOpen={isDeleteModalOpen}
-                    onClose={() => setIsDeleteModalOpen(false)}
-                    onConfirm={handleConfirmDelete}
-                    title="Delete Account"
-                    message="Are you sure you want to delete your account? This action cannot be undone and you will lose all your data."
-                />
-            );
-        }
+		let confirmationModalElement = null;
+		if (!isOtherUser) {
+			confirmationModalElement = (
+				<ConfirmationModal
+					isOpen={isDeleteModalOpen}
+					onClose={() => setIsDeleteModalOpen(false)}
+					onConfirm={handleConfirmDelete}
+					title="Delete Account"
+					message="Are you sure you want to delete your account? This action cannot be undone and you will lose all your data."
+				/>
+			);
+		}
 
-        contentElement = (
-            <>
-                <ProfileContent
-                    userDetails={userDetails}
-                    stats={stats}
-                    onLogout={logoutFunc}
-                    onDeleteAccount={deleteFunc}
-                    isOtherUser={isOtherUser}
-                />
-                
-                {confirmationModalElement}
-            </>
-        );
-    }
+		contentElement = (
+			<>
+				<ProfileContent
+					userDetails={userDetails}
+					stats={stats}
+					onLogout={logoutFunc}
+					onDeleteAccount={deleteFunc}
+					isOtherUser={isOtherUser}
+				/>
 
-    return (
-        <PageContainer>
+				{confirmationModalElement}
+			</>
+		);
+	}
 
-            <BackToHomeLink />
+	return (
+		<PageContainer>
 
-            {contentElement}
+			<BackToHomeLink />
 
-            <Footer />
+			{contentElement}
 
-        </PageContainer>
-    );
+			<Footer />
+
+		</PageContainer>
+	);
 };
 
 export default Profile;

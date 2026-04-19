@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { loginUser } from '../../services/api';
 
-const INTRA_AUTH_URL = "/api/user/auth/login/";
+const INTRA_AUTH_URL = "/api/v1/user/auth/login/";
 
 const fadeIn = keyframes`
     from 
@@ -129,38 +129,34 @@ export const SubmitButton = styled.button`
     width: 100%;
     margin-top: 10px;
     
-    cursor: ${props => 
-    {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
+    cursor: ${props => {
+		if (props.disabled)
+			return 'not-allowed';
 
-    opacity: ${props => 
-    {
-        if (props.disabled)
-            return '0.7';
-            
-        return '1';
-    }};
+		return 'pointer';
+	}};
+
+    opacity: ${props => {
+		if (props.disabled)
+			return '0.7';
+
+		return '1';
+	}};
 
     &:hover
     {
-        background-color: ${props => 
-        {
-            if (props.disabled)
-                return '#0e7c3a';
-                
-            return '#149345';
-        }};
-        transform: ${props => 
-        {
-            if (props.disabled)
-                return 'none';
-                
-            return 'translateY(-2px)';
-        }};
+        background-color: ${props => {
+		if (props.disabled)
+			return '#0e7c3a';
+
+		return '#149345';
+	}};
+        transform: ${props => {
+		if (props.disabled)
+			return 'none';
+
+		return 'translateY(-2px)';
+	}};
     }
 `;
 
@@ -201,38 +197,34 @@ export const IntraButton = styled.button`
     align-items: center;
     width: 100%;
 
-    cursor: ${props => 
-    {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
+    cursor: ${props => {
+		if (props.disabled)
+			return 'not-allowed';
+
+		return 'pointer';
+	}};
     
-    opacity: ${props => 
-    {
-        if (props.disabled)
-            return '0.7';
-            
-        return '1';
-    }};
+    opacity: ${props => {
+		if (props.disabled)
+			return '0.7';
+
+		return '1';
+	}};
 
     &:hover
     {
-        opacity: ${props => 
-        {
-            if (props.disabled)
-                return '0.7';
-                
-            return '0.85';
-        }};
-        transform: ${props => 
-        {
-            if (props.disabled)
-                return 'none';
-                
-            return 'translateY(-2px)';
-        }};
+        opacity: ${props => {
+		if (props.disabled)
+			return '0.7';
+
+		return '0.85';
+	}};
+        transform: ${props => {
+		if (props.disabled)
+			return 'none';
+
+		return 'translateY(-2px)';
+	}};
     }
 `;
 
@@ -268,156 +260,146 @@ export const CloseButton = styled.button`
     font-size: 0.95rem;
     transition: color 0.2s;
 
-    cursor: ${props => 
-    {
-        if (props.disabled)
-            return 'not-allowed';
-            
-        return 'pointer';
-    }};
+    cursor: ${props => {
+		if (props.disabled)
+			return 'not-allowed';
+
+		return 'pointer';
+	}};
 
     &:hover
     {
-        color: ${props => 
-        {
-            if (props.disabled)
-                return '#6b7280';
-                
-            return '#111827';
-        }};
+        color: ${props => {
+		if (props.disabled)
+			return '#6b7280';
+
+		return '#111827';
+	}};
     }
 `;
 
-const Login = ({ isOpen, onClose, onSwitchToSignup }) => 
-{
-    const navigate = useNavigate();
-    const { login } = useAuth();
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState(null);
+const Login = ({ isOpen, onClose, onSwitchToSignup }) => {
+	const navigate = useNavigate();
+	const { login } = useAuth();
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
+	const [error, setError] = useState(null);
 
-    if (!isOpen)
-        return null;
+	if (!isOpen)
+		return null;
 
-    const handleSubmit = async (e) =>
-    {
-        e.preventDefault();
-        setError(null);
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setError(null);
 
-        setIsLoading(true);
+		setIsLoading(true);
 
-        try
-        {
-            const userData = await loginUser(username, password);
-            login(userData);
-            
+		try {
+			const userData = await loginUser(username, password);
+			login(userData);
 
-            
-            onClose();
-        }
-        catch (err)
-        {
-            if (err.message)
-                setError(err.message);
-            else
-                setError("Login failed");
-        }
-        finally
-        {
-            setIsLoading(false);
-        }
-    };
 
-    const handleIntraLogin = () => 
-    {
-        window.location.href = INTRA_AUTH_URL;
-    };
 
-    const handleSwitchToSignup = () =>
-    {
-        onClose();
-        
-        if (onSwitchToSignup)
-            onSwitchToSignup();
-    };
+			onClose();
+		}
+		catch (err) {
+			if (err.message)
+				setError(err.message);
+			else
+				setError("Login failed");
+		}
+		finally {
+			setIsLoading(false);
+		}
+	};
 
-    let submitButtonText = 'Log In';
-    if (isLoading)
-        submitButtonText = 'Logging in...';
+	const handleIntraLogin = () => {
+		window.location.href = INTRA_AUTH_URL;
+	};
 
-    let errorElement = null;
-    if (error)
-    {
-        errorElement = (
-            <ErrorMessage>
-                {error}
-            </ErrorMessage>
-        );
-    }
+	const handleSwitchToSignup = () => {
+		onClose();
 
-    return (
-        <Overlay onClick={onClose}>
-            <ModalContainer onClick={(e) => e.stopPropagation()}>
-                
-                <Title>
-                    Log In
-                </Title>
-                
-                <Form onSubmit={handleSubmit}>
-                    
-                    {errorElement}
+		if (onSwitchToSignup)
+			onSwitchToSignup();
+	};
 
-                    <Input 
-                        type="text" 
-                        placeholder="Username or Email" 
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        required
-                        disabled={isLoading}
-                    />
-                    
-                    <Input 
-                        type="password" 
-                        placeholder="Password" 
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={isLoading}
-                    />
-                    
-                    <SubmitButton type="submit" disabled={isLoading}>
-                        {submitButtonText}
-                    </SubmitButton>
+	let submitButtonText = 'Log In';
+	if (isLoading)
+		submitButtonText = 'Logging in...';
 
-                    <Divider>
-                        <span>OR</span>
-                    </Divider>
+	let errorElement = null;
+	if (error) {
+		errorElement = (
+			<ErrorMessage>
+				{error}
+			</ErrorMessage>
+		);
+	}
 
-                    <IntraButton 
-                        type="button" 
-                        onClick={handleIntraLogin}
-                        disabled={isLoading}
-                    >
-                        Sign in with 42
-                    </IntraButton>
-                    
-                </Form>
+	return (
+		<Overlay onClick={onClose}>
+			<ModalContainer onClick={(e) => e.stopPropagation()}>
 
-                <FooterContainer>
-                    <span>Don't have an account? </span>
-                    <SignupButton onClick={handleSwitchToSignup}>
-                        Sign up
-                    </SignupButton>
-                </FooterContainer>
+				<Title>
+					Log In
+				</Title>
 
-                <CloseButton onClick={onClose} disabled={isLoading}>
-                    Close
-                </CloseButton>
-                
-            </ModalContainer>
-        </Overlay>
-    );
+				<Form onSubmit={handleSubmit}>
+
+					{errorElement}
+
+					<Input
+						type="text"
+						placeholder="Username or Email"
+						value={username}
+						onChange={(e) => setUsername(e.target.value)}
+						required
+						disabled={isLoading}
+					/>
+
+					<Input
+						type="password"
+						placeholder="Password"
+						value={password}
+						onChange={(e) => setPassword(e.target.value)}
+						required
+						disabled={isLoading}
+					/>
+
+					<SubmitButton type="submit" disabled={isLoading}>
+						{submitButtonText}
+					</SubmitButton>
+
+					<Divider>
+						<span>OR</span>
+					</Divider>
+
+					<IntraButton
+						type="button"
+						onClick={handleIntraLogin}
+						disabled={isLoading}
+					>
+						Sign in with 42
+					</IntraButton>
+
+				</Form>
+
+				<FooterContainer>
+					<span>Don't have an account? </span>
+					<SignupButton onClick={handleSwitchToSignup}>
+						Sign up
+					</SignupButton>
+				</FooterContainer>
+
+				<CloseButton onClick={onClose} disabled={isLoading}>
+					Close
+				</CloseButton>
+
+			</ModalContainer>
+		</Overlay>
+	);
 };
 
 export default Login;

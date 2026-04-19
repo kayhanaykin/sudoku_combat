@@ -167,170 +167,154 @@ const ViewProfileBtn = styled.button`
     }
 `;
 
-const PlayerInfoPopup = ({ isOpen, onClose, username, dimBackground = true }) => 
-{
-    const navigate = useNavigate();
-    const [playerInfo, setPlayerInfo] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
-    const [loading, setLoading] = useState(true);
+const PlayerInfoPopup = ({ isOpen, onClose, username, dimBackground = true }) => {
+	const navigate = useNavigate();
+	const [playerInfo, setPlayerInfo] = useState(null);
+	const [userInfo, setUserInfo] = useState(null);
+	const [loading, setLoading] = useState(true);
 
-    useEffect(() => 
-    {
-        if (!isOpen || !username) 
-            return;
+	useEffect(() => {
+		if (!isOpen || !username)
+			return;
 
-        const fetchPlayerInfo = async () => 
-        {
-            try 
-            {
-                setLoading(true);
-                const userResponse = await fetch(`/api/v1/user/by-username/${username}/`);
+		const fetchPlayerInfo = async () => {
+			try {
+				setLoading(true);
+				const userResponse = await fetch(`/api/v1/user/by-username/${username}/`);
 
-                if (userResponse.ok)
-                {
-                    const userData = await userResponse.json();
-                    setUserInfo(userData);
+				if (userResponse.ok) {
+					const userData = await userResponse.json();
+					setUserInfo(userData);
 
-                    const statsUrl = (userData?.id !== undefined && userData?.id !== null)
-                        ? `/api/stats/id/${userData.id}`
-                        : `/api/stats/${username}`;
+					const statsUrl = (userData?.id !== undefined && userData?.id !== null)
+						? `/api/stats/id/${userData.id}`
+						: `/api/stats/${username}`;
 
-                    const statsResponse = await fetch(statsUrl);
-                    if (statsResponse.ok)
-                    {
-                        const data = await statsResponse.json();
-                        setPlayerInfo(data);
-                    }
-                }
-            } 
-            catch (error) 
-            {
-                console.error('Error fetching player info:', error);
-            } 
-            finally 
-            {
-                setLoading(false);
-            }
-        };
+					const statsResponse = await fetch(statsUrl);
+					if (statsResponse.ok) {
+						const data = await statsResponse.json();
+						setPlayerInfo(data);
+					}
+				}
+			}
+			catch (error) {
+				console.error('Error fetching player info:', error);
+			}
+			finally {
+				setLoading(false);
+			}
+		};
 
-        fetchPlayerInfo();
-    }, [isOpen, username]);
+		fetchPlayerInfo();
+	}, [isOpen, username]);
 
-    const handleViewProfile = () => 
-    {
-        navigate(`/profile/${username}`);
-        onClose();
-    };
+	const handleViewProfile = () => {
+		navigate(`/profile/${username}`);
+		onClose();
+	};
 
-    if (!isOpen) 
-        return null;
+	if (!isOpen)
+		return null;
 
-    let totalGames = 0;
-    let totalWins = 0;
-    const displayName = userInfo?.display_name || username;
-    const avatarSrc = userInfo?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
+	let totalGames = 0;
+	let totalWins = 0;
+	const displayName = userInfo?.display_name || username;
+	const avatarSrc = userInfo?.avatar || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
 
-    if (playerInfo && playerInfo.difficulties)
-    {
-        const diffValues = Object.values(playerInfo.difficulties);
-        
-        diffValues.forEach(diff => 
-        {
-            let onlineWins = 0;
-            let onlineLosses = 0;
-            
-            if (diff.online)
-            {
-                if (diff.online.wins)
-                    onlineWins = diff.online.wins;
-                if (diff.online.losses)
-                    onlineLosses = diff.online.losses;
-            }
+	if (playerInfo && playerInfo.difficulties) {
+		const diffValues = Object.values(playerInfo.difficulties);
 
-            let offlineWins = 0;
-            let offlineLosses = 0;
-            
-            if (diff.offline)
-            {
-                if (diff.offline.wins)
-                    offlineWins = diff.offline.wins;
-                if (diff.offline.losses)
-                    offlineLosses = diff.offline.losses;
-            }
+		diffValues.forEach(diff => {
+			let onlineWins = 0;
+			let onlineLosses = 0;
 
-            totalWins = totalWins + onlineWins + offlineWins;
-            totalGames = totalGames + onlineWins + onlineLosses + offlineWins + offlineLosses;
-        });
-    }
+			if (diff.online) {
+				if (diff.online.wins)
+					onlineWins = diff.online.wins;
+				if (diff.online.losses)
+					onlineLosses = diff.online.losses;
+			}
 
-    const handleAvatarError = (e) =>
-    {
-        e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
-    };
+			let offlineWins = 0;
+			let offlineLosses = 0;
 
-    let popupContent = null;
-    if (loading)
-        popupContent = <LoadingText>Loading...</LoadingText>;
-    else
-    {
-        let statsContent = null;
-        if (playerInfo)
-        {
-            statsContent = (
-                <StatsContainer>
-                    <StatRowItem>
-                        <StatLabel>Total Matches:</StatLabel>
-                        <StatValue>{totalGames}</StatValue>
-                    </StatRowItem>
+			if (diff.offline) {
+				if (diff.offline.wins)
+					offlineWins = diff.offline.wins;
+				if (diff.offline.losses)
+					offlineLosses = diff.offline.losses;
+			}
 
-                    <StatRowItem>
-                        <StatLabel>Total Wins:</StatLabel>
-                        <StatValue>{totalWins}</StatValue>
-                    </StatRowItem>
-                </StatsContainer>
-            );
-        }
+			totalWins = totalWins + onlineWins + offlineWins;
+			totalGames = totalGames + onlineWins + onlineLosses + offlineWins + offlineLosses;
+		});
+	}
 
-        popupContent = (
-            <ContentWrapper>
-                
-                <Header>
-                    <Avatar
-                        src={avatarSrc}
-                        alt={displayName}
-                        onError={handleAvatarError}
-                    />
-                    <NameBlock>
-                        <DisplayName>{displayName}</DisplayName>
-                        <Username>@{username}</Username>
-                    </NameBlock>
-                </Header>
+	const handleAvatarError = (e) => {
+		e.currentTarget.src = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent((username || 'US').slice(0, 2).toUpperCase())}`;
+	};
 
-                {statsContent}
+	let popupContent = null;
+	if (loading)
+		popupContent = <LoadingText>Loading...</LoadingText>;
+	else {
+		let statsContent = null;
+		if (playerInfo) {
+			statsContent = (
+				<StatsContainer>
+					<StatRowItem>
+						<StatLabel>Total Matches:</StatLabel>
+						<StatValue>{totalGames}</StatValue>
+					</StatRowItem>
 
-                <ActionsContainer>
-                    <ViewProfileBtn onClick={handleViewProfile}>
-                        Go to Profile
-                    </ViewProfileBtn>
-                </ActionsContainer>
-                
-            </ContentWrapper>
-        );
-    }
+					<StatRowItem>
+						<StatLabel>Total Wins:</StatLabel>
+						<StatValue>{totalWins}</StatValue>
+					</StatRowItem>
+				</StatsContainer>
+			);
+		}
 
-    return (
-        <Overlay onClick={onClose} $dimBackground={dimBackground}>
-            <PopupContainer onClick={(e) => e.stopPropagation()}>
-                
-                <CloseButton onClick={onClose}>
-                    ×
-                </CloseButton>
+		popupContent = (
+			<ContentWrapper>
 
-                {popupContent}
-                
-            </PopupContainer>
-        </Overlay>
-    );
+				<Header>
+					<Avatar
+						src={avatarSrc}
+						alt={displayName}
+						onError={handleAvatarError}
+					/>
+					<NameBlock>
+						<DisplayName>{displayName}</DisplayName>
+						<Username>@{username}</Username>
+					</NameBlock>
+				</Header>
+
+				{statsContent}
+
+				<ActionsContainer>
+					<ViewProfileBtn onClick={handleViewProfile}>
+						Go to Profile
+					</ViewProfileBtn>
+				</ActionsContainer>
+
+			</ContentWrapper>
+		);
+	}
+
+	return (
+		<Overlay onClick={onClose} $dimBackground={dimBackground}>
+			<PopupContainer onClick={(e) => e.stopPropagation()}>
+
+				<CloseButton onClick={onClose}>
+					×
+				</CloseButton>
+
+				{popupContent}
+
+			</PopupContainer>
+		</Overlay>
+	);
 };
 
 export default PlayerInfoPopup;
