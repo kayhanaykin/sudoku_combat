@@ -36,7 +36,7 @@ export class AppController
 			return ERROR.DIFFICULTY_REQUIRED;
 		try
 		{
-			const res = await fetch(`http://game_service:8080/generate?level=${body.level}`,
+			const res = await fetch(`http://game_service:8080/generate?difficulty=${body.level}`,
 			{
 				method: 'GET',
 				headers: { 'Content-Type': 'application/json' }

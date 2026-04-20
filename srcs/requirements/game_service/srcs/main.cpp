@@ -17,15 +17,15 @@ int main()
         
         if (diff_param) {
             std::string diff_str = diff_param;
-            if (diff_str == "Easy")
+            if (diff_str == "Easy" || diff_str == "1")
                 difficulty = 1;
-            else if (diff_str == "Medium")
+            else if (diff_str == "Medium" || diff_str == "2")
                 difficulty = 2;
-            else if (diff_str == "Hard")
+            else if (diff_str == "Hard" || diff_str == "3")
                 difficulty = 3;
-            else if (diff_str == "Expert")
+            else if (diff_str == "Expert" || diff_str == "4")
                 difficulty = 4;
-            else if (diff_str == "Extreme")
+            else if (diff_str == "Extreme" || diff_str == "5")
                 difficulty = 5;
         }
 

@@ -14,22 +14,17 @@ if not os.getenv('POSTGRES_PORT'): raise ValueError("CRITICAL ERROR: POSTGRES_PO
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-# Allowed Hosts: Nginx'ten gelen istekleri ve internal servis çağrılarını kabul et
-# Accept all hosts - internal docker communication and external requests
 
 # Hashing Algorithm: PBKDF2 + SHA256 (configured by Django's default PASSWORD_HASHERS)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', os.getenv('DOMAIN_NAME', 'localhost')]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', os.getenv('DOMAIN_NAME')]
 
-# Use X-Forwarded-Host header for internal service-to-service communication
+# Without this setting: Django uses the Host header provided by the proxy
 USE_X_FORWARDED_HOST = True
 
-# Trust X-Forwarded-For headers from internal services
+# Without this setting: Django uses the Host header provided by the proxy
 USE_X_FORWARDED_FOR = True
-
 
 # Application definition
 INSTALLED_APPS = [
@@ -58,6 +53,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'user_project.urls'
 
+# normally doesnt used, but used for admin panel
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -74,6 +70,7 @@ TEMPLATES = [
     },
 ]
 
+# normally wsgi doesnt used, but best practice is to keep it for debug, and dev
 WSGI_APPLICATION = 'user_project.wsgi.application'
 ASGI_APPLICATION = 'user_project.asgi.application'
 
@@ -89,7 +86,9 @@ DATABASES = {
     }
 }
 
-# Redis Channel Layer (WebSockets için)
+# Redis Channel Layer (WebSockets için), At its heart, it transforms Django 
+# from a traditional request-response framework into a system capable of handling 
+# long-running connections.
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',

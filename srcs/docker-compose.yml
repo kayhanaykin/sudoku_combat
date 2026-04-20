@@ -25,6 +25,7 @@ services:
   game_service:
     build: ./requirements/game_service
     container_name: game_service
+    env_file: .env
     expose:
       - "8080"
     networks:
@@ -137,7 +138,7 @@ services:
     networks:
       - transcendence_network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U bn_user -d game_stats_db"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER_stats} -d ${POSTGRES_DB_stats}"]
       interval: 5s
       timeout: 5s
       retries: 5
