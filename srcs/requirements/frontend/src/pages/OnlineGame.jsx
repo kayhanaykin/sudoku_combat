@@ -343,10 +343,25 @@ const OnlineGame = () =>
         {
             try 
             {
-                const res = await fetch(`/api/room/game-state/${roomId}`);
+                const uid = user?.id ?? user?.user_id ?? '';
+                const res = await fetch(`/api/room/game-state/${roomId}?userId=${encodeURIComponent(uid)}`);
                 const data = await res.json();
-                
-                if (data.success) 
+
+                if (data.success && data.status === 'finished')
+                {
+                    alert('This match has already ended.');
+                    navigate('/');
+                    return;
+                }
+
+                if (!data.success)
+                {
+                    alert(data.message || 'Room is not accessible.');
+                    navigate('/');
+                    return;
+                }
+
+                if (data.success)
                 {
                     const oData = await getUserById(data.ownerId);
                     
@@ -417,7 +432,11 @@ const OnlineGame = () =>
         ws.current = new WebSocket(`wss://${window.location.host}/api/play`);
 
         ws.current.onopen = () => {
-            ws.current.send(JSON.stringify({ event: 'join_room', data: { roomId: roomId.toString() } }));
+            const myUserId = user?.id ?? user?.user_id ?? null;
+            ws.current.send(JSON.stringify({
+                event: 'join_room',
+                data: { roomId: roomId.toString(), userId: myUserId ? String(myUserId) : '' }
+            }));
         };
 
         ws.current.onmessage = (event) => 

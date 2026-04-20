@@ -357,7 +357,8 @@ const Home = () =>
     {
         try
         {
-            const stateRes = await fetch(`/api/room/game-state/${roomId}`);
+            const uid = getUserId();
+            const stateRes = await fetch(`/api/room/game-state/${roomId}?userId=${encodeURIComponent(uid ?? '')}`);
             const stateData = await stateRes.json();
             
             if (!stateData.success)

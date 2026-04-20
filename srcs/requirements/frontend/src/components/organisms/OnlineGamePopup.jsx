@@ -449,7 +449,7 @@ const OnlineGameModal = ({
             {
                 try
                 {
-                    const res = await fetch(`/api/room/game-state/${createdRoomId}`);
+                    const res = await fetch(`/api/room/game-state/${createdRoomId}?userId=${encodeURIComponent(currentUserId ?? '')}`);
                     const data = await res.json();
                     
                     if (data.success && data.status === 'playing')
@@ -488,7 +488,7 @@ const OnlineGameModal = ({
 
     useEffect(() => {
         if (isOpponentJoined && createdRoomId && view !== 'COUNTDOWN') {
-            fetch(`/api/room/game-state/${createdRoomId}`)
+            fetch(`/api/room/game-state/${createdRoomId}?userId=${encodeURIComponent(currentUserId ?? '')}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success && data.gameStartTime)

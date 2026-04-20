@@ -19,9 +19,10 @@ export class AppGateway implements OnGatewayDisconnect
 	private rooms = new Map<string, Set<WebSocket>>();
 	private roomStartTimes = new Map<string, number>();
 
-	private async	fetchGameState(roomId: string)
+	private async	fetchGameState(roomId: string, userId?: string)
 	{
-		const res = await fetch(`${ROOM_LINK}game-state/${roomId}`);
+		const qs = userId ? `?userId=${encodeURIComponent(userId)}` : '';
+		const res = await fetch(`${ROOM_LINK}game-state/${roomId}${qs}`);
 		return res.json();
 	}
 
@@ -34,20 +35,21 @@ export class AppGateway implements OnGatewayDisconnect
 	}
 
 	@SubscribeMessage('join_room')
-	async	handleJoinRoom(@MessageBody() data: { roomId: string }, @ConnectedSocket() client: WebSocket)
+	async	handleJoinRoom(@MessageBody() data: { roomId: string, userId?: string }, @ConnectedSocket() client: WebSocket)
 	{
 		if (!this.rooms.has(data.roomId))
 			this.rooms.set(data.roomId, new Set());
 		const roomClients = this.rooms.get(data.roomId)!;
 		roomClients.add(client);
 		(client as any).roomId = data.roomId;
+		(client as any).userId = data.userId || '';
 		if (roomClients.size === 2 && !this.roomStartTimes.has(data.roomId))
 		{
 			const startTime = Date.now() + 3000;
 			this.roomStartTimes.set(data.roomId, startTime);
 			try
 			{
-				const gameState = await this.fetchGameState(data.roomId);
+				const gameState = await this.fetchGameState(data.roomId, (client as any).userId);
 				gameState.startTime = startTime;
 				const payload = JSON.stringify({
 					event: 'sync_game',
@@ -66,7 +68,7 @@ export class AppGateway implements OnGatewayDisconnect
 		{
 			try
 			{
-				const gameState = await this.fetchGameState(data.roomId);
+				const gameState = await this.fetchGameState(data.roomId, (client as any).userId);
 				gameState.startTime = this.roomStartTimes.get(data.roomId);
 				client.send(JSON.stringify({
 					event: 'sync_game',
@@ -83,11 +85,43 @@ export class AppGateway implements OnGatewayDisconnect
 	}
 
 	@SubscribeMessage('move')
-	async	handleMove( @MessageBody() data: { roomId: string, role: string, row: number; col: number; value: number; },
+	async	handleMove( @MessageBody() data: { roomId: string, role: string, row?: number; col?: number; value?: number; action?: string },
 		@ConnectedSocket() client: WebSocket )
 	{
 		try
 		{
+			const clientUserId = (client as any).userId || '';
+			if (data.action === 'surrender')
+			{
+				const sRes = await fetch(`${ROOM_LINK}surrender/${data.roomId}`,
+				{
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ userId: clientUserId, role: data.role })
+				});
+				if (!sRes.ok)
+					return client.send(JSON.stringify({ event: 'error', message: 'Room service communication error' }));
+				const sData = await sRes.json();
+				if (!sData.success)
+					return client.send(JSON.stringify({ event: 'error', message: sData.message || 'Surrender failed' }));
+				const roomClients = this.rooms.get(data.roomId);
+				if (roomClients)
+				{
+					const payload = JSON.stringify({
+						event: 'sync_game',
+						ownerHealth: sData.ownerHealth,
+						guestHealth: sData.guestHealth,
+						loser: sData.loser,
+						winner: sData.winner,
+						isWin: false,
+						surrender: true,
+						moveBy: data.role,
+						status: sData.status
+					});
+					this.broadcast(roomClients, payload);
+				}
+				return;
+			}
 			const res = await fetch(`${ROOM_LINK}validate-move/${data.roomId}`,
 			{
 				method: 'POST',
@@ -96,11 +130,11 @@ export class AppGateway implements OnGatewayDisconnect
 			});
 			if (!res.ok)
 				return client.send(JSON.stringify({ event: 'error', message: 'Room service communication error' }));
-			const { valid, ownerHealth, guestHealth, loser, winner, isWin } = await res.json();
+			const { valid, ownerHealth, guestHealth, loser, winner, isWin, status } = await res.json();
 			const roomClients = this.rooms.get(data.roomId);
 			if (roomClients)
 			{
-				const gameState = await this.fetchGameState(data.roomId);
+				const gameState = await this.fetchGameState(data.roomId, clientUserId);
 				if (this.roomStartTimes.has(data.roomId))
 					gameState.startTime = this.roomStartTimes.get(data.roomId);
 				const payload = JSON.stringify(
@@ -113,6 +147,7 @@ export class AppGateway implements OnGatewayDisconnect
 					loser,
 					winner,
 					isWin,
+					status,
 					moveBy: data.role,
 					ownerMoves: gameState.ownerMoves,
 					guestMoves: gameState.guestMoves

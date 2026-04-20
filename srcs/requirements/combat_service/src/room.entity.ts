@@ -41,4 +41,7 @@ export class Room
 
 	@Column({ default: 0 })
 	guestMoves: number;
+
+	@Column({ type: 'varchar', nullable: true })
+	winner: string | null;
 }

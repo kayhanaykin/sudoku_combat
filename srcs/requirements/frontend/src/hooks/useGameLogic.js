@@ -102,7 +102,8 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                 {
                     try 
                     {
-                        const response = await fetch(`/api/room/game-state/${roomId}`);
+                        const uid = playersInfo?.userId ?? '';
+                        const response = await fetch(`/api/room/game-state/${roomId}?userId=${encodeURIComponent(uid)}`);
                         const data = await response.json();
 
                         if (data.success)

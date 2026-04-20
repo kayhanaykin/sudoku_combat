@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete, Body, Param } from '@nestjs/common';
+import { Controller, Get, Post, Delete, Body, Param, Query } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Room } from './room.entity';
@@ -9,8 +9,10 @@ const ERROR =
 	ROOM_ID_REQUIRED: { success: false, message: 'roomId is required' },
 	ROOM_NOT_FOUND: { success: false, message: 'Room not found' },
 	ROOM_FULL: { success: false, message: 'Room is full' },
+	ROOM_NOT_PLAYING: { success: false, message: 'Room is not in playing state' },
 	OWNER_CANNOT_JOIN: { success: false, message: 'Owner cannot join as guest' },
 	USER_NOT_IN_ROOM: { success: false, message: 'User is not in this room' },
+	FORBIDDEN: { success: false, message: 'Forbidden: not a member of this room' },
 	DIFFICULTY_REQUIRED: { success: false, message: 'Difficulty is required' },
 	DB_ERROR: (error: any) => ({ success: false, message: 'Database error: ', error: error.message })
 };
@@ -124,6 +126,8 @@ export class AppController
 			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
+			if (room.status !== 'playing')
+				return ERROR.ROOM_NOT_PLAYING;
 			const isValid = (body.value === room.solvedBoard[body.row][body.col]);
 			let isWin = false;
 			if (isValid)
@@ -174,6 +178,11 @@ export class AppController
 					loser = body.role === 'owner' ? 'guest' : 'owner';
 				}
 			}
+			if (winner)
+			{
+				room.status = 'finished';
+				room.winner = winner;
+			}
 			await this.roomRepository.save(room);
 			return {
 				valid: isValid,
@@ -181,7 +190,8 @@ export class AppController
 				guestHealth: room.health[1],
 				loser: loser,
 				winner: winner,
-				isWin: isWin
+				isWin: isWin,
+				status: room.status
 			};
 		}
 		catch (error)
@@ -215,26 +225,70 @@ export class AppController
 	}
 
 	@Get('game-state/:roomId')
-	async	getGameState(@Param('roomId') roomId: string)
+	async	getGameState(@Param('roomId') roomId: string, @Query('userId') userId: string)
 	{
 		if (!roomId)
 			return ERROR.ROOM_ID_REQUIRED;
+		if (!userId)
+			return ERROR.USER_ID_REQUIRED;
 		try
 		{
 			const room = await this.findRoom(roomId);
 			if (!room)
 				return ERROR.ROOM_NOT_FOUND;
+			const uid = String(userId);
+			if (String(room.ownerId) !== uid && String(room.guestId) !== uid)
+				return ERROR.FORBIDDEN;
+			const isPlaying = room.status === 'playing';
 			return {
 				success: true,
 				ownerId: room.ownerId,
 				guestId: room.guestId,
-				currBoard: room.currBoard,
+				currBoard: isPlaying ? room.currBoard : null,
 				health: room.health,
 				status: room.status,
 				difficulty: room.difficulty,
 				gameStartTime: room.gameStartTime,
 				ownerMoves: room.ownerMoves,
-				guestMoves: room.guestMoves
+				guestMoves: room.guestMoves,
+				winner: room.winner ?? null
+			};
+		}
+		catch (error)
+		{
+			return ERROR.DB_ERROR(error);
+		}
+	}
+
+	@Post('surrender/:roomId')
+	async	surrender(@Param('roomId') roomId: string, @Body() body: { userId: string, role: string })
+	{
+		if (!roomId)
+			return ERROR.ROOM_ID_REQUIRED;
+		if (!body.userId)
+			return ERROR.USER_ID_REQUIRED;
+		try
+		{
+			const room = await this.findRoom(roomId);
+			if (!room)
+				return ERROR.ROOM_NOT_FOUND;
+			const uid = String(body.userId);
+			if (String(room.ownerId) !== uid && String(room.guestId) !== uid)
+				return ERROR.FORBIDDEN;
+			if (room.status !== 'playing')
+				return ERROR.ROOM_NOT_PLAYING;
+			const loser = body.role === 'owner' ? 'owner' : 'guest';
+			const winner = loser === 'owner' ? 'guest' : 'owner';
+			room.status = 'finished';
+			room.winner = winner;
+			await this.roomRepository.save(room);
+			return {
+				success: true,
+				loser,
+				winner,
+				status: room.status,
+				ownerHealth: room.health[0],
+				guestHealth: room.health[1]
 			};
 		}
 		catch (error)
