@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="redBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+    <linearGradient id="blueBar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- White rounded background -->
+  <rect x="1" y="1" width="62" height="62" rx="8" fill="#ffffff" stroke="#0f172a" stroke-width="1.5"/>
+
+  <!-- Red team bar (left) -->
+  <path d="M4 4 H30 V11 H4 Z" fill="url(#redBar)"/>
+  <!-- Blue team bar (right) -->
+  <path d="M34 4 H60 V11 H34 Z" fill="url(#blueBar)"/>
+
+  <!-- Score texts -->
+  <text x="7" y="10" fill="#ffffff" font-family="Arial Black, Arial, sans-serif"
+        font-weight="900" font-size="7">20</text>
+  <text x="51" y="10" fill="#ffffff" font-family="Arial Black, Arial, sans-serif"
+        font-weight="900" font-size="7">13</text>
+
+  <!-- Sudoku 3x3 block grid (simplified, 3 thick lines forming 9 regions) -->
+  <g stroke="#0f172a" stroke-width="1.4">
+    <!-- Outer -->
+    <rect x="4" y="14" width="56" height="46" fill="#f8fafc"/>
+    <!-- Vertical dividers -->
+    <line x1="22.67" y1="14" x2="22.67" y2="60"/>
+    <line x1="41.33" y1="14" x2="41.33" y2="60"/>
+    <!-- Horizontal dividers -->
+    <line x1="4"  y1="29.33" x2="60" y2="29.33"/>
+    <line x1="4"  y1="44.67" x2="60" y2="44.67"/>
+  </g>
+
+  <!-- Mint highlighted cells (captured by teams) -->
+  <g fill="#5eead4" opacity="0.65">
+    <rect x="5"     y="15"    width="5.5" height="4.5"/>
+    <rect x="17"    y="22"    width="5.5" height="4.5"/>
+    <rect x="42"    y="15"    width="5.5" height="4.5"/>
+    <rect x="54"    y="38"    width="5.5" height="4.5"/>
+    <rect x="11"    y="46"    width="5.5" height="4.5"/>
+    <rect x="36"    y="54"    width="5.5" height="4.5"/>
+  </g>
+
+  <!-- Winning green cell -->
+  <rect x="36" y="38" width="5.3" height="5.3" fill="#10b981"/>
+
+  <!-- Central "VS" -->
+  <g font-family="Arial Black, Arial, sans-serif" font-weight="900" text-anchor="middle">
+    <text x="32" y="40" font-size="14" fill="#0f172a" opacity="0.9">VS</text>
+    <text x="32" y="40" font-size="14" fill="none" stroke="#ffffff" stroke-width="0.6">VS</text>
+  </g>
+</svg>
