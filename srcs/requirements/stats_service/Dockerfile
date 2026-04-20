@@ -27,7 +27,7 @@ RUN wget https://github.com/CrowCpp/Crow/releases/download/v1.2.0/crow_all.h -O 
 COPY ./srcs ./srcs
 COPY Makefile .
 
-RUN make
+RUN make fclean && make
 
 FROM debian:bookworm-slim
 

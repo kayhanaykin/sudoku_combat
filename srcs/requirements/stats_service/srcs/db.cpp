@@ -1,7 +1,6 @@
 #include "db.hpp"
 #include <chrono>
 #include <thread>
-
 namespace stats
 {
     static std::string get_env(const char *key)
@@ -13,7 +12,6 @@ namespace stats
         }
         return val;
     }
- 
     std::string get_conn_string()
     {
         std::string host = get_env("STATS_DB_HOST");
@@ -21,19 +19,16 @@ namespace stats
         std::string db   = get_env("STATS_DB_NAME");
         std::string user = get_env("STATS_DB_USER");
         std::string pass = get_env("STATS_DB_PASS");
-
         return "host=" + host
              + " port=" + port
              + " dbname=" + db
              + " user=" + user
              + " password=" + pass;
     }
-
     static void create_tables()
     {
         pqxx::connection conn(get_conn_string());
         pqxx::work tx(conn);
-
         tx.exec(
             "CREATE TABLE IF NOT EXISTS player_stats ("
             "  id             BIGSERIAL PRIMARY KEY,"
@@ -48,12 +43,10 @@ namespace stats
             "  UNIQUE(user_id, difficulty, mode)"
             ")"
         );
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_ps_username "
             "ON player_stats(username)"
         );
-
         tx.exec(
             "CREATE TABLE IF NOT EXISTS match_history ("
             "  id              BIGSERIAL PRIMARY KEY,"
@@ -67,12 +60,10 @@ namespace stats
             "  played_at        TIMESTAMPTZ NOT NULL DEFAULT NOW()"
             ")"
         );
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_mh_username "
             "ON match_history(username)"
         );
-
         tx.exec(
             "CREATE TABLE IF NOT EXISTS weekly_player_stats ("
             "  id              BIGSERIAL PRIMARY KEY,"
@@ -86,12 +77,18 @@ namespace stats
             "  UNIQUE(user_id, difficulty, mode)"
             ")"
         );
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_wps_mode_diff "
             "ON weekly_player_stats(mode, difficulty)"
         );
-
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_wps_mode_diff_user "
+            "ON weekly_player_stats(mode, difficulty, user_id)"
+        );
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_wps_mode_user "
+            "ON weekly_player_stats(mode, user_id)"
+        );
         tx.exec(
             "CREATE TABLE IF NOT EXISTS leaderboard_reset_meta ("
             "  id            INT PRIMARY KEY,"
@@ -99,7 +96,6 @@ namespace stats
             "  next_reset_at TIMESTAMPTZ NOT NULL"
             ")"
         );
-
         tx.exec(
             "CREATE TABLE IF NOT EXISTS user_achievements ("
             "  id                BIGSERIAL PRIMARY KEY,"
@@ -113,12 +109,10 @@ namespace stats
             "  UNIQUE(user_id, achievement_type)"
             ")"
         );
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_ua_username_earned_at "
             "ON user_achievements(username, earned_at DESC)"
         );
-
         tx.exec(
             "CREATE TABLE IF NOT EXISTS online_win_streaks ("
             "  id             BIGSERIAL PRIMARY KEY,"
@@ -128,53 +122,51 @@ namespace stats
             "  updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()"
             ")"
         );
-
         tx.exec("ALTER TABLE player_stats ADD COLUMN IF NOT EXISTS user_id BIGINT");
         tx.exec("ALTER TABLE match_history ADD COLUMN IF NOT EXISTS user_id BIGINT");
         tx.exec("ALTER TABLE weekly_player_stats ADD COLUMN IF NOT EXISTS user_id BIGINT");
         tx.exec("ALTER TABLE user_achievements ADD COLUMN IF NOT EXISTS user_id BIGINT");
         tx.exec("ALTER TABLE online_win_streaks ADD COLUMN IF NOT EXISTS user_id BIGINT");
         tx.exec("ALTER TABLE online_win_streaks ADD COLUMN IF NOT EXISTS id BIGSERIAL");
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_ps_user_id "
             "ON player_stats(user_id)"
         );
-
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_ps_mode_diff_user "
+            "ON player_stats(mode, difficulty, user_id)"
+        );
+        tx.exec(
+            "CREATE INDEX IF NOT EXISTS idx_ps_mode_user "
+            "ON player_stats(mode, user_id)"
+        );
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_mh_user_id "
             "ON match_history(user_id)"
         );
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_wps_user_id "
             "ON weekly_player_stats(user_id)"
         );
-
         tx.exec(
             "CREATE INDEX IF NOT EXISTS idx_ua_user_id_earned_at "
             "ON user_achievements(user_id, earned_at DESC)"
         );
-
         tx.exec("ALTER TABLE player_stats DROP CONSTRAINT IF EXISTS player_stats_username_difficulty_mode_key");
         tx.exec("ALTER TABLE weekly_player_stats DROP CONSTRAINT IF EXISTS weekly_player_stats_username_difficulty_mode_key");
         tx.exec("ALTER TABLE user_achievements DROP CONSTRAINT IF EXISTS user_achievements_username_achievement_type_key");
-
         tx.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_ps_userid_diff_mode_unique ON player_stats(user_id, difficulty, mode)");
         tx.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_wps_userid_diff_mode_unique ON weekly_player_stats(user_id, difficulty, mode)");
         tx.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_ua_userid_achievement_unique ON user_achievements(user_id, achievement_type)");
-
         tx.exec("ALTER TABLE online_win_streaks DROP CONSTRAINT IF EXISTS online_win_streaks_pkey");
         tx.exec("ALTER TABLE online_win_streaks ADD CONSTRAINT online_win_streaks_pkey PRIMARY KEY (id)");
         tx.exec("ALTER TABLE online_win_streaks DROP CONSTRAINT IF EXISTS online_win_streaks_user_id_key");
         tx.exec("ALTER TABLE online_win_streaks ADD CONSTRAINT online_win_streaks_user_id_key UNIQUE (user_id)");
-
         tx.exec(
             "INSERT INTO leaderboard_reset_meta (id, period_start, next_reset_at) "
             "VALUES (1, date_trunc('week', NOW()), date_trunc('week', NOW()) + INTERVAL '7 days') "
             "ON CONFLICT (id) DO NOTHING"
         );
-
         tx.exec(
             "UPDATE player_stats ps "
             "SET best_time_seconds = src.min_time "
@@ -189,7 +181,6 @@ namespace stats
             "  AND ps.mode = src.mode "
             "  AND (ps.best_time_seconds IS NULL OR src.min_time < ps.best_time_seconds)"
         );
-
         tx.exec(
             "INSERT INTO online_win_streaks (user_id, username, current_streak, updated_at) "
             "WITH ordered AS ("
@@ -215,10 +206,8 @@ namespace stats
             "  current_streak = EXCLUDED.current_streak, "
             "  updated_at = NOW()"
         );
-
         tx.commit();
     }
-
     bool init_db(int retries, int wait_ms)
     {
         for (int i = 0; i < retries; i++)
