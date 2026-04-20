@@ -87,22 +87,22 @@ services:
       - ./requirements/combat_service:/app
       - /app/node_modules 
     depends_on:
-      room_db:
+      combat_db:
         condition: service_healthy
     networks:
       - transcendence_network
     restart: unless-stopped
     command: ["npm", "run", "start:dev"]
 
-  room_db:
+  combat_db:
     image: postgres:15-alpine
-    container_name: room_db
+    container_name: combat_db
     environment:
       - POSTGRES_USER=${POSTGRES_USER_room}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD_room}
       - POSTGRES_DB=${POSTGRES_DB_room}
     volumes:
-      - room_db:/var/lib/postgresql/data
+      - combat_db:/var/lib/postgresql/data
     restart: unless-stopped
     networks:
       - transcendence_network
@@ -166,4 +166,4 @@ volumes:
   user_media:
   user_static:
   statistics_db_data:
-  room_db:
+  combat_db:
