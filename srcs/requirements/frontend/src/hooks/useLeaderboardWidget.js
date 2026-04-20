@@ -14,7 +14,7 @@ const useLeaderboardWidget = (mode = 'Extreme') => {
 			if (!getLeaderboard)
 				return;
 
-			const data = await getLeaderboard(mode, 'weekly');
+			const data = await getLeaderboard(mode, 'weekly', 5);
 
 			if (data && data.next_reset_at)
 				setNextResetAt(data.next_reset_at);
@@ -55,7 +55,7 @@ const useLeaderboardWidget = (mode = 'Extreme') => {
 
 				return (b.winrate || 0) - (a.winrate || 0);
 			});
-			setPlayers(sorted.slice(0, 5));
+			setPlayers(sorted);
 		}
 		catch (err) {
 			console.error(err);
