@@ -73,7 +73,8 @@ const SurrenderBtn = styled.button`
 `;
 
 const ExitConfirmModal = ({ isOpen, onClose, onConfirm }) => {
-    if (!isOpen) return null;
+    if (!isOpen)
+        return null;
 
     return (
         <ExitModalOverlay>

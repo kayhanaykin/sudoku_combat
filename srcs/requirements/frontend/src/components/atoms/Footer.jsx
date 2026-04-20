@@ -27,14 +27,23 @@ const FooterLink = styled(Link)`
     }
 `;
 
-const Footer = () =>
+const Footer = ({ onNavigate }) =>
 {
+    const handleClick = (path) => (e) =>
+    {
+        if (onNavigate)
+        {
+            e.preventDefault();
+            onNavigate(path);
+        }
+    };
+
     return (
         <FooterContainer>
-            <FooterLink to="/terms-of-service">
+            <FooterLink to="/terms-of-service" onClick={handleClick('/terms-of-service')}>
                 Terms of Service
             </FooterLink>
-            <FooterLink to="/privacy-policy">
+            <FooterLink to="/privacy-policy" onClick={handleClick('/privacy-policy')}>
                 Privacy Policy
             </FooterLink>
         </FooterContainer>

@@ -599,7 +599,7 @@ const OnlineGame = () =>
                 />
             </ControlsWrapper>
 
-            <Footer />
+            <Footer onNavigate={handleBackClick} />
 
         </GameContainer>
     );

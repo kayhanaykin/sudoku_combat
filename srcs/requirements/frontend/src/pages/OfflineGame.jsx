@@ -372,7 +372,7 @@ const OfflineGame = () =>
                 onApply={applyHint} 
             />
 
-            <Footer />
+            <Footer onNavigate={handleBackClick} />
 
         </GameContainer>
     );

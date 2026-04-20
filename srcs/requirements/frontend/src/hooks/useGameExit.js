@@ -16,12 +16,17 @@ const useGameExit = ({
 }) => {
     const navigate = useNavigate();
     const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+    const [pendingPath, setPendingPath] = useState('/');
 
-    const handleBackClick = () => {
+    const handleBackClick = (pathOrEvent) => {
+        const path = typeof pathOrEvent === 'string' ? pathOrEvent : '/';
         if (isGameOver || gameResult)
-            navigate('/');
+            navigate(path);
         else
+        {
+            setPendingPath(path);
             setIsExitModalOpen(true);
+        }
     };
 
     const cancelExit = () => setIsExitModalOpen(false);
@@ -63,7 +68,7 @@ const useGameExit = ({
             console.error(`Failed to send ${mode} exit stats:`, error);
         }
 
-        navigate('/');
+        navigate(pendingPath);
     };
 
     return {
