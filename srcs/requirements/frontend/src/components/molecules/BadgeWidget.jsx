@@ -230,9 +230,9 @@ const BadgeWidget = ({ username, userId = null }) => {
 
   useEffect(() => {
     const fetchAchievements = async () => {
-      if (username) {
+      if (userId !== null && userId !== undefined) {
         try {
-          const response = await getUserAchievements(username, userId);
+          const response = await getUserAchievements(userId);
           const apiAchievements = Array.isArray(response) ? response : (response.achievements || []);
           const apiMap = new Map(apiAchievements.map(item => [item.type, item]));
 

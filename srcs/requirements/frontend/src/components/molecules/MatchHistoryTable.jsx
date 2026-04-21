@@ -169,7 +169,7 @@ const MatchHistoryTable = ({ username, userId = null }) =>
 
     useEffect(() => 
     {
-        if (!username) 
+        if (userId === null || userId === undefined) 
         {
             setLoading(false);
             return;
@@ -180,7 +180,7 @@ const MatchHistoryTable = ({ username, userId = null }) =>
             try 
             {
                 setLoading(true);
-                const data = await getMatchHistory(username, userId);
+                const data = await getMatchHistory(userId);
                 
                 let fetchedMatches = [];
                 if (data && data.matches)
@@ -201,9 +201,9 @@ const MatchHistoryTable = ({ username, userId = null }) =>
         };
 
         fetchMatchHistory();
-    }, [username, userId]);
+    }, [userId]);
 
-    if (!username) 
+    if (userId === null || userId === undefined) 
         return <MessageContainer>Please log in to view match history</MessageContainer>;
 
     if (loading) 

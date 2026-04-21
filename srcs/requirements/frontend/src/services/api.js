@@ -225,11 +225,17 @@ export const makeMove = async (gameId, row, col, value) => {
 	return await response.json();
 };
 
-export const getUserStats = async (username, userId = null) => {
+export const getUserStats = async (userId) => {
 	try {
-		const url = (userId !== null && userId !== undefined)
-			? `${API_BASE_URL}/api/stats/id/${encodeURIComponent(userId)}`
-			: `${API_BASE_URL}/api/stats/${username}`;
+		if (userId === null || userId === undefined) {
+			console.error('getUserStats requires userId');
+			return {
+				totalGames: 0,
+				winRate: 0,
+				ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
+			};
+		}
+		const url = `${API_BASE_URL}/api/stats/id/${encodeURIComponent(userId)}`;
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: getHeaders(),
@@ -310,11 +316,13 @@ export const deleteUserAccount = async () => {
 	}
 };
 
-export const getMatchHistory = async (username, userId = null) => {
+export const getMatchHistory = async (userId) => {
 	try {
-		const url = (userId !== null && userId !== undefined)
-			? `${API_BASE_URL}/api/stats/id/${encodeURIComponent(userId)}/history`
-			: `${API_BASE_URL}/api/stats/${username}/history`;
+		if (userId === null || userId === undefined) {
+			console.error('getMatchHistory requires userId');
+			return [];
+		}
+		const url = `${API_BASE_URL}/api/stats/id/${encodeURIComponent(userId)}/history`;
 		const response = await fetch(url, {
 			method: 'GET',
 			headers: getHeaders(),
@@ -353,11 +361,13 @@ export const getLeaderboard = async (mode = 'Total', scope = 'alltime', limit = 
 	}
 };
 
-export const getUserAchievements = async (username, userId = null) => {
+export const getUserAchievements = async (userId) => {
 	try {
-		const url = (userId !== null && userId !== undefined)
-			? `${API_BASE_URL}/api/stats/achievements/id/${encodeURIComponent(userId)}`
-			: `${API_BASE_URL}/api/stats/achievements/${username}`;
+		if (userId === null || userId === undefined) {
+			console.error('getUserAchievements requires userId');
+			return [];
+		}
+		const url = `${API_BASE_URL}/api/stats/achievements/id/${encodeURIComponent(userId)}`;
 
 		const response = await fetch(url, {
 			method: 'GET',
