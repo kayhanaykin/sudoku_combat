@@ -233,33 +233,6 @@ namespace stats
         }
         return b;
     }
-    static std::vector<StatsRow> run_select(const std::string &sql,
-                                            const std::string &username,
-                                            std::optional<int> diff)
-    {
-        pqxx::connection conn(get_conn_string());
-        pqxx::work tx(conn);
-        pqxx::result res;
-        if (diff.has_value())
-            res = tx.exec_params(sql, username, diff.value());
-        else
-            res = tx.exec_params(sql, username);
-        tx.commit();
-        std::vector<StatsRow> rows;
-        for (const auto &row : res)
-        {
-            StatsRow sr;
-            sr.difficulty    = row[0].as<int>();
-            sr.mode          = row[1].as<std::string>();
-            sr.bucket.wins   = row[2].as<int>();
-            sr.bucket.losses = row[3].as<int>();
-            sr.bucket.best_time = std::nullopt;
-            if (!row[4].is_null())
-                sr.bucket.best_time = row[4].as<int>();
-            rows.push_back(sr);
-        }
-        return rows;
-    }
     static std::vector<StatsRow> run_select_by_id(const std::string &sql,
                                                   long long user_id,
                                                   std::optional<int> diff)
@@ -317,53 +290,6 @@ namespace stats
             "  ORDER BY played_at DESC"
             "  LIMIT $2",
             user_id, limit);
-        tx.commit();
-        std::vector<MatchEntry> entries;
-        for (const auto &row : res)
-        {
-            MatchEntry me;
-            me.opponent   = row[0].is_null() ? "" : row[0].as<std::string>();
-            me.difficulty = row[1].as<int>();
-            me.mode       = row[2].as<std::string>();
-            me.result     = row[3].as<std::string>();
-            me.time_seconds = std::nullopt;
-            if (!row[4].is_null())
-                me.time_seconds = row[4].as<int>();
-            me.played_at  = row[5].as<std::string>();
-            entries.push_back(me);
-        }
-        return entries;
-    }
-    std::vector<StatsRow> get_user_stats(const std::string &username)
-    {
-        return run_select(
-            "SELECT difficulty, mode, wins, losses, best_time_seconds"
-            "  FROM player_stats"
-            "  WHERE username=$1"
-            "  ORDER BY difficulty, mode",
-            username, std::nullopt);
-    }
-    std::vector<StatsRow> get_user_diff_stats(const std::string &username, int difficulty)
-    {
-        return run_select(
-            "SELECT difficulty, mode, wins, losses, best_time_seconds"
-            "  FROM player_stats"
-            "  WHERE username=$1 AND difficulty=$2"
-            "  ORDER BY mode",
-            username, difficulty);
-    }
-    std::vector<MatchEntry> get_match_history(const std::string &username, int limit)
-    {
-        pqxx::connection conn(get_conn_string());
-        pqxx::work tx(conn);
-        pqxx::result res = tx.exec_params(
-            "SELECT opponent, difficulty, mode, result, time_seconds,"
-            "       to_char(played_at, 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"')"
-            "  FROM match_history"
-            "  WHERE username=$1"
-            "  ORDER BY played_at DESC"
-            "  LIMIT $2",
-            username, limit);
         tx.commit();
         std::vector<MatchEntry> entries;
         for (const auto &row : res)
@@ -458,20 +384,6 @@ namespace stats
         }
         return std::nullopt;
     }
-    std::optional<long long> find_user_id_by_username(const std::string &username)
-    {
-        pqxx::connection conn(get_conn_string());
-        pqxx::work tx(conn);
-        pqxx::result res = tx.exec_params(
-            "SELECT user_id FROM player_stats "
-            "WHERE username=$1 AND user_id IS NOT NULL "
-            "ORDER BY user_id DESC LIMIT 1",
-            username);
-        tx.commit();
-        if (res.empty() || res[0][0].is_null())
-            return std::nullopt;
-        return res[0][0].as<long long>();
-    }
     WeeklyResetInfo get_weekly_reset_info()
     {
         pqxx::connection conn(get_conn_string());
@@ -492,37 +404,6 @@ namespace stats
             info.next_reset_at = res[0][1].as<std::string>();
         }
         return info;
-    }
-    std::vector<AchievementEntry> get_user_achievements(const std::string &username)
-    {
-        pqxx::connection conn(get_conn_string());
-        pqxx::work tx(conn);
-        pqxx::result res = tx.exec_params(
-            "SELECT "
-            "  id, achievement_type, name, icon, description, "
-            "  to_char(earned_at, 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') "
-            "FROM user_achievements "
-            "WHERE username=$1 "
-            "ORDER BY earned_at DESC",
-            username
-        );
-        tx.commit();
-        std::vector<AchievementEntry> entries;
-        entries.reserve(res.size());
-        for (const auto &row : res)
-        {
-            AchievementEntry e;
-            e.id = row[0].as<long long>();
-            e.type = row[1].as<std::string>();
-            e.name = row[2].as<std::string>();
-            e.icon = row[3].as<std::string>();
-            e.description = row[4].as<std::string>();
-            e.earned_at = row[5].as<std::string>();
-            e.progress = 100;
-            e.target = 100;
-            entries.push_back(e);
-        }
-        return entries;
     }
     std::vector<AchievementEntry> get_user_achievements_by_id(long long user_id)
     {
