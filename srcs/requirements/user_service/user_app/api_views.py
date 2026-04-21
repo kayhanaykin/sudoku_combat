@@ -52,6 +52,7 @@ def set_jwt_cookies(response, user):
     )
     
     # Refresh Token (Uzun ömürlü - 1 gün)
+	# none, strict, lax
     response.set_cookie(
         key='refresh_token',
         value=tokens['refresh'],

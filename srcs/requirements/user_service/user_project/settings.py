@@ -98,7 +98,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-# Password validation
+# Password validation, similarity, length, common, numeric
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
     { 'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', },
@@ -110,9 +110,11 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
+# records time in UTC not local
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
+# nginx ile ortak kullanıyor, istekleri direkt nginxden alıyor
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # Production için gerekli
 
@@ -123,6 +125,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # File Upload Settings
 DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
+# 0o means octal format
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 # Klasör yoksa oluştur
@@ -130,7 +133,9 @@ if not os.path.exists(MEDIA_ROOT):
     os.makedirs(MEDIA_ROOT)
 
 # Default primary key field type
+# BigAutoFiled makes 64-bit integer primary keys
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Decleare my custom user model
 AUTH_USER_MODEL = 'user_app.CustomUser'
 
 # 42 API Credentials
@@ -146,13 +151,17 @@ REST_FRAMEWORK = {
     ],
     'EXCEPTION_HANDLER': 'user_app.exception_handler.custom_exception_handler',
 }
-
+# until one of the auths. second one is safety/fallback
 AUTHENTICATION_BACKENDS = [
     'user_app.backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-# JWT Configuration
+# JasonWT Configuration
+# Rotates when used once, it refreshed with new refresh token
+# Beaerer, Basic, Token, means dont look id, just token
+# It is the industry standard for OAuth 2.0 and JWT. 
+# if it doesn't exits, the system falls back to 5, 24, false, false
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=365),
@@ -161,8 +170,9 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
+# default landing place if not login or logined
 LOGIN_URL = '/'
-LOGIN_REDIRECT_URL = '/dashboard/'
+LOGIN_REDIRECT_URL = '/'
 
 # --- SECURITY & PROXY SETTINGS ---
 SECURE_BROWSER_XSS_FILTER = True # XSS attacks
@@ -175,8 +185,11 @@ CURRENT_DOMAIN = os.getenv('DOMAIN_NAME', 'localhost')
 
 # 1. CSRF Trusted Origins
 CSRF_COOKIE_HTTPONLY = False
+# this is an accepted trade-off in modern web development. 
+# Without it, you cannot build a dynamic Single Page Application (SPA). 
+# To mitigate this risk, SECURE_BROWSER_XSS_FILTER is used.
 CSRF_TRUSTED_ORIGINS = [
-    f"https://{CURRENT_DOMAIN}:8443",
+    "https://{CURRENT_DOMAIN}:8443",
     "https://localhost:8443",
     "http://localhost:8443",
     "https://127.0.0.1:8443",
