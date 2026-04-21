@@ -51,27 +51,36 @@ int main()
     CROW_ROUTE(app, "/hint").methods(crow::HTTPMethod::POST)
     ([](const crow::request& req)
     {
+        auto make_err = [](const std::string &msg)
+        {
+            crow::json::wvalue j;
+            j["success"] = false;
+            j["error"] = msg;
+            return crow::response(200, j);
+        };
+
         auto x = crow::json::load(req.body);
         if (!x || !x.has("grid") || x["grid"].size() != 9)
-            return crow::response(400, "Invalid or missing grid");
+            return make_err("Invalid or missing grid");
 
         std::array<std::array<int, 9>, 9> grid;
         for (int i = 0; i < 9; ++i)
         {
             if (x["grid"][i].size() != 9)
-                return crow::response(400, "Grid must be 9x9");
-                
+                return make_err("Grid must be 9x9");
+
             for (int j = 0; j < 9; ++j)
             {
                 int val = x["grid"][i][j].i();
                 if (val < 0 || val > 9)
-                    return crow::response(400, "Cell values must be between 0 and 9");
+                    return make_err("Cell values must be between 0 and 9");
                 grid[i][j] = val;
             }
         }
 
         crow::json::wvalue result = generate_hint_wrapper(grid);
-        
+        result["success"] = true;
+
         return crow::response(result);
     });
 

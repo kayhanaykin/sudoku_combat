@@ -76,7 +76,11 @@ namespace stats
     crow::response make_error(int code, const std::string &msg)
     {
         crow::json::wvalue j;
+        j["success"] = false;
         j["error"] = msg;
-        return crow::response(code, j);
+        j["code"] = code;
+        // Konsolda kırmızı 4xx/5xx görünmemesi için tüm hatalar HTTP 200 döner.
+        // Frontend `success` alanına bakarak hata/başarı ayrımı yapar.
+        return crow::response(200, j);
     }
 }

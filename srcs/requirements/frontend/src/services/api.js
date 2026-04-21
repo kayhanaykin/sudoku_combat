@@ -55,19 +55,17 @@ export const loginUser = async (username, password) => {
 			data = JSON.parse(textData);
 		}
 		catch (err) {
-			console.error("JSON Parse Error.");
 			throw new Error("Server error: Invalid response format.");
 		}
 
-		if (!response.ok) {
-			const errorMessage = data.detail || data.message || 'Login failed.';
+		if (!data.success) {
+			const errorMessage = data.error || data.detail || data.message || 'Login failed.';
 			throw new Error(errorMessage);
 		}
 
 		return data;
 	}
 	catch (error) {
-		console.error("Login Error:", error);
 		throw error;
 	}
 };
@@ -91,16 +89,15 @@ export const registerUser = async (username, email, password) => {
 		});
 
 		const data = await response.json();
-		if (!response.ok) {
-			let errorMsg = data.message;
-			if (!errorMsg && typeof data === 'object')
-				errorMsg = Object.values(data).flat().join(' ');
+		if (!data.success) {
+			let errorMsg = data.error || data.message;
+			if (!errorMsg && data.errors && typeof data.errors === 'object')
+				errorMsg = Object.values(data.errors).flat().join(' ');
 			throw new Error(errorMsg || 'Registration failed.');
 		}
 		return data;
 	}
 	catch (error) {
-		console.error("API Error:", error);
 		throw error;
 	}
 };
@@ -239,16 +236,14 @@ export const getUserStats = async (username, userId = null) => {
 			credentials: 'include'
 		});
 
-		if (!response.ok) {
-			console.error(`Failed to fetch user stats: ${response.status}`);
+		const data = await response.json();
+		if (!response.ok || data.success === false) {
 			return {
 				totalGames: 0,
 				winRate: 0,
 				ranks: { easy: "-", medium: "-", hard: "-", expert: "-", extreme: "-" }
 			};
 		}
-
-		const data = await response.json();
 		return data || {
 			totalGames: 0,
 			winRate: 0,
@@ -256,7 +251,6 @@ export const getUserStats = async (username, userId = null) => {
 		};
 	}
 	catch (error) {
-		console.error('Error fetching user stats:', error);
 		return {
 			totalGames: 0,
 			winRate: 0,
@@ -327,16 +321,12 @@ export const getMatchHistory = async (username, userId = null) => {
 			credentials: 'include'
 		});
 
-		if (!response.ok) {
-			console.error(`Failed to fetch match history: ${response.status}`);
-			return [];
-		}
-
 		const data = await response.json();
+		if (!response.ok || data.success === false)
+			return [];
 		return data || [];
 	}
 	catch (error) {
-		console.error('Error fetching match history:', error);
 		return [];
 	}
 };
@@ -353,16 +343,12 @@ export const getLeaderboard = async (mode = 'Total', scope = 'alltime', limit = 
 			credentials: 'include'
 		});
 
-		if (!response.ok) {
-			console.error(`Failed to fetch leaderboard: ${response.status}`);
-			return [];
-		}
-
 		const data = await response.json();
+		if (!response.ok || data.success === false)
+			return [];
 		return data || [];
 	}
 	catch (error) {
-		console.error('Error fetching leaderboard:', error);
 		return [];
 	}
 };
@@ -379,16 +365,12 @@ export const getUserAchievements = async (username, userId = null) => {
 			credentials: 'include'
 		});
 
-		if (!response.ok) {
-			console.error(`Failed to fetch achievements: ${response.status}`);
-			return [];
-		}
-
 		const data = await response.json();
+		if (!response.ok || data.success === false)
+			return [];
 		return data.achievements || [];
 	}
 	catch (error) {
-		console.error('Error fetching achievements:', error);
 		return [];
 	}
 };

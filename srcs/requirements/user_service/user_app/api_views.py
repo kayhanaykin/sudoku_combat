@@ -112,7 +112,7 @@ class FortyTwoCallbackView(APIView):
     def get(self, request):
         code = request.GET.get('code')
         if not code:
-            return JsonResponse({"error": "No code provided"}, status=400)
+            return JsonResponse({"success": False, "error": "No code provided"}, status=200)
 
         # 1. Exchange code for Access Token
         token_response = requests.post("https://api.intra.42.fr/oauth/token", data={
@@ -125,7 +125,7 @@ class FortyTwoCallbackView(APIView):
         
         if token_response.status_code != 200:
             print(f"42 Token Error: {token_response.status_code} {token_response.text}", flush=True)
-            return JsonResponse({"error": "Failed to get token"}, status=400)
+            return JsonResponse({"success": False, "error": "Failed to get token"}, status=200)
             
         access_token = token_response.json().get("access_token")
 
@@ -198,7 +198,7 @@ def login_api(request):
     password = request.data.get('password')
 
     if not username or not password:
-        return Response({"error": "Username and password required"}, status=400)
+        return Response({"success": False, "error": "Username and password required"}, status=200)
 
     user = authenticate(request, username=username, password=password)
 
@@ -219,20 +219,21 @@ def login_api(request):
         )
 
         response = Response({
-            "message": "Login successful", 
+            "success": True,
+            "message": "Login successful",
             "user": {
-                "id": user.id, 
+                "id": user.id,
                 "username": user.username,
                 "display_name": getattr(user, 'display_name', user.username),
                 "is_superuser": user.is_superuser,
                 "avatar": user.avatar.url if user.avatar else None
             }
         }, status=200)
-        
+
         set_jwt_cookies(response, user)
         return response
-    
-    return Response({"error": "Invalid credentials"}, status=401)
+
+    return Response({"success": False, "error": "Invalid credentials"}, status=200)
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
@@ -244,31 +245,32 @@ def signup_api(request):
         login(request, user)
         
         response = Response({
+            "success": True,
             "message": "User created successfully",
             "user": {
                 "id": user.id,
                 "username": user.username
             }
-        }, status=201)
-        
+        }, status=200)
+
         set_jwt_cookies(response, user)
         return response
-    return Response(serializer.errors, status=400)
+    return Response({"success": False, "errors": serializer.errors}, status=200)
 
 @csrf_exempt
 def logout_api(request):
     if request.method == "POST":
         logout(request) # Django session'ı kapatır
-        response = JsonResponse({'message': 'Successfully logged out'})
-        
+        response = JsonResponse({'success': True, 'message': 'Successfully logged out'})
+
         # Tüm çerezleri sil
         response.delete_cookie('sessionid')
         response.delete_cookie('csrftoken')
         response.delete_cookie('access_token')
         response.delete_cookie('refresh_token')
-        
+
         return response
-    return JsonResponse({'error': 'Method not allowed'}, status=405)
+    return JsonResponse({'success': False, 'error': 'Method not allowed'}, status=200)
 
 # --- ARKADAŞLIK İŞLEMLERİ ---
 
@@ -349,7 +351,7 @@ def friend_action_api(request):
             return Response({"success": False, "error": "User not found."}, status=200)
 
         if target_user == request.user:
-             return Response({"error": "You cannot add yourself."}, status=400)
+             return Response({"success": False, "error": "You cannot add yourself."}, status=200)
 
         exists = Relationship.objects.filter(
             (Q(from_user=request.user) & Q(to_user=target_user)) |
@@ -357,10 +359,10 @@ def friend_action_api(request):
         ).exists()
 
         if exists:
-            return Response({"message": "Relationship already exists"}, status=200)
+            return Response({"success": False, "error": "Relationship already exists"}, status=200)
 
         Relationship.objects.create(from_user=request.user, to_user=target_user, status='pending')
-        return Response({"message": f"Request sent to {target_username}!"}, status=201)
+        return Response({"success": True, "message": f"Request sent to {target_username}!"}, status=200)
 
     elif action == "approve":
         rel_id = request.data.get("rel_id")
@@ -370,7 +372,7 @@ def friend_action_api(request):
             rel = Relationship.objects.get(id=rel_id, to_user=request.user)
             rel.status = 'friends'
             rel.save()
-            return Response({"message": "Friend request approved!"})
+            return Response({"success": True, "message": "Friend request approved!"})
         except Relationship.DoesNotExist:
             return Response({"success": False, "error": "Request not found."}, status=200)
 
@@ -381,9 +383,9 @@ def friend_action_api(request):
         Relationship.objects.filter(
             Q(id=rel_id) & (Q(from_user=request.user) | Q(to_user=request.user))
         ).delete()
-        return Response({"message": "Friendship/Request removed."})
+        return Response({"success": True, "message": "Friendship/Request removed."})
 
-    return Response({"error": "Invalid action."}, status=400)
+    return Response({"success": False, "error": "Invalid action."}, status=200)
 
 # --- PROFİL DÜZENLEME ---
 
@@ -397,9 +399,9 @@ def edit_api(request):
     if 'display_name' in data:
         display_name = data['display_name'].strip()
         if len(display_name) < 3 or len(display_name) > 20:
-            return Response({"error": "Display name must be between 3 and 20 characters."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "error": "Display name must be between 3 and 20 characters."}, status=200)
         if re.search(r'<[^>]*>', display_name):
-            return Response({"error": "Display name cannot contain script or HTML tags."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "error": "Display name cannot contain script or HTML tags."}, status=200)
         user.display_name = display_name
     
     if 'email' in data:
@@ -407,7 +409,7 @@ def edit_api(request):
         try:
             validate_email(email)
         except ValidationError:
-            return Response({"error": "Invalid email format."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "error": "Invalid email format."}, status=200)
         user.email = email
 
     if data.get('remove_avatar') == 'true' or data.get('remove_avatar') is True:
@@ -417,12 +419,12 @@ def edit_api(request):
         
         # 1. Size check (10MB)
         if avatar_file.size > 10 * 1024 * 1024:
-            return Response({"error": "Avatar file size must be less than 10MB."}, status=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE)
-        
+            return Response({"success": False, "error": "Avatar file size must be less than 10MB."}, status=200)
+
         # 2. Extension check
         ext = avatar_file.name.split('.')[-1].lower()
         if ext not in ['jpg', 'jpeg', 'png', 'gif']:
-            return Response({"error": "Unsupported file extension. Use jpg, jpeg, png, or gif."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"success": False, "error": "Unsupported file extension. Use jpg, jpeg, png, or gif."}, status=200)
             
         user.avatar = avatar_file
 
@@ -431,6 +433,7 @@ def edit_api(request):
         user.full_clean()
         user.save()
         return Response({
+            "success": True,
             "message": "Profile updated successfully",
             "user": {
                 "id": user.id,
@@ -441,9 +444,9 @@ def edit_api(request):
             }
         }, status=200)
     except ValidationError as ve:
-        return Response({"error": ve.message_dict}, status=400)
+        return Response({"success": False, "error": ve.message_dict}, status=200)
     except Exception as e:
-        return Response({"error": str(e)}, status=400)
+        return Response({"success": False, "error": str(e)}, status=200)
 
 @api_view(['GET'])
 @permission_classes([AllowAny])

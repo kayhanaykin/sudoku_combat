@@ -377,6 +377,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
             if (file.size > maxSize)
             {
                 setError('File size exceeds 10MB. Please choose a smaller image.');
+                setTimeout(() => setError(''), 3000);
                 return;
             }
 
@@ -407,6 +408,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
         catch (err)
         {
             setError('Failed to select default avatar. Please try again.');
+            setTimeout(() => setError(''), 3000);
         }
     };
 
@@ -415,6 +417,7 @@ const EditProfileModal = ({ isOpen, onClose, currentUserData, onSave }) =>
         if (displayName.trim().length < 3)
         {
             setError("Display Name must be at least 3 characters long.");
+            setTimeout(() => setError(''), 3000);
             return;
         }
 

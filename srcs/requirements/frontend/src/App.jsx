@@ -1,7 +1,16 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+
+const ProtectedRoute = ({ children }) => {
+    const { user, loading } = useAuth();
+    if (loading)
+        return null;
+    if (!user)
+        return <Navigate to="/" replace />;
+    return children;
+};
 import { WebSocketProvider } from './context/WebSocketContext';
 
 import termsContent from './docs/terms_of_services.md?raw';
@@ -27,8 +36,8 @@ const App = () => {
                         <Route path="/online-game/:roomId" element={<OnlineGame />} />
                         <Route path="/offline-game" element={<OfflineGame />} />
                         <Route path="/leaderboard" element={<LeaderboardPage />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/profile/:username" element={<Profile />} />
+                        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                        <Route path="/profile/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
                         <Route path="/debug-users" element={<DebugUsersPage />} />
                         <Route path="/terms-of-service" element={<PolicyPage content={termsContent} />} />
                         <Route path="/privacy-policy" element={<PolicyPage content={privacyContent} />} />

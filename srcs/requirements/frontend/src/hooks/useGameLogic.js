@@ -315,14 +315,15 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                 body: JSON.stringify({ grid: simpleGrid })
             });
 
-            if (!response.ok)
+            const data = await response.json();
+
+            if (!response.ok || data.success === false)
             {
-                setErrorMessage("Server Error: " + response.status);
+                setErrorMessage(data.error || ("Server Error: " + response.status));
                 setShowError(true);
+                setTimeout(() => setShowError(false), 3000);
                 return;
             }
-
-            const data = await response.json();
 
             if (data.found)
             {

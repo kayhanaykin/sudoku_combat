@@ -143,7 +143,8 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.TemplateHTMLRenderer',
-    ]
+    ],
+    'EXCEPTION_HANDLER': 'user_app.exception_handler.custom_exception_handler',
 }
 
 AUTHENTICATION_BACKENDS = [
