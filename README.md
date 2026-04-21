@@ -4,21 +4,20 @@ of the 42 curriculum by kaykin, ekaraurg, apalaz, yunozdem._
 
 ## [Instructions - Jump to Installation](#installation-of-the-project)
 
-# ⚔️ Sudoku Combat
+# Description - Final Project of 42 - Sudo ku
+![Static Badge](https://img.shields.io/badge/42-Project-black?style=for-the-badge)
 
-**Sudoku Combat** is a high-performance, real-time multiplayer platform where classic puzzle-solving meets competitive battle. Built with a robust microservice architecture, it offers a seamless and premium experience for both solo practice and high-stakes 1v1 duels.
+This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called ft_transendence. It has been successfully completed by 4 teammate software developers, namely, [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), Mr. Yunus Emre Özdemir.
 
-### 🌟 Key Highlights
-- **Competitive Combat Mode**: Battle against opponents in real-time. Speed and accuracy are your only weapons.
-- **Infinite Puzzles**: Powered by a high-performance C++ engine, every board is unique and guaranteed to be solvable.
-- **Rich Social Ecosystem**: Add friends, track their online status, and challenge them to a match instantly.
-- **Gamified Progression**: Earn badges, unlock achievements, and climb the global leaderboards.
-- **Modern Architecture**: A state-of-the-art system utilizing React, Django, NestJS, and C++ services, all orchestrated via Docker.
+**Sudo ku** is a high-performance, real-time multiplayer platform where classic puzzle-solving meets competitive battle. Built with a robust microservice architecture, it offers a seamless and premium experience for both solo practice and high-stakes 1v1 duels.
 
-This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called **ft_transcendence**. It has been successfully completed by 4 software developers: [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), and Mr. Yunus Emre Özdemir.
+The project has been done according to ft_transendence subject document version 19 and evaluated with evaluation page that is available during evaluation. 
 
-The project was built according to the **ft_transcendence** (v19) subject document and completed at the campus of **[42 Istanbul](https://42istanbul.com.tr/)**.
+The project has been planned to be submitted about April of 2026. It has been done by students of and at the campus of [42 Istanbul](https://42istanbul.com.tr/).
 
+In order to successfully finish the project, mandatory parts and at least 14 points of modules should be done.
+
+As this is a long group project, proper team organization is crucial for success.
 
 # Team Organization and Project Management
 
@@ -94,7 +93,7 @@ Implement features and modules.
 ## Use an ORM for the Database (1pt)
 
 <ul>
-<li>Developed by Kayhan Aykın, Ali Eren Palaz, Yunus Emre Özdemir</li>
+<li>Developed by Kayhan Aykın, Ali Eren Palaz</li>
 <li>Combat & User microservices have their own database with ORM. </li>
 <li>Statistics microservice has its own database with raw SQL. </li>
 </ul>
@@ -103,7 +102,7 @@ Implement features and modules.
 
 <ul>
 <li>Developed by Ege Karaurgan</li>
-<li>Web application is checked with Google Chrome and Firefox. </li>
+<li>Web application is checked with Google Chrome, Firefox and Opera. </li>
 </ul>
 
 ## Standart User Management and Authentication (2pts)
