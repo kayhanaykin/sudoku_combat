@@ -32,13 +32,11 @@ CXXFLAGS += $(PQXX_CFLAGS)
 LDFLAGS += $(PQXX_LIBS)
 endif
 
-SRCS = $(filter-out srcs/repository_orm.cpp, $(wildcard srcs/*.cpp))
+SRCS = $(wildcard srcs/*.cpp)
 OBJS = $(SRCS:.cpp=.o)
 
 
 all: $(NAME)
-
-orm: $(NAME_ORM)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME) $(LDFLAGS)
@@ -46,14 +44,11 @@ $(NAME): $(OBJS)
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(NAME_ORM): $(OBJS_ORM)
-	$(CXX) $(CXXFLAGS) $(OBJS_ORM) -o $(NAME_ORM) $(LDFLAGS)
-
 clean:
-	rm -f $(OBJS) $(OBJS_ORM)
+	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME) $(NAME_ORM)
+	rm -f $(NAME)
 
 re: fclean all
 
