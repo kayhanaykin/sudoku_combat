@@ -1,7 +1,5 @@
 #pragma once
-
 #include "includes.hpp"
-
 namespace stats
 {
     std::string get_conn_string();

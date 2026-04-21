@@ -4,6 +4,9 @@ README.md
 Dockerfile
 .dockerignore
 *.o
+**/*.o
 *.out
+**/*.out
 stats_server
+**/stats_server
 tools/

@@ -66,9 +66,13 @@ restart-%:
 
 test:
 	curl -X POST https://localhost:8443/api/user/signup/ \
-     -H "Content-Type: application/json" \
-     -d '{"username": "xz", "email": "test@test.com", "password": "Password123!"}' \
-     --insecure
+	 -H "Content-Type: application/json" \
+	 -d '{"username": "xz", "email": "test@test.com", "password": "Password123!"}' \
+	 --insecure
 
+connect-db-%:
+	@U=`docker exec $* printenv POSTGRES_USER 2>/dev/null || echo postgres`; \
+	D=`docker exec $* printenv POSTGRES_DB 2>/dev/null || echo postgres`; \
+	docker exec -it $* psql -U "$$U" -d "$$D"
 
 .PHONY: all clean fclean re build list down migrate logs up seed

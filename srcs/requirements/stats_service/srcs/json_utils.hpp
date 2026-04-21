@@ -1,8 +1,6 @@
 #pragma once
-
 #include "includes.hpp"
 #include "repository.hpp"
-
 namespace stats
 {
     crow::json::wvalue bucket_to_json(const Bucket &b);

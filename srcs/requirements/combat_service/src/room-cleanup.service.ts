@@ -15,7 +15,7 @@ export class RoomCleanupService
 	@Interval(2000)
 	async	cleanupGhostRooms()
 	{
-		const fiveSecondsAgo = new Date(Date.now() - 5000);
+		const fiveSecondsAgo = new Date(Date.now() - 3000);
 		const ghostRooms = await this.roomRepository.find({
 			where: {
 				status: 'waiting',

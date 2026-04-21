@@ -11,7 +11,7 @@ import { RoomCleanupService } from './room-cleanup.service';
 	imports: [
 		TypeOrmModule.forRoot({
 			type: 'postgres',
-			host: 'room_db',
+			host: 'combat_db',
 			port: 5432,
 			username: process.env.POSTGRES_USER_room,
 			password: process.env.POSTGRES_PASSWORD_room,
