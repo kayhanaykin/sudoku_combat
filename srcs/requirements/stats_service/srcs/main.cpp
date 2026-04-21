@@ -69,10 +69,6 @@ static crow::response achievements_response_by_user_id(long long user_id,
                 resolved_username = user_res[0][0].as<std::string>();
         }
 
-        auto is_leaderboard_achievement = [](const std::string &type) {
-            return type == "star" || type.rfind("king_", 0) == 0;
-        };
-
         crow::json::wvalue out;
         out["user_id"] = static_cast<int>(user_id);
         if (!resolved_username.empty())
@@ -159,14 +155,29 @@ static crow::response achievements_response_by_user_id(long long user_id,
                         if (rank.has_value())
                             progress = (rank.value() <= 50) ? 1 : 0;
                     }
+                    else if (meta.type.rfind("king_", 0) == 0) {
+                        target = 1;
+                        int king_diff = 0;
+                        if (meta.type == "king_easy") king_diff = 1;
+                        else if (meta.type == "king_medium") king_diff = 2;
+                        else if (meta.type == "king_hard") king_diff = 3;
+                        else if (meta.type == "king_expert") king_diff = 4;
+                        else if (meta.type == "king_extreme") king_diff = 5;
+
+                        if (king_diff > 0)
+                        {
+                            std::optional<int> rank = stats::get_user_leaderboard_rank(user_id, king_diff, false);
+                            if (rank.has_value())
+                                progress = (rank.value() == 1) ? 1 : 0;
+                        }
+                    }
                 } catch (const std::exception& e) {
                     std::cerr << "Error calculating progress for " << meta.type << ": " << e.what() << std::endl;
                     progress = 0;
                 }
 
                 
-                if (!is_leaderboard_achievement(meta.type)
-                    && target > 0
+                if (target > 0
                     && progress >= target
                     && !resolved_username.empty())
                 {

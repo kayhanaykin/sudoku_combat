@@ -207,7 +207,7 @@ const ALL_ACHIEVEMENTS = [
   { type: 'on_fire_25x', name: 'Win Streak III', icon: '🔥', description: TOOLTIP_DESCRIPTIONS.on_fire_25x, target: 25 },
   { type: 'graduate_offline', name: 'Graduate Offline', icon: '🎓', description: TOOLTIP_DESCRIPTIONS.graduate_offline, target: 5 },
   { type: 'graduate_online', name: 'Graduate Online', icon: '🎓', description: TOOLTIP_DESCRIPTIONS.graduate_online, target: 5 },
-  { type: 'star', name: 'Star', icon: '⭐', description: TOOLTIP_DESCRIPTIONS.star, target: 50 },
+  { type: 'star', name: 'Star', icon: '⭐', description: TOOLTIP_DESCRIPTIONS.star, target: 1 },
   { type: 'king_easy', name: 'King I', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_easy, target: 1 },
   { type: 'king_medium', name: 'King II', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_medium, target: 1 },
   { type: 'king_hard', name: 'King III', icon: '👑', description: TOOLTIP_DESCRIPTIONS.king_hard, target: 1 },

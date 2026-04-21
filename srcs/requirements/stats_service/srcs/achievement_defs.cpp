@@ -13,7 +13,7 @@ namespace stats
         {"on_fire_25x", "Win Streak III", "🔥", "Unlocks when you reach a 25-win streak.", 25},
         {"graduate_offline", "Graduate Offline", "🎓", "Unlocks with 20+ wins in all difficulties in Offline mode.", 5},
         {"graduate_online", "Graduate Online", "🎓", "Unlocks with 20+ wins in all difficulties in Online mode.", 5},
-        {"star", "Star", "⭐", "Unlocks when you enter Top 50 in the online leaderboard.", 50},
+        {"star", "Star", "⭐", "Unlocks when you enter Top 50 in the online leaderboard.", 1},
         {"king_easy", "King I", "👑", "Unlocks by reaching Rank #1 on Easy leaderboard.", 1},
         {"king_medium", "King II", "👑", "Unlocks by reaching Rank #1 on Medium leaderboard.", 1},
         {"king_hard", "King III", "👑", "Unlocks by reaching Rank #1 on Hard leaderboard.", 1},
