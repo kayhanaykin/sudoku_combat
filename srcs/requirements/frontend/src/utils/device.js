@@ -1,4 +1,4 @@
-// BREAKPOINTS
+// Size of devices
 const size = 
 {
     mobileS: '320px',
@@ -10,7 +10,6 @@ const size =
     desktop: '2560px'
 };
 
-// DEVICE MEDIA QUERIES
 export const device = 
 {
     mobileS: `(max-width: ${size.mobileS})`,

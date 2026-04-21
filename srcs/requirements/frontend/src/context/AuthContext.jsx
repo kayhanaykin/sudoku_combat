@@ -8,36 +8,43 @@ export const AuthProvider = ({ children }) => {
 
 	useEffect(() => {
 		const checkAuth = async () => {
-			try {
+			try
+			{
 				const response = await fetch('/api/v1/user/me/', {
 					method: 'GET',
 					headers: { 'Content-Type': 'application/json' },
 					credentials: 'include',
 				});
 
-				if (response.ok) {
+				if (response.ok)
+				{
 					const data = await response.json();
 
-					if (data && data.user === null) {
+					if (data && data.user === null)
+					{
 						setUser(null);
 						localStorage.removeItem('user');
 					}
-					else {
+					else
+					{
 						setUser(data);
 						localStorage.setItem('user', JSON.stringify(data));
 					}
 				}
-				else {
+				else
+				{
 					setUser(null);
 					localStorage.removeItem('user');
 				}
 			}
-			catch (error) {
+			catch (error)
+			{
 				console.error("Auth check failed:", error);
 				setUser(null);
 				localStorage.removeItem('user');
 			}
-			finally {
+			finally
+			{
 				setLoading(false);
 			}
 		};
@@ -52,14 +59,18 @@ export const AuthProvider = ({ children }) => {
 	};
 
 	const logout = async () => {
-		try {
+		try
+		{
 			const getCookie = (name) => {
 				let cookieValue = null;
-				if (document.cookie && document.cookie !== '') {
+				if (document.cookie && document.cookie !== '')
+				{
 					const cookies = document.cookie.split(';');
-					for (let i = 0; i < cookies.length; i++) {
+					for (let i = 0; i < cookies.length; i++)
+					{
 						const cookie = cookies[i].trim();
-						if (cookie.substring(0, name.length + 1) === (name + '=')) {
+						if (cookie.substring(0, name.length + 1) === (name + '='))
+						{
 							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
 							break;
 						}
@@ -79,10 +90,12 @@ export const AuthProvider = ({ children }) => {
 				credentials: 'include',
 			});
 		}
-		catch (error) {
+		catch (error)
+		{
 			console.error("Logout error:", error);
 		}
-		finally {
+		finally
+		{
 			localStorage.removeItem('user');
 			setUser(null);
 			window.location.href = '/';

@@ -162,13 +162,16 @@ const Profile = () => {
 		document.cookie = "sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 		document.cookie = "csrftoken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-		try {
+		try
+		{
 			await logoutUser();
 		}
-		catch (error) {
+		catch (error)
+		{
 			console.error(error);
 		}
-		finally {
+		finally
+		{
 			logout();
 			navigate('/');
 		}
@@ -181,13 +184,15 @@ const Profile = () => {
 	const handleConfirmDelete = async () => {
 		const success = await deleteUserAccount();
 
-		if (success) {
+		if (success)
+		{
 			setIsDeleteModalOpen(false);
 			alert("Your account has been successfully deleted.");
 			logout();
 			navigate('/');
 		}
-		else {
+		else
+		{
 			setIsDeleteModalOpen(false);
 			alert("An error occurred while deleting the account.");
 		}
@@ -198,14 +203,17 @@ const Profile = () => {
 			setLoading(true);
 			setError(null);
 
-			if (paramUsername) {
-				try {
+			if (paramUsername)
+			{
+				try
+				{
 					let tempUserDetails = null;
 					const userResponse = await fetch(`/api/v1/user/by-username/${paramUsername}/`);
 					if (userResponse.ok)
 						tempUserDetails = await userResponse.json();
 
-					if (!tempUserDetails || !tempUserDetails.id) {
+					if (!tempUserDetails || !tempUserDetails.id)
+					{
 						setError(`User "${paramUsername}" not found`);
 						setLoading(false);
 						return;
@@ -216,36 +224,43 @@ const Profile = () => {
 					setStats(statsData);
 
 					let isCurrentUser = false;
-					if (user) {
+					if (user)
+					{
 						if (user.username === paramUsername)
 							isCurrentUser = true;
 					}
 
 					setIsOtherUser(!isCurrentUser);
 				}
-				catch (error) {
+				catch (error)
+				{
 					console.error("Error fetching user profile:", error);
 					setError(`User "${paramUsername}" not found`);
 					setLoading(false);
 					return;
 				}
 			}
-			else if (user) {
-				try {
+			else if (user)
+			{
+				try
+				{
 					const details = await getUserDetails();
-					if (details) {
+					if (details)
+					{
 						setUserDetails(details);
 						const statsData = await getUserStats(details.id);
 						setStats(statsData);
 						setIsOtherUser(false);
 					}
 				}
-				catch (err) {
+				catch (err)
+				{
 					console.error("Error fetching profile:", err);
 					setError("Failed to load profile");
 				}
 			}
-			else {
+			else
+			{
 				navigate('/');
 				return;
 			}
@@ -256,28 +271,32 @@ const Profile = () => {
 		fetchData();
 	}, [user, paramUsername, navigate]);
 
-	if (!user) {
+	if (!user)
+	{
 		if (!paramUsername)
 			return null;
 	}
 
 	let contentElement = null;
 
-	if (error) {
+	if (error)
+	{
 		contentElement = (
 			<ErrorMessage>
 				{error}
 			</ErrorMessage>
 		);
 	}
-	else if (loading) {
+	else if (loading)
+	{
 		contentElement = (
 			<LoadingText>
 				Loading Profile...
 			</LoadingText>
 		);
 	}
-	else {
+	else
+	{
 		let logoutFunc = null;
 		if (!isOtherUser)
 			logoutFunc = handleLogout;
@@ -316,13 +335,9 @@ const Profile = () => {
 
 	return (
 		<PageContainer>
-
 			<BackToHomeLink />
-
 			{contentElement}
-
 			<Footer />
-
 		</PageContainer>
 	);
 };

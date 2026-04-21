@@ -8,9 +8,8 @@ export const getUserDetails = async () => {
 		},
 	});
 
-	if (!response.ok) {
+	if (!response.ok)
 		throw new Error('Failed to fetch user details');
-	}
 	return await response.json();
 };
 
@@ -22,9 +21,8 @@ export const getUserById = async (userId) => {
 		},
 	});
 
-	if (!response.ok) {
+	if (!response.ok)
 		throw new Error('Failed to fetch user by id');
-	}
 	return await response.json();
 };
 
@@ -39,16 +37,18 @@ export const updateUserProfile = async (formData) => {
 		body: formData
 	});
 
-	if (!response.ok) {
-		if (response.status === 413) {
+	if (!response.ok)
+	{
+		if (response.status === 413)
 			throw new Error('File is too large. Maximum size allowed is 10MB.');
-		}
 		const errorText = await response.text();
-		try {
+		try
+		{
 			const jsonError = JSON.parse(errorText);
 			throw new Error(jsonError.detail || jsonError.error || 'Update failed');
 		}
-		catch (e) {
+		catch (e)
+		{
 			throw new Error(`Server Error: ${response.status}`);
 		}
 	}
