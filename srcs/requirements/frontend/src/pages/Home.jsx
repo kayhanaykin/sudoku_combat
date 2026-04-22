@@ -11,7 +11,7 @@ import AuthRequiredModal from '../components/molecules/AuthRequiredModal';
 import Login from '../components/organisms/Login';
 import SignUp from '../components/organisms/Signup';
 import { useAuth } from '../context/AuthContext'; 
-import { startGame, createCombatRoom, joinRoom } from '../services/api';
+import { startGame, createCombatRoom, joinRoom, getActiveRoom, fetchRoomState } from '../services/api';
 
 const PageContainer = styled.div`
     display: flex;
@@ -329,6 +329,73 @@ const Home = () =>
     
     const currentUserName = getCurrentUserName();
 
+    useEffect(() =>
+    {
+        if (!currentUserId)
+            return;
+        let cancelled = false;
+
+        (async () =>
+        {
+            try
+            {
+                const res = await getActiveRoom(currentUserId);
+                if (cancelled)
+                    return;
+                if (!res || !res.success || !res.active)
+                    return;
+
+                const { active } = res;
+                const startMs = active.gameStartTime
+                    ? new Date(active.gameStartTime).getTime()
+                    : Date.now();
+
+                if (active.mode === 'online' && active.status === 'playing')
+                {
+                    navigate(`/online-game/${active.roomId}`,
+                    {
+                        state:
+                        {
+                            role: active.role,
+                            exactStartTime: startMs,
+                            difficulty: active.difficulty,
+                            resume: true
+                        }
+                    });
+                }
+                else if (active.mode === 'offline' && active.status === 'playing')
+                {
+                    const state = await fetchRoomState(active.roomId, currentUserId);
+                    if (cancelled || !state || !state.success)
+                        return;
+                    const myLives = state.health ? state.health[0] : 3;
+                    navigate('/offline-game',
+                    {
+                        state:
+                        {
+                            gameData:
+                            {
+                                gameId: active.roomId,
+                                board: state.currBoard,
+                                lives: myLives,
+                                hintsUsed: state.hintsUsed ?? 0
+                            },
+                            difficulty: active.difficulty,
+                            exactStartTime: startMs,
+                            resume: true
+                        }
+                    });
+                }
+            }
+            catch (err)
+            {
+                console.error('Failed to check for resumable room:', err);
+            }
+        })();
+
+        return () => { cancelled = true; };
+    }, [currentUserId, navigate]);
+
     const handlePlayClick = (mode) =>
     {
         if (!user) 
@@ -458,7 +525,12 @@ const Home = () =>
         {
             if (difficultyContext === 'OFFLINE')
             {
-                const gameData = await startGame('offline', difficulty);
+                const gameData = await startGame(
+                    'offline',
+                    difficulty,
+                    currentUserId ?? null,
+                    currentUserName ?? null
+                );
                 const now = Date.now();
                 setStartTime(now);
                 navigate('/offline-game', { state: { gameData, difficulty, exactStartTime: now } });

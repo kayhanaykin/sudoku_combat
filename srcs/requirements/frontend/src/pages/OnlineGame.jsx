@@ -210,6 +210,22 @@ const ControlsWrapper = styled.div`
     margin: 24px auto 40px auto;
 `;
 
+const StatusBanner = styled.div`
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: ${props => props.$variant === 'error' ? '#f87171' : '#fbbf24'};
+    color: #1f2937;
+    padding: 8px 20px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 10000;
+    pointer-events: none;
+`;
+
 const OnlineGame = () => 
 {
     const { roomId } = useParams();
@@ -270,6 +286,8 @@ const OnlineGame = () =>
     const [opponentLives, setOpponentLives] = useState(3);
     const [playerMoves, setPlayerMoves] = useState(0);
     const [opponentMoves, setOpponentMoves] = useState(0);
+    const [opponentOnline, setOpponentOnline] = useState(true);
+    const [connectionState, setConnectionState] = useState('connecting');
 
     const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
         isGameOver, gameResult, mode: 'online', difficulty, seconds,
@@ -347,18 +365,22 @@ const OnlineGame = () =>
                 const res = await fetch(`/api/room/game-state/${roomId}?userId=${encodeURIComponent(uid)}`);
                 const data = await res.json();
 
-                if (data.success && data.status === 'finished')
-                {
-                    alert('This match has already ended.');
-                    navigate('/');
-                    return;
-                }
-
                 if (!data.success)
                 {
                     alert(data.message || 'Room is not accessible.');
                     navigate('/');
                     return;
+                }
+
+                if (data.status === 'finished')
+                {
+                    const myRole = isOwner ? 'owner' : 'guest';
+                    let finalRes = 'lose';
+                    if (data.winner)
+                        finalRes = data.winner === myRole ? 'win' : 'lose';
+                    setGameResult(prev => prev ? prev : finalRes);
+                    if (data.gameStartTime)
+                        setStartTime(new Date(data.gameStartTime).getTime());
                 }
 
                 if (data.success)
@@ -424,124 +446,155 @@ const OnlineGame = () =>
         fetchNames();
     }, [roomId, isOwner, user?.username]);
 
-    useEffect(() => 
+    useEffect(() =>
     {
         if (!roomId)
             return;
-            
-        ws.current = new WebSocket(`wss://${window.location.host}/api/play`);
 
-        ws.current.onopen = () => {
-            const myUserId = user?.id ?? user?.user_id ?? null;
-            ws.current.send(JSON.stringify({
-                event: 'join_room',
-                data: { roomId: roomId.toString(), userId: myUserId ? String(myUserId) : '' }
-            }));
-        };
+        let retryDelay = 1000;
+        let retryTimer = null;
+        let intentionalClose = false;
 
-        ws.current.onmessage = (event) => 
+        const connect = () =>
         {
-            const message = JSON.parse(event.data);
-            let myRole = isOwner ? 'owner' : 'guest';
+            setConnectionState('connecting');
+            const socket = new WebSocket(`wss://${window.location.host}/api/play`);
+            ws.current = socket;
 
-            switch (message.event) 
+            socket.onopen = () =>
             {
-                case 'sync_game':
-                    if (message.gameState) 
-                    {
-                        if (message.gameState.startTime)
-                            setStartTime(new Date(message.gameState.startTime).getTime());
-                        else
-                            setStartTime(location.state.exactStartTime);
+                setConnectionState('connected');
+                retryDelay = 1000;
+                const myUserId = user?.id ?? user?.user_id ?? null;
+                socket.send(JSON.stringify({
+                    event: 'join_room',
+                    data: { roomId: roomId.toString(), userId: myUserId ? String(myUserId) : '' }
+                }));
+            };
 
-                        if (message.gameState.difficulty)
-                            setDifficulty(message.gameState.difficulty);
+            socket.onmessage = (event) =>
+            {
+                const message = JSON.parse(event.data);
+                let myRole = isOwner ? 'owner' : 'guest';
 
-                        if (message.gameState.currBoard)
+                switch (message.event)
+                {
+                    case 'sync_game':
+                        if (message.gameState)
                         {
-                            updateBoardFromOpponent(message.gameState.currBoard);
-                            
-                            setPlayers(prev => 
+                            if (message.gameState.startTime)
+                                setStartTime(new Date(message.gameState.startTime).getTime());
+                            else if (location.state?.exactStartTime)
+                                setStartTime(location.state.exactStartTime);
+
+                            if (message.gameState.difficulty)
+                                setDifficulty(message.gameState.difficulty);
+
+                            if (message.gameState.currBoard)
                             {
-                                if (isOwner && prev.opponent.displayName === 'Waiting...' && message.gameState.guestId) 
+                                updateBoardFromOpponent(message.gameState.currBoard);
+
+                                setPlayers(prev =>
                                 {
-                                    getUserById(message.gameState.guestId).then(gData => 
+                                    if (isOwner && prev.opponent.displayName === 'Waiting...' && message.gameState.guestId)
                                     {
-                                        let newGuestName = gData.display_name || gData.nickname || gData.username;
-                                        let newGuestUsername = gData.username || '';
-                                        const newGuestAvatar = getAvatarUrl(gData.avatar);
-                                        
-                                        setPlayers(p => ({ 
-                                            ...p, 
-                                            opponent: { displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar } 
-                                        }));
-                                    });
-                                }
-                                return prev;
-                            });
+                                        getUserById(message.gameState.guestId).then(gData =>
+                                        {
+                                            let newGuestName = gData.display_name || gData.nickname || gData.username;
+                                            let newGuestUsername = gData.username || '';
+                                            const newGuestAvatar = getAvatarUrl(gData.avatar);
+
+                                            setPlayers(p => ({
+                                                ...p,
+                                                opponent: { displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar }
+                                            }));
+                                        });
+                                    }
+                                    return prev;
+                                });
+                            }
                         }
-                    }
-                    
-                    if (isOwner)
-                    {
-                        setLives(message.ownerHealth);
-                        setOpponentLives(message.guestHealth);
-                        setPlayerMoves(message.ownerMoves || 0);
-                        setOpponentMoves(message.guestMoves || 0);
-                    }
-                    else
-                    {
-                        setLives(message.guestHealth);
-                        setOpponentLives(message.ownerHealth);
-                        setPlayerMoves(message.guestMoves || 0);
-                        setOpponentMoves(message.ownerMoves || 0);
-                    }
 
-                    if (message.valid === false && message.moveBy === myRole)
-                    {
-                        setErrorMessage("Wrong Move!");
-                        setShowError(true);
-                        setTimeout(() => setShowError(false), 1500);
-                    }
-
-                    if (message.winner || message.loser) 
-                    {
-                        let isMeWinner = false;
-                        if (message.winner)
+                        if (isOwner)
                         {
-                            if (message.winner === myRole)
-                                isMeWinner = true;
+                            if (message.ownerHealth !== undefined) setLives(message.ownerHealth);
+                            if (message.guestHealth !== undefined) setOpponentLives(message.guestHealth);
+                            setPlayerMoves(message.ownerMoves ?? 0);
+                            setOpponentMoves(message.guestMoves ?? 0);
                         }
-                        else if (message.loser)
+                        else
                         {
-                            if (message.loser !== myRole)
-                                isMeWinner = true;
+                            if (message.guestHealth !== undefined) setLives(message.guestHealth);
+                            if (message.ownerHealth !== undefined) setOpponentLives(message.ownerHealth);
+                            setPlayerMoves(message.guestMoves ?? 0);
+                            setOpponentMoves(message.ownerMoves ?? 0);
                         }
 
-                        let delay = (message.valid === false && message.moveBy === myRole) ? 1500 : 0;
-                        let finalRes = isMeWinner ? 'win' : 'lose';
+                        if (message.valid === false && message.moveBy === myRole)
+                        {
+                            setErrorMessage("Wrong Move!");
+                            setShowError(true);
+                            setTimeout(() => setShowError(false), 1500);
+                        }
 
-                        setTimeout(() => {
-                            setGameResult(prev => prev ? prev : finalRes);
-                        }, delay);
-                    }
-                    break;
-                
-                case 'player_left':
-                    setGameResult(prev => prev ? prev : 'win');
-                    break;
-                
-                case 'error':
-                    console.error('Server Error:', message.message);
-                    break;
+                        if (message.winner || message.loser || message.status === 'finished')
+                        {
+                            let isMeWinner = false;
+                            if (message.winner)
+                                isMeWinner = (message.winner === myRole);
+                            else if (message.loser)
+                                isMeWinner = (message.loser !== myRole);
 
-                default:
-                    break;
-            }
+                            let delay = (message.valid === false && message.moveBy === myRole) ? 1500 : 0;
+                            let finalRes = isMeWinner ? 'win' : 'lose';
+
+                            setTimeout(() => {
+                                setGameResult(prev => prev ? prev : finalRes);
+                            }, delay);
+                        }
+                        break;
+
+                    case 'opponent_disconnected':
+                        setOpponentOnline(false);
+                        break;
+
+                    case 'opponent_reconnected':
+                        setOpponentOnline(true);
+                        break;
+
+                    case 'error':
+                        console.error('Server Error:', message.message);
+                        break;
+
+                    default:
+                        break;
+                }
+            };
+
+            socket.onclose = () =>
+            {
+                if (intentionalClose)
+                    return;
+                setConnectionState('reconnecting');
+                retryTimer = setTimeout(() => {
+                    retryDelay = Math.min(retryDelay * 2, 10000);
+                    connect();
+                }, retryDelay);
+            };
+
+            socket.onerror = () =>
+            {
+                // onclose will fire right after; handle retry there.
+            };
         };
+
+        connect();
 
         return () =>
         {
+            intentionalClose = true;
+            if (retryTimer)
+                clearTimeout(retryTimer);
             if (ws.current)
                 ws.current.close();
         };
@@ -562,6 +615,18 @@ const OnlineGame = () =>
             </CenterToast>
 
             <GameOverOverlay result={gameResult} />
+
+            {connectionState === 'reconnecting' && (
+                <StatusBanner $variant="error">
+                    Reconnecting…
+                </StatusBanner>
+            )}
+            {connectionState === 'connected' && !opponentOnline && !isGameDisabled && (
+                <StatusBanner>
+                    Opponent disconnected — waiting for them to reconnect
+                </StatusBanner>
+            )}
+
             <BackToHomeLink onClick={handleBackClick} />
             
             <GameHeader timer={timer} difficulty={difficulty} />

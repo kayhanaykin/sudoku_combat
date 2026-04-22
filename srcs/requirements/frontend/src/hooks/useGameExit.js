@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { abandonOfflineGame } from '../services/api';
 
 const useGameExit = ({
     isGameOver,
@@ -12,7 +13,8 @@ const useGameExit = ({
     opponentUsername,
     wsRef = null,
     roomId = null,
-    isOwner = false
+    isOwner = false,
+    gameId = null
 }) => {
     const navigate = useNavigate();
     const [isExitModalOpen, setIsExitModalOpen] = useState(false);
@@ -44,6 +46,17 @@ const useGameExit = ({
                     action: 'surrender'
                 }
             }));
+        }
+        else if (mode === 'offline' && gameId)
+        {
+            try
+            {
+                await abandonOfflineGame(gameId);
+            }
+            catch (err)
+            {
+                console.error('Failed to abandon offline game:', err);
+            }
         }
 
         try

@@ -166,7 +166,7 @@ const HowToPlayNavButton = styled.button`
     border-radius: 35px;
     font-size: 20px;
     font-weight: 700;
-    background: linear-gradient(135deg, #338437 60%, #37e831 100%);
+    background-color: #29972d;
     color: #fff;
     border: 2px solid #29972d;
     box-shadow: 0 4px 12px rgba(51, 132, 55, 0.15);
@@ -176,7 +176,7 @@ const HowToPlayNavButton = styled.button`
 
     &:hover
     {
-        background: linear-gradient(135deg, #29972d 60%, #37e831 100%);
+        background-color: #29972d;
         transform: translateY(-2px);
         box-shadow: 0 6px 16px rgba(51, 132, 55, 0.22);
     }

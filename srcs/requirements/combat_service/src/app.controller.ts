@@ -80,7 +80,7 @@ export class AppController
 				return ERROR.OWNER_CANNOT_JOIN;
 			room.guestId = body.userId;
 			room.status = 'playing';
-			room.gameStartTime = new Date(Date.now() + 5000);
+			room.gameStartTime = new Date(Date.now() + 3000);
 			await this.roomRepository.save(room);
 			return { success: true, roomId: room.id };
 		}
@@ -251,7 +251,8 @@ export class AppController
 				gameStartTime: room.gameStartTime,
 				ownerMoves: room.ownerMoves,
 				guestMoves: room.guestMoves,
-				winner: room.winner ?? null
+				winner: room.winner ?? null,
+				hintsUsed: room.hintsUsed ?? 0
 			};
 		}
 		catch (error)
@@ -337,6 +338,47 @@ export class AppController
 			}
 			else
 				return { success: false };
+		}
+		catch (error)
+		{
+			return ERROR.DB_ERROR(error);
+		}
+	}
+
+	@Get('active')
+	async	getActiveRoom(@Query('userId') userId: string)
+	{
+		if (!userId)
+			return ERROR.USER_ID_REQUIRED;
+		try
+		{
+			const uid = String(userId);
+			const candidates = await this.roomRepository.find({
+				where: [
+					{ ownerId: uid, status: 'playing' },
+					{ ownerId: uid, status: 'waiting' },
+					{ guestId: uid, status: 'playing' }
+				],
+				order: { id: 'DESC' },
+				take: 1
+			});
+			if (!candidates.length)
+				return { success: true, active: null };
+
+			const room = candidates[0];
+			const isOwner = String(room.ownerId) === uid;
+			return {
+				success: true,
+				active: {
+					roomId: room.id,
+					mode: room.mode,
+					status: room.status,
+					role: isOwner ? 'owner' : 'guest',
+					difficulty: room.difficulty,
+					gameStartTime: room.gameStartTime,
+					ownerName: room.ownerName
+				}
+			};
 		}
 		catch (error)
 		{

@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { makeMove } from '../services/api';
+import { makeMove, reportHintUsed } from '../services/api';
+
+const MAX_HINTS = 3;
 
 const EMPTY_BOARD = Array(9).fill(null).map(() => Array(9).fill(
 {
@@ -45,7 +47,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     const [showError, setShowError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
     const [lives, setLives] = useState(3);
-    const [hintsRemaining, setHintsRemaining] = useState(3);
+    const [hintsRemaining, setHintsRemaining] = useState(MAX_HINTS);
     const [isGameOver, setIsGameOver] = useState(false);
     
     const [isHintModalOpen, setIsHintModalOpen] = useState(false);
@@ -60,19 +62,22 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         {
             const { gameData, difficulty: diffLevel } = location.state;
             
-            if (gameData) 
+            if (gameData)
             {
                 const rawBoard = gameData.board || gameData.current_board;
                 const id = gameData.game_id || gameData.gameId;
-                
+
                 if (rawBoard)
                     setBoard(formatBoardFromData(rawBoard));
-                
+
                 if (id)
                     setGameId(id);
-                
+
                 if (gameData.lives !== undefined)
                     setLives(gameData.lives);
+
+                if (gameData.hintsUsed !== undefined)
+                    setHintsRemaining(Math.max(0, MAX_HINTS - gameData.hintsUsed));
             }
             
             if (diffLevel) 
@@ -136,17 +141,19 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         }
     }, [location, mode, urlRoomId]);
 
-    useEffect(() => 
+    useEffect(() =>
     {
         if (!startTime || isGameOver)
             return;
 
-        setSeconds(0);
+        const tick = () =>
+        {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            setSeconds(elapsed < 0 ? 0 : elapsed);
+        };
+        tick();
+        const interval = setInterval(tick, 1000);
 
-        const interval = setInterval(() => {
-            setSeconds(prev => prev + 1);
-        }, 1000);
-        
         return () => clearInterval(interval);
 
     }, [startTime, isGameOver]);
@@ -331,6 +338,8 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                 setIsHintModalOpen(true);
                 setSelectedCell({ r: data.row, c: data.col });
                 setHintsRemaining(prev => prev - 1);
+                if (mode === 'offline' && gameId)
+                    reportHintUsed(gameId);
             }
             else
             {
@@ -454,7 +463,8 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         gameResult, setGameResult,
         setSelectedCell,
         setStartTime,
-        setDifficulty
+        setDifficulty,
+        gameId
     };
 };
 

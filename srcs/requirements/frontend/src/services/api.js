@@ -174,15 +174,21 @@ export const addFriend = async (username) => {
 	}
 };
 
-export const startGame = async (mode, difficulty) => {
+export const startGame = async (mode, difficulty, userId = null, userName = null) => {
 	const difficultyMap = { 1: "Easy", 2: "Medium", 3: "Hard", 4: "Expert", 5: "Extreme" };
 	const levelStr = difficultyMap[difficulty] || "Medium";
+
+	const body = { difficulty: String(difficulty) };
+	if (userId !== null && userId !== undefined)
+		body.userId = String(userId);
+	if (userName)
+		body.ownerName = String(userName);
 
 	const response = await fetch(`${API_BASE_URL}/api/play/start/offline`,
 		{
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ difficulty: String(difficulty) })
+			body: JSON.stringify(body)
 		});
 
 	if (!response.ok) {
@@ -190,6 +196,64 @@ export const startGame = async (mode, difficulty) => {
 		throw new Error(`Server returned ${response.status}: ${errorText}`);
 	}
 
+	return response.json();
+};
+
+export const getActiveRoom = async (userId) => {
+	if (userId === null || userId === undefined)
+		return { success: true, active: null };
+	const url = `${API_BASE_URL}/api/room/active?userId=${encodeURIComponent(userId)}`;
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: getHeaders(),
+		credentials: 'include'
+	});
+	if (!response.ok)
+		return { success: false, active: null };
+	return response.json();
+};
+
+export const reportHintUsed = async (gameId) => {
+	if (!gameId)
+		return null;
+	try {
+		const response = await fetch(`${API_BASE_URL}/api/play/hint-used/${gameId}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' }
+		});
+		if (!response.ok)
+			return null;
+		return await response.json();
+	}
+	catch (err) {
+		console.error('Failed to persist hint usage:', err);
+		return null;
+	}
+};
+
+export const abandonOfflineGame = async (gameId) => {
+	if (!gameId)
+		return;
+	try {
+		await fetch(`${API_BASE_URL}/api/play/abandon/${gameId}`, {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' }
+		});
+	}
+	catch (err) {
+		console.error('Failed to abandon offline game:', err);
+	}
+};
+
+export const fetchRoomState = async (roomId, userId) => {
+	const url = `${API_BASE_URL}/api/room/game-state/${roomId}?userId=${encodeURIComponent(userId ?? '')}`;
+	const response = await fetch(url, {
+		method: 'GET',
+		headers: getHeaders(),
+		credentials: 'include'
+	});
+	if (!response.ok)
+		throw new Error(`Failed to fetch room state (${response.status})`);
 	return response.json();
 };
 

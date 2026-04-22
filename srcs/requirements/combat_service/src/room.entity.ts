@@ -30,6 +30,9 @@ export class Room
 	@Column({ default: 'waiting' })
 	status: string;
 
+	@Column({ default: 'online' })
+	mode: string;
+
 	@Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
 	lastHeartbeat: Date;
 
@@ -44,4 +47,7 @@ export class Room
 
 	@Column({ type: 'varchar', nullable: true })
 	winner: string | null;
+
+	@Column({ default: 0 })
+	hintsUsed: number;
 }

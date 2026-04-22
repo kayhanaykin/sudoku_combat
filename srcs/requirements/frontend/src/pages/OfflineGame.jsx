@@ -211,13 +211,14 @@ const OfflineGame = () =>
 
     const logicUserId = user?.id ?? user?.user_id ?? null;
 
-    const { 
+    const {
         board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
         isHintModalOpen, hintData, handleHint, applyHint,
         gameResult,
         setSelectedCell,
-        setStartTime
+        setStartTime,
+        gameId
     } = useGameLogic('offline', null, { username: logicUsername, userId: logicUserId });
 
     const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
@@ -228,7 +229,8 @@ const OfflineGame = () =>
         seconds,
         username: logicUsername,
         userId: logicUserId,
-        opponentUsername: 'Computer'
+        opponentUsername: 'Computer',
+        gameId
     });
 
     useEffect(() => {
