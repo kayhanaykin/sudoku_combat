@@ -234,13 +234,73 @@ const OnlineGame = () =>
     const { user } = useAuth();
     
     const ws = useRef(null);
-    const boardRef = useRef(null); 
+    const boardRef = useRef(null);
     const controlsRef = useRef(null);
+
+    const [rehydrating, setRehydrating] = useState(
+        !location.state || !location.state.role
+    );
+    const currentUserId = user?.id ?? user?.user_id ?? null;
+
+    useEffect(() =>
+    {
+        if (!rehydrating)
+            return;
+        if (!currentUserId)
+            return;
+        let cancelled = false;
+        (async () =>
+        {
+            try
+            {
+                const res = await fetch(
+                    `/api/room/game-state/${roomId}?userId=${encodeURIComponent(currentUserId)}`
+                );
+                const data = await res.json();
+                if (cancelled)
+                    return;
+                if (!data.success)
+                {
+                    navigate('/', { replace: true });
+                    return;
+                }
+                const role = String(data.ownerId) === String(currentUserId)
+                    ? 'owner' : 'guest';
+                const startMs = data.gameStartTime
+                    ? new Date(data.gameStartTime).getTime()
+                    : Date.now();
+                navigate(`/online-game/${roomId}`,
+                {
+                    replace: true,
+                    state:
+                    {
+                        role,
+                        exactStartTime: startMs,
+                        difficulty: data.difficulty,
+                        resume: true
+                    }
+                });
+            }
+            catch (err)
+            {
+                console.error('Failed to rehydrate online game:', err);
+                navigate('/', { replace: true });
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [rehydrating, currentUserId, roomId, navigate]);
+
+    useEffect(() =>
+    {
+        if (location.state && location.state.role)
+            setRehydrating(false);
+    }, [location.state]);
 
     let isOwner = false;
     if (location.state && location.state.role === 'owner')
         isOwner = true;
-    
+
+
     const [players, setPlayers] = useState({ 
         you: { displayName: 'Loading...', username: '', avatar: null }, 
         opponent: { displayName: 'Waiting...', username: '', avatar: null } 
@@ -602,9 +662,12 @@ const OnlineGame = () =>
 
     let isGameDisabled = isGameOver || (gameResult !== null);
 
+    if (rehydrating)
+        return null;
+
     return (
         <GameContainer>
-            <ExitConfirmModal 
+            <ExitConfirmModal
                 isOpen={isExitModalOpen} 
                 onClose={cancelExit}
                 onConfirm={confirmExitGame} 

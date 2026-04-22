@@ -144,9 +144,9 @@ export class AppController
 			else
 			{
 				if (body.role === 'owner')
-					room.health[0] -= 1;
+					room.health = [room.health[0] - 1, room.health[1]];
 				else
-					room.health[1] -= 1;
+					room.health = [room.health[0], room.health[1] - 1];
 			}
 			let loser: string | null = null;
 			let winner: string | null = null;

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { abandonOfflineGame } from '../services/api';
+import { clearOfflineSession } from './useGameLogic';
 
 const useGameExit = ({
     isGameOver,
@@ -57,6 +58,7 @@ const useGameExit = ({
             {
                 console.error('Failed to abandon offline game:', err);
             }
+            clearOfflineSession();
         }
 
         try

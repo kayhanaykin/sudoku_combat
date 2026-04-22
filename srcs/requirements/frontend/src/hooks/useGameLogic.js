@@ -1,8 +1,31 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import { makeMove, reportHintUsed } from '../services/api';
+import { makeMove, reportHintUsed, fetchRoomState } from '../services/api';
 
 const MAX_HINTS = 3;
+const OFFLINE_SESSION_KEY = 'sudoku_offline_session';
+
+const saveOfflineSession = (data) =>
+{
+    try { sessionStorage.setItem(OFFLINE_SESSION_KEY, JSON.stringify(data)); }
+    catch (_) {}
+};
+
+const loadOfflineSession = () =>
+{
+    try
+    {
+        const raw = sessionStorage.getItem(OFFLINE_SESSION_KEY);
+        return raw ? JSON.parse(raw) : null;
+    }
+    catch (_) { return null; }
+};
+
+export const clearOfflineSession = () =>
+{
+    try { sessionStorage.removeItem(OFFLINE_SESSION_KEY); }
+    catch (_) {}
+};
 
 const EMPTY_BOARD = Array(9).fill(null).map(() => Array(9).fill(
 {
@@ -10,6 +33,8 @@ const EMPTY_BOARD = Array(9).fill(null).map(() => Array(9).fill(
     isFixed: false,
     isError: false
 }));
+
+const DIFFICULTY_LEVELS = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
 
 const formatBoardFromData = (rawBoard) => 
 {
@@ -54,39 +79,116 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
     const [hintData, setHintData] = useState(null);
 
     const [gameResult, setGameResult] = useState(null);
+    const [isHydrated, setIsHydrated] = useState(false);
     const hasReportedStats = useRef(false);
 
-    useEffect(() => 
+    useEffect(() =>
     {
-        if (mode === 'offline' && location.state) 
+        if (mode === 'offline')
         {
-            const { gameData, difficulty: diffLevel } = location.state;
-            
-            if (gameData)
+            if (location.state && location.state.gameData)
             {
-                const rawBoard = gameData.board || gameData.current_board;
+                const { gameData, difficulty: diffLevel, exactStartTime } = location.state;
+
+                let resolvedDifficulty = 'Medium';
+                if (diffLevel)
+                {
+                    resolvedDifficulty = DIFFICULTY_LEVELS[diffLevel] || diffLevel || 'Medium';
+                    setDifficulty(resolvedDifficulty);
+                }
+
                 const id = gameData.game_id || gameData.gameId;
-
-                if (rawBoard)
-                    setBoard(formatBoardFromData(rawBoard));
-
                 if (id)
+                {
                     setGameId(id);
 
-                if (gameData.lives !== undefined)
-                    setLives(gameData.lives);
+                    saveOfflineSession({
+                        gameId: id,
+                        userId: playersInfo?.userId ?? 'offline',
+                        username: playersInfo?.username ?? null,
+                        difficulty: resolvedDifficulty,
+                        startTime: exactStartTime || Date.now()
+                    });
 
-                if (gameData.hintsUsed !== undefined)
-                    setHintsRemaining(Math.max(0, MAX_HINTS - gameData.hintsUsed));
+                    const uidForFetch = playersInfo?.userId ?? 'offline';
+                    fetch(`/api/room/game-state/${id}?userId=${encodeURIComponent(uidForFetch)}`)
+                        .then(r => r.json())
+                        .then(data =>
+                        {
+                            if (!data.success)
+                                return;
+                            if (data.currBoard)
+                                setBoard(formatBoardFromData(data.currBoard));
+                            if (data.health)
+                                setLives(Number(data.health[0]));
+                            if (data.hintsUsed !== undefined)
+                                setHintsRemaining(Math.max(0, MAX_HINTS - Number(data.hintsUsed)));
+                            if (data.gameStartTime)
+                                setStartTime(new Date(data.gameStartTime).getTime());
+                        })
+                        .catch(err => console.error('Failed to sync offline state:', err))
+                        .finally(() => setIsHydrated(true));
+                }
+                else
+                {
+                    const rawBoard = gameData.board || gameData.current_board;
+                    if (rawBoard)
+                        setBoard(formatBoardFromData(rawBoard));
+                    if (gameData.lives !== undefined)
+                        setLives(Number(gameData.lives));
+                    if (gameData.hintsUsed !== undefined)
+                        setHintsRemaining(Math.max(0, MAX_HINTS - gameData.hintsUsed));
+                    setIsHydrated(true);
+                }
             }
-            
-            if (diffLevel) 
+            else
             {
-                const levels = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
-                setDifficulty(levels[diffLevel] || diffLevel || 'Medium');
+                const saved = loadOfflineSession();
+                if (saved && saved.gameId)
+                {
+                    const uid = saved.userId ?? 'offline';
+                    fetchRoomState(saved.gameId, uid)
+                        .then(data =>
+                        {
+                            if (!data || !data.success || data.status !== 'playing' || !data.currBoard)
+                            {
+                                clearOfflineSession();
+                                navigate('/');
+                                return;
+                            }
+                            setGameId(saved.gameId);
+                            setBoard(formatBoardFromData(data.currBoard));
+                            if (Array.isArray(data.health) && data.health.length > 0)
+                                setLives(Number(data.health[0]));
+                            if (data.hintsUsed !== undefined)
+                                setHintsRemaining(Math.max(0, MAX_HINTS - Number(data.hintsUsed)));
+                            if (data.difficulty)
+                                setDifficulty(DIFFICULTY_LEVELS[data.difficulty] || data.difficulty || saved.difficulty || 'Medium');
+                            else if (saved.difficulty)
+                                setDifficulty(saved.difficulty);
+
+                            let resolvedStart = null;
+                            if (data.gameStartTime)
+                            {
+                                const ts = new Date(data.gameStartTime).getTime();
+                                if (!Number.isNaN(ts))
+                                    resolvedStart = ts;
+                            }
+                            if (!resolvedStart && saved.startTime)
+                                resolvedStart = saved.startTime;
+                            if (resolvedStart)
+                                setStartTime(resolvedStart);
+                        })
+                        .catch(() =>
+                        {
+                            clearOfflineSession();
+                            navigate('/');
+                        })
+                        .finally(() => setIsHydrated(true));
+                }
             }
         }
-        else if (mode === 'online') 
+        else if (mode === 'online')
         {
             let diffLevel = null;
             let role = null;
@@ -118,7 +220,11 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
 
                             const currentRole = playersInfo?.role || 'guest';
                             if (data.health)
-                                setLives(currentRole === 'owner' ? data.health[0] : data.health[1]);
+                            {
+                                const h = currentRole === 'owner'
+                                    ? data.health[0] : data.health[1];
+                                setLives(Number(h));
+                            }
 
                             if (data.difficulty)
                                 setDifficulty(data.difficulty);
@@ -404,9 +510,15 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
         setBoard(formatBoardFromData(newRawBoard));
     };
 
-    useEffect(() => 
+    useEffect(() =>
     {
-        if (gameResult && !hasReportedStats.current) 
+        if (mode === 'offline' && gameResult)
+            clearOfflineSession();
+    }, [mode, gameResult]);
+
+    useEffect(() =>
+    {
+        if (gameResult && !hasReportedStats.current)
         {
             if (!playersInfo || !playersInfo.username || !playersInfo.userId)
                 return;

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { getActiveRoom, fetchRoomState } from '../services/api';
 import styled from 'styled-components';
 import { useAuth } from '../context/AuthContext';
 import useGameLogic from '../hooks/useGameLogic';
@@ -175,9 +176,10 @@ const CenterToast = styled.div`
     visibility: ${props => props.$isVisible ? 'visible' : 'hidden'};
 `;
 
-const OfflineGame = () => 
+const OfflineGame = () =>
 {
     const location = useLocation();
+    const navigate = useNavigate();
     const { user } = useAuth();
     
     const boardRef = useRef(null);
@@ -211,6 +213,65 @@ const OfflineGame = () =>
 
     const logicUserId = user?.id ?? user?.user_id ?? null;
 
+    useEffect(() =>
+    {
+        if (location.state && location.state.gameData)
+            return;
+        if (!logicUserId)
+            return;
+
+        let cancelled = false;
+        (async () =>
+        {
+            try
+            {
+                const res = await getActiveRoom(logicUserId);
+                if (cancelled)
+                    return;
+                const active = res?.active;
+                if (!active || active.mode !== 'offline' || active.status !== 'playing')
+                {
+                    navigate('/', { replace: true });
+                    return;
+                }
+                const state = await fetchRoomState(active.roomId, logicUserId);
+                if (cancelled)
+                    return;
+                if (!state || !state.success)
+                {
+                    navigate('/', { replace: true });
+                    return;
+                }
+                const startMs = active.gameStartTime
+                    ? new Date(active.gameStartTime).getTime()
+                    : Date.now();
+                navigate('/offline-game',
+                {
+                    replace: true,
+                    state:
+                    {
+                        gameData:
+                        {
+                            gameId: active.roomId,
+                            board: state.currBoard,
+                            lives: state.health ? Number(state.health[0]) : 3,
+                            hintsUsed: Number(state.hintsUsed ?? 0)
+                        },
+                        difficulty: active.difficulty,
+                        exactStartTime: startMs,
+                        resume: true
+                    }
+                });
+            }
+            catch (err)
+            {
+                console.error('Failed to rehydrate offline game:', err);
+                navigate('/', { replace: true });
+            }
+        })();
+        return () => { cancelled = true; };
+    }, [location.state, logicUserId, navigate]);
+
     const {
         board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
         handleCellClick, handleInput, showError, errorMessage,
@@ -236,8 +297,6 @@ const OfflineGame = () =>
     useEffect(() => {
         if (location.state && location.state.exactStartTime)
             setStartTime(location.state.exactStartTime);
-        else
-            setStartTime(Date.now());
     }, [location.state, setStartTime]);
 
     useEffect(() => 
@@ -303,6 +362,10 @@ const OfflineGame = () =>
         isGameDisabled = true;
     else if (gameResult !== null)
         isGameDisabled = true;
+
+    const needsHydration = !location.state || !location.state.gameData;
+    if (needsHydration && logicUserId)
+        return null;
 
     return (
         <GameContainer>

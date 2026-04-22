@@ -169,7 +169,7 @@ export class CombatController
 		}
 		else
 		{
-			room.health[0] -= 1;
+			room.health = [room.health[0] - 1, room.health[1]];
 			const livesLeft = room.health[0];
 			if (!livesLeft)
 				room.status = 'finished';
