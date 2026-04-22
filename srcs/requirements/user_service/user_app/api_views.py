@@ -431,7 +431,7 @@ def edit_api(request):
 
     try:
         # 3. Pillow validation (ImageField check)
-        user.full_clean()
+        user.full_clean(exclude=["password"])
         user.save()
         return Response({
             "success": True,
