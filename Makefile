@@ -13,7 +13,7 @@ up:
 	if [ -z "$$IP" ]; then IP="127.0.0.1"; fi; \
 	echo "Bulunan IP: $$IP"; \
 	sed -i "s/^DOMAIN_NAME=.*/DOMAIN_NAME=$$IP/" srcs/.env; \
-	sed -i "s|^FT_REDIRECT_URI=.*|FT_REDIRECT_URI=https://$$IP:8443/api/user/auth/callback/|" srcs/.env; \
+	sed -i "s|^FT_REDIRECT_URI=.*|FT_REDIRECT_URI=https://$$IP:8443/api/v1/user/auth/callback/|" srcs/.env; \
 	echo "srcs/.env dosyası dinamik olarak güncellendi!"
 	@$(COMPOSE) up -d --build
 
@@ -53,8 +53,8 @@ migrate:
 	@$(COMPOSE) exec user_service python manage.py makemigrations
 	@$(COMPOSE) exec user_service python manage.py migrate
 
-seed:
-	@$(COMPOSE) exec user_service python seed_db.py
+# seed:
+# 	@$(COMPOSE) exec user_service python seed_db.py
 
 logs-%:
 	@$(COMPOSE) logs $* --tail 10
