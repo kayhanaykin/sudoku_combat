@@ -69,8 +69,6 @@ namespace stats
         j["success"] = false;
         j["error"] = msg;
         j["code"] = code;
-        // Konsolda kırmızı 4xx/5xx görünmemesi için tüm hatalar HTTP 200 döner.
-        // Frontend `success` alanına bakarak hata/başarı ayrımı yapar.
         return crow::response(200, j);
     }
 }
