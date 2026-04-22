@@ -7,7 +7,7 @@ of the 42 curriculum by kaykin, ekaraurg, apalaz, yunozdem._
 # Description - Final Project of 42 - Sudo ku
 ![Static Badge](https://img.shields.io/badge/42-Project-black?style=for-the-badge)
 
-This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called ft_transendence. It has been successfully completed by 4 teammate software developers, namely, [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), Mr. Yunus Emre Özdemir.
+This is the final group project of [42 Programming School](https://en.wikipedia.org/wiki/42_(school)), called ft_transendence. It has been successfully completed by 4 teammate software developers, namely, [Mr. Ege Karaurgan](https://tr.linkedin.com/in/ege-karaurgan-389818258), [Mr. Ali Eren Palaz](https://tr.linkedin.com/in/ali-eren-palaz-23ba3a28a), [Mr. Kayhan Aykın](https://tr.linkedin.com/in/kayhan-aykin-48922a51), [Mr. Yunus Emre Özdemir](https://www.linkedin.com/in/yunus-emre-%C3%B6zdemir-b8905a293/).
 
 **Sudo ku** is a high-performance, real-time multiplayer platform where classic puzzle-solving meets competitive battle. Built with a robust microservice architecture, it offers a seamless and premium experience for both solo practice and high-stakes 1v1 duels.
 
@@ -218,7 +218,7 @@ The Sudoku Combat application uses a microservices architecture with multiple da
 - **Game Service**: No database
 - **User Service**: PostgreSQL (Django ORM) | **Tables:** `CustomUser`, `Relationship` | User accounts, authentication, profiles, friends
 - **Combat Service**: PostgreSQL (TypeORM) | **Tables:** `Room` | Multiplayer game rooms, real-time player interactions, game state, board data, match tracking
-- **Stats Service**: PostgreSQL (libpqxx/Raw SQL) | **Tables:** `player_stats`, `match_history`, `weekly_player_stats`, `leaderboard_reset_meta` | Player statistics, match history, difficulty-based win/loss tracking, weekly leaderboard data, performance metrics
+- **Stats Service**: PostgreSQL (libpqxx/Raw SQL) | **Tables:** `player_stats`, `match_history`, `weekly_player_stats`, `leaderboard_reset_meta`, `user_achievements`, `online_win_streaks` | Player statistics, match history, weekly leaderboard data, achievement progress, online win streak tracking
 
 ### Global Relations Summary
 The entire microservice architecture revolves around the `CustomUser`'s `id`. Even though data is stored in different databases, foreign keys logically point back to the central User Service.
@@ -231,6 +231,8 @@ The entire microservice architecture revolves around the `CustomUser`'s `id`. Ev
 | `player_stats` | `user_id` ➔ `CustomUser.id` |
 | `match_history` | `user_id` ➔ `CustomUser.id` |
 | `weekly_player_stats` | `user_id` ➔ `CustomUser.id` |
+| `user_achievements` | `user_id` ➔ `CustomUser.id` |
+| `online_win_streaks` | `user_id` ➔ `CustomUser.id` |
 
 ### User Service Database
 **CustomUser Model**
@@ -275,6 +277,8 @@ The entire microservice architecture revolves around the `CustomUser`'s `id`. Ev
 **player_stats Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
+| `id` | BIGSERIAL | Primary key |
+| `user_id` | BIGINT | User ID (logical FK to `CustomUser.id`) |
 | `username` | TEXT | Player username |
 | `difficulty` | INT | Difficulty level (1-5) |
 | `mode` | TEXT | Game mode (online/offline) |
@@ -286,6 +290,8 @@ The entire microservice architecture revolves around the `CustomUser`'s `id`. Ev
 **match_history Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
+| `id` | BIGSERIAL | Primary key |
+| `user_id` | BIGINT | User ID (logical FK to `CustomUser.id`) |
 | `username` | TEXT | Player username |
 | `opponent` | TEXT | Opponent username |
 | `difficulty` | INT | Difficulty level (1-5) |
@@ -297,6 +303,8 @@ The entire microservice architecture revolves around the `CustomUser`'s `id`. Ev
 **weekly_player_stats Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
+| `id` | BIGSERIAL | Primary key |
+| `user_id` | BIGINT | User ID (logical FK to `CustomUser.id`) |
 | `username` | TEXT | Player username |
 | `difficulty` | INT | Difficulty level (1-5) |
 | `mode` | TEXT | Game mode (online/offline) |
@@ -307,8 +315,30 @@ The entire microservice architecture revolves around the `CustomUser`'s `id`. Ev
 **leaderboard_reset_meta Table**
 | Field | Type | Description |
 | :--- | :--- | :--- |
+| `id` | INT | Singleton metadata row key (`1`) |
 | `period_start` | TIMESTAMPTZ | Period start timestamp |
 | `next_reset_at` | TIMESTAMPTZ | Next reset scheduled time |
+
+**user_achievements Table**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BIGSERIAL | Primary key |
+| `user_id` | BIGINT | User ID (logical FK to `CustomUser.id`) |
+| `username` | TEXT | Player username |
+| `achievement_type` | TEXT | Internal achievement type key |
+| `name` | TEXT | Achievement display name |
+| `icon` | TEXT | Achievement icon path/key |
+| `description` | TEXT | Achievement description |
+| `earned_at` | TIMESTAMPTZ | Achievement earn timestamp |
+
+**online_win_streaks Table**
+| Field | Type | Description |
+| :--- | :--- | :--- |
+| `id` | BIGSERIAL | Primary key |
+| `user_id` | BIGINT | User ID (logical FK to `CustomUser.id`, unique) |
+| `username` | TEXT | Player username |
+| `current_streak` | INT | Current online consecutive win count |
+| `updated_at` | TIMESTAMPTZ | Last streak update timestamp |
 
 
 
