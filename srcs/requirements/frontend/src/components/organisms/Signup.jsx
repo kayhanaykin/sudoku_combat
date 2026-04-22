@@ -103,7 +103,7 @@ const SignUp = ({ isOpen, onClose, onSwitchToLogin }) =>
 
     const handleIntraRegister = () =>
     {
-        window.location.href = `/api/user/auth/login/`;
+        window.location.href = `/api/v1/user/auth/login/`;
     };
 
     return (
