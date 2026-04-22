@@ -658,6 +658,7 @@ const Home = () =>
                 isOpponentJoined={isOpponentJoined}
                 onCountdownComplete={handleCountdownComplete}
                 currentUserId={currentUserId}
+                currentUserName={currentUserName}
             />
 
             <AuthRequiredModal 

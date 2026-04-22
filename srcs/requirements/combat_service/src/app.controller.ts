@@ -10,7 +10,7 @@ const ERROR =
 	ROOM_NOT_FOUND: { success: false, message: 'Room not found' },
 	ROOM_FULL: { success: false, message: 'Room is full' },
 	ROOM_NOT_PLAYING: { success: false, message: 'Room is not in playing state' },
-	OWNER_CANNOT_JOIN: { success: false, message: 'Owner cannot join as guest' },
+	OWNER_CANNOT_JOIN: { success: false, message: 'You cannot join your own room — open a different account to play.' },
 	USER_NOT_IN_ROOM: { success: false, message: 'User is not in this room' },
 	FORBIDDEN: { success: false, message: 'Forbidden: not a member of this room' },
 	DIFFICULTY_REQUIRED: { success: false, message: 'Difficulty is required' },

@@ -366,18 +366,19 @@ const CountdownCircle = styled.div`
 
 const DIFFICULTY_LABELS = { '1': 'Easy', '2': 'Medium', '3': 'Hard', '4': 'Expert', '5': 'Extreme' };
 
-const OnlineGameModal = ({ 
-    isOpen, 
-    onClose, 
-    onCreate, 
-    onJoin, 
+const OnlineGameModal = ({
+    isOpen,
+    onClose,
+    onCreate,
+    onJoin,
     onCancelRoom,
     isLoading,
     createdRoomId,
     isOpponentJoined,
     onCountdownComplete,
-    currentUserId
-}) => 
+    currentUserId,
+    currentUserName
+}) =>
 {
     const [view, setView] = useState('LOBBY'); 
     const [countdown, setCountdown] = useState(3);
@@ -569,7 +570,7 @@ const OnlineGameModal = ({
     {
         roomsContent = (
             <RoomListWrapper>
-                {availableRooms.map(room => 
+                {availableRooms.map(room =>
                 {
                     let ownerName = 'Unknown Player';
                     if (room.ownerName)
@@ -579,8 +580,22 @@ const OnlineGameModal = ({
                     if (room.difficulty)
                         difficultyText = DIFFICULTY_LABELS[String(room.difficulty)] || room.difficulty;
 
+                    const handleRoomClick = () =>
+                    {
+                        const sameId = currentUserId && String(room.ownerId) === String(currentUserId);
+                        const sameName = currentUserName
+                            && room.ownerName
+                            && room.ownerName.trim().toLowerCase() === String(currentUserName).trim().toLowerCase();
+                        if (sameId || sameName)
+                        {
+                            alert('You cannot join your own room. Use a different account to play.');
+                            return;
+                        }
+                        onJoin(room.id);
+                    };
+
                     return (
-                        <RoomItem key={room.id} onClick={() => onJoin(room.id)}>
+                        <RoomItem key={room.id} onClick={handleRoomClick}>
                             
                             <RoomInfo>
                                 <OwnerName>

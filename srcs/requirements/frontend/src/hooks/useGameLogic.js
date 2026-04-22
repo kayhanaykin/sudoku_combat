@@ -552,21 +552,51 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                 if (mode === 'online' && playersInfo.opponent)
                     payload.opponent = playersInfo.opponent;
 
-                try 
+                try
                 {
-                    const response = await fetch('/api/stats/report', 
+                    const response = await fetch('/api/stats/report',
                     {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    
+
                     if (!response.ok)
                         console.error("Stats API Error:", response.status);
-                } 
-                catch (error) 
+                }
+                catch (error)
                 {
                     console.error("Failed to send stats:", error);
+                }
+
+                if (mode === 'online'
+                    && gameResult === 'win'
+                    && playersInfo.opponentOnline === false
+                    && playersInfo.opponentUserId
+                    && playersInfo.opponent)
+                {
+                    const opponentPayload = {
+                        user_id: playersInfo.opponentUserId,
+                        username: playersInfo.opponent,
+                        difficulty: diffInt,
+                        mode: modeStr,
+                        result: 'lose',
+                        time_seconds: seconds,
+                        opponent: playersInfo.username
+                    };
+                    try
+                    {
+                        await fetch('/api/stats/report',
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(opponentPayload)
+                        });
+                    }
+                    catch (error)
+                    {
+                        console.error("Failed to send opponent stats:", error);
+                    }
                 }
             };
 

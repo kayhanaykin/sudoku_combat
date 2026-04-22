@@ -39,9 +39,25 @@ export class AppGateway implements OnGatewayDisconnect
 		if (!this.rooms.has(data.roomId))
 			this.rooms.set(data.roomId, new Set());
 		const roomClients = this.rooms.get(data.roomId)!;
+		const incomingUserId = data.userId || '';
+		if (incomingUserId)
+		{
+			for (const existing of roomClients)
+			{
+				if (existing !== client && (existing as any).userId === incomingUserId)
+				{
+					client.send(JSON.stringify({
+						event: 'duplicate_session',
+						message: 'This account is already connected in another tab or device.'
+					}));
+					client.close();
+					return;
+				}
+			}
+		}
 		roomClients.add(client);
 		(client as any).roomId = data.roomId;
-		(client as any).userId = data.userId || '';
+		(client as any).userId = incomingUserId;
 
 		try
 		{
@@ -80,6 +96,23 @@ export class AppGateway implements OnGatewayDisconnect
 		try
 		{
 			const clientUserId = (client as any).userId || '';
+			const stateRes = await fetch(`${ROOM_LINK}game-state/${data.roomId}?userId=${encodeURIComponent(clientUserId)}`);
+			if (stateRes.ok)
+			{
+				const state = await stateRes.json();
+				if (state && state.success)
+				{
+					const expectedId = data.role === 'owner' ? state.ownerId : state.guestId;
+					if (expectedId && String(expectedId) !== String(clientUserId))
+					{
+						client.send(JSON.stringify({
+							event: 'error',
+							message: 'Role mismatch: you are not authorized for this role.'
+						}));
+						return;
+					}
+				}
+			}
 			if (data.action === 'surrender')
 			{
 				const sRes = await fetch(`${ROOM_LINK}surrender/${data.roomId}`,

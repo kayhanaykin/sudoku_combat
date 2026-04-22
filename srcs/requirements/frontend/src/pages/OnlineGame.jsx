@@ -302,9 +302,9 @@ const OnlineGame = () =>
         isOwner = true;
 
 
-    const [players, setPlayers] = useState({ 
-        you: { displayName: 'Loading...', username: '', avatar: null }, 
-        opponent: { displayName: 'Waiting...', username: '', avatar: null } 
+    const [players, setPlayers] = useState({
+        you: { userId: null, displayName: 'Loading...', username: '', avatar: null },
+        opponent: { userId: null, displayName: 'Waiting...', username: '', avatar: null }
     });
 
     const getAvatarUrl = (avatarPath) => 
@@ -328,27 +328,29 @@ const OnlineGame = () =>
         }
     };
 
-    const { 
-        board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
-        handleCellClick, handleInput, showError, errorMessage,
-        setLives, updateBoardFromOpponent,
-        setShowError, setErrorMessage,
-        gameResult, setGameResult,
-        setSelectedCell, 
-        setStartTime,
-        setDifficulty
-    } = useGameLogic('online', sendOnlineMove, { 
-        userId: user?.id ?? user?.user_id ?? null,
-        username: players.you.username || user?.username || '', 
-        opponent: players.opponent.username || '',
-        role: isOwner ? 'owner' : 'guest'
-    });
-
     const [opponentLives, setOpponentLives] = useState(3);
     const [playerMoves, setPlayerMoves] = useState(0);
     const [opponentMoves, setOpponentMoves] = useState(0);
     const [opponentOnline, setOpponentOnline] = useState(true);
     const [connectionState, setConnectionState] = useState('connecting');
+
+    const {
+        board, timer, seconds, difficulty, lives, selectedCell, isGameOver,
+        handleCellClick, handleInput, showError, errorMessage,
+        setLives, updateBoardFromOpponent,
+        setShowError, setErrorMessage,
+        gameResult, setGameResult,
+        setSelectedCell,
+        setStartTime,
+        setDifficulty
+    } = useGameLogic('online', sendOnlineMove, {
+        userId: user?.id ?? user?.user_id ?? null,
+        username: players.you.username || user?.username || '',
+        opponent: players.opponent.username || '',
+        opponentUserId: players.opponent.userId ?? null,
+        opponentOnline: opponentOnline,
+        role: isOwner ? 'owner' : 'guest'
+    });
 
     const { isExitModalOpen, handleBackClick, confirmExitGame, cancelExit } = useGameExit({
         isGameOver, gameResult, mode: 'online', difficulty, seconds,
@@ -456,7 +458,7 @@ const OnlineGame = () =>
                     let gAvatar = null;
                     let guestUsername = '';
                     
-                    if (data.guestId) 
+                    if (data.guestId)
                     {
                         const gData = await getUserById(data.guestId);
                         gName = gData.display_name || gData.nickname || gData.username || "Player 2";
@@ -465,16 +467,16 @@ const OnlineGame = () =>
 
                         if (isOwner)
                         {
-                            setPlayers({ 
-                                you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
-                                opponent: { displayName: gName, username: guestUsername, avatar: gAvatar } 
+                            setPlayers({
+                                you: { userId: data.ownerId, displayName: oName, username: oUsername, avatar: oAvatar },
+                                opponent: { userId: data.guestId, displayName: gName, username: guestUsername, avatar: gAvatar }
                             });
                         }
                         else
                         {
-                            setPlayers({ 
-                                you: { displayName: gName, username: guestUsername, avatar: gAvatar }, 
-                                opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
+                            setPlayers({
+                                you: { userId: data.guestId, displayName: gName, username: guestUsername, avatar: gAvatar },
+                                opponent: { userId: data.ownerId, displayName: oName, username: oUsername, avatar: oAvatar }
                             });
                         }
                         return;
@@ -482,25 +484,25 @@ const OnlineGame = () =>
 
                     if (isOwner)
                     {
-                        setPlayers({ 
-                            you: { displayName: oName, username: oUsername, avatar: oAvatar }, 
-                            opponent: { displayName: gName, username: '', avatar: gAvatar } 
+                        setPlayers({
+                            you: { userId: data.ownerId, displayName: oName, username: oUsername, avatar: oAvatar },
+                            opponent: { userId: null, displayName: gName, username: '', avatar: gAvatar }
                         });
                     }
                     else
                     {
-                        setPlayers({ 
-                            you: { displayName: gName, username: '', avatar: gAvatar }, 
-                            opponent: { displayName: oName, username: oUsername, avatar: oAvatar } 
+                        setPlayers({
+                            you: { userId: null, displayName: gName, username: '', avatar: gAvatar },
+                            opponent: { userId: data.ownerId, displayName: oName, username: oUsername, avatar: oAvatar }
                         });
                     }
                 }
-            } 
-            catch(e) 
+            }
+            catch(e)
             {
-                setPlayers({ 
-                    you: { displayName: 'You', username: user?.username || '', avatar: null }, 
-                    opponent: { displayName: 'Opponent', username: '', avatar: null } 
+                setPlayers({
+                    you: { userId: null, displayName: 'You', username: user?.username || '', avatar: null },
+                    opponent: { userId: null, displayName: 'Opponent', username: '', avatar: null }
                 });
             }
         };
@@ -567,7 +569,7 @@ const OnlineGame = () =>
 
                                             setPlayers(p => ({
                                                 ...p,
-                                                opponent: { displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar }
+                                                opponent: { userId: message.gameState.guestId, displayName: newGuestName, username: newGuestUsername, avatar: newGuestAvatar }
                                             }));
                                         });
                                     }
@@ -621,6 +623,12 @@ const OnlineGame = () =>
 
                     case 'opponent_reconnected':
                         setOpponentOnline(true);
+                        break;
+
+                    case 'duplicate_session':
+                        intentionalClose = true;
+                        alert(message.message || 'This account is already connected in another tab or device.');
+                        navigate('/', { replace: true });
                         break;
 
                     case 'error':

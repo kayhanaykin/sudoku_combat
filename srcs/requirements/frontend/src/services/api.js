@@ -358,7 +358,10 @@ export const joinRoom = async (roomId, userId) => {
 		const err = await response.json();
 		throw new Error(err.message || 'Failed to join room');
 	}
-	return await response.json();
+	const data = await response.json();
+	if (data && data.success === false)
+		throw new Error(data.message || 'Failed to join room');
+	return data;
 };
 
 export const deleteUserAccount = async () => {
