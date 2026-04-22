@@ -64,13 +64,22 @@ const useGameExit = ({
         try
         {
             const diffMap = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Expert': 4, 'Extreme': 5 };
+            let diffInt = diffMap[difficulty];
+            if (!diffInt)
+            {
+                const n = Number(difficulty);
+                if (Number.isInteger(n) && n >= 1 && n <= 5)
+                    diffInt = n;
+                else
+                    diffInt = 2;
+            }
             await fetch('/api/stats/report', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     user_id: userId || 0,
                     username: username || "Player",
-                    difficulty: diffMap[difficulty] || 2,
+                    difficulty: diffInt,
                     mode: mode,
                     result: 'lose',
                     time_seconds: seconds || 0,

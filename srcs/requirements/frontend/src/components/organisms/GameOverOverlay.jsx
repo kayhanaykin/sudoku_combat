@@ -51,26 +51,30 @@ const EffectContainer = styled.div`
     pointer-events: none;
 `;
 
-const ConfettiPiece = styled.div`
+const ConfettiPiece = styled.div.attrs(props => ({
+    style: {
+        backgroundColor: props.$color,
+        left: `${props.$left}%`,
+        animationDelay: `${props.$delay}s`
+    }
+}))`
     position: absolute;
     width: 10px;
     height: 20px;
     animation: ${fall} 3s linear infinite;
-    
-    background-color: ${props => props.$color};
-    left: ${props => props.$left}%;
-    animation-delay: ${props => props.$delay}s;
 `;
 
-const RainDrop = styled.div`
+const RainDrop = styled.div.attrs(props => ({
+    style: {
+        left: `${props.$left}%`,
+        animationDelay: `${props.$delay}s`
+    }
+}))`
     position: absolute;
     width: 2px;
     height: 50px;
     background: rgba(255, 255, 255, 0.3);
     animation: ${fall} 1s linear infinite;
-
-    left: ${props => props.$left}%;
-    animation-delay: ${props => props.$delay}s;
 `;
 
 const ContentBox = styled.div`

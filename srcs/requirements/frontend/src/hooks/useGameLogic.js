@@ -227,7 +227,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
                             }
 
                             if (data.difficulty)
-                                setDifficulty(data.difficulty);
+                                setDifficulty(DIFFICULTY_LEVELS[data.difficulty] || data.difficulty);
 
                             if (data.startTime)
                                 setStartTime(data.startTime);
@@ -243,7 +243,7 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
             }
 
             if (diffLevel)
-                setDifficulty(diffLevel);
+                setDifficulty(DIFFICULTY_LEVELS[diffLevel] || diffLevel);
         }
     }, [location, mode, urlRoomId]);
 
@@ -528,7 +528,15 @@ const useGameLogic = (mode = 'offline', sendOnlineMove = null, playersInfo = { u
             const reportStats = async () => 
             {
                 const diffMap = { 'Easy': 1, 'Medium': 2, 'Hard': 3, 'Expert': 4, 'Extreme': 5 };
-                const diffInt = diffMap[difficulty] || 2;
+                let diffInt = diffMap[difficulty];
+                if (!diffInt)
+                {
+                    const n = Number(difficulty);
+                    if (Number.isInteger(n) && n >= 1 && n <= 5)
+                        diffInt = n;
+                    else
+                        diffInt = 2;
+                }
                 const modeStr = mode === 'online' ? 'online' : 'offline';
 
                 const payload = 

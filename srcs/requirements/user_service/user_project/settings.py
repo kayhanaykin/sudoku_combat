@@ -18,7 +18,7 @@ DEBUG = False
 
 # Hashing Algorithm: PBKDF2 + SHA256 (configured by Django's default PASSWORD_HASHERS)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'user_service', os.getenv('DOMAIN_NAME')]
+ALLOWED_HOSTS = ['*']
 
 # Without this setting: Django uses the Host header provided by the proxy
 USE_X_FORWARDED_HOST = True
@@ -189,11 +189,13 @@ CSRF_COOKIE_HTTPONLY = False
 # Without it, you cannot build a dynamic Single Page Application (SPA). 
 # To mitigate this risk, SECURE_BROWSER_XSS_FILTER is used.
 CSRF_TRUSTED_ORIGINS = [
-    "https://{CURRENT_DOMAIN}:8443",
+    f"https://{CURRENT_DOMAIN}:8443",
+    f"http://{CURRENT_DOMAIN}:8443",
     "https://localhost:8443",
     "http://localhost:8443",
     "https://127.0.0.1:8443",
     "http://127.0.0.1:8443",
+    "https://*.localdomain:8443",
 ]
 
 # 2. Proxy Headers

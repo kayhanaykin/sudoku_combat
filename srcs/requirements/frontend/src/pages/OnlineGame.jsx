@@ -15,6 +15,7 @@ import useGameExit from '../hooks/useGameExit';
 import Footer from '../components/atoms/Footer';
 
 const BASE_URL = '';
+const DIFFICULTY_LEVELS = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Expert', 5: 'Extreme' };
 
 const GameContainer = styled.div`
     display: flex;
@@ -548,7 +549,7 @@ const OnlineGame = () =>
                                 setStartTime(location.state.exactStartTime);
 
                             if (message.gameState.difficulty)
-                                setDifficulty(message.gameState.difficulty);
+                                setDifficulty(DIFFICULTY_LEVELS[message.gameState.difficulty] || message.gameState.difficulty);
 
                             if (message.gameState.currBoard)
                             {
